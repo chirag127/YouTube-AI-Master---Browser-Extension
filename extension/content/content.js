@@ -150,10 +150,10 @@ class ContentScriptTranscriptService {
       }
 
       console.log('Fetching transcript from:', track.baseUrl)
-      const transcriptResponse = await fetch(track.baseUrl)
-      const transcriptXml = await transcriptResponse.text()
+      const transcriptResponse = await fetch(track.baseUrl + '&fmt=json3')
+      const transcriptJson = await transcriptResponse.json()
 
-      const segments = this.parseTranscriptXml(transcriptXml)
+      const segments = this.parseTranscriptJson(transcriptJson)
       console.log('Parsed transcript segments:', segments.length)
       return segments
     } catch (error) {
@@ -172,19 +172,24 @@ class ContentScriptTranscriptService {
     }
   }
 
-  parseTranscriptXml(xml) {
+  parseTranscriptJson(json) {
     const segments = []
-    const regex = /<text start="([\d.]+)" dur="([\d.]+)">([^<]+)<\/text>/g
-    let match
+    if (!json.events) return segments
 
-    while ((match = regex.exec(xml)) !== null) {
+    for (const event of json.events) {
+      // Skip events without segments (e.g. just timing info)
+      if (!event.segs) continue
+
+      const text = event.segs.map(s => s.utf8).join('').trim()
+      // Skip empty text segments
+      if (!text) continue
+
       segments.push({
-        start: Number.parseFloat(match[1]),
-        duration: Number.parseFloat(match[2]),
-        text: this.decodeHtml(match[3]),
+        start: event.tStartMs / 1000,
+        duration: (event.dDurationMs || 0) / 1000,
+        text: this.decodeHtml(text),
       })
     }
-
     return segments
   }
 

@@ -177,6 +177,9 @@ analyzeBtn.addEventListener('click', async () => {
 
     // Store for Chat
     currentTranscriptText = transcript.map((s) => s.text).join(' ')
+    if (!currentTranscriptText.trim()) {
+      throw new Error('Transcript text is empty. Please try a different video or language.')
+    }
 
     // 3.5. Classify Segments (Smart Skipping)
     statusDiv.textContent = 'Classifying segments...'
