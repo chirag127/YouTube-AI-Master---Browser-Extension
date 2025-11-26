@@ -33,6 +33,8 @@ export class SegmentClassificationService {
           ...chunk,
           label: label.trim(),
         })
+        // Add delay to respect rate limits
+        await new Promise(resolve => setTimeout(resolve, 1000))
       } catch (error) {
         console.error('Error classifying chunk:', error)
         // Fallback label or skip

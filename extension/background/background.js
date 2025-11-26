@@ -10,7 +10,7 @@ chrome.action.onClicked.addListener(async (tab) => {
       await chrome.sidePanel.setOptions({
         tabId: tab.id,
         path: 'sidepanel/sidepanel.html',
-        enabled: true
+        enabled: true,
       })
 
       // Then open it

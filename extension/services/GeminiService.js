@@ -177,63 +177,142 @@ export class GeminiService {
    * @param {string} [model] - Optional model name override.
    * @returns {Promise<string>} - The generated text.
    */
+  /**
+   * Generates a comprehensive analysis (Summary, FAQ, Insights) in a single call.
+   * @param {string} text - The transcript text.
+   * @param {Object} options - Options for summary length, language, etc.
+   * @returns {Promise<Object>} - { summary, faq, insights }
+   */
+  async generateComprehensiveAnalysis(text, options = {}) {
+    const { length = 'Medium', language = 'English' } = options
+
+    let lengthInstruction = ''
+    switch (length) {
+      case 'Short':
+        lengthInstruction = 'Short summary with bullet points (approx. 100 words)'
+        break
+      case 'Detailed':
+        lengthInstruction = 'Comprehensive, detailed summary (approx. 600 words)'
+        break
+      default:
+        lengthInstruction = 'Standard summary with paragraphs (approx. 300 words)'
+        break
+    }
+
+    const prompt = `
+      Analyze the following video transcript and provide a comprehensive output in JSON format.
+      Target Language: ${language}
+
+      Required JSON Structure:
+      {
+        "summary": "Markdown formatted summary. ${lengthInstruction}",
+        "faq": "Markdown formatted list of 5 Frequently Asked Questions and answers",
+        "insights": "Markdown formatted key insights, trends, or interesting points"
+      }
+
+      Transcript:
+      ${text}
+    `
+
+    try {
+      const responseText = await this.generateContent(prompt)
+      // Clean up potential markdown code blocks in response
+      const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim()
+      return JSON.parse(cleanJson)
+    } catch (error) {
+      console.error('Comprehensive analysis failed, falling back to individual calls:', error)
+      // Fallback to individual calls if JSON parsing fails or model refuses JSON
+      const summary = await this.generateSummary(text, undefined, null, options)
+      const faq = await this.generateFAQ(text)
+      return { summary, faq, insights: 'Insights generation failed.' }
+    }
+  }
+
+  /**
+   * Internal method to call Gemini API with Fallback Logic.
+   * @param {string} prompt - The prompt to send.
+   * @param {string} [model] - Optional model name override.
+   * @returns {Promise<string>} - The generated text.
+   */
   async generateContent(prompt, model = null) {
     if (!this.apiKey) {
       throw new Error('API Key is required')
     }
 
-    // Use provided model, or selected model, or fallback to gemini-pro
-    let modelName = model || this.selectedModel || 'gemini-pro'
+    // If specific model requested, try only that.
+    // If generic request (null), try list of available models in order.
+    let modelsToTry = []
+    if (model) {
+      modelsToTry = [model]
+    } else {
+      // If we haven't fetched models yet, do it now
+      if (this.models.length === 0) {
+        try {
+          await this.fetchAvailableModels()
+        } catch (e) {
+          // Fallback if list fails
+          modelsToTry = ['gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro']
+        }
+      }
 
-    // Ensure model name doesn't have 'models/' prefix for the URL construction if it was passed raw
-    // But the API expects `models/{model}:generateContent` or just `{model}:generateContent`?
-    // The list returns `models/gemini-pro`. The generate endpoint is `.../models/gemini-pro:generateContent`.
-    // So if we stored 'gemini-pro' (stripped), we need to add 'models/' back or use the full name.
-    // Let's standardize: `this.selectedModel` stores the short name.
-
-    if (modelName.startsWith('models/')) {
-      modelName = modelName.replace('models/', '')
+      if (this.models.length > 0) {
+        modelsToTry = this.models.map(m => m.name.replace('models/', ''))
+      } else if (modelsToTry.length === 0) {
+         modelsToTry = ['gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro']
+      }
     }
 
-    const url = `${this.baseUrl}/models/${modelName}:generateContent?key=${this.apiKey}`
+    let lastError = null
+
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`Attempting generation with model: ${modelName}`)
+        return await this._makeApiCall(prompt, modelName)
+      } catch (error) {
+        console.warn(`Model ${modelName} failed:`, error.message)
+        lastError = error
+
+        // If it's not a quota/rate limit error, maybe don't retry?
+        // For now, we retry on everything to be safe, but we could filter.
+        if (!error.message.includes('429') && !error.message.includes('Quota')) {
+           // If it's a bad request (400), retrying might not help, but let's try next model anyway.
+        }
+
+        // Small delay before next retry
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    }
+
+    throw lastError || new Error('All models failed to generate content')
+  }
+
+  async _makeApiCall(prompt, modelName) {
+    // Ensure model name doesn't have 'models/' prefix
+    const cleanModelName = modelName.startsWith('models/') ? modelName.replace('models/', '') : modelName
+    const url = `${this.baseUrl}/models/${cleanModelName}:generateContent?key=${this.apiKey}`
 
     const payload = {
-      contents: [
-        {
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
-        },
-      ],
+      contents: [{ parts: [{ text: prompt }] }]
     }
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(`Gemini API Error: ${errorData.error?.message || response.statusText}`)
-      }
-
-      const data = await response.json()
-      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text
-
-      if (!generatedText) {
-        throw new Error('No content generated')
-      }
-
-      return generatedText
-    } catch (error) {
-      console.error('GeminiService generateContent Error:', error)
-      throw error
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Gemini API Error (${response.status}): ${errorData.error?.message || response.statusText}`)
     }
+
+    const data = await response.json()
+    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text
+
+    if (!generatedText) {
+      throw new Error('No content generated')
+    }
+
+    return generatedText
   }
 }

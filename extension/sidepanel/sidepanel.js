@@ -1,9 +1,14 @@
+import { ChunkingService } from '../services/ChunkingService.js'
 import { GeminiService } from '../services/GeminiService.js'
+import { SegmentClassificationService } from '../services/SegmentClassificationService.js'
 import { StorageService } from '../services/StorageService.js'
 
 const storageService = new StorageService()
+const chunkingService = new ChunkingService()
 let geminiService = null
+let segmentClassificationService = null
 let currentTranscriptText = '' // Store for chat context
+let currentClassifiedSegments = [] // Store classified segments
 
 // UI Elements
 const analyzeBtn = document.getElementById('analyze-btn')
@@ -31,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return
   }
   geminiService = new GeminiService(geminiApiKey)
+  segmentClassificationService = new SegmentClassificationService(geminiService, chunkingService)
 
   // Initialize models (optional, but good for warm-up)
   try {
@@ -158,20 +164,35 @@ analyzeBtn.addEventListener('click', async () => {
     if (transcriptResponse.error) {
       // Handle user-friendly error messages
       if (transcriptResponse.error.includes('does not have captions')) {
-        throw new Error('This video does not have captions/subtitles. Please try a different video that has closed captions enabled.')
-      } else if (transcriptResponse.error.includes('Transcript analysis failed')) {
-        throw new Error(transcriptResponse.error)
-      } else {
-        throw new Error(`Unable to analyze video: ${transcriptResponse.error}`)
+        throw new Error(
+          'This video does not have captions/subtitles. Please try a different video that has closed captions enabled.'
+        )
       }
+      if (transcriptResponse.error.includes('Transcript analysis failed')) {
+        throw new Error(transcriptResponse.error)
+      }
+      throw new Error(`Unable to analyze video: ${transcriptResponse.error}`)
     }
     const transcript = transcriptResponse.transcript
 
     // Store for Chat
     currentTranscriptText = transcript.map((s) => s.text).join(' ')
 
-    // Render Transcript
-    renderTranscript(transcript)
+    // 3.5. Classify Segments (Smart Skipping)
+    statusDiv.textContent = 'Classifying segments...'
+    console.log('Classifying transcript segments...')
+    const classifiedSegments = await segmentClassificationService.classifyTranscript(transcript)
+    currentClassifiedSegments = classifiedSegments
+    console.log('Segments classified:', classifiedSegments.length)
+
+    // Render Transcript with classifications
+    renderTranscript(classifiedSegments)
+
+    // Send segments to content script for visual markers and auto-skip
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'SHOW_SEGMENTS',
+      segments: classifiedSegments,
+    }).catch(err => console.warn('Failed to send segments to content script:', err))
 
     // 3. Get Options
     const options = await chrome.storage.local.get(['summaryLength', 'targetLanguage'])
@@ -180,16 +201,20 @@ analyzeBtn.addEventListener('click', async () => {
       language: options.targetLanguage || 'English',
     }
 
-    // 4. Generate Content (Parallel)
+    // 4. Generate Content
     statusDiv.textContent = 'Analyzing content...'
 
-    const summaryPromise = geminiService.generateSummary(
+    // Use combined analysis to save API calls
+    const analysis = await geminiService.generateComprehensiveAnalysis(
       currentTranscriptText,
-      undefined,
-      null,
       summaryOptions
     )
-    const faqPromise = geminiService.generateFAQ(currentTranscriptText)
+
+    // Render Summary & FAQ immediately
+    renderMarkdown(analysis.summary, summaryContent)
+
+    // 5. Analyze Comments (Sequential to avoid rate limits)
+    statusDiv.textContent = 'Analyzing comments...'
 
     // Fetch comments
     const commentsResponse = await chrome.tabs
@@ -197,34 +222,33 @@ analyzeBtn.addEventListener('click', async () => {
       .catch(() => ({ comments: [] }))
     const comments = commentsResponse?.comments || []
 
-    let commentsPromise = Promise.resolve('No comments found.')
+    let commentsAnalysis = 'No comments found.'
     if (comments.length > 0) {
-      commentsPromise = geminiService.analyzeCommentSentiment(comments)
+      try {
+        commentsAnalysis = await geminiService.analyzeCommentSentiment(comments)
+      } catch (e) {
+        console.warn('Comment analysis failed:', e)
+        commentsAnalysis = 'Failed to analyze comments.'
+      }
     }
-
-    const [summary, faq, commentsAnalysis] = await Promise.all([
-      summaryPromise,
-      faqPromise,
-      commentsPromise,
-    ])
-
-    // 5. Render Results
-    renderMarkdown(summary, summaryContent)
 
     // Combine FAQ and Comments for Insights
     const insightsHtml = `
+      <h3>Key Insights</h3>
+      ${marked.parse(analysis.insights)}
+      <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
       <h3>Comments Analysis</h3>
       ${marked.parse(commentsAnalysis)}
       <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
       <h3>Frequently Asked Questions</h3>
-      ${marked.parse(faq)}
+      ${marked.parse(analysis.faq)}
     `
     insightsContent.innerHTML = insightsHtml
 
     statusDiv.textContent = 'Done!'
 
     // 6. Save to Storage
-    await storageService.saveTranscript(videoId, metadata, transcript, summary)
+    await storageService.saveTranscript(videoId, metadata, transcript, analysis.summary)
   } catch (error) {
     console.error(error)
     statusDiv.textContent = `Error: ${error.message}`
@@ -246,11 +270,11 @@ function renderMarkdown(text, element) {
   }
 }
 
-function renderTranscript(transcript) {
+function renderTranscript(segments) {
   transcriptContainer.innerHTML = ''
-  for (const segment of transcript) {
+  for (const segment of segments) {
     const div = document.createElement('div')
-    div.className = 'transcript-segment'
+    div.className = `transcript-segment ${getSegmentClass(segment.label)}`
 
     const time = document.createElement('span')
     time.className = 'timestamp'
@@ -259,6 +283,15 @@ function renderTranscript(transcript) {
     const text = document.createElement('span')
     text.className = 'text'
     text.textContent = segment.text
+
+    // Add segment label if it exists
+    if (segment.label) {
+      const label = document.createElement('span')
+      label.className = 'segment-label'
+      label.textContent = segment.label
+      label.title = getSegmentDescription(segment.label)
+      div.appendChild(label)
+    }
 
     div.appendChild(time)
     div.appendChild(text)
@@ -269,6 +302,38 @@ function renderTranscript(transcript) {
 
     transcriptContainer.appendChild(div)
   }
+}
+
+// Helper function to get CSS class for segment type
+function getSegmentClass(label) {
+  const classMap = {
+    Sponsor: 'segment-sponsor',
+    'Interaction Reminder': 'segment-interaction',
+    'Self Promotion': 'segment-self-promo',
+    'Unpaid Promotion': 'segment-unpaid-promo',
+    Highlight: 'segment-highlight',
+    'Preview/Recap': 'segment-preview',
+    'Hook/Greetings': 'segment-hook',
+    'Tangents/Jokes': 'segment-tangent',
+    Content: 'segment-content',
+  }
+  return classMap[label] || 'segment-unknown'
+}
+
+// Helper function to get description for segment type
+function getSegmentDescription(label) {
+  const descriptions = {
+    Sponsor: 'Paid advertisement or sponsorship',
+    'Interaction Reminder': 'Asking viewers to like/subscribe/share',
+    'Self Promotion': "Promoting creator's own products/services",
+    'Unpaid Promotion': 'Shout-outs to other creators/channels',
+    Highlight: 'Most important or interesting part',
+    'Preview/Recap': 'Coming up next or previously on',
+    'Hook/Greetings': 'Video introduction or greeting',
+    'Tangents/Jokes': 'Off-topic content or humor',
+    Content: 'Main video content',
+  }
+  return descriptions[label] || 'Unknown segment type'
 }
 
 async function seekVideo(seconds) {

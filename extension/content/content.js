@@ -78,75 +78,68 @@ class ContentScriptTranscriptService {
   }
 
   async getTranscript(videoId, lang = 'en') {
-    if (!videoId) {
-      throw new Error('Video ID is required')
-    }
+    if (!videoId) throw new Error('Video ID is required')
 
     try {
       console.log('Fetching transcript for video:', videoId)
       const html = await this._fetchVideoPage(videoId)
+      let tracks = []
 
-      // Try multiple patterns to find caption tracks
-      let captionTracksMatch = html.match(/["']?captionTracks["']?\s*:\s*(\[[\s\S]+?\])/)
+      // Strategy 1: Parse ytInitialPlayerResponse (Most reliable)
+      try {
+        const playerResponse = this._extractPlayerResponse(html)
+        if (playerResponse?.captions?.playerCaptionsTracklistRenderer?.captionTracks) {
+          tracks = playerResponse.captions.playerCaptionsTracklistRenderer.captionTracks
+          console.log('Found tracks via JSON:', tracks.length)
+        }
+      } catch (e) {
+        console.log('JSON strategy failed:', e.message)
+      }
 
-      // If first pattern fails, try alternative patterns
-      if (!captionTracksMatch) {
-        console.log('Trying alternative caption tracks pattern...')
-        captionTracksMatch = html.match(/"captionTracks":\s*(\[[^\]]+\])/)
+      // Strategy 2: Regex for captionTracks
+      if (tracks.length === 0) {
+        console.log('Trying regex strategy...')
+        const patterns = [
+          /["']?captionTracks["']?\s*:\s*(\[[\s\S]+?\])/,
+          /"captionTracks":\s*(\[[^\]]+\])/,
+          /captionTracks["']?\s*:\s*(\[[^\]]+\])/
+        ]
 
-        if (!captionTracksMatch) {
-          captionTracksMatch = html.match(/captionTracks["']?\s*:\s*(\[[^\]]+\])/)
-
-          if (!captionTracksMatch) {
-            // Try to find any caption-related data
-            const captionPattern = /captionTracks[^}]+baseUrl["']?\s*:\s*["']([^"']+)["']/g
-            const matches = [...html.matchAll(captionPattern)]
-            if (matches.length > 0) {
-              // Construct tracks from individual matches
-              const tracks = matches.map(match => ({
-                languageCode: 'en', // Default assumption
-                baseUrl: match[1]
-              }))
-              console.log('Found tracks via alternative method:', tracks.length)
-
-              const track = tracks.find((t) => t.languageCode === lang) ||
-                           tracks.find((t) => t.languageCode.startsWith('en')) ||
-                           tracks[0]
-
-              if (track) {
-                const transcriptResponse = await fetch(track.baseUrl)
-                const transcriptXml = await transcriptResponse.text()
-                return this.parseTranscriptXml(transcriptXml)
+        for (const pattern of patterns) {
+          const match = html.match(pattern)
+          if (match) {
+            try {
+              const json = JSON.parse(match[1])
+              if (Array.isArray(json)) {
+                tracks = json
+                console.log('Found tracks via Regex JSON:', tracks.length)
+                break
               }
-            }
+            } catch (e) { /* ignore */ }
           }
         }
       }
 
-      if (!captionTracksMatch) {
-        throw new Error('This video does not have captions/subtitles available. Try a different video that has closed captions enabled.')
-      }
-
-      console.log('Found caption tracks match')
-      const captionTracksJson = captionTracksMatch[1]
-
-      const tracks = []
-      const trackRegex =
-        /["']?languageCode["']?\s*:\s*["']([^"']+)["'][\s\S]+?["']?baseUrl["']?\s*:\s*["']([^"']+)["']/g
-
-      let trackMatch
-      while ((trackMatch = trackRegex.exec(captionTracksJson)) !== null) {
-        tracks.push({
-          languageCode: trackMatch[1],
-          baseUrl: trackMatch[2],
-        })
-      }
-
-      console.log('Parsed tracks:', tracks.length)
+      // Strategy 3: Regex for baseUrl (Last resort)
       if (tracks.length === 0) {
-        throw new Error('This video does not have captions/subtitles available. Try a different video that has closed captions enabled.')
+        console.log('Trying baseUrl regex strategy...')
+        const captionPattern = /captionTracks[^}]+baseUrl["']?\s*:\s*["']([^"']+)["']/g
+        const matches = [...html.matchAll(captionPattern)]
+        if (matches.length > 0) {
+          tracks = matches.map((match) => ({
+            languageCode: 'en', // Default assumption
+            baseUrl: match[1],
+          }))
+        }
       }
 
+      if (tracks.length === 0) {
+        throw new Error(
+          'This video does not have captions/subtitles available. Try a different video that has closed captions enabled.'
+        )
+      }
+
+      // Select the best track
       const track =
         tracks.find((t) => t.languageCode === lang) ||
         tracks.find((t) => t.languageCode.startsWith('en')) ||
@@ -165,15 +158,17 @@ class ContentScriptTranscriptService {
       return segments
     } catch (error) {
       console.error('ContentScriptTranscriptService Error:', error)
-
-      // Provide user-friendly error messages
       if (error.message.includes('captions') || error.message.includes('caption tracks')) {
-        throw new Error('This video does not have captions/subtitles available. Please try a different video that has closed captions enabled by the creator.')
-      } else if (error.message.includes('Failed to fetch')) {
-        throw new Error('Unable to access YouTube. Please check your internet connection and try again.')
-      } else {
-        throw new Error(`Transcript analysis failed: ${error.message}`)
+        throw new Error(
+          'This video does not have captions/subtitles available. Please try a different video that has closed captions enabled by the creator.'
+        )
       }
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(
+          'Unable to access YouTube. Please check your internet connection and try again.'
+        )
+      }
+      throw new Error(`Transcript analysis failed: ${error.message}`)
     }
   }
 
@@ -233,8 +228,224 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     })()
     return true // Keep the message channel open for async response
+  } else if (request.action === 'SHOW_SEGMENTS') {
+    injectSegmentMarkers(request.segments)
+    currentSegments = request.segments
+    updateSkipSettings() // Ensure we have latest settings
+    startMonitoring()
+    sendResponse({ status: 'success' })
+  } else if (request.action === 'UPDATE_SETTINGS') {
+    updateSkipSettings()
+    sendResponse({ status: 'success' })
   }
 })
+
+let currentSegments = []
+let skipSettings = {}
+let monitoringInterval = null
+let skipButton = null
+
+function updateSkipSettings() {
+  chrome.storage.local.get('autoSkip', (items) => {
+    skipSettings = items.autoSkip || {}
+    console.log('YouTube AI Master: Updated skip settings:', skipSettings)
+  })
+}
+
+function startMonitoring() {
+  if (monitoringInterval) clearInterval(monitoringInterval)
+
+  const video = document.querySelector('video')
+  if (!video) return
+
+  // Use timeupdate event for smoother checking
+  video.addEventListener('timeupdate', checkSkipLogic)
+
+  // Backup interval in case event listeners are cleared
+  monitoringInterval = setInterval(() => {
+    if (!video.paused) checkSkipLogic()
+  }, 1000)
+}
+
+function checkSkipLogic() {
+  const video = document.querySelector('video')
+  if (!video) return
+
+  const currentTime = video.currentTime
+  const currentSegment = currentSegments.find(
+    (s) => currentTime >= s.start && currentTime < s.start + s.duration
+  )
+
+  if (currentSegment && currentSegment.label !== 'Content') {
+    const shouldSkip = skipSettings[currentSegment.label]
+
+    if (shouldSkip) {
+      // Auto-skip
+      console.log(`YouTube AI Master: Auto-skipping ${currentSegment.label}`)
+      video.currentTime = currentSegment.start + currentSegment.duration
+      showToast(`Skipped ${currentSegment.label}`)
+    } else {
+      // Show Skip Button
+      showSkipButton(currentSegment)
+    }
+  } else {
+    hideSkipButton()
+  }
+}
+
+function showSkipButton(segment) {
+  if (!skipButton) {
+    skipButton = document.createElement('button')
+    skipButton.id = 'ai-master-skip-btn'
+    skipButton.style.cssText = `
+      position: absolute;
+      bottom: 150px;
+      right: 20px;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    `
+    skipButton.innerHTML = `
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:white;"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      Skip Segment
+    `
+
+    // Find a stable container
+    const player = document.querySelector('#movie_player') || document.body
+    player.appendChild(skipButton)
+
+    skipButton.addEventListener('click', () => {
+      const video = document.querySelector('video')
+      if (video) {
+        video.currentTime = segment.start + segment.duration
+        hideSkipButton()
+      }
+    })
+  }
+
+  skipButton.querySelector('span')?.remove() // Remove old text if any
+  const textSpan = document.createElement('span')
+  textSpan.textContent = `Skip ${segment.label}`
+  skipButton.appendChild(textSpan)
+
+  skipButton.style.display = 'flex'
+}
+
+function hideSkipButton() {
+  if (skipButton) {
+    skipButton.style.display = 'none'
+  }
+}
+
+function showToast(message) {
+  const toast = document.createElement('div')
+  toast.textContent = message
+  toast.style.cssText = `
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    z-index: 10000;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 13px;
+    pointer-events: none;
+    animation: fadeInOut 2s ease-in-out forwards;
+  `
+
+  // Add keyframes if not present
+  if (!document.getElementById('ai-master-toast-style')) {
+    const style = document.createElement('style')
+    style.id = 'ai-master-toast-style'
+    style.textContent = `
+      @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -10px); }
+        10% { opacity: 1; transform: translate(-50%, 0); }
+        90% { opacity: 1; transform: translate(-50%, 0); }
+        100% { opacity: 0; transform: translate(-50%, -10px); }
+      }
+    `
+    document.head.appendChild(style)
+  }
+
+  document.body.appendChild(toast)
+  setTimeout(() => toast.remove(), 2000)
+}
+
+function injectSegmentMarkers(segments) {
+  const progressBar = document.querySelector('.ytp-progress-bar')
+  if (!progressBar) return
+
+  // Remove existing markers
+  const existingContainer = document.getElementById('ai-master-markers')
+  if (existingContainer) existingContainer.remove()
+
+  const container = document.createElement('div')
+  container.id = 'ai-master-markers'
+  container.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 30;
+  `
+
+  const video = document.querySelector('video')
+  const totalDuration = video ? video.duration : 0
+  if (!totalDuration) return
+
+  segments.forEach(segment => {
+    if (segment.label === 'Content') return // Don't mark content
+
+    const startPercent = (segment.start / totalDuration) * 100
+    const widthPercent = (segment.duration / totalDuration) * 100
+
+    const marker = document.createElement('div')
+    marker.style.cssText = `
+      position: absolute;
+      left: ${startPercent}%;
+      width: ${widthPercent}%;
+      height: 100%;
+      background-color: ${getSegmentColor(segment.label)};
+      opacity: 0.6;
+    `
+    marker.title = segment.label
+    container.appendChild(marker)
+  })
+
+  progressBar.appendChild(container)
+}
+
+function getSegmentColor(label) {
+  const colors = {
+    'Sponsor': '#ff4444',
+    'Interaction Reminder': '#ff8800',
+    'Self Promotion': '#ffaa00',
+    'Unpaid Promotion': '#88cc00',
+    'Highlight': '#00cc44',
+    'Preview/Recap': '#00aaff',
+    'Hook/Greetings': '#aa66cc',
+    'Tangents/Jokes': '#cc66aa',
+    'Content': 'transparent'
+  }
+  return colors[label] || '#999999'
+}
 
 /**
  * Extracts top comments from the DOM.

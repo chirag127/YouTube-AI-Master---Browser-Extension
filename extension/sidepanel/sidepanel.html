@@ -168,6 +168,7 @@
         cursor: pointer;
         border-radius: 4px;
         transition: background-color 0.1s;
+        border-left: 3px solid transparent;
       }
       .transcript-segment:hover {
         background-color: var(--secondary-bg);
@@ -183,7 +184,50 @@
       .text {
         font-size: 14px;
         line-height: 1.4;
+        flex: 1;
       }
+      .segment-label {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-right: 8px;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+
+      /* Segment type styles */
+      .segment-sponsor { border-left-color: #ff4444; }
+      .segment-sponsor .segment-label { background: #ff4444; color: white; }
+
+      .segment-interaction { border-left-color: #ff8800; }
+      .segment-interaction .segment-label { background: #ff8800; color: white; }
+
+      .segment-self-promo { border-left-color: #ffaa00; }
+      .segment-self-promo .segment-label { background: #ffaa00; color: white; }
+
+      .segment-unpaid-promo { border-left-color: #88cc00; }
+      .segment-unpaid-promo .segment-label { background: #88cc00; color: white; }
+
+      .segment-highlight { border-left-color: #00cc44; }
+      .segment-highlight .segment-label { background: #00cc44; color: white; }
+
+      .segment-preview { border-left-color: #00aaff; }
+      .segment-preview .segment-label { background: #00aaff; color: white; }
+
+      .segment-hook { border-left-color: #aa66cc; }
+      .segment-hook .segment-label { background: #aa66cc; color: white; }
+
+      .segment-tangent { border-left-color: #cc66aa; }
+      .segment-tangent .segment-label { background: #cc66aa; color: white; }
+
+      .segment-content { border-left-color: #666666; }
+      .segment-content .segment-label { background: #666666; color: white; }
+
+      .segment-unknown { border-left-color: #999999; }
+      .segment-unknown .segment-label { background: #999999; color: white; }
 
       /* Markdown Content */
       .markdown-body {
