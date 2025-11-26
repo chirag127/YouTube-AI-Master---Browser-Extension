@@ -6,6 +6,14 @@ chrome.action.onClicked.addListener(async (tab) => {
   // Check if we're on a YouTube page
   if (tab.url?.includes('youtube.com/watch')) {
     try {
+      // First enable the side panel for this tab
+      await chrome.sidePanel.setOptions({
+        tabId: tab.id,
+        path: 'sidepanel/sidepanel.html',
+        enabled: true
+      })
+
+      // Then open it
       await chrome.sidePanel.open({ tabId: tab.id })
     } catch (error) {
       console.error('Failed to open side panel:', error)

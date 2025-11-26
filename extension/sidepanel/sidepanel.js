@@ -141,16 +141,29 @@ analyzeBtn.addEventListener('click', async () => {
     statusDiv.textContent = 'Fetching transcript...'
 
     // Get metadata
-    const metadataResponse = await chrome.tabs.sendMessage(tab.id, { action: 'GET_METADATA', videoId })
+    const metadataResponse = await chrome.tabs.sendMessage(tab.id, {
+      action: 'GET_METADATA',
+      videoId,
+    })
     if (metadataResponse.error) {
       throw new Error(`Metadata fetch failed: ${metadataResponse.error}`)
     }
     const metadata = metadataResponse.metadata
 
     // Get transcript
-    const transcriptResponse = await chrome.tabs.sendMessage(tab.id, { action: 'GET_TRANSCRIPT', videoId })
+    const transcriptResponse = await chrome.tabs.sendMessage(tab.id, {
+      action: 'GET_TRANSCRIPT',
+      videoId,
+    })
     if (transcriptResponse.error) {
-      throw new Error(`Transcript fetch failed: ${transcriptResponse.error}`)
+      // Handle user-friendly error messages
+      if (transcriptResponse.error.includes('does not have captions')) {
+        throw new Error('This video does not have captions/subtitles. Please try a different video that has closed captions enabled.')
+      } else if (transcriptResponse.error.includes('Transcript analysis failed')) {
+        throw new Error(transcriptResponse.error)
+      } else {
+        throw new Error(`Unable to analyze video: ${transcriptResponse.error}`)
+      }
     }
     const transcript = transcriptResponse.transcript
 

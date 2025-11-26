@@ -83,13 +83,51 @@ class ContentScriptTranscriptService {
     }
 
     try {
+      console.log('Fetching transcript for video:', videoId)
       const html = await this._fetchVideoPage(videoId)
 
-      const captionTracksMatch = html.match(/["']?captionTracks["']?\s*:\s*(\[[\s\S]+?\])/)
+      // Try multiple patterns to find caption tracks
+      let captionTracksMatch = html.match(/["']?captionTracks["']?\s*:\s*(\[[\s\S]+?\])/)
+
+      // If first pattern fails, try alternative patterns
       if (!captionTracksMatch) {
-        throw new Error('No captions found for this video')
+        console.log('Trying alternative caption tracks pattern...')
+        captionTracksMatch = html.match(/"captionTracks":\s*(\[[^\]]+\])/)
+
+        if (!captionTracksMatch) {
+          captionTracksMatch = html.match(/captionTracks["']?\s*:\s*(\[[^\]]+\])/)
+
+          if (!captionTracksMatch) {
+            // Try to find any caption-related data
+            const captionPattern = /captionTracks[^}]+baseUrl["']?\s*:\s*["']([^"']+)["']/g
+            const matches = [...html.matchAll(captionPattern)]
+            if (matches.length > 0) {
+              // Construct tracks from individual matches
+              const tracks = matches.map(match => ({
+                languageCode: 'en', // Default assumption
+                baseUrl: match[1]
+              }))
+              console.log('Found tracks via alternative method:', tracks.length)
+
+              const track = tracks.find((t) => t.languageCode === lang) ||
+                           tracks.find((t) => t.languageCode.startsWith('en')) ||
+                           tracks[0]
+
+              if (track) {
+                const transcriptResponse = await fetch(track.baseUrl)
+                const transcriptXml = await transcriptResponse.text()
+                return this.parseTranscriptXml(transcriptXml)
+              }
+            }
+          }
+        }
       }
 
+      if (!captionTracksMatch) {
+        throw new Error('This video does not have captions/subtitles available. Try a different video that has closed captions enabled.')
+      }
+
+      console.log('Found caption tracks match')
       const captionTracksJson = captionTracksMatch[1]
 
       const tracks = []
@@ -104,8 +142,9 @@ class ContentScriptTranscriptService {
         })
       }
 
+      console.log('Parsed tracks:', tracks.length)
       if (tracks.length === 0) {
-        throw new Error('Failed to parse caption tracks')
+        throw new Error('This video does not have captions/subtitles available. Try a different video that has closed captions enabled.')
       }
 
       const track =
@@ -117,13 +156,24 @@ class ContentScriptTranscriptService {
         throw new Error('No suitable caption track found')
       }
 
+      console.log('Fetching transcript from:', track.baseUrl)
       const transcriptResponse = await fetch(track.baseUrl)
       const transcriptXml = await transcriptResponse.text()
 
-      return this.parseTranscriptXml(transcriptXml)
+      const segments = this.parseTranscriptXml(transcriptXml)
+      console.log('Parsed transcript segments:', segments.length)
+      return segments
     } catch (error) {
       console.error('ContentScriptTranscriptService Error:', error)
-      throw error
+
+      // Provide user-friendly error messages
+      if (error.message.includes('captions') || error.message.includes('caption tracks')) {
+        throw new Error('This video does not have captions/subtitles available. Please try a different video that has closed captions enabled by the creator.')
+      } else if (error.message.includes('Failed to fetch')) {
+        throw new Error('Unable to access YouTube. Please check your internet connection and try again.')
+      } else {
+        throw new Error(`Transcript analysis failed: ${error.message}`)
+      }
     }
   }
 
@@ -164,7 +214,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const comments = extractComments()
     sendResponse({ comments })
   } else if (request.action === 'GET_TRANSCRIPT') {
-    (async () => {
+    ;(async () => {
       try {
         const transcript = await transcriptService.getTranscript(request.videoId)
         sendResponse({ transcript })
@@ -174,7 +224,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })()
     return true // Keep the message channel open for async response
   } else if (request.action === 'GET_METADATA') {
-    (async () => {
+    ;(async () => {
       try {
         const metadata = await transcriptService.getVideoMetadata(request.videoId)
         sendResponse({ metadata })
