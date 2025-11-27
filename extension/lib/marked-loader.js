@@ -3,7 +3,7 @@
  * This ensures we don't bundle the library directly
  */
 
-const MARKED_CDN_URL = 'https://cdn.jsdelivr.net/npm/marked@17.0.1/marked.min.js';
+const MARKED_CDN_URL = 'https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js';
 
 let markedLoaded = false;
 let markedLoadPromise = null;

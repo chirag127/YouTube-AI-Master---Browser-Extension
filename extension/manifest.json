@@ -16,7 +16,14 @@
     "host_permissions": [
         "https://www.youtube.com/*",
         "https://youtube.com/*",
-        "https://generativelanguage.googleapis.com/*"
+        "https://generativelanguage.googleapis.com/*",
+        "https://*.invidious.io/*",
+        "https://inv.perditum.com/*",
+        "https://invidious.privacyredirect.com/*",
+        "https://invidious.fdn.fr/*",
+        "https://iv.ggtyler.dev/*",
+        "https://invidious.protokolla.fi/*",
+        "https://api.invidious.io/*"
     ],
     "background": {
         "service_worker": "background/service-worker.js",

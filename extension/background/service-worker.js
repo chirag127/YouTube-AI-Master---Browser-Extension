@@ -126,20 +126,14 @@ async function handleGetSettings(sendResponse) {
 }
 
 /**
- * Fetch YouTube transcript
+ * Fetch YouTube transcript (delegates to Invidious)
  */
 async function handleFetchTranscript(request, sendResponse) {
   const { videoId, lang = 'en' } = request
+  console.log(`[Transcript] 🔍 Fetching transcript for ${videoId}, lang: ${lang}`)
 
-  if (!transcriptService) {
-    transcriptService = new YouTubeTranscriptService()
-  }
-
-  const segments = await transcriptService.getTranscript(videoId, lang)
-  sendResponse({
-    success: true,
-    data: { segments },
-  })
+  // Use Invidious API to fetch transcript
+  await handleFetchInvidiousTranscript(request, sendResponse)
 }
 
 /**
@@ -378,8 +372,14 @@ async function handleFetchInvidiousTranscript(request, sendResponse) {
         url: captionTrack.url
       })
 
-      // Fetch caption data
-      const captionResponse = await fetch(captionTrack.url, {
+      // Fetch caption data (handle relative URLs)
+      const captionUrl = captionTrack.url.startsWith('http')
+        ? captionTrack.url
+        : `${inst}${captionTrack.url}`
+
+      console.log(`[Invidious] 📥 Fetching captions from: ${captionUrl}`)
+
+      const captionResponse = await fetch(captionUrl, {
         signal: AbortSignal.timeout(8000)
       })
 
@@ -493,13 +493,13 @@ async function getInvidiousInstances() {
 
   console.log(`[Invidious] 🔍 Fetching fresh instance list from live API...`)
 
-  // Hardcoded fallback instances (reliable ones based on live API data)
+  // Hardcoded fallback instances (reliable public instances)
   const fallbackInstances = [
-    'https://inv.nadeko.net',
-    'https://invidious.nerdvpn.de',
-    'https://invidious.f5.si',
     'https://inv.perditum.com',
-    'https://yewtu.be'
+    'https://invidious.privacyredirect.com',
+    'https://invidious.fdn.fr',
+    'https://iv.ggtyler.dev',
+    'https://invidious.protokolla.fi'
   ]
 
   try {
@@ -534,6 +534,9 @@ async function getInvidiousInstances() {
 
         // Must have a valid URI
         if (!info?.uri) return false
+
+        // Skip instances that require authentication (if indicated in API)
+        if (info?.api?.restricted === true) return false
 
         return true
       })
