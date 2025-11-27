@@ -1,5 +1,6 @@
 import { state } from './state.js'
 import { TranscriptService } from '../transcript/service.js'
+import metadataExtractor from '../metadata/extractor.js'
 import { showLoading, showError } from '../ui/components/loading.js'
 import { renderSummary } from '../ui/renderers/summary.js'
 import { injectSegmentMarkers } from '../segments/markers.js'
@@ -11,13 +12,29 @@ export async function startAnalysis() {
     state.isAnalyzing = true
     const c = document.getElementById('yt-ai-content-area')
     try {
-        showLoading(c, 'Fetching transcript...')
-        const m = await transcriptService.getMetadata(state.currentVideoId)
-        showLoading(c, 'Extracting transcript (4 fallback methods)...')
+        showLoading(c, 'Extracting video metadata from Piped API...')
+        // Extract comprehensive metadata including title and description
+        // Piped API is tried first, then falls back to DOM extraction
+        const pageMetadata = await metadataExtractor.extract(state.currentVideoId)
+
+        showLoading(c, 'Fetching additional metadata...')
+        const apiMetadata = await transcriptService.getMetadata(state.currentVideoId)
+
+        // Merge metadata from both sources
+        const m = { ...apiMetadata, ...pageMetadata, videoId: state.currentVideoId }
+
+        showLoading(c, 'Extracting transcript (Piped API + 5 fallback methods)...')
         state.currentTranscript = await transcriptService.getTranscript(state.currentVideoId)
         if (!state.currentTranscript?.length) throw new Error('No transcript available for this video')
+
         showLoading(c, `Analyzing ${state.currentTranscript.length} segments with AI...`)
-        const r = await chrome.runtime.sendMessage({ action: 'ANALYZE_VIDEO', transcript: state.currentTranscript, metadata: { ...m, videoId: state.currentVideoId }, options: { length: 'Medium' } })
+        const r = await chrome.runtime.sendMessage({
+            action: 'ANALYZE_VIDEO',
+            transcript: state.currentTranscript,
+            metadata: m, // Now includes title, description, keywords, etc.
+            options: { length: 'Medium' }
+        })
+
         if (!r.success) throw new Error(r.error || 'Analysis failed')
         state.analysisData = r.data
         if (state.analysisData.segments) {

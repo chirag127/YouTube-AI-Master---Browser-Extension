@@ -1,4 +1,5 @@
 import { decodeHTML } from '../utils/dom.js'
+import pipedAPI from '../../services/piped/api.js'
 
 // Singleton instance
 let transcriptServiceInstance = null
@@ -47,22 +48,24 @@ export class TranscriptService {
     /**
      * Main entry point - tries all methods in priority order
      * Priority Order:
-     * 1. XHR Interceptor (Fastest if available)
-     * 2. Invidious API (Primary - CORS-free, reliable)
-     * 3. YouTube Direct API (Direct timedtext endpoint)
-     * 4. Background Proxy (Service worker fallback)
-     * 5. DOM Parser (ytInitialPlayerResponse)
+     * 1. Piped API (Primary - CORS-free, reliable, fast)
+     * 2. XHR Interceptor (Fastest if available)
+     * 3. Invidious API (Fallback - CORS-free, reliable)
+     * 4. YouTube Direct API (Direct timedtext endpoint)
+     * 5. Background Proxy (Service worker fallback)
+     * 6. DOM Parser (ytInitialPlayerResponse)
      */
     async getTranscript(v, l = 'en') {
         logger.info(`Fetching transcript for video: ${v}, language: ${l}`)
 
         // Priority order as documented
         const methods = [
-            { name: 'XHR Interceptor', fn: () => this._method0_XHRInterceptor(v, l) },
-            { name: 'Invidious API', fn: () => this._method1_InvidiousAPI(v, l) },
-            { name: 'YouTube Direct API', fn: () => this._method2_YouTubeDirectAPI(v, l) },
-            { name: 'Background Proxy', fn: () => this._method3_BackgroundProxy(v, l) },
-            { name: 'DOM Parser (ytInitialPlayerResponse)', fn: () => this._method4_DOMParser(v, l) }
+            { name: 'Piped API', fn: () => this._method0_PipedAPI(v, l) },
+            { name: 'XHR Interceptor', fn: () => this._method1_XHRInterceptor(v, l) },
+            { name: 'Invidious API', fn: () => this._method2_InvidiousAPI(v, l) },
+            { name: 'YouTube Direct API', fn: () => this._method3_YouTubeDirectAPI(v, l) },
+            { name: 'Background Proxy', fn: () => this._method4_BackgroundProxy(v, l) },
+            { name: 'DOM Parser (ytInitialPlayerResponse)', fn: () => this._method5_DOMParser(v, l) }
         ]
 
         let lastError = null
@@ -152,10 +155,28 @@ export class TranscriptService {
     }
 
     // ============================================================================
-    // METHOD 0: XHR Interceptor (Fastest if available)
+    // METHOD 0: Piped API (Primary - CORS-free, reliable, fast)
     // ============================================================================
-    async _method0_XHRInterceptor(v, l) {
-        logger.debug(`[Method 0] XHR Interceptor for video ${v}, lang ${l}`)
+    async _method0_PipedAPI(v, l) {
+        logger.debug(`[Method 0] Piped API for video ${v}, lang ${l}`)
+        try {
+            const transcript = await pipedAPI.getTranscript(v, l)
+            if (transcript && transcript.length > 0) {
+                logger.debug(`[Method 0] Piped API returned ${transcript.length} segments`)
+                return transcript
+            }
+            throw new Error('Piped API returned no data')
+        } catch (e) {
+            logger.error('[Method 0] Piped API error:', e.message)
+            throw new Error(`Piped API failed: ${e.message}`)
+        }
+    }
+
+    // ============================================================================
+    // METHOD 1: XHR Interceptor (Fastest if available)
+    // ============================================================================
+    async _method1_XHRInterceptor(v, l) {
+        logger.debug(`[Method 1] XHR Interceptor for video ${v}, lang ${l}`)
 
         const intercepted = this.getInterceptedTranscript(l)
         if (!intercepted) {
@@ -183,7 +204,7 @@ export class TranscriptService {
             // Try XML parsing
             const segments = this._parseXML(intercepted)
             if (segments.length > 0) {
-                logger.debug(`[Method 0] Interceptor returned ${segments.length} segments (XML)`)
+                logger.debug(`[Method 1] Interceptor returned ${segments.length} segments (XML)`)
                 return segments
             }
         }
@@ -192,10 +213,10 @@ export class TranscriptService {
     }
 
     // ============================================================================
-    // METHOD 1: Invidious API (Primary - CORS-free, reliable)
+    // METHOD 2: Invidious API (Fallback - CORS-free, reliable)
     // ============================================================================
-    async _method1_InvidiousAPI(v, l) {
-        logger.debug(`[Method 1] Invidious API for video ${v}, lang ${l}`)
+    async _method2_InvidiousAPI(v, l) {
+        logger.debug(`[Method 2] Invidious API for video ${v}, lang ${l}`)
         try {
             const r = await chrome.runtime.sendMessage({
                 action: 'FETCH_INVIDIOUS_TRANSCRIPT',
@@ -204,22 +225,22 @@ export class TranscriptService {
             })
 
             if (r.success && r.data) {
-                logger.debug(`[Method 1] Invidious returned ${r.data.length} segments`)
+                logger.debug(`[Method 2] Invidious returned ${r.data.length} segments`)
                 return r.data
             }
 
             throw new Error(r.error || 'Invidious API returned no data')
         } catch (e) {
-            logger.error('[Method 1] Invidious API error:', e.message)
+            logger.error('[Method 2] Invidious API error:', e.message)
             throw new Error(`Invidious API failed: ${e.message}`)
         }
     }
 
     // ============================================================================
-    // METHOD 2: YouTube Direct API (timedtext endpoint)
+    // METHOD 3: YouTube Direct API (timedtext endpoint)
     // ============================================================================
-    async _method2_YouTubeDirectAPI(v, l) {
-        logger.debug(`[Method 2] YouTube Direct API for video ${v}, lang ${l}`)
+    async _method3_YouTubeDirectAPI(v, l) {
+        logger.debug(`[Method 3] YouTube Direct API for video ${v}, lang ${l}`)
 
         // Try JSON3 format first (most detailed)
         const formats = ['json3', 'srv3', 'srv2', 'srv1']
@@ -227,16 +248,16 @@ export class TranscriptService {
         for (const fmt of formats) {
             try {
                 const url = `https://www.youtube.com/api/timedtext?v=${v}&lang=${l}&fmt=${fmt}`
-                logger.debug(`[Method 2] Trying format: ${fmt}, URL: ${url}`)
+                logger.debug(`[Method 3] Trying format: ${fmt}, URL: ${url}`)
 
                 const response = await fetch(url)
                 if (!response.ok) {
-                    logger.warn(`[Method 2] Format ${fmt} failed: HTTP ${response.status}`)
+                    logger.warn(`[Method 3] Format ${fmt} failed: HTTP ${response.status}`)
                     continue
                 }
 
                 const contentType = response.headers.get('content-type')
-                logger.debug(`[Method 2] Response content-type: ${contentType}`)
+                logger.debug(`[Method 3] Response content-type: ${contentType}`)
 
                 if (fmt === 'json3') {
                     const data = await response.json()
@@ -250,7 +271,7 @@ export class TranscriptService {
                             }))
 
                         if (segments.length > 0) {
-                            logger.debug(`[Method 2] JSON3 format returned ${segments.length} segments`)
+                            logger.debug(`[Method 3] JSON3 format returned ${segments.length} segments`)
                             return segments
                         }
                     }
@@ -259,12 +280,12 @@ export class TranscriptService {
                     const xmlText = await response.text()
                     const segments = this._parseXML(xmlText)
                     if (segments.length > 0) {
-                        logger.debug(`[Method 2] ${fmt} format returned ${segments.length} segments`)
+                        logger.debug(`[Method 3] ${fmt} format returned ${segments.length} segments`)
                         return segments
                     }
                 }
             } catch (e) {
-                logger.warn(`[Method 2] Format ${fmt} error:`, e.message)
+                logger.warn(`[Method 3] Format ${fmt} error:`, e.message)
                 continue
             }
         }
@@ -273,10 +294,10 @@ export class TranscriptService {
     }
 
     // ============================================================================
-    // METHOD 3: Background Proxy (through service worker)
+    // METHOD 4: Background Proxy (through service worker)
     // ============================================================================
-    async _method3_BackgroundProxy(v, l) {
-        logger.debug(`[Method 3] Background Proxy for video ${v}, lang ${l}`)
+    async _method4_BackgroundProxy(v, l) {
+        logger.debug(`[Method 4] Background Proxy for video ${v}, lang ${l}`)
 
         const r = await chrome.runtime.sendMessage({
             action: 'FETCH_TRANSCRIPT',
@@ -288,15 +309,15 @@ export class TranscriptService {
             throw new Error(r.error || 'Background proxy failed')
         }
 
-        logger.debug(`[Method 3] Background proxy returned data`)
+        logger.debug(`[Method 4] Background proxy returned data`)
         return r.data.segments || r.data
     }
 
     // ============================================================================
-    // METHOD 4: DOM Parser (ytInitialPlayerResponse)
+    // METHOD 5: DOM Parser (ytInitialPlayerResponse)
     // ============================================================================
-    async _method4_DOMParser(v, l) {
-        logger.debug(`[Method 4] DOM Parser for video ${v}, lang ${l}`)
+    async _method5_DOMParser(v, l) {
+        logger.debug(`[Method 5] DOM Parser for video ${v}, lang ${l}`)
 
         const playerResponse = this._getPlayerResponse()
         if (!playerResponse) {

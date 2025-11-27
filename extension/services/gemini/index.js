@@ -38,7 +38,7 @@ export class GeminiService {
             return JSON.parse(c);
         } catch (e) {
             const s = await this.generateSummary(t, undefined, null, o, onChunk);
-            const f = await this.generateFAQ(t);
+            const f = await this.generateFAQ(t, null, o.metadata);
             return { summary: s, faq: f, insights: 'Insights generation failed.' };
         }
     }

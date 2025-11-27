@@ -1,7 +1,10 @@
 /**
  * Video Metadata Extractor
  * Extracts title, description, and other metadata from YouTube pages
+ * Priority: Piped API > DOM extraction > ytInitialPlayerResponse
  */
+
+import pipedAPI from '../../services/piped/api.js'
 
 class MetadataExtractor {
     constructor() {
@@ -11,15 +14,17 @@ class MetadataExtractor {
 
     log(level, msg) {
         const icons = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' }
-        console[level](`[MetadataExtractor] ${icons[level]} ${msg}`)
+        const logFn = level === 'error' ? console.error : level === 'warn' ? console.warn : console.log
+        logFn(`[MetadataExtractor] ${icons[level]} ${msg}`)
     }
 
     /**
-     * Extract video metadata from the current page
+     * Extract video metadata with Piped API as first preference
      * @param {string} videoId - The video ID
-     * @returns {Object} Metadata object with title, description, author, etc.
+     * @param {boolean} usePiped - Whether to try Piped API first (default: true)
+     * @returns {Promise<Object>} Metadata object with title, description, author, etc.
      */
-    extract(videoId) {
+    async extract(videoId, usePiped = true) {
         this.log('info', `Extracting metadata for: ${videoId}`)
 
         // Check cache first
@@ -29,7 +34,40 @@ class MetadataExtractor {
             return cached
         }
 
-        const metadata = {
+        let metadata = null
+
+        // Try Piped API first (highest priority)
+        if (usePiped) {
+            try {
+                this.log('info', 'Trying Piped API for metadata...')
+                const pipedData = await pipedAPI.getVideoMetadata(videoId)
+
+                metadata = {
+                    videoId,
+                    title: pipedData.title || this._extractTitle(),
+                    description: pipedData.description || this._extractDescription(),
+                    author: pipedData.author || this._extractAuthor(),
+                    viewCount: pipedData.views || this._extractViewCount(),
+                    publishDate: pipedData.uploadDate || this._extractPublishDate(),
+                    duration: pipedData.duration || this._extractDuration(),
+                    keywords: this._extractKeywords(), // Piped doesn't provide keywords
+                    category: pipedData.category || this._extractCategory(),
+                    likes: pipedData.likes,
+                    dislikes: pipedData.dislikes,
+                    uploaderVerified: pipedData.uploaderVerified,
+                    thumbnailUrl: pipedData.thumbnailUrl
+                }
+
+                this.log('success', `Metadata extracted from Piped API: ${metadata.title}`)
+                this._setCache(videoId, metadata)
+                return metadata
+            } catch (e) {
+                this.log('warn', `Piped API failed: ${e.message}, falling back to DOM extraction`)
+            }
+        }
+
+        // Fallback to DOM extraction
+        metadata = {
             videoId,
             title: this._extractTitle(),
             description: this._extractDescription(),
@@ -41,7 +79,7 @@ class MetadataExtractor {
             category: this._extractCategory()
         }
 
-        this.log('success', `Metadata extracted: ${metadata.title}`)
+        this.log('success', `Metadata extracted from DOM: ${metadata.title}`)
         this._setCache(videoId, metadata)
 
         return metadata
