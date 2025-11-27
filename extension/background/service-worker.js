@@ -110,6 +110,22 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
             await handleFetchInvidiousMetadata(request, sendResponse)
             break
 
+          case 'ANALYZE_VIDEO_STREAMING':
+            await handleAnalyzeVideoStreaming(request, sendResponse)
+            break
+
+          case 'GET_CACHED_DATA':
+            await handleGetCachedData(request, sendResponse)
+            break
+
+          case 'SAVE_CHAT_MESSAGE':
+            await handleSaveChatMessage(request, sendResponse)
+            break
+
+          case 'SAVE_COMMENTS':
+            await handleSaveComments(request, sendResponse)
+            break
+
           default:
             console.warn('Unknown message type:', action)
             sendResponse({ success: false, error: 'Unknown message type' })
@@ -259,32 +275,41 @@ function decodeHTMLEntities(text) {
 }
 
 /**
- * Full video analysis: transcript + summary + segments
+ * Full video analysis with caching and streaming
  */
 async function handleAnalyzeVideo(request, sendResponse) {
-  const { transcript, metadata, options = {} } = request
+  const { transcript, metadata, options = {}, useCache = true } = request
+  const videoId = metadata?.videoId
   startKeepAlive()
 
   try {
     const apiKey = await getApiKey()
     if (!apiKey) {
-      sendResponse({
-        success: false,
-        error: 'API Key not configured. Please set your Gemini API key in extension options.',
-      })
+      sendResponse({ success: false, error: 'API Key not configured. Please set your Gemini API key in extension options.' })
       return
     }
 
     await initializeServices(apiKey)
 
-    // Format transcript for AI (plain text for analysis)
-    const plainText = transcript.map((t) => t.text).join(' ')
+    // Check cache first
+    if (useCache && videoId) {
+      const cached = await storageService.getVideoData(videoId)
+      if (cached?.summary && cached?.segments) {
+        console.log('[Cache] Using cached analysis for', videoId)
+        sendResponse({
+          success: true,
+          fromCache: true,
+          data: { summary: cached.summary, faq: cached.faq, insights: cached.insights, segments: cached.segments, timestamps: cached.timestamps }
+        })
+        return
+      }
+    }
 
-    // Generate comprehensive analysis (summary + FAQ + insights)
-    const analysis = await geminiService.generateComprehensiveAnalysis(plainText, {
-      length: options.length || 'Medium',
-      language: options.language || 'English',
-    })
+    // Generate with streaming (use gemini-2.5-flash-lite-preview-09-2025)
+    const analysis = await geminiService.generateStreamingSummaryWithTimestamps(
+      transcript,
+      { model: 'gemini-2.5-flash-lite-preview-09-2025', language: options.language || 'English', length: options.length || 'Medium' }
+    )
 
     // Classify segments
     let segments = []
@@ -294,29 +319,27 @@ async function handleAnalyzeVideo(request, sendResponse) {
       console.warn('Segment classification failed:', e)
     }
 
-    // Save to history if enabled
-    const settings = await chrome.storage.sync.get('saveHistory')
-    if (settings.saveHistory !== false && storageService) {
+    // Save everything to cache
+    if (videoId && storageService) {
       try {
-        await storageService.saveTranscript(
-          metadata?.videoId || 'unknown',
+        await storageService.saveVideoData(videoId, {
           metadata,
           transcript,
-          analysis.summary
-        )
+          summary: analysis.summary,
+          faq: analysis.faq || '',
+          insights: analysis.insights || '',
+          segments,
+          timestamps: analysis.timestamps
+        })
       } catch (e) {
-        console.warn('Failed to save to history:', e)
+        console.warn('Failed to save to cache:', e)
       }
     }
 
     sendResponse({
       success: true,
-      data: {
-        summary: analysis.summary,
-        faq: analysis.faq,
-        insights: analysis.insights,
-        segments,
-      },
+      fromCache: false,
+      data: { summary: analysis.summary, faq: analysis.faq, insights: analysis.insights, segments, timestamps: analysis.timestamps }
     })
   } finally {
     stopKeepAlive()

@@ -166,13 +166,17 @@ class TranscriptExtractor {
      */
     async _extractFromYouTube(videoId, lang) {
         const formats = ['json3', 'srv3', 'srv2', 'srv1']
+        const errors = []
 
         for (const fmt of formats) {
             try {
                 const url = `https://www.youtube.com/api/timedtext?v=${videoId}&lang=${lang}&fmt=${fmt}`
                 const response = await fetch(url)
 
-                if (!response.ok) continue
+                if (!response.ok) {
+                    errors.push(`Format ${fmt}: HTTP ${response.status}`)
+                    continue
+                }
 
                 if (fmt === 'json3') {
                     const data = await response.json()
@@ -187,17 +191,22 @@ class TranscriptExtractor {
 
                         if (segments.length > 0) return segments
                     }
+                    errors.push(`Format ${fmt}: No events found`)
                 } else {
                     const xmlText = await response.text()
                     const segments = this._parseXML(xmlText)
                     if (segments.length > 0) return segments
+                    errors.push(`Format ${fmt}: No segments parsed`)
                 }
             } catch (e) {
+                errors.push(`Format ${fmt}: ${e.message}`)
                 continue
             }
         }
 
-        throw new Error('YouTube Direct API failed')
+        const error = new Error(`YouTube Direct API failed - ${errors.join(', ')}`)
+        this.logger.error('YouTube Direct API method failed:', error.message)
+        throw error
     }
 
     /**
@@ -211,7 +220,9 @@ class TranscriptExtractor {
         })
 
         if (!response.success || !response.data) {
-            throw new Error(response.error || 'Background proxy failed')
+            const error = new Error(response.error || 'Background proxy failed')
+            this.logger.error('Background Proxy method failed:', error.message)
+            throw error
         }
 
         return response.data.segments || response.data
