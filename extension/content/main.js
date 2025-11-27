@@ -15,12 +15,16 @@
         // Dynamic imports for ES6 modules
         const { loadSettings } = await import(chrome.runtime.getURL('content/core/state.js'))
         const { initObserver } = await import(chrome.runtime.getURL('content/core/observer.js'))
+        const { initTranscriptLoader } = await import(chrome.runtime.getURL('content/transcript-loader.js'))
 
         // Load user settings
         await loadSettings()
 
         // Start video observer
         initObserver()
+
+        // Initialize transcript service
+        initTranscriptLoader()
 
         console.log('YouTube AI Master: Ready ✓')
     } catch (error) {
