@@ -1,53 +1,7 @@
 /**
- * Dynamically load marked.js from CDN
- * This ensures we don't bundle the library directly
+ * Simple markdown parser (CSP-compliant, no external dependencies)
+ * Supports basic markdown features needed for AI-generated content
  */
-
-const MARKED_CDN_URL = 'https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js';
-
-let markedLoaded = false;
-let markedLoadPromise = null;
-
-/**
- * Load marked library from CDN
- * @returns {Promise<object>} The marked library
- */
-export async function loadMarked() {
-    // Return cached promise if already loading
-    if (markedLoadPromise) {
-        return markedLoadPromise;
-    }
-
-    // Return immediately if already loaded
-    if (markedLoaded && window.marked) {
-        return window.marked;
-    }
-
-    // Create new load promise
-    markedLoadPromise = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = MARKED_CDN_URL;
-        script.async = true;
-
-        script.onload = () => {
-            markedLoaded = true;
-            if (window.marked) {
-                resolve(window.marked);
-            } else {
-                reject(new Error('marked library loaded but not found on window'));
-            }
-        };
-
-        script.onerror = () => {
-            markedLoadPromise = null;
-            reject(new Error('Failed to load marked library from CDN'));
-        };
-
-        document.head.appendChild(script);
-    });
-
-    return markedLoadPromise;
-}
 
 /**
  * Parse markdown to HTML
@@ -55,6 +9,65 @@ export async function loadMarked() {
  * @returns {Promise<string>} Parsed HTML
  */
 export async function parseMarkdown(markdown) {
-    const marked = await loadMarked();
-    return marked.parse(markdown);
+    if (!markdown) return '';
+
+    let html = markdown;
+
+    // Escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+
+    // Headers (### Header)
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+    // Bold (**text** or __text__)
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+    // Italic (*text* or _text_)
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+
+    // Code blocks (```code```)
+    html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+    // Inline code (`code`)
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Links [text](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Unordered lists
+    html = html.replace(/^\* (.+)$/gim, '<li>$1</li>');
+    html = html.replace(/^- (.+)$/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+    // Ordered lists
+    html = html.replace(/^\d+\. (.+)$/gim, '<li>$1</li>');
+
+    // Line breaks
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = html.replace(/\n/g, '<br>');
+
+    // Wrap in paragraph if not already wrapped
+    if (!html.startsWith('<')) {
+        html = `<p>${html}</p>`;
+    }
+
+    return html;
+}
+
+/**
+ * Legacy function for compatibility
+ * @returns {Promise<object>} Mock marked object
+ */
+export async function loadMarked() {
+    return {
+        parse: (md) => parseMarkdown(md)
+    };
 }

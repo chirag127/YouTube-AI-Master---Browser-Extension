@@ -12,7 +12,22 @@ export class ModelManager {
         return this.models
     }
     getList() {
-        const fallbackModels = ['gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.5-flash-lite', 'gemini-2.5-pro'];
-        return this.models.length > 0 ? this.models.map(m => m.name.replace('models/', '')) : fallbackModels;
+        const priorityModels = ['gemini-2.5-flash-lite-preview-09-2025', 'gemini-2.5-flash', 'gemini-2.0-flash-exp'];
+        const fallbackModels = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.5-pro'];
+
+        if (this.models.length === 0) {
+            return [...priorityModels, ...fallbackModels];
+        }
+
+        // Get all available model names from API
+        const apiModels = this.models.map(m => m.name.replace('models/', ''));
+
+        // Start with priority models that exist in API
+        const orderedModels = priorityModels.filter(m => apiModels.includes(m));
+
+        // Add remaining API models that aren't in priority list
+        const remainingModels = apiModels.filter(m => !priorityModels.includes(m));
+
+        return [...orderedModels, ...remainingModels];
     }
 }

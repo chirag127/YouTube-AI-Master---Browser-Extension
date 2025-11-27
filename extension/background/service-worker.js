@@ -380,7 +380,10 @@ async function handleFetchInvidiousTranscript(request, sendResponse) {
       console.log(`[Invidious] 📥 Fetching captions from: ${captionUrl}`)
 
       const captionResponse = await fetch(captionUrl, {
-        signal: AbortSignal.timeout(8000)
+        signal: AbortSignal.timeout(10000),
+        headers: {
+          'Accept': 'text/vtt,text/plain,*/*'
+        }
       })
 
       if (!captionResponse.ok) {
