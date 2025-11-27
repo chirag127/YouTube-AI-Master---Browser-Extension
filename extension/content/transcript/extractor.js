@@ -234,24 +234,31 @@ class TranscriptExtractor {
     async _extractFromDOM(videoId, lang) {
         const playerResponse = this._getPlayerResponse()
         if (!playerResponse) {
-            throw new Error('ytInitialPlayerResponse not found')
+            const error = new Error('ytInitialPlayerResponse not found')
+            this.logger.error('DOM Parser method failed:', error.message)
+            throw error
         }
 
         const captionTracks = playerResponse?.captions?.playerCaptionsTracklistRenderer?.captionTracks
         if (!captionTracks || captionTracks.length === 0) {
-            throw new Error('No caption tracks found')
+            const error = new Error('No caption tracks found')
+            this.logger.error('DOM Parser method failed:', error.message)
+            throw error
         }
 
         // Find matching language track
         let track = captionTracks.find(t => t.languageCode === lang)
         if (!track) {
             track = captionTracks[0] // Use first available
+            this.logger.warn(`Language '${lang}' not found, using '${track.languageCode}' instead`)
         }
 
         // Fetch transcript
         const response = await fetch(track.baseUrl)
         if (!response.ok) {
-            throw new Error(`Failed to fetch: HTTP ${response.status}`)
+            const error = new Error(`Failed to fetch: HTTP ${response.status}`)
+            this.logger.error('DOM Parser method failed:', error.message)
+            throw error
         }
 
         const contentType = response.headers.get('content-type')
@@ -272,7 +279,9 @@ class TranscriptExtractor {
             return this._parseXML(xmlText)
         }
 
-        throw new Error('DOM parser failed')
+        const error = new Error('DOM parser failed - no valid data found')
+        this.logger.error('DOM Parser method failed:', error.message)
+        throw error
     }
 
     /**

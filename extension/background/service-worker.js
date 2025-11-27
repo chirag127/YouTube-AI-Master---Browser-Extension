@@ -797,3 +797,103 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 
 console.log('YouTube AI Master service worker loaded')
+
+
+/**
+ * Streaming analysis - sends chunks in real-time
+ */
+async function handleAnalyzeVideoStreaming(request, sendResponse) {
+  const { transcript, metadata, options = {}, tabId } = request
+  const videoId = metadata?.videoId
+
+  try {
+    const apiKey = await getApiKey()
+    if (!apiKey) {
+      sendResponse({ success: false, error: 'API Key not configured' })
+      return
+    }
+
+    await initializeServices(apiKey)
+
+    // Check cache
+    const cached = await storageService.getVideoData(videoId)
+    if (cached?.summary) {
+      // Send cached data immediately
+      chrome.tabs.sendMessage(tabId, {
+        type: 'ANALYSIS_CHUNK',
+        chunk: cached.summary,
+        fullText: cached.summary,
+        timestamps: cached.timestamps || [],
+        isComplete: true,
+        fromCache: true
+      })
+      sendResponse({ success: true, fromCache: true })
+      return
+    }
+
+    // Stream new analysis
+    await geminiService.generateStreamingSummaryWithTimestamps(
+      transcript,
+      { model: 'gemini-2.5-flash-lite-preview-09-2025', language: options.language || 'English', length: options.length || 'Medium' },
+      (chunk, fullText, timestamps) => {
+        // Send each chunk to the tab
+        chrome.tabs.sendMessage(tabId, {
+          type: 'ANALYSIS_CHUNK',
+          chunk,
+          fullText,
+          timestamps,
+          isComplete: false
+        }).catch(() => { })
+      }
+    )
+
+    sendResponse({ success: true, streaming: true })
+  } catch (e) {
+    sendResponse({ success: false, error: e.message })
+  }
+}
+
+/**
+ * Get all cached data for a video
+ */
+async function handleGetCachedData(request, sendResponse) {
+  const { videoId } = request
+
+  try {
+    await initializeServices(await getApiKey())
+    const data = await storageService.getVideoData(videoId)
+    sendResponse({ success: true, data: data || null })
+  } catch (e) {
+    sendResponse({ success: false, error: e.message })
+  }
+}
+
+/**
+ * Save chat message
+ */
+async function handleSaveChatMessage(request, sendResponse) {
+  const { videoId, role, message } = request
+
+  try {
+    await initializeServices(await getApiKey())
+    await storageService.saveChatMessage(videoId, role, message)
+    sendResponse({ success: true })
+  } catch (e) {
+    sendResponse({ success: false, error: e.message })
+  }
+}
+
+/**
+ * Save comments and summary
+ */
+async function handleSaveComments(request, sendResponse) {
+  const { videoId, comments, commentSummary } = request
+
+  try {
+    await initializeServices(await getApiKey())
+    await storageService.saveCommentsCache(videoId, comments, commentSummary)
+    sendResponse({ success: true })
+  } catch (e) {
+    sendResponse({ success: false, error: e.message })
+  }
+}
