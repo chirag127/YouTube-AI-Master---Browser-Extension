@@ -124,24 +124,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     await handleGetMetadata(sanitized, sendResponse);
                     break;
 
-                case "FETCH_INVIDIOUS_TRANSCRIPT":
-                    await handleFetchInvidiousTranscript(
-                        sanitized,
-                        sendResponse
+                case "FETCH_INVIDIOUS_TRANSCRIPT": {
+                    const result = await handleFetchInvidiousTranscript(
+                        sanitized
                     );
+                    sendResponse(result);
                     break;
+                }
 
-                case "FETCH_INVIDIOUS_METADATA":
-                    await handleFetchInvidiousMetadata(sanitized, sendResponse);
+                case "FETCH_INVIDIOUS_METADATA": {
+                    const result = await handleFetchInvidiousMetadata(
+                        sanitized
+                    );
+                    sendResponse(result);
                     break;
+                }
 
-                case "FETCH_PIPED_METADATA":
-                    await handleFetchPipedMetadata(sanitized, sendResponse);
+                case "FETCH_PIPED_METADATA": {
+                    const result = await handleFetchPipedMetadata(sanitized);
+                    sendResponse(result);
                     break;
+                }
 
-                case "FETCH_PIPED_TRANSCRIPT":
-                    await handleFetchPipedTranscript(sanitized, sendResponse);
+                case "FETCH_PIPED_TRANSCRIPT": {
+                    const result = await handleFetchPipedTranscript(sanitized);
+                    sendResponse(result);
                     break;
+                }
 
                 case "ANALYZE_VIDEO_STREAMING":
                     await handleAnalyzeVideoStreaming(sanitized, sendResponse);
@@ -199,8 +208,7 @@ async function handleFetchTranscript(request, sendResponse) {
     const methods = [
         {
             name: "Invidious API",
-            fn: () =>
-                handleFetchInvidiousTranscript(request, { send: (r) => r }),
+            fn: () => handleFetchInvidiousTranscript(request),
         },
         {
             name: "YouTube Direct API",
@@ -243,19 +251,26 @@ async function fetchYouTubeDirectAPI(videoId, lang = "en") {
             if (!response.ok) continue;
 
             if (fmt === "json3") {
-                const data = await response.json();
-                if (data.events) {
-                    const segments = data.events
-                        .filter((e) => e.segs)
-                        .map((e) => ({
-                            start: e.tStartMs / 1000,
-                            duration: (e.dDurationMs || 0) / 1000,
-                            text: e.segs.map((s) => s.utf8).join(""),
-                        }));
+                try {
+                    const text = await response.text();
+                    if (!text) continue;
 
-                    if (segments.length > 0) {
-                        return { success: true, data: segments };
+                    const data = JSON.parse(text);
+                    if (data.events) {
+                        const segments = data.events
+                            .filter((e) => e.segs)
+                            .map((e) => ({
+                                start: e.tStartMs / 1000,
+                                duration: (e.dDurationMs || 0) / 1000,
+                                text: e.segs.map((s) => s.utf8).join(""),
+                            }));
+
+                        if (segments.length > 0) {
+                            return { success: true, data: segments };
+                        }
                     }
+                } catch (e) {
+                    console.warn(`[YouTube API] JSON parse failed:`, e.message);
                 }
             } else {
                 const xmlText = await response.text();
@@ -269,7 +284,7 @@ async function fetchYouTubeDirectAPI(videoId, lang = "en") {
         }
     }
 
-    throw new Error("YouTube Direct API failed");
+    return { success: false, error: "YouTube Direct API failed" };
 }
 
 function parseXML(xmlText) {
@@ -507,7 +522,7 @@ async function handleGetMetadata(request, sendResponse) {
     });
 }
 
-async function handleFetchInvidiousTranscript(request, sendResponse) {
+async function handleFetchInvidiousTranscript(request) {
     const { videoId, lang = "en" } = request;
     console.log(
         `[Invidious] 🔍 Fetching transcript for ${videoId}, lang: ${lang}`
@@ -601,8 +616,7 @@ async function handleFetchInvidiousTranscript(request, sendResponse) {
                 `[Invidious] ✅ Successfully parsed ${segments.length} segments`
             );
 
-            sendResponse({ success: true, data: segments });
-            return;
+            return { success: true, data: segments };
         } catch (e) {
             lastError = e;
             console.error(`[Invidious] ❌ Instance ${inst} failed:`, e.message);
@@ -614,13 +628,13 @@ async function handleFetchInvidiousTranscript(request, sendResponse) {
         `[Invidious] ❌ All instances failed. Last error:`,
         lastError?.message
     );
-    sendResponse({
+    return {
         success: false,
         error: lastError?.message || "All Invidious instances failed",
-    });
+    };
 }
 
-async function handleFetchInvidiousMetadata(request, sendResponse) {
+async function handleFetchInvidiousMetadata(request) {
     const { videoId } = request;
     console.log(`[Invidious] 🔍 Fetching metadata for ${videoId}`);
 
@@ -673,8 +687,7 @@ async function handleFetchInvidiousMetadata(request, sendResponse) {
                 captionsAvailable: metadata.captionsAvailable,
             });
 
-            sendResponse({ success: true, data: metadata });
-            return;
+            return { success: true, data: metadata };
         } catch (e) {
             console.error(`[Invidious] ❌ Instance ${inst} failed:`, e.message);
             continue;
@@ -682,10 +695,10 @@ async function handleFetchInvidiousMetadata(request, sendResponse) {
     }
 
     console.error(`[Invidious] ❌ All instances failed for metadata`);
-    sendResponse({
+    return {
         success: false,
         error: "Failed to fetch metadata from Invidious",
-    });
+    };
 }
 
 let cachedInstances = null;
@@ -945,7 +958,7 @@ async function handleSaveComments(request, sendResponse) {
     }
 }
 
-async function handleFetchPipedMetadata(request, sendResponse) {
+async function handleFetchPipedMetadata(request) {
     const { videoId } = request;
     console.log(`[Piped] Fetching metadata for ${videoId}`);
 
@@ -992,21 +1005,20 @@ async function handleFetchPipedMetadata(request, sendResponse) {
             console.log(
                 `[Piped] Metadata fetched successfully from ${instance}`
             );
-            sendResponse({ success: true, data: metadata });
-            return;
+            return { success: true, data: metadata };
         } catch (e) {
             console.error(`[Piped] Instance ${instance} failed:`, e.message);
             continue;
         }
     }
 
-    sendResponse({
+    return {
         success: false,
         error: "All Piped instances failed for metadata",
-    });
+    };
 }
 
-async function handleFetchPipedTranscript(request, sendResponse) {
+async function handleFetchPipedTranscript(request) {
     const { videoId, lang = "en" } = request;
     console.log(`[Piped] Fetching transcript for ${videoId}, lang: ${lang}`);
 
@@ -1071,8 +1083,7 @@ async function handleFetchPipedTranscript(request, sendResponse) {
                 console.log(
                     `[Piped] Transcript fetched successfully: ${segments.length} segments`
                 );
-                sendResponse({ success: true, data: segments });
-                return;
+                return { success: true, data: segments };
             }
         } catch (e) {
             console.error(`[Piped] Instance ${instance} failed:`, e.message);
@@ -1080,10 +1091,10 @@ async function handleFetchPipedTranscript(request, sendResponse) {
         }
     }
 
-    sendResponse({
+    return {
         success: false,
         error: "All Piped instances failed for transcript",
-    });
+    };
 }
 
 let cachedPipedInstances = null;
