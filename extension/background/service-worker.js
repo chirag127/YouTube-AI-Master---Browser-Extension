@@ -2,6 +2,8 @@ import { ChunkingService } from '../services/chunking/index.js'
 import { GeminiService } from '../services/gemini/index.js'
 import { SegmentClassificationService } from '../services/segments/index.js'
 import { StorageService } from '../services/storage/index.js'
+import { verifySender } from './security/sender-check.js'
+import { validateMessage, sanitizeRequest } from './security/validator.js'
 
 let geminiService, chunkingService, segmentClassificationService, storageService, keepAliveInterval = null
 
@@ -44,8 +46,25 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 })
 
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  const action = request.action || request.type
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Security: Verify sender
+  if (!verifySender(sender)) {
+    console.warn('[Security] Rejected message from untrusted sender')
+    sendResponse({ success: false, error: 'Unauthorized' })
+    return false
+  }
+
+  // Security: Validate message
+  const validation = validateMessage(request)
+  if (!validation.valid) {
+    console.warn('[Security] Invalid message:', validation.error)
+    sendResponse({ success: false, error: validation.error })
+    return false
+  }
+
+  // Security: Sanitize inputs
+  const sanitized = sanitizeRequest(request)
+  const action = sanitized.action || sanitized.type
   console.log('Background received message:', action)
 
     ; (async () => {
@@ -60,67 +79,67 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
             break
 
           case 'FETCH_TRANSCRIPT':
-            await handleFetchTranscript(request, sendResponse)
+            await handleFetchTranscript(sanitized, sendResponse)
             break
 
           case 'ANALYZE_VIDEO':
-            await handleAnalyzeVideo(request, sendResponse)
+            await handleAnalyzeVideo(sanitized, sendResponse)
             break
 
           case 'ANALYZE_COMMENTS':
-            await handleAnalyzeComments(request, sendResponse)
+            await handleAnalyzeComments(sanitized, sendResponse)
             break
 
           case 'GENERATE_SUMMARY':
-            await handleGenerateSummary(request, sendResponse)
+            await handleGenerateSummary(sanitized, sendResponse)
             break
 
           case 'CLASSIFY_SEGMENTS':
-            await handleClassifySegments(request, sendResponse)
+            await handleClassifySegments(sanitized, sendResponse)
             break
 
           case 'CHAT_WITH_VIDEO':
-            await handleChatWithVideo(request, sendResponse)
+            await handleChatWithVideo(sanitized, sendResponse)
             break
 
           case 'SAVE_TO_HISTORY':
-            await handleSaveToHistory(request, sendResponse)
+            await handleSaveToHistory(sanitized, sendResponse)
             break
 
           case 'GET_METADATA':
-            await handleGetMetadata(request, sendResponse)
+            await handleGetMetadata(sanitized, sendResponse)
             break
 
           case 'FETCH_INVIDIOUS_TRANSCRIPT':
-            await handleFetchInvidiousTranscript(request, sendResponse)
+            await handleFetchInvidiousTranscript(sanitized, sendResponse)
             break
 
           case 'FETCH_INVIDIOUS_METADATA':
-            await handleFetchInvidiousMetadata(request, sendResponse)
+            await handleFetchInvidiousMetadata(sanitized, sendResponse)
             break
 
           case 'FETCH_PIPED_METADATA':
-            await handleFetchPipedMetadata(request, sendResponse)
+            await handleFetchPipedMetadata(sanitized, sendResponse)
             break
 
           case 'FETCH_PIPED_TRANSCRIPT':
-            await handleFetchPipedTranscript(request, sendResponse)
+            await handleFetchPipedTranscript(sanitized, sendResponse)
             break
 
           case 'ANALYZE_VIDEO_STREAMING':
-            await handleAnalyzeVideoStreaming(request, sendResponse)
+            await handleAnalyzeVideoStreaming(sanitized, sendResponse)
             break
 
           case 'GET_CACHED_DATA':
-            await handleGetCachedData(request, sendResponse)
+            await handleGetCachedData(sanitized, sendResponse)
             break
 
           case 'SAVE_CHAT_MESSAGE':
-            await handleSaveChatMessage(request, sendResponse)
+            await handleSaveChatMessage(sanitized, sendResponse)
             break
 
           case 'SAVE_COMMENTS':
-            await handleSaveComments(request, sendResponse)
+            await handleSaveComments(sanitized, sendResponse)
             break
 
           default:

@@ -1,5 +1,5 @@
 // Background Proxy Strategy
-// Priority: 4 (Service worker fallback)
+// Priority: 5 (Service worker fallback)
 
 export async function fetchViaBackground(videoId, lang = 'en') {
     const res = await chrome.runtime.sendMessage({
@@ -17,6 +17,6 @@ export async function fetchViaBackground(videoId, lang = 'en') {
 
 export const strategy = {
     name: 'Background Proxy',
-    priority: 4,
+    priority: 5,
     fetch: fetchViaBackground
 }

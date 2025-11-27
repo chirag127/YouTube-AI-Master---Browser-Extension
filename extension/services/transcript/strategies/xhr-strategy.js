@@ -1,5 +1,5 @@
 // XHR Interceptor Strategy
-// Priority: 1 (Fastest if available)
+// Priority: 2 (Fast if available, but less reliable than direct API)
 // Captures live network requests
 
 import transcriptInterceptor from '../../../content/transcript/xhr-interceptor.js'
@@ -16,6 +16,6 @@ export async function fetchViaXHR(videoId, lang = 'en') {
 
 export const strategy = {
     name: 'XHR Interceptor',
-    priority: 1,
+    priority: 2,
     fetch: fetchViaXHR
 }

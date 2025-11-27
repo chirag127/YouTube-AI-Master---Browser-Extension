@@ -1,5 +1,5 @@
 // Invidious API Strategy
-// Priority: 2 (Primary - CORS-free, reliable)
+// Priority: 3 (Fallback - CORS-free, but less reliable than direct YouTube API)
 
 import { parseVTT } from '../parsers/vtt-parser.js'
 
@@ -45,6 +45,6 @@ export async function fetchViaInvidious(videoId, lang = 'en') {
 
 export const strategy = {
     name: 'Invidious API',
-    priority: 2,
+    priority: 3,
     fetch: fetchViaInvidious
 }

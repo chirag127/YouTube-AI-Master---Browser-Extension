@@ -1,10 +1,11 @@
 /**
  * Video Metadata Extractor
  * Extracts title, description, and other metadata from YouTube pages
- * Priority: DOM extraction > ytInitialPlayerResponse > Piped API (last fallback)
+ * Priority: DeArrow (community titles) > DOM extraction > ytInitialPlayerResponse > Piped API (last fallback)
  */
 
 import pipedAPI from '../../services/piped/api.js'
+import deArrowAPI from '../../services/dearrow/api.js'
 
 class MetadataExtractor {
     constructor() {
@@ -19,12 +20,21 @@ class MetadataExtractor {
     }
 
     /**
-     * Extract video metadata with DOM extraction first, Piped API as last fallback
+     * Extract video metadata with DeArrow first, then DOM extraction, Piped API as last fallback
      * @param {string} videoId - The video ID
-     * @param {boolean} usePiped - Whether to try Piped API as fallback (default: false)
+     * @param {Object} options - Options
+     * @param {boolean} options.usePiped - Whether to try Piped API as fallback (default: false)
+     * @param {boolean} options.useDeArrow - Whether to try DeArrow for better titles (default: true)
+     * @param {boolean} options.usePrivateDeArrow - Use privacy-preserving DeArrow API (default: true)
      * @returns {Promise<Object>} Metadata object with title, description, author, etc.
      */
-    async extract(videoId, usePiped = false) {
+    async extract(videoId, options = {}) {
+        const {
+            usePiped = false,
+            useDeArrow = true,
+            usePrivateDeArrow = true
+        } = options;
+
         this.log('info', `Extracting metadata for: ${videoId}`)
 
         // Check cache first
@@ -35,24 +45,49 @@ class MetadataExtractor {
         }
 
         let metadata = null
+        let deArrowData = null;
 
-        // Try DOM extraction first (fastest and most reliable)
+        // Try DeArrow first for community-submitted better titles
+        if (useDeArrow) {
+            try {
+                this.log('info', 'Fetching DeArrow data...')
+                deArrowData = await deArrowAPI.getVideoMetadata(videoId, {
+                    usePrivateAPI: usePrivateDeArrow
+                });
+
+                if (deArrowData?.hasDeArrowData && deArrowData.title) {
+                    this.log('success', `DeArrow title found: ${deArrowData.title}`)
+                }
+            } catch (e) {
+                this.log('warn', `DeArrow fetch failed: ${e.message}`)
+            }
+        }
+
+        // Try DOM extraction (fastest and most reliable for other metadata)
         try {
+            const originalTitle = this._extractTitle();
+
             metadata = {
                 videoId,
-                title: this._extractTitle(),
+                // Use DeArrow title if available, otherwise use original
+                title: deArrowData?.title || originalTitle,
+                originalTitle: originalTitle, // Keep original for reference
+                deArrowTitle: deArrowData?.title || null,
+                hasDeArrowTitle: !!deArrowData?.title,
                 description: this._extractDescription(),
                 author: this._extractAuthor(),
                 viewCount: this._extractViewCount(),
                 publishDate: this._extractPublishDate(),
                 duration: this._extractDuration(),
                 keywords: this._extractKeywords(),
-                category: this._extractCategory()
+                category: this._extractCategory(),
+                deArrowThumbnail: deArrowData?.thumbnail || null
             }
 
             // If we got good data from DOM, use it
             if (metadata.title && metadata.title !== 'Unknown Title') {
-                this.log('success', `Metadata extracted from DOM: ${metadata.title}`)
+                const source = metadata.hasDeArrowTitle ? 'DeArrow + DOM' : 'DOM';
+                this.log('success', `Metadata extracted from ${source}: ${metadata.title}`)
                 this._setCache(videoId, metadata)
                 return metadata
             }
@@ -68,7 +103,10 @@ class MetadataExtractor {
 
                 metadata = {
                     videoId,
-                    title: pipedData.title || 'Unknown Title',
+                    title: deArrowData?.title || pipedData.title || 'Unknown Title',
+                    originalTitle: pipedData.title || 'Unknown Title',
+                    deArrowTitle: deArrowData?.title || null,
+                    hasDeArrowTitle: !!deArrowData?.title,
                     description: pipedData.description || '',
                     author: pipedData.author || 'Unknown Channel',
                     viewCount: pipedData.views || 'Unknown',
@@ -79,10 +117,12 @@ class MetadataExtractor {
                     likes: pipedData.likes,
                     dislikes: pipedData.dislikes,
                     uploaderVerified: pipedData.uploaderVerified,
-                    thumbnailUrl: pipedData.thumbnailUrl
+                    thumbnailUrl: pipedData.thumbnailUrl,
+                    deArrowThumbnail: deArrowData?.thumbnail || null
                 }
 
-                this.log('success', `Metadata extracted from Piped API: ${metadata.title}`)
+                const source = metadata.hasDeArrowTitle ? 'DeArrow + Piped' : 'Piped';
+                this.log('success', `Metadata extracted from ${source}: ${metadata.title}`)
                 this._setCache(videoId, metadata)
                 return metadata
             } catch (e) {
@@ -94,14 +134,18 @@ class MetadataExtractor {
         if (!metadata || !metadata.title) {
             metadata = {
                 videoId,
-                title: 'Unknown Title',
+                title: deArrowData?.title || 'Unknown Title',
+                originalTitle: 'Unknown Title',
+                deArrowTitle: deArrowData?.title || null,
+                hasDeArrowTitle: !!deArrowData?.title,
                 description: '',
                 author: 'Unknown Channel',
                 viewCount: 'Unknown',
                 publishDate: null,
                 duration: null,
                 keywords: [],
-                category: null
+                category: null,
+                deArrowThumbnail: deArrowData?.thumbnail || null
             }
         }
 

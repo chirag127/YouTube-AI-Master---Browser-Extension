@@ -25,7 +25,17 @@ export class StreamingSummaryService {
         let metadataContext = ''
         if (metadata) {
             metadataContext = '\nVIDEO METADATA:\n'
-            if (metadata.title) metadataContext += `Title: ${metadata.title}\n`
+
+            // Prioritize DeArrow title if available (community-curated, more accurate)
+            if (metadata.hasDeArrowTitle && metadata.deArrowTitle) {
+                metadataContext += `Title (Community-Curated): ${metadata.deArrowTitle}\n`
+                if (metadata.originalTitle && metadata.originalTitle !== metadata.deArrowTitle) {
+                    metadataContext += `Original Title: ${metadata.originalTitle}\n`
+                }
+            } else if (metadata.title) {
+                metadataContext += `Title: ${metadata.title}\n`
+            }
+
             if (metadata.author) metadataContext += `Channel: ${metadata.author}\n`
             if (metadata.description) metadataContext += `Description: ${metadata.description}\n`
             if (metadata.category) metadataContext += `Category: ${metadata.category}\n`
@@ -59,7 +69,7 @@ A: Answer based on content...
 - Main theme 1
 - Main theme 2
 
-Use the video title, description, and keywords to provide better context and more accurate summaries.
+IMPORTANT: Use the video title (especially the community-curated title if provided), description, and keywords to provide better context and more accurate summaries. The community-curated title is often more descriptive and accurate than clickbait original titles.
 Include ${guide[len] || guide.Medium}.`
     }
 

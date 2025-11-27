@@ -1,5 +1,5 @@
 // Piped API Strategy
-// Priority: 2.5 (Between Invidious and YouTube Direct)
+// Priority: 4 (Fallback - privacy-friendly but less reliable)
 // Piped is a privacy-friendly YouTube frontend with API
 
 import { parseXML } from '../parsers/xml-parser.js'
@@ -180,6 +180,6 @@ function decodeHTML(text) {
 
 export const strategy = {
     name: 'Piped API',
-    priority: 2.5,
+    priority: 4,
     fetch: fetchViaPiped
 }

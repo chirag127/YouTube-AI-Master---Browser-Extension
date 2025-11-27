@@ -312,28 +312,34 @@
 }
 
 .yt-ai-segment-item.Sponsor {
-    border-left-color: #ff4444;
+    border-left-color: #00d26a;
 }
 .yt-ai-segment-item.Highlight {
-    border-left-color: #00cc44;
+    border-left-color: #ff0055;
 }
-.yt-ai-segment-item.InteractionReminder {
-    border-left-color: #ff8800;
+.yt-ai-segment-item.InteractionReminderSubscribe {
+    border-left-color: #a020f0;
 }
-.yt-ai-segment-item.SelfPromotion {
-    border-left-color: #ffaa00;
+.yt-ai-segment-item.UnpaidSelfPromotion {
+    border-left-color: #ffff00;
 }
-.yt-ai-segment-item.UnpaidPromotion {
-    border-left-color: #88cc00;
+.yt-ai-segment-item.ExclusiveAccess {
+    border-left-color: #008b45;
 }
 .yt-ai-segment-item.PreviewRecap {
-    border-left-color: #00aaff;
+    border-left-color: #00bfff;
 }
 .yt-ai-segment-item.HookGreetings {
-    border-left-color: #aa66cc;
+    border-left-color: #4169e1;
 }
 .yt-ai-segment-item.TangentsJokes {
-    border-left-color: #cc66aa;
+    border-left-color: #9400d3;
+}
+.yt-ai-segment-item.IntermissionIntroAnimation {
+    border-left-color: #00ffff;
+}
+.yt-ai-segment-item.EndcardsCredits {
+    border-left-color: #0000ff;
 }
 
 /* Loading State with Pulse */

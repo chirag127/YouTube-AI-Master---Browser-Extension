@@ -1,5 +1,5 @@
 // DOM Parser Strategy
-// Priority: 5 (ytInitialPlayerResponse fallback)
+// Priority: 6 (Last resort - ytInitialPlayerResponse fallback)
 
 import { parseEvents } from '../parsers/events-parser.js'
 import { parseXML } from '../parsers/xml-parser.js'
@@ -47,6 +47,6 @@ function getPlayerResponse() {
 
 export const strategy = {
     name: 'DOM Parser',
-    priority: 5,
+    priority: 6,
     fetch: fetchViaDOM
 }
