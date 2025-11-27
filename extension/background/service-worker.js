@@ -126,14 +126,120 @@ async function handleGetSettings(sendResponse) {
 }
 
 /**
- * Fetch YouTube transcript (delegates to Invidious)
+ * Fetch YouTube transcript using multiple methods
  */
 async function handleFetchTranscript(request, sendResponse) {
   const { videoId, lang = 'en' } = request
   console.log(`[Transcript] 🔍 Fetching transcript for ${videoId}, lang: ${lang}`)
 
-  // Use Invidious API to fetch transcript
-  await handleFetchInvidiousTranscript(request, sendResponse)
+  // Try multiple methods in order
+  const methods = [
+    { name: 'Invidious API', fn: () => handleFetchInvidiousTranscript(request, { send: (r) => r }) },
+    { name: 'YouTube Direct API', fn: () => fetchYouTubeDirectAPI(videoId, lang) },
+  ]
+
+  let lastError = null
+
+  for (const method of methods) {
+    try {
+      console.log(`[Transcript] Trying ${method.name}...`)
+      const result = await method.fn()
+
+      if (result.success && result.data) {
+        console.log(`[Transcript] ✅ ${method.name} succeeded`)
+        sendResponse(result)
+        return
+      }
+    } catch (e) {
+      lastError = e
+      console.warn(`[Transcript] ${method.name} failed:`, e.message)
+    }
+  }
+
+  sendResponse({
+    success: false,
+    error: lastError?.message || 'All transcript fetch methods failed'
+  })
+}
+
+/**
+ * Fetch transcript directly from YouTube API
+ */
+async function fetchYouTubeDirectAPI(videoId, lang = 'en') {
+  const formats = ['json3', 'srv3']
+
+  for (const fmt of formats) {
+    try {
+      const url = `https://www.youtube.com/api/timedtext?v=${videoId}&lang=${lang}&fmt=${fmt}`
+      const response = await fetch(url)
+
+      if (!response.ok) continue
+
+      if (fmt === 'json3') {
+        const data = await response.json()
+        if (data.events) {
+          const segments = data.events
+            .filter(e => e.segs)
+            .map(e => ({
+              start: e.tStartMs / 1000,
+              duration: (e.dDurationMs || 0) / 1000,
+              text: e.segs.map(s => s.utf8).join('')
+            }))
+
+          if (segments.length > 0) {
+            return { success: true, data: segments }
+          }
+        }
+      } else {
+        const xmlText = await response.text()
+        const segments = parseXML(xmlText)
+        if (segments.length > 0) {
+          return { success: true, data: segments }
+        }
+      }
+    } catch (e) {
+      console.warn(`[YouTube API] Format ${fmt} failed:`, e.message)
+    }
+  }
+
+  throw new Error('YouTube Direct API failed')
+}
+
+/**
+ * Parse XML format captions
+ */
+function parseXML(xmlText) {
+  const segments = []
+  const regex = /<text start="([\d.]+)"(?:\s+dur="([\d.]+)")?[^>]*>([^<]*)<\/text>/g
+  let match
+
+  while ((match = regex.exec(xmlText)) !== null) {
+    const start = parseFloat(match[1])
+    const duration = match[2] ? parseFloat(match[2]) : 0
+    const text = decodeHTMLEntities(match[3])
+
+    if (text.trim()) {
+      segments.push({ start, duration, text })
+    }
+  }
+
+  return segments
+}
+
+/**
+ * Decode HTML entities
+ */
+function decodeHTMLEntities(text) {
+  const entities = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&nbsp;': ' '
+  }
+
+  return text.replace(/&[^;]+;/g, match => entities[match] || match)
 }
 
 /**
