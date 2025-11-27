@@ -48,24 +48,24 @@ export class TranscriptService {
     /**
      * Main entry point - tries all methods in priority order
      * Priority Order:
-     * 1. Piped API (Primary - CORS-free, reliable, fast)
-     * 2. XHR Interceptor (Fastest if available)
-     * 3. Invidious API (Fallback - CORS-free, reliable)
-     * 4. YouTube Direct API (Direct timedtext endpoint)
-     * 5. Background Proxy (Service worker fallback)
-     * 6. DOM Parser (ytInitialPlayerResponse)
+     * 1. XHR Interceptor (Fastest if available)
+     * 2. Invidious API (Primary - CORS-free, reliable)
+     * 3. YouTube Direct API (Direct timedtext endpoint)
+     * 4. Background Proxy (Service worker fallback)
+     * 5. DOM Parser (ytInitialPlayerResponse)
+     * 6. Piped API (Last fallback - slower, less reliable)
      */
     async getTranscript(v, l = 'en') {
         logger.info(`Fetching transcript for video: ${v}, language: ${l}`)
 
         // Priority order as documented
         const methods = [
-            { name: 'Piped API', fn: () => this._method0_PipedAPI(v, l) },
             { name: 'XHR Interceptor', fn: () => this._method1_XHRInterceptor(v, l) },
             { name: 'Invidious API', fn: () => this._method2_InvidiousAPI(v, l) },
             { name: 'YouTube Direct API', fn: () => this._method3_YouTubeDirectAPI(v, l) },
             { name: 'Background Proxy', fn: () => this._method4_BackgroundProxy(v, l) },
-            { name: 'DOM Parser (ytInitialPlayerResponse)', fn: () => this._method5_DOMParser(v, l) }
+            { name: 'DOM Parser (ytInitialPlayerResponse)', fn: () => this._method5_DOMParser(v, l) },
+            { name: 'Piped API', fn: () => this._method6_PipedAPI(v, l) }
         ]
 
         let lastError = null
@@ -152,24 +152,6 @@ export class TranscriptService {
 
         const renderer = playerResponse.captions.playerCaptionsTracklistRenderer
         return renderer?.captionTracks || []
-    }
-
-    // ============================================================================
-    // METHOD 0: Piped API (Primary - CORS-free, reliable, fast)
-    // ============================================================================
-    async _method0_PipedAPI(v, l) {
-        logger.debug(`[Method 0] Piped API for video ${v}, lang ${l}`)
-        try {
-            const transcript = await pipedAPI.getTranscript(v, l)
-            if (transcript && transcript.length > 0) {
-                logger.debug(`[Method 0] Piped API returned ${transcript.length} segments`)
-                return transcript
-            }
-            throw new Error('Piped API returned no data')
-        } catch (e) {
-            logger.error('[Method 0] Piped API error:', e.message)
-            throw new Error(`Piped API failed: ${e.message}`)
-        }
     }
 
     // ============================================================================
@@ -376,6 +358,24 @@ export class TranscriptService {
         }
 
         throw new Error('DOM parser failed to extract segments')
+    }
+
+    // ============================================================================
+    // METHOD 6: Piped API (Last fallback - slower, less reliable)
+    // ============================================================================
+    async _method6_PipedAPI(v, l) {
+        logger.debug(`[Method 6] Piped API for video ${v}, lang ${l}`)
+        try {
+            const transcript = await pipedAPI.getTranscript(v, l)
+            if (transcript && transcript.length > 0) {
+                logger.debug(`[Method 6] Piped API returned ${transcript.length} segments`)
+                return transcript
+            }
+            throw new Error('Piped API returned no data')
+        } catch (e) {
+            logger.error('[Method 6] Piped API error:', e.message)
+            throw new Error(`Piped API failed: ${e.message}`)
+        }
     }
 
     // ============================================================================

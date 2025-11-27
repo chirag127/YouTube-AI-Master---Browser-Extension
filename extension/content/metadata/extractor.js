@@ -1,7 +1,7 @@
 /**
  * Video Metadata Extractor
  * Extracts title, description, and other metadata from YouTube pages
- * Priority: Piped API > DOM extraction > ytInitialPlayerResponse
+ * Priority: DOM extraction > ytInitialPlayerResponse > Piped API (last fallback)
  */
 
 import pipedAPI from '../../services/piped/api.js'
@@ -19,12 +19,12 @@ class MetadataExtractor {
     }
 
     /**
-     * Extract video metadata with Piped API as first preference
+     * Extract video metadata with DOM extraction first, Piped API as last fallback
      * @param {string} videoId - The video ID
-     * @param {boolean} usePiped - Whether to try Piped API first (default: true)
+     * @param {boolean} usePiped - Whether to try Piped API as fallback (default: false)
      * @returns {Promise<Object>} Metadata object with title, description, author, etc.
      */
-    async extract(videoId, usePiped = true) {
+    async extract(videoId, usePiped = false) {
         this.log('info', `Extracting metadata for: ${videoId}`)
 
         // Check cache first
@@ -36,22 +36,46 @@ class MetadataExtractor {
 
         let metadata = null
 
-        // Try Piped API first (highest priority)
+        // Try DOM extraction first (fastest and most reliable)
+        try {
+            metadata = {
+                videoId,
+                title: this._extractTitle(),
+                description: this._extractDescription(),
+                author: this._extractAuthor(),
+                viewCount: this._extractViewCount(),
+                publishDate: this._extractPublishDate(),
+                duration: this._extractDuration(),
+                keywords: this._extractKeywords(),
+                category: this._extractCategory()
+            }
+
+            // If we got good data from DOM, use it
+            if (metadata.title && metadata.title !== 'Unknown Title') {
+                this.log('success', `Metadata extracted from DOM: ${metadata.title}`)
+                this._setCache(videoId, metadata)
+                return metadata
+            }
+        } catch (e) {
+            this.log('warn', `DOM extraction failed: ${e.message}`)
+        }
+
+        // Fallback to Piped API only if DOM extraction failed or returned poor data
         if (usePiped) {
             try {
-                this.log('info', 'Trying Piped API for metadata...')
+                this.log('info', 'Trying Piped API for metadata as last fallback...')
                 const pipedData = await pipedAPI.getVideoMetadata(videoId)
 
                 metadata = {
                     videoId,
-                    title: pipedData.title || this._extractTitle(),
-                    description: pipedData.description || this._extractDescription(),
-                    author: pipedData.author || this._extractAuthor(),
-                    viewCount: pipedData.views || this._extractViewCount(),
-                    publishDate: pipedData.uploadDate || this._extractPublishDate(),
-                    duration: pipedData.duration || this._extractDuration(),
-                    keywords: this._extractKeywords(), // Piped doesn't provide keywords
-                    category: pipedData.category || this._extractCategory(),
+                    title: pipedData.title || 'Unknown Title',
+                    description: pipedData.description || '',
+                    author: pipedData.author || 'Unknown Channel',
+                    viewCount: pipedData.views || 'Unknown',
+                    publishDate: pipedData.uploadDate || null,
+                    duration: pipedData.duration || null,
+                    keywords: [], // Piped doesn't provide keywords
+                    category: pipedData.category || null,
                     likes: pipedData.likes,
                     dislikes: pipedData.dislikes,
                     uploaderVerified: pipedData.uploaderVerified,
@@ -62,26 +86,27 @@ class MetadataExtractor {
                 this._setCache(videoId, metadata)
                 return metadata
             } catch (e) {
-                this.log('warn', `Piped API failed: ${e.message}, falling back to DOM extraction`)
+                this.log('warn', `Piped API failed: ${e.message}`)
             }
         }
 
-        // Fallback to DOM extraction
-        metadata = {
-            videoId,
-            title: this._extractTitle(),
-            description: this._extractDescription(),
-            author: this._extractAuthor(),
-            viewCount: this._extractViewCount(),
-            publishDate: this._extractPublishDate(),
-            duration: this._extractDuration(),
-            keywords: this._extractKeywords(),
-            category: this._extractCategory()
+        // If both failed, return what we have (even if incomplete)
+        if (!metadata || !metadata.title) {
+            metadata = {
+                videoId,
+                title: 'Unknown Title',
+                description: '',
+                author: 'Unknown Channel',
+                viewCount: 'Unknown',
+                publishDate: null,
+                duration: null,
+                keywords: [],
+                category: null
+            }
         }
 
-        this.log('success', `Metadata extracted from DOM: ${metadata.title}`)
+        this.log('success', `Metadata extracted: ${metadata.title}`)
         this._setCache(videoId, metadata)
-
         return metadata
     }
 

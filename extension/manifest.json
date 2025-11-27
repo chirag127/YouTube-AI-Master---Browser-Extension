@@ -23,7 +23,14 @@
         "https://invidious.fdn.fr/*",
         "https://iv.ggtyler.dev/*",
         "https://invidious.protokolla.fi/*",
-        "https://api.invidious.io/*"
+        "https://api.invidious.io/*",
+        "https://pipedapi.kavin.rocks/*",
+        "https://pipedapi.tokhmi.xyz/*",
+        "https://pipedapi.moomoo.me/*",
+        "https://pipedapi-libre.kavin.rocks/*",
+        "https://api-piped.mha.fi/*",
+        "https://*.piped.video/*",
+        "https://raw.githubusercontent.com/*"
     ],
     "background": {
         "service_worker": "background/service-worker.js",

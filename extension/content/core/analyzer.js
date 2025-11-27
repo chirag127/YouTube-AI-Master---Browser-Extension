@@ -12,9 +12,9 @@ export async function startAnalysis() {
     state.isAnalyzing = true
     const c = document.getElementById('yt-ai-content-area')
     try {
-        showLoading(c, 'Extracting video metadata from Piped API...')
+        showLoading(c, 'Extracting video metadata...')
         // Extract comprehensive metadata including title and description
-        // Piped API is tried first, then falls back to DOM extraction
+        // DOM extraction first, Piped API as last fallback
         const pageMetadata = await metadataExtractor.extract(state.currentVideoId)
 
         showLoading(c, 'Fetching additional metadata...')
@@ -23,7 +23,7 @@ export async function startAnalysis() {
         // Merge metadata from both sources
         const m = { ...apiMetadata, ...pageMetadata, videoId: state.currentVideoId }
 
-        showLoading(c, 'Extracting transcript (Piped API + 5 fallback methods)...')
+        showLoading(c, 'Extracting transcript (6 fallback methods)...')
         state.currentTranscript = await transcriptService.getTranscript(state.currentVideoId)
         if (!state.currentTranscript?.length) throw new Error('No transcript available for this video')
 
