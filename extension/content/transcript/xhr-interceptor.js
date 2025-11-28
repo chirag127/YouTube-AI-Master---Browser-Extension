@@ -54,11 +54,27 @@ class TranscriptInterceptor {
             // Add load event listener
             xhr.addEventListener("readystatechange", function () {
                 if (this.readyState === 4 && this.status === 200) {
-                    self._processResponse(
-                        xhr._interceptedUrl,
-                        xhr.responseText,
-                        xhr.responseURL
-                    );
+                    let responseBody;
+                    try {
+                        if (
+                            xhr.responseType === "" ||
+                            xhr.responseType === "text"
+                        ) {
+                            responseBody = xhr.responseText;
+                        } else if (xhr.responseType === "json") {
+                            responseBody = JSON.stringify(xhr.response);
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+
+                    if (responseBody) {
+                        self._processResponse(
+                            xhr._interceptedUrl,
+                            responseBody,
+                            xhr.responseURL
+                        );
+                    }
                 }
             });
 

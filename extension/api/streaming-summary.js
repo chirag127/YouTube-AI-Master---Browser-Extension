@@ -1,9 +1,10 @@
-import { prompts } from './prompts.js';
+import { prompts } from "./prompts.js";
+import { GeminiAPI } from "./api.js";
 
 export class StreamingSummaryService {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+        this.baseUrl = "https://generativelanguage.googleapis.com/v1beta";
     }
 
     async generateStreamingSummary(transcript, options, onChunk) {
@@ -25,41 +26,104 @@ export class StreamingSummaryService {
         // We will perform the API call here directly using a lightweight fetch to avoid duplication
         // OR we can import `GeminiAPI` here.
 
-        const { GeminiAPI } = await import('./api.js');
         const api = new GeminiAPI(this.apiKey);
 
         // We need to pick a model. `gemini.js` handles model fallback.
         // This service seems to duplicate some logic if we do it here.
         // However, to fix the regression, we must make this work.
         // We'll use a default model or the one from options.
-        const model = options.model || 'gemini-2.5-flash-lite-preview-09-2025';
+        const fallbackModels = [
+            "gemini-2.5-flash-lite-preview-09-2025",
+            "gemini-2.5-flash-lite",
+            "gemini-2.5-flash",
+            "gemini-2.0-flash-exp",
+            "gemini-1.5-flash",
+            "gemini-1.5-pro",
+        ];
+        let modelsToTry = [];
 
-        let fullText = '';
+        if (options.model) {
+            modelsToTry.push(options.model);
+        }
+        // Add fallbacks, avoiding duplicates
+        for (const m of fallbackModels) {
+            if (!modelsToTry.includes(m)) {
+                modelsToTry.push(m);
+            }
+        }
+
+        let fullText = "";
         let extractedTimestamps = [];
+        let lastError = null;
+        let success = false;
 
-        await api.callStream(prompt, model, (chunk, currentFullText) => {
-            fullText = currentFullText;
-            // Parse timestamps on the fly if needed
-            const timestamps = this.extractTimestamps(chunk);
-            if (timestamps.length) {
-                extractedTimestamps.push(...timestamps);
-            }
+        for (let i = 0; i < modelsToTry.length; i++) {
+            const currentModel = modelsToTry[i];
+            try {
+                console.log(
+                    `[StreamingSummary] Attempting model: ${currentModel} (${
+                        i + 1
+                    }/${modelsToTry.length})`
+                );
 
-            if (onChunk) {
-                onChunk(chunk, fullText, extractedTimestamps);
+                // Reset for new attempt
+                fullText = "";
+                extractedTimestamps = [];
+
+                await api.callStream(
+                    prompt,
+                    currentModel,
+                    (chunk, currentFullText) => {
+                        fullText = currentFullText;
+                        // Parse timestamps on the fly if needed
+                        const timestamps = this.extractTimestamps(chunk);
+                        if (timestamps.length) {
+                            extractedTimestamps.push(...timestamps);
+                        }
+
+                        if (onChunk) {
+                            onChunk(chunk, fullText, extractedTimestamps);
+                        }
+                    }
+                );
+
+                success = true;
+                console.log(
+                    `[StreamingSummary] Success with model: ${currentModel}`
+                );
+                break; // Success!
+            } catch (e) {
+                lastError = e;
+                console.warn(
+                    `[StreamingSummary] Model ${currentModel} failed:`,
+                    e.message
+                );
+
+                if (i < modelsToTry.length - 1) {
+                    console.log(
+                        `[StreamingSummary] Falling back to next model...`
+                    );
+                    await new Promise((r) => setTimeout(r, 1000));
+                }
             }
-        });
+        }
+
+        if (!success) {
+            throw new Error(
+                `All models failed. Last error: ${lastError?.message}`
+            );
+        }
 
         // Final parsing for structure (FAQ, Insights)
-        const summary = this.extractSection(fullText, 'Summary');
-        const insights = this.extractSection(fullText, 'Key Insights');
-        const faq = this.extractSection(fullText, 'FAQ');
+        const summary = this.extractSection(fullText, "Summary");
+        const insights = this.extractSection(fullText, "Key Insights");
+        const faq = this.extractSection(fullText, "FAQ");
 
         return {
             summary: summary || fullText, // Fallback to full text if parsing fails
             insights,
             faq,
-            timestamps: extractedTimestamps
+            timestamps: extractedTimestamps,
         };
     }
 
@@ -70,39 +134,44 @@ export class StreamingSummaryService {
         while ((match = regex.exec(text)) !== null) {
             matches.push({
                 time: match[1],
-                seconds: this.parseTime(match[1])
+                seconds: this.parseTime(match[1]),
             });
         }
         return matches;
     }
 
     parseTime(timeStr) {
-        const parts = timeStr.split(':').map(Number);
-        if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        const parts = timeStr.split(":").map(Number);
+        if (parts.length === 3)
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
         if (parts.length === 2) return parts[0] * 60 + parts[1];
         return parts[0];
     }
 
     extractSection(text, sectionName) {
         // Simple regex to extract markdown sections like ## Summary
-        const regex = new RegExp(`##\\s*${sectionName}[\\s\\S]*?(?=##|$)`, 'i');
+        const regex = new RegExp(`##\\s*${sectionName}[\\s\\S]*?(?=##|$)`, "i");
         const match = text.match(regex);
-        return match ? match[0].replace(new RegExp(`##\\s*${sectionName}`, 'i'), '').trim() : '';
+        return match
+            ? match[0]
+                  .replace(new RegExp(`##\\s*${sectionName}`, "i"), "")
+                  .trim()
+            : "";
     }
 
     convertToHTMLWithClickableTimestamps(text, videoId) {
-        if (!text) return '';
+        if (!text) return "";
         // Convert markdown to HTML (simple pass)
         let html = text
             // Headers
-            .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-            .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gm, "<h3>$1</h3>")
+            .replace(/^## (.*$)/gm, "<h2>$1</h2>")
             // Bold
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
             // Italic
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\*(.*?)\*/g, "<em>$1</em>")
             // Lists
-            .replace(/^\s*-\s+(.*$)/gm, '<li>$1</li>')
+            .replace(/^\s*-\s+(.*$)/gm, "<li>$1</li>")
             // Timestamps
             .replace(/\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g, (match, time) => {
                 const seconds = this.parseTime(time);
@@ -110,34 +179,37 @@ export class StreamingSummaryService {
             });
 
         // Wrap lists
-        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
 
         return html;
     }
 
     attachTimestampClickHandlers(container) {
         if (!container) return;
-        const links = container.querySelectorAll('.timestamp-link');
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
+        const links = container.querySelectorAll(".timestamp-link");
+        links.forEach((link) => {
+            link.addEventListener("click", (e) => {
                 e.preventDefault();
-                const time = parseFloat(link.getAttribute('data-time'));
+                const time = parseFloat(link.getAttribute("data-time"));
                 // Send message to seek
                 // We are in background/popup context usually, but if this is used in content script:
-                const video = document.querySelector('video');
+                const video = document.querySelector("video");
                 if (video) {
                     video.currentTime = time;
                     video.play();
                 } else {
                     // If in sidepanel/popup, send message to content script
-                    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                        if (tabs[0]) {
-                            chrome.tabs.sendMessage(tabs[0].id, {
-                                action: 'SEEK_TO',
-                                timestamp: time
-                            });
+                    chrome.tabs.query(
+                        { active: true, currentWindow: true },
+                        (tabs) => {
+                            if (tabs[0]) {
+                                chrome.tabs.sendMessage(tabs[0].id, {
+                                    action: "SEEK_TO",
+                                    timestamp: time,
+                                });
+                            }
                         }
-                    });
+                    );
                 }
             });
         });
