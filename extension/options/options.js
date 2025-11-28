@@ -340,7 +340,11 @@ async function refreshModelList() {
         // Select current model or default
         if (
             currentSettings.model &&
-            models.some((m) => m.name.includes(currentSettings.model))
+            models.some((m) =>
+                (typeof m === "string" ? m : m.name).includes(
+                    currentSettings.model
+                )
+            )
         ) {
             select.value = currentSettings.model;
         } else if (modelManager.selected) {
