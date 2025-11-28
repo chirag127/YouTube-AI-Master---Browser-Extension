@@ -1,23 +1,29 @@
 import { buildContextString } from "./utils.js";
 
 export const segments = (context) => {
+    console.log("Segments Prompt Context:", {
+        ...context,
+        transcript: "TRANSCRIPT_HIDDEN",
+    });
     const transcript =
         context.transcript && context.transcript.length > 0
             ? typeof context.transcript === "string"
                 ? context.transcript
                 : JSON.stringify(context.transcript)
             : "[]";
+    console.log("Segments Transcript Length:", transcript.length);
 
     return `
     Task: Segment transcript with HIGH GRANULARITY. Return raw JSON object.
 
     ${buildContextString(context)}
 
-    CRITICAL:
+    CRITICAL INSTRUCTIONS:
     1. SEGMENTATION STRATEGY:
-       - First, identify all SPECIAL categories (Sponsor, Self Promotion, Intro, etc.).
-       - Then, segment the remaining "Content" by distinct TOPICS.
-       - Do NOT output a single "Content" segment for the whole video unless it's very short (under 2 mins).
+       - **Identify SPECIAL categories first** (Sponsor, Self Promotion, Intro, etc.).
+       - **Segment "Content" by TOPIC**. Do NOT create one huge "Content" segment.
+       - **MANDATORY**: If the video is > 2 minutes, you MUST return at least 3 segments (unless it's a very short clip).
+       - **FORBIDDEN**: Do NOT return a single segment for the entire video.
     2. MERGE adjacent segments ONLY if they are the EXACT SAME category AND cover the same specific topic.
     3. Descriptions MUST be concise summaries. NO raw transcript.
     4. Use SHORT keys (S, SP, UP, IR, etc.) for labels in the JSON.
@@ -31,8 +37,6 @@ export const segments = (context) => {
     5. SPONSORBLOCK (STRICT PRIORITY):
        - IF Community Segments are provided: They are VERIFIED GROUND TRUTH. Use their EXACT times/categories.
        - IF NOT provided: Analyze transcript to find these categories.
-       - Do NOT duplicate existing SponsorBlock segments.
-       - Only create NEW segments for parts not covered by SponsorBlock.
        - Include Chapter titles if available.
 
     Categories(LABEL_CODE):
