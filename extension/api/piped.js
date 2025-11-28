@@ -5,199 +5,215 @@
  */
 
 const FALLBACK_INSTANCES = [
-    'https://api.piped.private.coffee',
-    'https://pipedapi.adminforge.de',
-    'https://pipedapi.kavin.rocks',
-    'https://api-piped.mha.fi',
-    'https://pipedapi.aeong.one'
-]
+    "https://api.piped.private.coffee",
+    "https://pipedapi.adminforge.de",
+    "https://pipedapi.kavin.rocks",
+    "https://api-piped.mha.fi",
+    "https://pipedapi.aeong.one",
+];
 
-let cachedInstancesList = null
-let instancesListCacheTime = 0
-const INSTANCES_LIST_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+let cachedInstancesList = null;
+let instancesListCacheTime = 0;
+const INSTANCES_LIST_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-let workingInstance = null
-let lastInstanceCheck = 0
-const INSTANCE_CHECK_INTERVAL = 5 * 60 * 1000 // 5 minutes
+let workingInstance = null;
+let lastInstanceCheck = 0;
+const INSTANCE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 class Logger {
     constructor(prefix) {
-        this.prefix = prefix
+        this.prefix = prefix;
     }
 
     info(message, ...args) {
-        console.log(`[${this.prefix}] ℹ️ ${message}`, ...args)
+        console.log(`[${this.prefix}] ℹ️ ${message}`, ...args);
     }
 
     success(message, ...args) {
-        console.log(`[${this.prefix}] ✅ ${message}`, ...args)
+        console.log(`[${this.prefix}] ✅ ${message}`, ...args);
     }
 
     warn(message, ...args) {
-        console.warn(`[${this.prefix}] ⚠️ ${message}`, ...args)
+        console.warn(`[${this.prefix}] ⚠️ ${message}`, ...args);
     }
 
     error(message, ...args) {
-        console.error(`[${this.prefix}] ❌ ${message}`, ...args)
+        console.error(`[${this.prefix}] ❌ ${message}`, ...args);
     }
 
     debug(message, ...args) {
-        console.debug(`[${this.prefix}] 🔍 ${message}`, ...args)
+        console.debug(`[${this.prefix}] 🔍 ${message}`, ...args);
     }
 }
 
-const logger = new Logger('Piped')
+const logger = new Logger("Piped");
 
 /**
  * Find a working Piped instance
  */
 async function findWorkingInstance() {
-    const now = Date.now()
+    const now = Date.now();
 
-    if (workingInstance && (now - lastInstanceCheck) < INSTANCE_CHECK_INTERVAL) {
-        logger.debug(`Using cached instance: ${workingInstance}`)
-        return workingInstance
+    if (workingInstance && now - lastInstanceCheck < INSTANCE_CHECK_INTERVAL) {
+        logger.debug(`Using cached instance: ${workingInstance}`);
+        return workingInstance;
     }
 
-    logger.info('Finding working Piped instance...')
+    logger.info("Finding working Piped instance...");
 
-    const instances = await getInstancesList()
+    const instances = await getInstancesList();
 
     for (const instance of instances) {
         try {
-            logger.debug(`Testing instance: ${instance}`)
+            logger.debug(`Testing instance: ${instance}`);
             const response = await fetch(`${instance}/trending?region=US`, {
-                method: 'GET',
-                signal: AbortSignal.timeout(5000)
-            })
+                method: "GET",
+                signal: AbortSignal.timeout(5000),
+            });
 
             if (response.ok) {
-                logger.success(`Found working instance: ${instance}`)
-                workingInstance = instance
-                lastInstanceCheck = now
-                return instance
+                logger.success(`Found working instance: ${instance}`);
+                workingInstance = instance;
+                lastInstanceCheck = now;
+                return instance;
             }
         } catch (error) {
-            logger.warn(`Instance ${instance} failed:`, error.message)
+            logger.warn(`Instance ${instance} failed:`, error.message);
         }
     }
 
-    throw new Error('No working Piped instance found')
+    throw new Error("No working Piped instance found");
 }
 
 /**
  * Get list of Piped instances
  */
 async function getInstancesList() {
-    const now = Date.now()
+    const now = Date.now();
 
-    if (cachedInstancesList && (now - instancesListCacheTime) < INSTANCES_LIST_CACHE_DURATION) {
-        logger.debug(`Using cached instances (${cachedInstancesList.length} instances)`)
-        return cachedInstancesList
+    if (
+        cachedInstancesList &&
+        now - instancesListCacheTime < INSTANCES_LIST_CACHE_DURATION
+    ) {
+        logger.debug(
+            `Using cached instances (${cachedInstancesList.length} instances)`
+        );
+        return cachedInstancesList;
     }
 
-    logger.info('Using fallback instance list')
-    cachedInstancesList = FALLBACK_INSTANCES
-    instancesListCacheTime = now
-    return FALLBACK_INSTANCES
+    logger.info("Using fallback instance list");
+    cachedInstancesList = FALLBACK_INSTANCES;
+    instancesListCacheTime = now;
+    return FALLBACK_INSTANCES;
 }
 
 /**
  * Fetch video streams data (includes subtitles, metadata, etc.)
  */
 export async function fetchVideoStreams(videoId) {
-    logger.info(`Fetching video streams for: ${videoId}`)
+    logger.info(`Fetching video streams for: ${videoId}`);
 
-    const instance = await findWorkingInstance()
-    const url = `${instance}/streams/${videoId}`
+    const instance = await findWorkingInstance();
+    const url = `${instance}/streams/${videoId}`;
 
-    logger.debug(`Request URL: ${url}`)
+    logger.debug(`Request URL: ${url}`);
 
     try {
         const response = await fetch(url, {
-            method: 'GET',
-            signal: AbortSignal.timeout(10000)
-        })
+            method: "GET",
+            signal: AbortSignal.timeout(10000),
+        });
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json()
+        const data = await response.json();
 
         logger.success(`Video streams fetched successfully`, {
             title: data.title,
             uploader: data.uploader,
             duration: data.duration,
-            subtitlesAvailable: data.subtitles?.length || 0
-        })
+            subtitlesAvailable: data.subtitles?.length || 0,
+        });
 
-        return data
+        return data;
     } catch (error) {
-        logger.error(`Failed to fetch video streams:`, error.message)
-        throw error
+        logger.error(`Failed to fetch video streams:`, error.message);
+        throw error;
     }
 }
 
 /**
  * Fetch subtitles/transcript
  */
-export async function fetchSubtitles(videoId, lang = 'en') {
-    logger.info(`Fetching subtitles for: ${videoId} (lang: ${lang})`)
+export async function fetchSubtitles(videoId, lang = "en") {
+    logger.info(`Fetching subtitles for: ${videoId} (lang: ${lang})`);
 
     try {
-        const videoData = await fetchVideoStreams(videoId)
+        const videoData = await fetchVideoStreams(videoId);
 
         if (!videoData.subtitles || videoData.subtitles.length === 0) {
-            throw new Error('No subtitles available for this video')
+            throw new Error("No subtitles available for this video");
         }
 
-        logger.debug(`Available subtitles:`, videoData.subtitles.map(s => ({
-            name: s.name,
-            code: s.code,
-            autoGenerated: s.autoGenerated
-        })))
+        logger.debug(
+            `Available subtitles:`,
+            videoData.subtitles.map((s) => ({
+                name: s.name,
+                code: s.code,
+                autoGenerated: s.autoGenerated,
+            }))
+        );
 
         // Find subtitle track for requested language
-        let subtitle = videoData.subtitles.find(s => s.code === lang && !s.autoGenerated)
+        let subtitle = videoData.subtitles.find(
+            (s) => s.code === lang && !s.autoGenerated
+        );
 
         if (!subtitle) {
-            subtitle = videoData.subtitles.find(s => s.code === lang)
+            subtitle = videoData.subtitles.find((s) => s.code === lang);
         }
 
         if (!subtitle) {
-            logger.warn(`Language '${lang}' not found, using fallback: ${videoData.subtitles[0].code}`)
-            subtitle = videoData.subtitles[0]
+            logger.warn(
+                `Language '${lang}' not found, using fallback: ${videoData.subtitles[0].code}`
+            );
+            subtitle = videoData.subtitles[0];
         }
 
         logger.debug(`Selected subtitle track:`, {
             name: subtitle.name,
             code: subtitle.code,
             autoGenerated: subtitle.autoGenerated,
-            mimeType: subtitle.mimeType
-        })
+            mimeType: subtitle.mimeType,
+        });
 
         // Fetch subtitle content
         const response = await fetch(subtitle.url, {
-            signal: AbortSignal.timeout(10000)
-        })
+            signal: AbortSignal.timeout(10000),
+        });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch subtitles: HTTP ${response.status}`)
+            throw new Error(
+                `Failed to fetch subtitles: HTTP ${response.status}`
+            );
         }
 
-        const subtitleText = await response.text()
-        logger.debug(`Subtitle data received, length: ${subtitleText.length} bytes`)
+        const subtitleText = await response.text();
+        logger.debug(
+            `Subtitle data received, length: ${subtitleText.length} bytes`
+        );
 
         return {
             text: subtitleText,
             mimeType: subtitle.mimeType,
             code: subtitle.code,
-            autoGenerated: subtitle.autoGenerated
-        }
+            autoGenerated: subtitle.autoGenerated,
+        };
     } catch (error) {
-        logger.error(`Failed to fetch subtitles:`, error.message)
-        throw error
+        logger.error(`Failed to fetch subtitles:`, error.message);
+        throw error;
     }
 }
 
@@ -205,10 +221,10 @@ export async function fetchSubtitles(videoId, lang = 'en') {
  * Fetch video metadata
  */
 export async function fetchMetadata(videoId) {
-    logger.info(`Fetching metadata for: ${videoId}`)
+    logger.info(`Fetching metadata for: ${videoId}`);
 
     try {
-        const data = await fetchVideoStreams(videoId)
+        const data = await fetchVideoStreams(videoId);
 
         const metadata = {
             videoId: videoId,
@@ -225,14 +241,14 @@ export async function fetchMetadata(videoId) {
             thumbnailUrl: data.thumbnailUrl,
             livestream: data.livestream,
             subtitlesAvailable: (data.subtitles?.length || 0) > 0,
-            availableLanguages: data.subtitles?.map(s => s.code) || []
-        }
+            availableLanguages: data.subtitles?.map((s) => s.code) || [],
+        };
 
-        logger.success('Metadata extracted successfully')
-        return metadata
+        logger.success("Metadata extracted successfully");
+        return metadata;
     } catch (error) {
-        logger.error('Failed to fetch metadata:', error.message)
-        throw error
+        logger.error("Failed to fetch metadata:", error.message);
+        throw error;
     }
 }
 
@@ -240,84 +256,100 @@ export async function fetchMetadata(videoId) {
  * Fetch video comments
  */
 export async function fetchComments(videoId, nextpage = null) {
-    logger.info(`Fetching comments for: ${videoId}`)
+    logger.info(`Fetching comments for: ${videoId}`);
 
-    const instance = await findWorkingInstance()
+    const instance = await findWorkingInstance();
     const url = nextpage
-        ? `${instance}/nextpage/comments/${videoId}?nextpage=${encodeURIComponent(nextpage)}`
-        : `${instance}/comments/${videoId}`
+        ? `${instance}/nextpage/comments/${videoId}?nextpage=${encodeURIComponent(
+              nextpage
+          )}`
+        : `${instance}/comments/${videoId}`;
 
     try {
         const response = await fetch(url, {
-            signal: AbortSignal.timeout(10000)
-        })
+            signal: AbortSignal.timeout(10000),
+        });
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json()
-        logger.success(`Fetched ${data.comments?.length || 0} comments`)
+        const data = await response.json();
+        logger.success(`Fetched ${data.comments?.length || 0} comments`);
 
-        return data
+        return data;
     } catch (error) {
-        logger.error('Failed to fetch comments:', error.message)
-        throw error
+        logger.error("Failed to fetch comments:", error.message);
+        throw error;
     }
 }
 
 /**
  * Search videos
  */
-export async function searchVideos(query, filter = 'all') {
-    logger.info(`Searching for: ${query}`)
+export async function searchVideos(query, filter = "all") {
+    logger.info(`Searching for: ${query}`);
 
-    const instance = await findWorkingInstance()
-    const url = `${instance}/search?q=${encodeURIComponent(query)}&filter=${filter}`
+    const instance = await findWorkingInstance();
+    const url = `${instance}/search?q=${encodeURIComponent(
+        query
+    )}&filter=${filter}`;
 
     try {
         const response = await fetch(url, {
-            signal: AbortSignal.timeout(10000)
-        })
+            signal: AbortSignal.timeout(10000),
+        });
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json()
-        logger.success(`Found ${data.items?.length || 0} results`)
+        const data = await response.json();
+        logger.success(`Found ${data.items?.length || 0} results`);
 
-        return data
+        return data;
     } catch (error) {
-        logger.error('Search failed:', error.message)
-        throw error
+        logger.error("Search failed:", error.message);
+        throw error;
     }
 }
 
 /**
  * Get trending videos
  */
-export async function fetchTrending(region = 'US') {
-    logger.info(`Fetching trending videos for region: ${region}`)
+export async function fetchTrending(region = "US") {
+    logger.info(`Fetching trending videos for region: ${region}`);
 
-    const instance = await findWorkingInstance()
-    const url = `${instance}/trending?region=${region}`
+    const instance = await findWorkingInstance();
+    const url = `${instance}/trending?region=${region}`;
 
     try {
         const response = await fetch(url, {
-            signal: AbortSignal.timeout(10000)
-        })
+            signal: AbortSignal.timeout(10000),
+        });
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json()
-        logger.success(`Fetched ${data.length} trending videos`)
+        const data = await response.json();
+        logger.success(`Fetched ${data.length} trending videos`);
 
-        return data
+        return data;
     } catch (error) {
-        logger.error('Failed to fetch trending:', error.message)
-        throw error
+        logger.error("Failed to fetch trending:", error.message);
+        throw error;
     }
 }
+
+export const getVideoMetadata = fetchMetadata;
+
+export default {
+    fetchVideoStreams,
+    fetchSubtitles,
+    fetchMetadata,
+    getVideoMetadata,
+    fetchComments,
+    searchVideos,
+    fetchTrending,
+};

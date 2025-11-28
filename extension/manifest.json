@@ -44,6 +44,16 @@
                 "https://youtube.com/*"
             ],
             "js": [
+                "content/interceptor-injector.js"
+            ],
+            "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://www.youtube.com/*",
+                "https://youtube.com/*"
+            ],
+            "js": [
                 "content/main.js"
             ],
             "css": [
@@ -69,6 +79,7 @@
                 "services/*.js",
                 "services/**/*.js",
                 "lib/*.js",
+                "api/*.js",
                 "sidepanel/sidepanel.html",
                 "sidepanel/sidepanel.css",
                 "sidepanel/sidepanel.js",

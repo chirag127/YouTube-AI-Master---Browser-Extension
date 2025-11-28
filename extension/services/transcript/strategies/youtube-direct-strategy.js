@@ -122,15 +122,17 @@ async function fetchFromTrack(track) {
 
     console.log("[YouTube Direct] Fetching from track:", track.languageCode);
 
-    // Try different formats - json3 first, then XML formats
-    const formats = ["json3", "srv3", "srv1", ""];
+    // Try json3 first (most reliable), then default (XML)
+    // We append &fmt=json3 to the signed URL for JSON, or use as-is for XML
+    const formats = ["json3", ""];
 
     for (const fmt of formats) {
         try {
             let url = track.baseUrl;
 
-            // Add or replace fmt parameter
-            if (fmt) {
+            // Only append fmt if we specifically want json3, otherwise use the signed URL as-is
+            // YouTube's signed URLs often already include a format or default to XML
+            if (fmt === "json3") {
                 if (url.includes("fmt=")) {
                     url = url.replace(/fmt=[^&]*/, `fmt=${fmt}`);
                 } else {
@@ -138,32 +140,11 @@ async function fetchFromTrack(track) {
                 }
             }
 
-            // Append client parameters if missing
-            const extraParams = {
-                cbr: "Chrome",
-                cbrver: "142.0.0.0",
-                c: "WEB",
-                cver: "2.20251125.06.00",
-                cplayer: "UNIPLAYER",
-                cos: "Windows",
-                cosver: "10.0",
-                cplatform: "DESKTOP",
-                xorb: "2",
-                xobt: "3",
-                xovt: "3",
-            };
-
-            for (const [key, value] of Object.entries(extraParams)) {
-                if (!url.includes(`${key}=`)) {
-                    url += `&${key}=${value}`;
-                }
-            }
-
             console.log(`[YouTube Direct] Trying format '${fmt || "default"}'`);
 
             const res = await fetch(url, {
                 method: "GET",
-                credentials: "include",
+                credentials: "omit", // CRITICAL: Don't send cookies with signed URLs
             });
 
             if (!res.ok) {
@@ -211,7 +192,8 @@ async function fetchFromTrack(track) {
 
             if (segments?.length) {
                 console.log(
-                    `[YouTube Direct] ✅ Got ${segments.length
+                    `[YouTube Direct] ✅ Got ${
+                        segments.length
                     } segments from format '${fmt || "default"}'`
                 );
                 return segments;
