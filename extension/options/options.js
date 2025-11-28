@@ -335,6 +335,7 @@ async function refreshModelList() {
 
 // Event Listeners Setup
 function setupEventListeners() {
+    console.log("Setting up event listeners...");
     // Auto-save on most inputs
     const autoSaveInputs = [
         elements.outputLanguage,
@@ -347,117 +348,147 @@ function setupEventListeners() {
     ];
 
     autoSaveInputs.forEach((el) => {
-        el.addEventListener("change", saveSettings);
+        if (el) el.addEventListener("change", saveSettings);
     });
 
-    elements.apiKey.addEventListener("change", saveSettings);
-    elements.modelSelect.addEventListener("change", saveSettings);
-    elements.customPrompt.addEventListener("change", saveSettings);
+    if (elements.apiKey)
+        elements.apiKey.addEventListener("change", saveSettings);
+    if (elements.modelSelect)
+        elements.modelSelect.addEventListener("change", saveSettings);
+    if (elements.customPrompt)
+        elements.customPrompt.addEventListener("change", saveSettings);
 
     // Buttons
-    elements.toggleApiKey.addEventListener("click", () => {
-        elements.apiKey.type =
-            elements.apiKey.type === "password" ? "text" : "password";
-    });
+    if (elements.toggleApiKey) {
+        elements.toggleApiKey.addEventListener("click", () => {
+            elements.apiKey.type =
+                elements.apiKey.type === "password" ? "text" : "password";
+        });
+    }
 
-    elements.refreshModels.addEventListener("click", refreshModelList);
+    if (elements.refreshModels)
+        elements.refreshModels.addEventListener("click", refreshModelList);
 
-    elements.testConnection.addEventListener("click", async () => {
-        const btn = elements.testConnection;
-        const status = elements.apiStatus;
+    if (elements.testConnection) {
+        elements.testConnection.addEventListener("click", async () => {
+            console.log("Test Connection clicked");
+            const btn = elements.testConnection;
+            const status = elements.apiStatus;
 
-        btn.disabled = true;
-        btn.textContent = "Testing...";
-        status.className = "status-indicator hidden";
+            btn.disabled = true;
+            btn.textContent = "Testing...";
+            status.className = "status-indicator hidden";
 
-        try {
-            if (!currentSettings.apiKey) throw new Error("API Key is missing");
-
-            const model = elements.modelSelect.value || "gemini-1.5-flash";
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${currentSettings.apiKey}`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: "Ping" }] }],
-                    }),
-                }
-            );
-
-            if (!response.ok)
-                throw new Error(`API Error: ${response.statusText}`);
-
-            status.textContent = "Connection Successful!";
-            status.className = "status-indicator success";
-            status.classList.remove("hidden");
-        } catch (e) {
-            status.textContent = `Connection Failed: ${e.message}`;
-            status.className = "status-indicator error";
-            status.classList.remove("hidden");
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "Test Connection";
-        }
-    });
-
-    elements.clearHistory.addEventListener("click", async () => {
-        if (confirm("Are you sure? This cannot be undone.")) {
-            await chrome.storage.local.remove("summaryHistory");
-            showToast("History cleared");
-        }
-    });
-
-    elements.skipAllBtn.addEventListener("click", () => setAllSegments("skip"));
-    elements.speedAllBtn.addEventListener("click", () =>
-        setAllSegments("speed")
-    );
-    elements.resetAllBtn.addEventListener("click", () =>
-        setAllSegments("ignore")
-    );
-
-    elements.resetDefaults.addEventListener("click", async () => {
-        if (confirm("Reset all settings to default?")) {
-            currentSettings = { ...DEFAULT_SETTINGS };
-            await chrome.storage.sync.clear();
-            await loadSettings();
-            showToast("Settings reset");
-        }
-    });
-
-    elements.exportSettings.addEventListener("click", () => {
-        const data = JSON.stringify(currentSettings, null, 2);
-        const blob = new Blob([data], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "youtube-ai-master-settings.json";
-        a.click();
-    });
-
-    elements.importSettings.addEventListener("click", () =>
-        elements.importFile.click()
-    );
-
-    elements.importFile.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
             try {
-                const imported = JSON.parse(ev.target.result);
-                // Validate/Merge
-                currentSettings = { ...DEFAULT_SETTINGS, ...imported };
-                await saveSettings();
-                await loadSettings();
-                showToast("Settings imported");
-            } catch (err) {
-                showToast("Invalid settings file", "error");
+                if (!currentSettings.apiKey)
+                    throw new Error("API Key is missing");
+
+                const model = elements.modelSelect.value || "gemini-1.5-flash";
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${currentSettings.apiKey}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: "Ping" }] }],
+                        }),
+                    }
+                );
+
+                if (!response.ok)
+                    throw new Error(`API Error: ${response.statusText}`);
+
+                status.textContent = "Connection Successful!";
+                status.className = "status-indicator success";
+                status.classList.remove("hidden");
+            } catch (e) {
+                status.textContent = `Connection Failed: ${e.message}`;
+                status.className = "status-indicator error";
+                status.classList.remove("hidden");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Test Connection";
             }
-        };
-        reader.readAsText(file);
-    });
+        });
+    }
+
+    if (elements.clearHistory) {
+        elements.clearHistory.addEventListener("click", async () => {
+            if (confirm("Are you sure? This cannot be undone.")) {
+                await chrome.storage.local.remove("summaryHistory");
+                showToast("History cleared");
+            }
+        });
+    }
+
+    if (elements.skipAllBtn)
+        elements.skipAllBtn.addEventListener("click", () =>
+            setAllSegments("skip")
+        );
+    if (elements.speedAllBtn)
+        elements.speedAllBtn.addEventListener("click", () =>
+            setAllSegments("speed")
+        );
+    if (elements.resetAllBtn)
+        elements.resetAllBtn.addEventListener("click", () =>
+            setAllSegments("ignore")
+        );
+
+    if (elements.resetDefaults) {
+        elements.resetDefaults.addEventListener("click", async () => {
+            console.log("Reset Defaults clicked");
+            if (confirm("Reset all settings to default?")) {
+                currentSettings = { ...DEFAULT_SETTINGS };
+                await chrome.storage.sync.clear();
+                await loadSettings();
+                showToast("Settings reset");
+            }
+        });
+    }
+
+    if (elements.exportSettings) {
+        elements.exportSettings.addEventListener("click", () => {
+            console.log("Export Settings clicked");
+            const data = JSON.stringify(currentSettings, null, 2);
+            const blob = new Blob([data], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "youtube-ai-master-settings.json";
+            a.click();
+        });
+    }
+
+    if (elements.importSettings) {
+        elements.importSettings.addEventListener("click", () => {
+            console.log("Import Settings clicked");
+            if (elements.importFile) elements.importFile.click();
+        });
+    }
+
+    if (elements.importFile) {
+        elements.importFile.addEventListener("change", (e) => {
+            console.log("File selected for import");
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                try {
+                    const imported = JSON.parse(ev.target.result);
+                    // Validate/Merge
+                    currentSettings = { ...DEFAULT_SETTINGS, ...imported };
+                    await saveSettings();
+                    await loadSettings();
+                    showToast("Settings imported");
+                } catch (err) {
+                    console.error("Import failed:", err);
+                    showToast("Invalid settings file", "error");
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 }
 
 function showToast(msg, type = "success") {
