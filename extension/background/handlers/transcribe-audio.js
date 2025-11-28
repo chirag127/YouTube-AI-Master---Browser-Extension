@@ -19,7 +19,13 @@ export async function handleTranscribeAudio(request, sendResponse) {
             throw new Error("Gemini API key not found");
         }
 
-        const model = settings.model || "gemini-1.5-flash";
+        let model = settings.model || "gemini-1.5-flash-latest";
+
+        // Strip models/ prefix if present
+        if (model.startsWith('models/')) {
+            model = model.replace('models/', '');
+        }
+
         const client = new GeminiClient(settings.apiKey);
 
         console.log("[TranscribeAudio] Fetching audio...", audioUrl);

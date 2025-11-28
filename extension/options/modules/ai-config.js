@@ -61,9 +61,14 @@ export class AIConfig {
         }
 
         if (els.modelSelect) {
-            els.modelSelect.addEventListener("change", (e) =>
-                this.settings.save({ model: e.target.value })
-            );
+            els.modelSelect.addEventListener("change", (e) => {
+                let model = e.target.value;
+                // Ensure no models/ prefix
+                if (model.startsWith('models/')) {
+                    model = model.replace('models/', '');
+                }
+                this.settings.save({ model });
+            });
         }
 
         if (els.refreshModels) {
@@ -112,16 +117,21 @@ export class AIConfig {
             });
 
             const s = this.settings.get();
-            if (
-                s.model &&
-                models.some((m) =>
-                    (typeof m === "string" ? m : m.name).includes(s.model)
-                )
-            ) {
-                select.value = s.model;
-            } else if (this.modelManager.selected) {
-                select.value = this.modelManager.selected;
-                this.settings.save({ model: this.modelManager.selected });
+            let savedModel = s.model;
+
+            // Strip models/ prefix from saved model if present
+            if (savedModel && savedModel.startsWith('models/')) {
+                savedModel = savedModel.replace('models/', '');
+                // Update storage with cleaned model name
+                this.settings.save({ model: savedModel });
+            }
+
+            if (savedModel && models.includes(savedModel)) {
+                select.value = savedModel;
+            } else if (models.length > 0) {
+                // Select first available model
+                select.value = models[0];
+                this.settings.save({ model: models[0] });
             }
         } catch (e) {
             console.error("Failed to fetch models:", e);

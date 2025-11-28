@@ -22,6 +22,8 @@ import { handleSaveComments } from "./handlers/comments-storage.js";
 import { handleTranscribeAudio } from "./handlers/transcribe-audio.js";
 import { handleGetLyrics } from "./handlers/get-lyrics.js";
 
+import { migrateModelNames } from "../utils/migrate-model-names.js";
+
 chrome.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === "install") {
         console.log("YouTube AI Master installed");
@@ -32,6 +34,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             "YouTube AI Master updated to version",
             chrome.runtime.getManifest().version
         );
+        // Run migration to clean up model names
+        await migrateModelNames();
     }
 });
 

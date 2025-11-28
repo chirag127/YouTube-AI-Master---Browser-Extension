@@ -12,7 +12,12 @@ export async function isMusicVideo(title, channel) {
         if (!settings.apiKey) return false;
 
         const client = new GeminiClient(settings.apiKey);
-        const model = settings.model || "gemini-1.5-flash";
+        let model = settings.model || "gemini-2.5-flash-preview-09-2025";
+
+        // Strip models/ prefix if present
+        if (model.startsWith('models/')) {
+            model = model.replace('models/', '');
+        }
 
         const prompt = `
             Analyze this YouTube video metadata:
