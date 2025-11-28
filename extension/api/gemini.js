@@ -1,6 +1,6 @@
 import { GeminiAPI } from "./api.js";
 import { ModelManager } from "./models.js";
-import { prompts } from "./prompts.js";
+import { prompts } from "./prompts/index.js";
 
 export class GeminiService {
     constructor(k) {

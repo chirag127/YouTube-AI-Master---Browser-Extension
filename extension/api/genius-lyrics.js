@@ -112,9 +112,15 @@ export class GeniusLyricsAPI {
     }
 
     decodeHtml(html) {
-        const txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
+        const entities = {
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&quot;": '"',
+            "&#39;": "'",
+            "&nbsp;": " ",
+        };
+        return html.replace(/&[^;]+;/g, (match) => entities[match] || match);
     }
 }
 
