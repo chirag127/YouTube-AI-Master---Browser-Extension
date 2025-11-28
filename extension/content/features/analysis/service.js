@@ -4,10 +4,12 @@
 export async function analyzeVideo(
     transcript,
     metadata,
+    comments = [],
     options = { length: "Medium" }
 ) {
     console.log("[Service] Sending ANALYZE_VIDEO message", {
         transcriptLength: transcript?.length,
+        commentsCount: comments?.length,
         metadata,
         options,
     });
@@ -15,6 +17,7 @@ export async function analyzeVideo(
         action: "ANALYZE_VIDEO",
         transcript,
         metadata,
+        comments,
         options,
     });
 }

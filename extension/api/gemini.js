@@ -35,7 +35,10 @@ export class GeminiService {
         console.warn(
             "[GeminiService] generateStreamingSummaryWithTimestamps is deprecated. Using generateComprehensiveAnalysis."
         );
-        return this.generateComprehensiveAnalysis(transcript, options);
+        return this.generateComprehensiveAnalysis(
+            { transcript, metadata: options.metadata || {} },
+            options
+        );
     }
 
     convertSummaryToHTML(markdownText, videoId) {
@@ -54,28 +57,30 @@ export class GeminiService {
         if (!c || !c.length) return "No comments available to analyze.";
         return this.generateContent(prompts.comments(c), m);
     }
+
     async generateFAQ(t, m = null, metadata = null) {
         return this.generateContent(prompts.faq(t, metadata), m);
     }
-    async extractSegments(t, m = null, metadata = null) {
+
+    async extractSegments(context) {
         try {
-            const r = await this.generateContent(
-                    prompts.segments(t, metadata),
-                    m
-                ),
-                c = r
-                    .replace(/```json/g, "")
-                    .replace(/```/g, "")
-                    .trim();
+            const r = await this.generateContent(prompts.segments(context));
+            const c = r
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
+                .trim();
             return JSON.parse(c);
         } catch (e) {
             return [];
         }
     }
-    async generateComprehensiveAnalysis(t, o = {}, onChunk = null) {
+
+    async generateComprehensiveAnalysis(context, o = {}, onChunk = null) {
         try {
             // Force non-streaming for now as requested
-            const r = await this.generateContent(prompts.comprehensive(t, o));
+            const r = await this.generateContent(
+                prompts.comprehensive(context, o)
+            );
 
             // If onChunk is provided, simulate a single chunk to satisfy callers expecting streaming
             if (onChunk) {
@@ -87,11 +92,6 @@ export class GeminiService {
                 .replace(/```/g, "")
                 .trim();
 
-            // The prompt returns Markdown, not JSON.
-            // We need to parse the Markdown sections manually if we want structured output.
-            // But `generateStreamingSummaryWithTimestamps` returned { summary, insights, faq, timestamps }.
-            // Let's try to parse the markdown sections.
-
             const summary = this._extractSection(r, "Summary");
             const insights = this._extractSection(r, "Key Insights");
             const faq = this._extractSection(r, "FAQ");
@@ -100,7 +100,7 @@ export class GeminiService {
                 summary: summary || r,
                 insights: insights || "",
                 faq: faq || "",
-                timestamps: [], // Timestamps parsing logic was in streaming-summary.js. We might need to port it if critical.
+                timestamps: [],
             };
         } catch (e) {
             console.error("[GeminiService] Analysis failed:", e);

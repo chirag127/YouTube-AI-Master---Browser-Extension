@@ -5,8 +5,8 @@ export class SegmentClassificationService {
         this.gemini = g;
         this.chunking = c;
     }
-    async classifyTranscript(t, metadata) {
-        const c = await classifyTranscript(t, this.gemini, metadata);
-        return fillContentGaps(c, t);
+    async classifyTranscript(context) {
+        const c = await classifyTranscript(context, this.gemini);
+        return fillContentGaps(c, context.transcript);
     }
 }

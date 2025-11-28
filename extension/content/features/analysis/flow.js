@@ -1,6 +1,7 @@
 import { state } from "../../core/state.js";
 import TranscriptExtractor from "../../transcript/extractor.js";
 import metadataExtractor from "../../metadata/extractor.js";
+import { getComments } from "../../handlers/comments.js";
 import { showLoading, showError } from "../../ui/components/loading.js";
 import { switchTab } from "../../ui/tabs.js";
 import { injectSegmentMarkers } from "../../segments/markers.js";
@@ -20,24 +21,35 @@ export async function startAnalysis() {
 
         // 2. Transcript
         showLoading(contentArea, "Extracting transcript...");
-        const transcript = await TranscriptExtractor.extract(
-            state.currentVideoId
-        );
-
-        if (!transcript?.length) {
-            throw new Error("No transcript available for this video");
+        let transcript = [];
+        try {
+            transcript = await TranscriptExtractor.extract(
+                state.currentVideoId
+            );
+        } catch (e) {
+            console.warn("[Flow] Transcript extraction failed:", e);
+            // Continue without transcript, will try lyrics fallback in background
         }
-        state.currentTranscript = transcript;
 
-        // 3. AI Analysis
-        showLoading(
-            contentArea,
-            `Analyzing ${transcript.length} segments with AI...`
-        );
+        state.currentTranscript = transcript || [];
+
+        // 3. Comments (New)
+        showLoading(contentArea, "Extracting comments...");
+        let comments = [];
+        try {
+            comments = await getComments();
+        } catch (e) {
+            console.warn("[Flow] Comments extraction failed:", e);
+        }
+
+        // 4. AI Analysis
+        showLoading(contentArea, `Analyzing content with AI...`);
         console.log("[Flow] Starting AI analysis...", {
-            transcriptLength: transcript.length,
+            transcriptLength: transcript?.length,
+            commentsCount: comments?.length,
         });
-        const result = await analyzeVideo(transcript, metadata);
+
+        const result = await analyzeVideo(transcript, metadata, comments);
         console.log("[Flow] AI analysis result received", result);
 
         if (!result.success) {
@@ -46,7 +58,7 @@ export async function startAnalysis() {
 
         state.analysisData = result.data;
 
-        // 4. Post-processing (Segments, UI)
+        // 5. Post-processing (Segments, UI)
         if (state.analysisData.segments) {
             injectSegmentMarkers(state.analysisData.segments);
             setupAutoSkip(state.analysisData.segments);

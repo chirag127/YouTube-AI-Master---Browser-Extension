@@ -1,8 +1,4 @@
 import { showPlaceholder } from "../components/loading.js";
-import {
-    renderLegend,
-    injectLegendStyles,
-} from "../components/segment-legend.js";
 import { seekVideo } from "../../utils/dom.js";
 import { formatTime } from "../../utils/time.js";
 
@@ -24,7 +20,6 @@ export function renderSegments(c, s) {
         showPlaceholder(c, "No segments detected.");
         return;
     }
-    injectLegendStyles();
 
     const h = s
         .map((x) => {
@@ -52,7 +47,7 @@ export function renderSegments(c, s) {
         })
         .join("");
 
-    c.innerHTML = `${renderLegend()}<div class="yt-ai-segments-list">${h}</div>`;
+    c.innerHTML = `<div class="yt-ai-segments-list">${h}</div>`;
 
     // Make all timestamps clickable
     c.querySelectorAll(".yt-ai-timestamp").forEach((e) => {

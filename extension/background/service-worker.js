@@ -326,7 +326,13 @@ function decodeHTMLEntities(text) {
 }
 
 async function handleAnalyzeVideo(request, sendResponse) {
-    const { transcript, metadata, options = {}, useCache = true } = request;
+    const {
+        transcript,
+        metadata,
+        comments = [],
+        options = {},
+        useCache = true,
+    } = request;
     const videoId = metadata?.videoId;
     startKeepAlive();
 
@@ -334,6 +340,8 @@ async function handleAnalyzeVideo(request, sendResponse) {
         console.log("[Background] handleAnalyzeVideo started", {
             videoId,
             options,
+            hasTranscript: !!transcript?.length,
+            commentsCount: comments?.length,
         });
         const apiKey = await getApiKey();
         if (!apiKey) {
@@ -366,15 +374,16 @@ async function handleAnalyzeVideo(request, sendResponse) {
             }
         }
 
-        // 3. Fetch Lyrics if it's a music video
+        // 3. Fetch Lyrics if it's a music video OR if transcript is missing
         let lyrics = null;
-        if (
+        const isMusic =
             metadata?.category === "Music" ||
             metadata?.title?.toLowerCase().includes("official video") ||
-            metadata?.title?.toLowerCase().includes("lyrics")
-        ) {
+            metadata?.title?.toLowerCase().includes("lyrics");
+
+        if (isMusic || !transcript?.length) {
             console.log(
-                "[Background] Detecting music video, fetching lyrics..."
+                "[Background] Fetching lyrics (Music video or missing transcript)..."
             );
             try {
                 lyrics = await geniusLyricsAPI.getLyrics(
@@ -389,27 +398,34 @@ async function handleAnalyzeVideo(request, sendResponse) {
             }
         }
 
+        // Check if we have ANY content to analyze
+        if ((!transcript || !transcript.length) && !lyrics) {
+            throw new Error("No transcript or lyrics available for analysis.");
+        }
+
         console.log("[Background] Starting Gemini analysis...", {
             hasLyrics: !!lyrics,
             metadataTitle: metadata?.title,
             deArrowTitle: metadata?.deArrowTitle,
         });
 
-        // Pass metadata and lyrics to the analysis
-        // Use generateComprehensiveAnalysis instead of streaming summary
+        // Construct Unified Context
+        const analysisContext = {
+            transcript: transcript || [],
+            lyrics: lyrics,
+            comments: comments || [],
+            metadata: metadata,
+        };
+
+        // Pass unified context to the analysis
         const analysis = await geminiService.generateComprehensiveAnalysis(
-            transcript,
+            analysisContext, // Pass object instead of string
             {
                 model: "gemini-2.5-flash-lite-preview-09-2025",
                 language: options.language || "English",
                 length: options.length || "Medium",
-                metadata: metadata, // Include video metadata for better context
-                lyrics: lyrics, // Include lyrics if available
             },
             (chunk, fullText, timestamps) => {
-                // Simulate streaming callback if needed by the frontend
-                // The frontend expects: { type: "summary_chunk", text: ..., timestamps: ... }
-                // generateComprehensiveAnalysis simulates one chunk at the end
                 port.postMessage({
                     type: "summary_chunk",
                     text: fullText,
@@ -428,10 +444,9 @@ async function handleAnalyzeVideo(request, sendResponse) {
         let segments = [];
         if (options.generateSegments) {
             console.log("[Background] Generating segments...");
-            // Pass metadata (including lyrics) to segment classification
+            // Pass unified context to segment classification
             segments = await segmentClassificationService.classifyTranscript(
-                transcript,
-                { ...metadata, lyrics }
+                analysisContext // Pass unified context
             );
             console.log(`[Background] Generated ${segments.length} segments`);
         }

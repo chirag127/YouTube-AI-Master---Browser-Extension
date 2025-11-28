@@ -1,25 +1,50 @@
+const buildContextString = (context) => {
+    const { metadata, lyrics, comments } = context;
+
+    let titleContext = `Original Title: ${
+        metadata?.originalTitle || metadata?.title || "Unknown"
+    }`;
+    if (metadata?.deArrowTitle) {
+        titleContext += `\nCommunity Title (DeArrow): ${metadata.deArrowTitle}`;
+    }
+
+    let commentsContext = "";
+    if (comments && comments.length > 0) {
+        commentsContext =
+            "\nTop Comments:\n" +
+            comments
+                .slice(0, 10)
+                .map((c) => `- ${c.textDisplay}`)
+                .join("\n");
+    }
+
+    return `
+    Video Context:
+    ${titleContext}
+    Channel: ${metadata?.author || "Unknown"}
+    Description: ${
+        metadata?.description
+            ? metadata.description.substring(0, 1000) + "..."
+            : "N/A"
+    }
+    ${
+        lyrics
+            ? `\nLyrics Source: ${lyrics.source}\nLyrics:\n${lyrics.lyrics}\n`
+            : ""
+    }
+    ${commentsContext}
+    `;
+};
+
 export const prompts = {
     summary: (transcript, options) => {
-        const { metadata, lyrics } = options;
+        // Legacy support or if called with string transcript
+        const metadata = options.metadata || {};
+        const lyrics = options.lyrics;
 
-        let titleContext = `Original Title: ${
-            metadata?.originalTitle || metadata?.title || "Unknown"
-        }`;
-        if (metadata?.deArrowTitle) {
-            titleContext += `\nCommunity Title (DeArrow): ${metadata.deArrowTitle}`;
-        }
-
-        const contextInfo = `
-        Video Context:
-        ${titleContext}
-        Channel: ${metadata?.author || "Unknown"}
-        Description: ${metadata?.description || "N/A"}
-        ${
-            lyrics
-                ? `\nLyrics Source: ${lyrics.source}\nLyrics:\n${lyrics.lyrics}\n`
-                : ""
-        }
-        `;
+        // Construct a temporary context object
+        const context = { transcript, metadata, lyrics, comments: [] };
+        const contextInfo = buildContextString(context);
 
         return `
         Role: You are an expert video summarizer.
@@ -39,6 +64,7 @@ export const prompts = {
     },
 
     chat: (question, context, metadata) => {
+        // context here is likely the transcript string from legacy calls
         let titleContext = `Original Title: ${
             metadata?.originalTitle || metadata?.title || "Unknown"
         }`;
@@ -87,24 +113,40 @@ export const prompts = {
     },
 
     faq: (transcript, metadata) => {
-        let titleContext = `Original Title: ${
-            metadata?.originalTitle || metadata?.title || "Unknown"
-        }`;
-        if (metadata?.deArrowTitle) {
-            titleContext += `\nCommunity Title (DeArrow): ${metadata.deArrowTitle}`;
-        }
+        // Legacy support
+        const context = { transcript, metadata, comments: [], lyrics: null };
+        const contextInfo = buildContextString(context);
 
         return `
         Task: Generate 5-7 Frequently Asked Questions (FAQ) that this video answers, along with their concise answers.
 
-        Video Context:
-        ${titleContext}
-        Channel: ${metadata?.author || "Unknown"}
+        ${contextInfo}
 
         Transcript:
         ${transcript}
+        `;
+    },
 
-        Format:
+    segments: (context) => {
+        // context is the unified object
+        const contextInfo = buildContextString(context);
+        const transcript =
+            typeof context.transcript === "string"
+                ? context.transcript
+                : JSON.stringify(context.transcript);
+
+        return `
+        Task: Segment the following transcript into logical chapters based on the categories below.
+        Return ONLY a raw JSON array. No markdown formatting.
+
+        Context:
+        ${contextInfo}
+
+        Categories (Use EXACTLY these labels):
+        - Sponsor: Paid promotion, paid referrals and direct advertisements. Not for self-promotion or free shoutouts to causes/creators/websites/products they like.
+        - Unpaid/Self Promotion: Unpaid or self-promotion. This includes sections about merchandise, donations, or information about who they collaborated with.
+        - Exclusive Access: Only for labeling entire videos. Used when a video showcases a product, service or location that they've received free or subsidized access to.
+        - Interaction Reminder (Subscribe): When there is a short reminder to like, subscribe or follow them in the middle of content. If it is long or about something specific, it should be under self promotion instead.
         - Highlight: The part of the video that most people are looking for. Similar to "Video starts at x" comments.
         - Intermission/Intro Animation: An interval without actual content. Could be a pause, static frame, repeating animation. This should not be used for transitions containing information.
         - Endcards/Credits: Credits or when the YouTube endcards appear. Not for conclusions with information.
@@ -130,27 +172,13 @@ export const prompts = {
         `;
     },
 
-    comprehensive: (transcript, options) => {
-        const { metadata, lyrics } = options;
-
-        let titleContext = `Original Title: ${
-            metadata?.originalTitle || metadata?.title || "Unknown"
-        }`;
-        if (metadata?.deArrowTitle) {
-            titleContext += `\nCommunity Title (DeArrow): ${metadata.deArrowTitle}`;
-        }
-
-        const contextInfo = `
-        Video Context:
-        ${titleContext}
-        Channel: ${metadata?.author || "Unknown"}
-        Description: ${metadata?.description || "N/A"}
-        ${
-            lyrics
-                ? `\nLyrics Source: ${lyrics.source}\nLyrics:\n${lyrics.lyrics}\n`
-                : ""
-        }
-        `;
+    comprehensive: (context, options) => {
+        // context is the unified object
+        const contextInfo = buildContextString(context);
+        const transcript =
+            typeof context.transcript === "string"
+                ? context.transcript
+                : JSON.stringify(context.transcript);
 
         return `
         Role: You are an advanced AI video analyst.
