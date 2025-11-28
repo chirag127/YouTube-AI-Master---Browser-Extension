@@ -160,7 +160,7 @@ export class GeminiService {
         let modelList = [];
         const fallbackModels = [
             "gemini-2.0-flash-exp",
-            "gemini-1.5-flash-latest",
+            "gemini-2.5-flash-preview-09-2025",
             "gemini-1.5-flash-002",
             "gemini-1.5-flash-001",
             "gemini-1.5-pro-latest",

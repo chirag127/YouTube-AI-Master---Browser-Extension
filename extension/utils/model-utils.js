@@ -22,7 +22,7 @@ export function cleanModelName(modelName) {
  * @returns {string} Default model name
  */
 export function getDefaultModel() {
-    return 'gemini-1.5-flash-latest';
+    return 'gemini-2.5-flash-preview-09-2025';
 }
 
 /**

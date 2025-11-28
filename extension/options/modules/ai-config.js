@@ -155,7 +155,7 @@ export class AIConfig {
         try {
             if (!s.apiKey) throw new Error("API Key is missing");
 
-            let model = els.modelSelect.value || "gemini-1.5-flash-latest";
+            let model = els.modelSelect.value || "gemini-2.5-flash-preview-09-2025";
 
             // Ensure model name doesn't have 'models/' prefix for the URL
             if (model.startsWith('models/')) {
