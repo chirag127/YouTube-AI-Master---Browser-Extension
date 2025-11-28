@@ -83,34 +83,16 @@ export async function handleAnalyzeVideo(request, sendResponse) {
             return `${m}:${sec.toString().padStart(2, "0")}`;
         };
 
-        let contextString = `Video Metadata:\nOriginal Title: ${
-            metadata?.originalTitle || metadata?.title || "Unknown"
-        }\n`;
-        if (metadata?.deArrowTitle)
-            contextString += `Community Title (DeArrow): ${metadata.deArrowTitle}\n`;
-        contextString += `Channel: ${
-            metadata?.author || "Unknown"
-        }\nDescription: ${
-            metadata?.description
-                ? metadata.description.substring(0, 1000) + "..."
-                : "N/A"
-        }\n`;
-
-        if (lyrics)
-            contextString += `\nLyrics Source: ${lyrics.source}\nLyrics:\n${lyrics.lyrics}\n`;
-        if (comments?.length)
-            contextString += `\nTop Comments:\n${comments
-                .slice(0, 10)
-                .map((c) => `- ${c.textDisplay}`)
-                .join("\n")}\n`;
-
-        const transcriptString = (transcript || [])
-            .map((t) => `[${formatTime(t.start)}] ${t.text}`)
-            .join("\n");
-        contextString += `\nTranscript:\n${transcriptString}\n`;
+        // Construct Unified Context
+        const analysisContext = {
+            transcript: transcript || [],
+            lyrics: lyrics,
+            comments: comments || [],
+            metadata: metadata,
+        };
 
         const analysis = await gemini.generateComprehensiveAnalysis(
-            contextString,
+            analysisContext,
             {
                 model: "gemini-2.5-flash-lite-preview-09-2025",
                 language: options.language || "English",

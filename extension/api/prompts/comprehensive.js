@@ -2,9 +2,11 @@ import { buildContextString } from "./utils.js";
 
 export const comprehensive = (context, options) => {
     const transcript =
-        typeof context.transcript === "string"
-            ? context.transcript
-            : JSON.stringify(context.transcript);
+        context.transcript && context.transcript.length > 0
+            ? typeof context.transcript === "string"
+                ? context.transcript
+                : JSON.stringify(context.transcript)
+            : "No transcript available. Please analyze based on the Context provided above (Metadata, Lyrics, Comments).";
 
     return `
     Role: You are an advanced AI video analyst.

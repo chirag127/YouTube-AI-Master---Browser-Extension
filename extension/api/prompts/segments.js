@@ -2,9 +2,11 @@ import { buildContextString } from "./utils.js";
 
 export const segments = (context) => {
     const transcript =
-        typeof context.transcript === "string"
-            ? context.transcript
-            : JSON.stringify(context.transcript);
+        context.transcript && context.transcript.length > 0
+            ? typeof context.transcript === "string"
+                ? context.transcript
+                : JSON.stringify(context.transcript)
+            : "[]"; // Return empty array if no transcript
 
     return `
     Task: Segment the following transcript into logical chapters based on the categories below.
