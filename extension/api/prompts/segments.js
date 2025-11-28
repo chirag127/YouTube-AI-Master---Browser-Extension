@@ -12,24 +12,24 @@ export const segments = (context) => {
     Task: Segment transcript. Return raw JSON array.
 
     CRITICAL:
-    1. Use SHORT keys.
-    2. MERGE adjacent segments of the same category if they cover the same topic. Do NOT fragment continuous topics.
-    3. Descriptions MUST be concise summaries. NO raw transcript.
+    1. MERGE adjacent segments of the same category if they cover the same topic. Do NOT fragment continuous topics.
+    2. Descriptions MUST be concise summaries. NO raw transcript.
 
     Context:
     ${buildContextString(context)}
 
     Categories(LABEL VALUE):
-    - Sponsor(S)
-    - Unpaid/Self Promotion(USP)
+    - Sponsor(S): Part of a video promoting a product or service not directly related to the creator. The creator will receive payment or compensation in the form of money or free products. If the entire video is about the product or service, use a Full Video Label. Don't make segments covering the entire video Sponsor.
+    - Self Promotion(SP): Promoting a product or service that is directly related to the creator themselves. This usually includes merchandise or promotion of monetized platforms.
+    - Unpaid Promotion(UP): The creator will not receive any payment in exchange for this promotion. This includes charity drives or free shout outs for products or other people they like.
+    - Interaction Reminder(IR): Explicit reminders to like, subscribe or interact with them on any paid or free platform(s) (e.g. click on a video).
+    - Preview/Recap(P): Collection of clips that show what is coming up in in this video or other videos in a series where all information is repeated later in the video. Do not include recap clips that only appear in the video or clips from a recapped video that is not directly linked to the current video.
+    - Hook/Greetings(G): Narrated trailers for the upcoming video, greetings and goodbyes. Do not include conclusions with information.
+    - Tangents/Jokes(T): Tangents/ Jokes is only for tangential scenes that are not required to understand the main content of the video. This can also include: Timelapses/ B-Roll, Fake Sponsors and slow-motion clips that do not provide any context or are used as replays or B-roll.
     - Exclusive Access(EA)
-    - Interaction Reminder(IR)
     - Highlight(H)
     - Intermission/Intro Animation(I)
     - Endcards/Credits(EC)
-    - Preview/Recap(P)
-    - Hook/Greetings(G)
-    - Tangents/Jokes(T)
     - Content(C)
 
     JSON Format:
@@ -39,7 +39,7 @@ export const segments = (context) => {
             context.metadata?.lengthSeconds || -1
         } if unknown),
         "l": "LABEL VALUE",
-        "t": "Title (max 3 words)",
+        "t": "Title",
         "d": "Description"
     }]
 

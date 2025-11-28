@@ -7,7 +7,8 @@ export { ModelManager };
 
 const LABEL_MAPPING = {
     S: "Sponsor",
-    USP: "Unpaid/Self Promotion",
+    SP: "Self Promotion",
+    UP: "Unpaid Promotion",
     EA: "Exclusive Access",
     IR: "Interaction Reminder (Subscribe)",
     H: "Highlight",
@@ -101,7 +102,7 @@ export class GeminiService {
                         title: p.t ?? p.title,
                         description: p.d ?? p.description,
                     }));
-                } catch (e) { }
+                } catch (e) {}
             }
 
             return [];
@@ -186,7 +187,8 @@ export class GeminiService {
             const modelName = mt[i];
             try {
                 console.log(
-                    `Attempting to use Gemini model: ${modelName} (${i + 1}/${mt.length
+                    `Attempting to use Gemini model: ${modelName} (${i + 1}/${
+                        mt.length
                     })`
                 );
                 const result = await this.api.call(p, modelName);
@@ -208,10 +210,11 @@ export class GeminiService {
             }
         }
 
-        const errorMsg = `All ${mt.length
-            } Gemini models failed. Errors: ${errors
-                .map((e) => `${e.model}: ${e.error}`)
-                .join("; ")}`;
+        const errorMsg = `All ${
+            mt.length
+        } Gemini models failed. Errors: ${errors
+            .map((e) => `${e.model}: ${e.error}`)
+            .join("; ")}`;
         console.error(errorMsg);
         throw new Error(errorMsg);
     }
