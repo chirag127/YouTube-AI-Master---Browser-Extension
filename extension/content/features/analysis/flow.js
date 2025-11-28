@@ -2,7 +2,7 @@ import { state } from "../../core/state.js";
 import TranscriptExtractor from "../../transcript/extractor.js";
 import metadataExtractor from "../../metadata/extractor.js";
 import { showLoading, showError } from "../../ui/components/loading.js";
-import { renderSummary } from "../../ui/renderers/summary.js";
+import { switchTab } from "../../ui/tabs.js";
 import { injectSegmentMarkers } from "../../segments/markers.js";
 import { setupAutoSkip } from "../../segments/autoskip.js";
 import { renderTimeline } from "../../segments/timeline.js";
@@ -20,7 +20,9 @@ export async function startAnalysis() {
 
         // 2. Transcript
         showLoading(contentArea, "Extracting transcript...");
-        const transcript = await TranscriptExtractor.extract(state.currentVideoId);
+        const transcript = await TranscriptExtractor.extract(
+            state.currentVideoId
+        );
 
         if (!transcript?.length) {
             throw new Error("No transcript available for this video");
@@ -28,7 +30,10 @@ export async function startAnalysis() {
         state.currentTranscript = transcript;
 
         // 3. AI Analysis
-        showLoading(contentArea, `Analyzing ${transcript.length} segments with AI...`);
+        showLoading(
+            contentArea,
+            `Analyzing ${transcript.length} segments with AI...`
+        );
         const result = await analyzeVideo(transcript, metadata);
 
         if (!result.success) {
@@ -48,8 +53,8 @@ export async function startAnalysis() {
             }
         }
 
-        renderSummary(contentArea, state.analysisData);
-
+        // Switch to Segments tab by default
+        switchTab("segments");
     } catch (error) {
         showError(contentArea, error.message);
     } finally {

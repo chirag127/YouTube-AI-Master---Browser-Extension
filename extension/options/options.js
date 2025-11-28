@@ -10,6 +10,8 @@ const DEFAULT_SETTINGS = {
     customPrompt: "",
     enableSegments: true,
     debugMode: false,
+    transcriptMethod: "auto",
+    transcriptLanguage: "en",
     // Segment Settings: { category: { action: 'ignore'|'skip'|'speed', speed: 2 } }
     segments: {},
 };
@@ -62,6 +64,8 @@ const elements = {
     importFile: document.getElementById("importFile"),
     resetDefaults: document.getElementById("resetDefaults"),
     debugMode: document.getElementById("debugMode"),
+    transcriptMethod: document.getElementById("transcriptMethod"),
+    transcriptLanguage: document.getElementById("transcriptLanguage"),
     toast: document.getElementById("toast"),
 };
 
@@ -128,6 +132,10 @@ async function loadSettings() {
         elements.customPrompt.value = currentSettings.customPrompt || "";
         elements.enableSegments.checked = currentSettings.enableSegments;
         elements.debugMode.checked = currentSettings.debugMode;
+        elements.transcriptMethod.value =
+            currentSettings.transcriptMethod || "auto";
+        elements.transcriptLanguage.value =
+            currentSettings.transcriptLanguage || "en";
 
         updateSegmentsUI();
     } catch (e) {
@@ -148,6 +156,8 @@ async function saveSettings() {
         currentSettings.customPrompt = elements.customPrompt.value.trim();
         currentSettings.enableSegments = elements.enableSegments.checked;
         currentSettings.debugMode = elements.debugMode.checked;
+        currentSettings.transcriptMethod = elements.transcriptMethod.value;
+        currentSettings.transcriptLanguage = elements.transcriptLanguage.value;
 
         // Segments are updated in real-time in the state object by event listeners
 
@@ -326,6 +336,8 @@ function setupEventListeners() {
         elements.saveHistory,
         elements.enableSegments,
         elements.debugMode,
+        elements.transcriptMethod,
+        elements.transcriptLanguage,
     ];
 
     autoSaveInputs.forEach((el) => {

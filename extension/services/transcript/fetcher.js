@@ -30,11 +30,46 @@ const STRATEGIES = [
 export async function fetchTranscript(videoId, lang = "en", timeout = 30000) {
     let lastError;
 
-    for (const strategy of STRATEGIES) {
+    // Load settings to get preferred method and language
+    const stored = await chrome.storage.sync.get([
+        "transcriptMethod",
+        "transcriptLanguage",
+    ]);
+    const preferredMethod = stored.transcriptMethod || "auto";
+    const preferredLang = stored.transcriptLanguage || lang;
+
+    console.log(
+        `[Fetcher] Settings - Method: ${preferredMethod}, Language: ${preferredLang}`
+    );
+
+    // Clone and sort strategies based on preference
+    let strategiesToTry = [...STRATEGIES];
+
+    if (preferredMethod !== "auto") {
+        const preferredStrategy = strategiesToTry.find((s) => {
+            if (preferredMethod === "youtube-direct")
+                return s.name === "YouTube Direct API";
+            if (preferredMethod === "dom-automation")
+                return s.name === "DOM Automation";
+            if (preferredMethod === "xhr") return s.name === "XHR Interceptor";
+            return false;
+        });
+
+        if (preferredStrategy) {
+            // Move preferred strategy to the top
+            strategiesToTry = strategiesToTry.filter(
+                (s) => s !== preferredStrategy
+            );
+            strategiesToTry.unshift(preferredStrategy);
+        }
+    }
+
+    for (const strategy of strategiesToTry) {
         try {
             console.log(`[Fetcher] Trying ${strategy.name}...`);
 
-            const promise = strategy.fetch(videoId, lang);
+            // Use preferred language from settings if available, otherwise fallback to arg
+            const promise = strategy.fetch(videoId, preferredLang);
             const result = await Promise.race([
                 promise,
                 new Promise((_, reject) =>
