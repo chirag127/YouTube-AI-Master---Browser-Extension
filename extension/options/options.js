@@ -78,21 +78,40 @@ let currentSettings = { ...DEFAULT_SETTINGS };
 let modelManager = null;
 
 // Initialization
-// Initialization
 document.addEventListener("DOMContentLoaded", async () => {
-    initializeElements();
-    await loadSettings();
-    setupEventListeners();
-    setupTabs();
-    renderSegmentsGrid();
+    console.log("[Options] DOMContentLoaded fired");
 
-    // Initialize Model Manager
-    modelManager = new ModelManager(
-        currentSettings.apiKey,
-        "https://generativelanguage.googleapis.com/v1beta"
-    );
-    if (currentSettings.apiKey) {
-        await refreshModelList();
+    try {
+        initializeElements();
+        console.log("[Options] Elements initialized");
+
+        // Setup tabs first so navigation works even if other things fail
+        setupTabs();
+        console.log("[Options] Tabs setup complete");
+
+        setupEventListeners();
+        console.log("[Options] Event listeners setup complete");
+
+        await loadSettings();
+        console.log("[Options] Settings loaded");
+
+        renderSegmentsGrid();
+        console.log("[Options] Segments grid rendered");
+
+        // Initialize Model Manager
+        if (ModelManager) {
+            modelManager = new ModelManager(
+                currentSettings.apiKey,
+                "https://generativelanguage.googleapis.com/v1beta"
+            );
+            if (currentSettings.apiKey) {
+                await refreshModelList();
+            }
+        }
+
+        console.log("[Options] Initialization complete");
+    } catch (e) {
+        console.error("[Options] Initialization error:", e);
     }
 });
 
