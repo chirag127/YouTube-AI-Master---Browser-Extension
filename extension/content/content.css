@@ -607,6 +607,13 @@
     margin-top: 4px;
 }
 
+.yt-ai-segment-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 6px;
+    color: var(--yt-ai-text);
+}
+
 .yt-ai-segment-desc {
     font-size: 13px;
     margin-top: 6px;

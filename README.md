@@ -1,139 +1,490 @@
-# YouTube AI Master
+# YouTube AI Navigator
 
-**The Definitive AI Companion for YouTube.**
+[![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-blue?logo=google-chrome)](https://chrome.google.com/webstore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-green)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![Privacy First](https://img.shields.io/badge/Privacy-First-brightgreen)](PRIVACY.md)
 
-_Turn passive viewing into active intelligence. YouTube AI Master orchestrates a symphony of advanced AI and real-time data sources to deliver instant, deep, and context-aware insights for any video._
+**Your intelligent guide through the YouTube universe.**
 
----
-
-## 💎 The Philosophy of Excellence
-
-YouTube AI Master is not just another wrapper around an LLM. It is a **Context Engine**.
-
-We believe that an AI is only as good as the data it consumes. A generic prompt yields a generic response. To achieve true insight, an AI must understand the world surrounding the video—the cultural references, the scientific facts, the gaming lore, and the breaking news.
-
-This extension implements a **Multi-Threaded Context Architecture** that autonomously queries up to **10+ specialized, free-to-use APIs** in parallel. It weaves this external knowledge into a unified context window, empowering Google's Gemini 1.5 Pro/Flash to deliver analysis that rivals human expert commentary.
-
-**Zero Cost. Zero Friction. Zero Compromise.**
-Every integrated API is free. No credit cards required. No mandatory sign-ups. Complete privacy.
-
-### 🎯 **Precision Navigation**
-
--   **Smart Segmentation:** The AI automatically partitions the video into logical chapters.
--   **SponsorBlock Integration:** Native support for community-verified segments. Automatically skip sponsors, intros, and interaction reminders.
--   **Visual Timeline:** See the video's structure at a glance with color-coded markers on the player.
-
-### 🛡️ **Privacy & Performance**
-
--   **Local-First:** Your API keys are stored in Chrome's secure sync storage. They never leave your browser except to hit the official endpoints.
--   **Concurrency:** Uses `Promise.allSettled` to fetch data from 10+ sources simultaneously, ensuring zero latency impact.
--   **Fault Tolerance:** If an API fails or a key is missing, the system gracefully degrades, skipping only that specific data point without interrupting the user experience.
+Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data sources. Free, private, and zero-config.
 
 ---
 
-## 🛠️ Configuration & Setup
+## 🎯 The Vision
 
-### 1. Installation
+YouTube AI Navigator transforms passive video consumption into active intelligence gathering. While other extensions simply wrap an LLM in a browser popup, we've engineered a **Context Engine**—a sophisticated orchestration layer that autonomously queries 10+ specialized APIs in parallel, synthesizing external knowledge into a unified context window that empowers Google's Gemini AI to deliver analysis rivaling human expert commentary.
 
-1.  Clone this repository:
-    ```bash
-    git clone https://github.com/chirag127/youtube-ai-master.git
-    ```
-2.  Open Chrome and navigate to `chrome://extensions/`.
-3.  Enable **Developer mode** (top right).
-4.  Click **Load unpacked** and select the `extension` folder.
-
-### 2. The "Context Engine" Setup (Optional but Recommended)
-
-Go to the **Extension Settings > External APIs** tab. All keys are for **Free Tier** plans.
-
-| Category    | Service           | Requirement  | Cost |
-| :---------- | :---------------- | :----------- | :--- |
-| **AI Core** | **Google Gemini** | **Required** | Free |
-| Movies/TV   | TMDB              | Optional     | Free |
-| Gaming      | IGDB (Twitch)     | Optional     | Free |
-| News        | NewsData.io       | Optional     | Free |
-| Fact Check  | Google Cloud      | Optional     | Free |
-| Science     | Semantic Scholar  | **No Key**   | Free |
-| Books       | Open Library      | **No Key**   | Free |
-| Knowledge   | Wikidata          | **No Key**   | Free |
-| Language    | Datamuse          | **No Key**   | Free |
-| Weather     | OpenMeteo         | **No Key**   | Free |
-
-_Note: The extension works perfectly with just the Gemini Key. The other APIs simply enhance the depth of the analysis._
+**The Result:** Instant, deep, context-aware insights for any video. Zero cost. Zero friction. Zero compromise.
 
 ---
 
-## 🏗️ Architecture of Excellence
+## ✨ Core Capabilities
 
-The codebase is engineered for production-grade reliability, performance, and maintainability.
+### 🧭 Intelligent Navigation
 
-### **Unbreakable UI Architecture**
+**Smart Segmentation**
+The AI automatically partitions videos into logical chapters, identifying:
 
-The user interface is built to survive the hostile environment of the modern web:
+-   Content segments (intro, main content, outro)
+-   Sponsor segments (with SponsorBlock integration)
+-   Interaction reminders (like, subscribe, notifications)
+-   Non-music sections in music videos
+-   Self-promotion and unpaid promotions
 
--   **Self-Healing DOM Injection:** A dedicated `MutationObserver` monitors the YouTube sidebar 60 times per second. If the AI Widget is displaced, covered, or removed by YouTube's dynamic navigation, it is instantly re-injected at the top.
--   **Z-Index Supremacy:** Engineered with a calculated stacking context (`z-index: 2202`) to ensure it floats above all YouTube native elements, including playlists, transcripts, and ads.
--   **SPA-Aware Navigation:** The extension listens to YouTube's internal `yt-navigate-finish` events to handle soft navigations seamlessly, ensuring the widget is always present without page reloads.
+**Visual Timeline**
+Color-coded markers overlay the YouTube player's progress bar, providing instant visual comprehension of video structure. Click any segment to jump directly to that timestamp.
 
-### **Modular Design Pattern**
+**Auto-Skip Technology**
+Configure granular auto-skip rules per segment category. The extension monitors playback in real-time and seamlessly skips unwanted content without interrupting your flow.
 
-We strictly adhere to the **Single Responsibility Principle** with maximum modularity:
+### 🤖 AI-Powered Analysis
 
--   **`extension/api/core/`**: Shared infrastructure (HTTP client, rate limiter, error handler)
--   **`extension/api/`**: Isolated, fault-tolerant wrappers for each external service
--   **`extension/services/context-manager.js`**: Orchestrates parallel API calls with graceful degradation
--   **`extension/background/handlers/`**: Request handlers with comprehensive error handling
+**Context Engine Architecture**
+Before generating analysis, the extension executes a parallel data-gathering operation across multiple specialized APIs:
 
-### **Production-Grade Reliability**
+| Domain        | Service           | Purpose                                     | API Key Required |
+| ------------- | ----------------- | ------------------------------------------- | ---------------- |
+| **AI Core**   | Google Gemini     | Natural language understanding & generation | ✅ Required      |
+| Movies/TV     | TMDB              | Film & television metadata, cast, reviews   | ⚪ Optional      |
+| Gaming        | IGDB (Twitch)     | Video game data, genres, platforms          | ⚪ Optional      |
+| News          | NewsData.io       | Breaking news, current events               | ⚪ Optional      |
+| Fact-Checking | Google Fact Check | Claim verification, source validation       | ⚪ Optional      |
+| Academic      | Semantic Scholar  | Research papers, citations, authors         | ⚫ No Key Needed |
+| Books         | Open Library      | Book metadata, authors, editions            | ⚫ No Key Needed |
+| Knowledge     | Wikidata          | Structured knowledge graph                  | ⚫ No Key Needed |
+| Language      | Datamuse          | Word associations, rhymes, definitions      | ⚫ No Key Needed |
+| Weather       | OpenMeteo         | Weather data, forecasts                     | ⚫ No Key Needed |
+| Music         | MusicBrainz       | Artist info, albums, releases               | ⚫ No Key Needed |
+| Lyrics        | Genius            | Song lyrics, annotations                    | ⚫ No Key Needed |
+| Transcripts   | Invidious/Piped   | Privacy-friendly YouTube frontends          | ⚫ No Key Needed |
+| Segments      | SponsorBlock      | Community-verified video segments           | ⚫ No Key Needed |
+| Titles        | DeArrow           | Crowdsourced clickbait-free titles          | ⚫ No Key Needed |
 
-**Exponential Backoff Retry:**
+**Graceful Degradation**
+Every external API is treated as **optional**. If a service is unavailable or an API key is missing, the system silently skips that data source and continues. The extension works perfectly with just a Gemini API key—additional services simply enhance the depth of analysis.
+
+**Multi-Model Support**
+
+-   Gemini 1.5 Flash (fast, cost-effective)
+-   Gemini 1.5 Pro (deeper reasoning)
+-   Gemini 2.0 Flash (latest experimental)
+-   Automatic fallback if primary model fails
+
+### 📊 Analysis Features
+
+**Comprehensive Summaries**
+
+-   Configurable length (brief, standard, detailed)
+-   Multi-language output (50+ languages)
+-   Markdown formatting with structure
+-   Key points extraction
+-   Timestamp references
+
+**Interactive Chat**
+
+-   Ask follow-up questions about the video
+-   Context-aware responses using video transcript
+-   Multi-turn conversations with memory
+-   Code explanation for programming tutorials
+-   Fact-checking for news content
+
+**Comment Analysis**
+
+-   Sentiment analysis of top comments
+-   Common themes and reactions
+-   Controversial topics identification
+-   Community consensus detection
+
+---
+
+## 🏗️ Engineering Excellence
+
+### Unbreakable UI Architecture
+
+The user interface is engineered to survive the hostile environment of modern web applications:
+
+**Self-Healing DOM Injection**
+A dedicated `MutationObserver` monitors the YouTube sidebar 60 times per second. If the AI Widget is displaced, covered, or removed by YouTube's dynamic navigation, it is instantly re-injected at the top of the sidebar.
+
+**Z-Index Supremacy**
+Calculated stacking context (`z-index: 2202`) ensures the widget floats above all YouTube native elements, including playlists, transcripts, and advertisements.
+
+**SPA-Aware Navigation**
+The extension listens to YouTube's internal `yt-navigate-finish` events, handling soft navigations seamlessly without page reloads.
+
+### Production-Grade Reliability
+
+**Exponential Backoff Retry**
 
 -   Automatically retries transient failures (rate limits, server errors, timeouts)
 -   Configurable retry attempts with exponential delays (1s → 2s → 4s)
--   Fails fast on non-retryable errors (auth, bad request)
+-   Fails fast on non-retryable errors (authentication, bad requests)
 
-**Rate Limiting:**
+**Rate Limiting**
 
--   Token bucket algorithm prevents exceeding API limits (15 RPM for Gemini free tier)
+-   Token bucket algorithm prevents exceeding API limits
+-   Gemini free tier: 15 requests per minute (RPM)
 -   Request queuing when limit reached
 -   Real-time statistics tracking
 
-**Timeout Protection:**
+**Timeout Protection**
 
 -   All API calls have configurable timeouts (default 30s)
 -   Prevents hanging requests from blocking the extension
--   Uses AbortController for clean cancellation
+-   Uses `AbortController` for clean cancellation
 
-**Error Classification:**
+**Error Classification**
 
 -   Distinguishes between retryable and fatal errors
 -   Provides user-friendly, actionable error messages
 -   Structured logging for debugging
 
-### **Performance Optimizations**
+### Performance Optimizations
 
--   **Parallel Execution:** Context Manager fetches 10+ APIs simultaneously using `Promise.allSettled`
--   **Request Caching:** Previously analyzed videos return instantly
--   **Service Worker Keep-Alive:** Prevents termination during long operations
--   **Model Fallback:** Automatically tries alternative models if primary fails
+**Parallel Execution**
+Context Manager fetches 10+ APIs simultaneously using `Promise.allSettled`, ensuring zero latency impact from sequential operations.
 
-### **Security & Validation**
+**Request Caching**
+Previously analyzed videos return instantly from local storage, eliminating redundant API calls.
 
--   **Input Sanitization:** All external data validated and sanitized
--   **Sender Verification:** Only accepts messages from extension pages
--   **API Key Protection:** Stored securely in Chrome sync storage, never logged
+**Service Worker Keep-Alive**
+Prevents Chrome from terminating the background script during long operations, ensuring uninterrupted analysis.
 
-### **Future-Proofing**
+**Model Fallback**
+Automatically tries alternative Gemini models if the primary model fails, maximizing success rate.
 
--   **Manifest V3 Compliant:** Built on modern Service Worker architecture
--   **Model Agnostic:** Supports any Gemini model (Flash, Pro, Ultra)
--   **Extensible:** Easy to add new APIs or features
+### Security & Validation
 
-For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md).
+**Input Sanitization**
+All external data is validated and sanitized at entry points, preventing injection attacks.
+
+**Sender Verification**
+Message handlers verify sender origin, accepting only messages from extension pages.
+
+**API Key Protection**
+Keys are stored securely in Chrome's sync storage, never logged or transmitted except to official endpoints.
+
+**Minimal Permissions**
+The extension requests only the `storage` permission. No access to browsing history, tabs, or personal data.
 
 ---
 
-## 📜 License
+## 🚀 Installation & Setup
 
-MIT License. Built with ❤️ for the Open Source community.
+### 1. Install the Extension
+
+**From Source (Developer Mode)**
+
+```bash
+git clone https://github.com/chirag127/YouTube-AI-Navigator.git
+cd YouTube-AI-Navigator
+```
+
+1. Open Chrome and navigate to `chrome://extensions/`
+2. Enable **Developer mode** (toggle in top-right corner)
+3. Click **Load unpacked**
+4. Select the `extension` folder
+
+**From Chrome Web Store** _(Coming Soon)_
+Search for "YouTube AI Navigator" in the Chrome Web Store and click "Add to Chrome".
+
+### 2. Configure Your API Key
+
+**Required: Google Gemini API Key**
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Click "Create API Key"
+3. Copy the generated key
+4. Open the extension settings (click the extension icon → Settings)
+5. Paste your API key in the "Gemini API Key" field
+6. Click "Save"
+
+**The extension is now fully functional.** All other API keys are optional enhancements.
+
+### 3. Optional: Enhance with Additional APIs
+
+For deeper contextual analysis, configure optional API keys:
+
+**TMDB (Movies & TV)**
+
+-   Visit [TMDB API](https://www.themoviedb.org/settings/api)
+-   Register for a free account
+-   Copy your API key (v3 auth)
+
+**IGDB (Gaming)**
+
+-   Visit [Twitch Developers](https://dev.twitch.tv/console/apps)
+-   Create an application
+-   Copy Client ID and Client Secret
+
+**NewsData.io (News)**
+
+-   Visit [NewsData.io](https://newsdata.io/register)
+-   Register for free tier (200 requests/day)
+-   Copy your API key
+
+**Google Fact Check API**
+
+-   Visit [Google Cloud Console](https://console.cloud.google.com/)
+-   Enable Fact Check Tools API
+-   Create credentials (API key)
+
+All other services (Semantic Scholar, Open Library, Wikidata, Datamuse, OpenMeteo, MusicBrainz, Genius) require **no API keys** and work out of the box.
+
+---
+
+## 🎮 Usage Guide
+
+### Basic Workflow
+
+1. **Navigate to any YouTube video**
+2. **The AI Widget appears** in the right sidebar
+3. **Click "Analyze Video"** to generate insights
+4. **View the analysis** with timestamps, key points, and context
+5. **Ask follow-up questions** in the chat interface
+6. **Click segment markers** on the timeline to jump to specific sections
+
+### Advanced Features
+
+**Auto-Analysis**
+Enable "Auto-analyze on page load" in settings to automatically analyze every video you watch.
+
+**Auto-Skip**
+Configure per-category auto-skip rules:
+
+-   Skip sponsors automatically
+-   Skip intros/outros
+-   Skip interaction reminders
+-   Skip self-promotion
+
+**Custom Prompts**
+Modify the AI prompt template in settings to customize analysis style and focus areas.
+
+**Export History**
+Export your analysis history as JSON for backup or migration.
+
+**Multi-Language**
+Set your preferred output language in settings. The AI will respond in your chosen language regardless of the video's original language.
+
+---
+
+## 🔒 Privacy & Data Handling
+
+YouTube AI Navigator is designed with **privacy-first principles**:
+
+### Data Storage
+
+**Local Storage Only**
+
+-   All data is stored in Chrome's local storage on your device
+-   Video analysis, transcripts, and chat history never leave your browser
+-   No external databases or cloud storage
+
+**Sync Storage for Settings**
+
+-   API keys and preferences are stored in Chrome's sync storage
+-   Synced across your Chrome browsers (if signed in)
+-   Encrypted by Chrome's built-in sync encryption
+
+### Data Transmission
+
+**API Keys**
+
+-   Stored securely in Chrome sync storage
+-   Transmitted only to official API endpoints over HTTPS
+-   Never logged, never shared with third parties
+
+**Video Data**
+
+-   Video IDs and metadata are sent to configured APIs for analysis
+-   Transcript data is sent to Gemini AI for processing
+-   No personal information (browsing history, identity) is transmitted
+
+**No Tracking**
+
+-   No analytics
+-   No telemetry
+-   No user tracking
+-   No advertisements
+
+### Permissions Explained
+
+The extension requests only **one permission**:
+
+**`storage`** - Required to:
+
+-   Save your API keys securely
+-   Cache video analysis for instant retrieval
+-   Store your preferences and settings
+-   Maintain chat history
+
+**No other permissions are requested.** The extension cannot:
+
+-   Access your browsing history
+-   Read data from other websites
+-   Track your activity
+-   Access your personal information
+
+For complete details, see [PRIVACY.md](PRIVACY.md).
+
+---
+
+## 🛠️ Architecture Deep Dive
+
+### Modular Design Pattern
+
+The codebase strictly adheres to the **Single Responsibility Principle** with maximum modularity:
+
+```
+extension/
+├── api/                    # External API integrations (isolated, fault-tolerant)
+│   ├── core/              # Shared infrastructure (HTTP client, rate limiter, error handler)
+│   ├── gemini.js          # Gemini AI integration
+│   ├── tmdb.js            # TMDB API wrapper
+│   ├── igdb.js            # IGDB API wrapper
+│   └── ...                # 15+ API wrappers
+├── background/            # Service worker (Manifest V3)
+│   ├── handlers/          # Message handlers (analyze, transcribe, settings)
+│   ├── security/          # Input validation, sender verification
+│   └── utils/             # API key management, keep-alive
+├── content/               # Content scripts (YouTube page injection)
+│   ├── ui/                # Widget, timeline, markers, legend
+│   ├── segments/          # Segment detection, auto-skip, timeline
+│   └── transcript/        # Transcript extraction strategies
+├── services/              # Business logic (context manager, storage, segments)
+│   ├── context-manager.js # Orchestrates parallel API calls
+│   ├── storage/           # Video cache, history, transcript storage
+│   └── segments/          # Rule engine, classification, detection
+├── options/               # Settings page
+├── popup/                 # Extension popup
+├── sidepanel/             # Side panel (chat interface)
+└── utils/                 # Shared utilities (shortcuts, logging)
+```
+
+### Concurrency Model
+
+**Context Manager** (`services/context-manager.js`)
+Orchestrates parallel data gathering:
+
+```javascript
+const results = await Promise.allSettled([
+    fetchFromTMDB(title),
+    fetchFromIGDB(title),
+    fetchFromNewsData(title),
+    fetchFromSemanticScholar(title),
+    fetchFromWikidata(title),
+    // ... 10+ concurrent requests
+]);
+```
+
+Each API call is wrapped in a fault-tolerant wrapper that:
+
+1. Checks if API key exists (if required)
+2. Executes the request with timeout
+3. Retries on transient failures
+4. Returns `null` on error (graceful degradation)
+5. Never throws exceptions that would break the entire flow
+
+### Transcript Extraction Strategies
+
+The extension employs multiple strategies to extract video transcripts, attempting each in sequence until one succeeds:
+
+1. **YouTube Direct Strategy** - Extracts from YouTube's internal API
+2. **DOM Strategy** - Parses transcript from YouTube's DOM
+3. **XHR Interception Strategy** - Intercepts YouTube's network requests
+4. **Invidious Strategy** - Fetches from Invidious API
+5. **Piped Strategy** - Fetches from Piped API
+
+This multi-strategy approach ensures maximum reliability across different video types and YouTube UI variations.
+
+### Segment Classification
+
+**Rule Engine** (`services/segments/rule-engine.js`)
+Classifies video segments using pattern matching:
+
+-   **Sponsor Detection** - Keywords: "sponsor", "promo code", "discount"
+-   **Intro Detection** - First 30 seconds, common intro patterns
+-   **Outro Detection** - Last 30 seconds, "thanks for watching"
+-   **Interaction Reminder** - "like", "subscribe", "notification bell"
+-   **Self Promotion** - Creator's own products/services
+-   **Unpaid Promotion** - Charity, friend shout-outs
+
+Rules are modular and extensible. New rules can be added without modifying core logic.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! This project follows elite engineering standards:
+
+### Code Quality Standards
+
+-   **Modularity**: One class/function per file (Single Responsibility Principle)
+-   **Conciseness**: Minimal tokens, modern syntax, no verbose comments
+-   **Error Handling**: Zero-failure tolerance, graceful degradation
+-   **Logging**: Comprehensive logging for debugging
+-   **Documentation**: Inline JSDoc for complex algorithms
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Testing
+
+-   Manual testing on YouTube videos of various types
+-   Verify graceful degradation when APIs fail
+-   Test with and without API keys
+-   Validate UI responsiveness and self-healing
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+Built with ❤️ for the open-source community.
+
+---
+
+## 🙏 Acknowledgments
+
+**APIs & Services**
+
+-   [Google Gemini](https://ai.google.dev/) - AI foundation
+-   [TMDB](https://www.themoviedb.org/) - Movie & TV data
+-   [IGDB](https://www.igdb.com/) - Gaming data
+-   [NewsData.io](https://newsdata.io/) - News aggregation
+-   [Semantic Scholar](https://www.semanticscholar.org/) - Academic research
+-   [Open Library](https://openlibrary.org/) - Book data
+-   [Wikidata](https://www.wikidata.org/) - Knowledge graph
+-   [MusicBrainz](https://musicbrainz.org/) - Music metadata
+-   [Genius](https://genius.com/) - Lyrics & annotations
+-   [Invidious](https://invidious.io/) - Privacy-friendly YouTube frontend
+-   [Piped](https://piped.video/) - Privacy-friendly YouTube frontend
+-   [SponsorBlock](https://sponsor.ajay.app/) - Community segment database
+-   [DeArrow](https://dearrow.ajay.app/) - Crowdsourced titles
+
+**Inspiration**
+This extension stands on the shoulders of giants in the YouTube enhancement ecosystem, including SponsorBlock, Return YouTube Dislike, and Enhancer for YouTube.
+
+---
+
+## 📞 Support
+
+**Issues & Bug Reports**
+[GitHub Issues](https://github.com/chirag127/YouTube-AI-Navigator/issues)
+
+**Feature Requests**
+[GitHub Discussions](https://github.com/chirag127/YouTube-AI-Navigator/discussions)
+
+**Security Vulnerabilities**
+Please report security issues privately to the repository owner.
+
+---
+
+**Navigate smarter. Watch better. YouTube AI Navigator.**

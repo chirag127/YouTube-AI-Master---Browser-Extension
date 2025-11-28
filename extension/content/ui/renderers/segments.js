@@ -63,6 +63,7 @@ export function renderSegments(c, data) {
             return `<div class="yt-ai-segment-item" style="border-left:4px solid ${color}">
       <div class="yt-ai-segment-label">${x.label}</div>
       <div class="yt-ai-segment-time">${timeHtml}</div>
+      ${x.title ? `<div class="yt-ai-segment-title">${x.title}</div>` : ''}
       <div class="yt-ai-segment-desc">${x.description || x.text || ""}</div>
     </div>`;
         })

@@ -1,17 +1,15 @@
 {
     "manifest_version": 3,
-    "name": "YouTube AI Master",
+    "name": "YouTube AI Navigator",
     "version": "2.0.0",
-    "description": "Production-grade YouTube AI tool with Gemini AI - featuring intelligent retry, rate limiting, and fault-tolerant architecture.",
+    "description": "Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data sources. Free, private, zero-config.",
     "icons": {
         "16": "assets/icon16.png",
         "48": "assets/icon48.png",
         "128": "assets/icon128.png"
     },
     "permissions": [
-        "storage",
-        "activeTab",
-        "scripting"
+        "storage"
     ],
     "host_permissions": [
         "https://www.youtube.com/*",
@@ -87,9 +85,9 @@
                 "utils/*.js"
             ],
             "matches": [
-    "https://www.youtube.com/*",
-    "https://youtube.com/*"
-]
-}
-]
+                "https://www.youtube.com/*",
+                "https://youtube.com/*"
+            ]
+        }
+    ]
 }

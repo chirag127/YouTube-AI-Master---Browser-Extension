@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data sources. Free, private, zero-config.">
+    <meta name="keywords"
+        content="YouTube, AI, Navigator, Chrome Extension, Video Analysis, Smart Segmentation, SponsorBlock, Gemini AI">
+    <meta name="author" content="YouTube AI Navigator">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YouTube AI Navigator - Your Intelligent Guide Through YouTube">
+    <meta property="og:description"
+        content="Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data sources.">
+    <meta property="og:image" content="extension/assets/icon128.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="YouTube AI Navigator">
+    <meta property="twitter:description"
+        content="Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data sources.">
+    <meta property="twitter:image" content="extension/assets/icon128.png">
+
+    <title>YouTube AI Navigator - Your Intelligent Guide Through YouTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --secondary: #34a853;
+            --accent: #fbbc04;
+            --danger: #ea4335;
+            --dark: #202124;
+            --gray: #5f6368;
+            --light-gray: #f1f3f4;
+            --white: #ffffff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+
+        .hero .description {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--light-gray);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Privacy Section */
+        .privacy {
+            padding: 6rem 0;
+            background: var(--light-gray);
+        }
+
+        .privacy-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .privacy-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .badge-icon {
+            font-size: 2rem;
+        }
+
+        .badge-text {
+            text-align: left;
+        }
+
+        .badge-text strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .badge-text span {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: var(--white);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .hero .description {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="extension/assets/icon48.png" alt="YouTube AI Navigator Logo">
+                <span>YouTube AI Navigator</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#privacy">Privacy</a></li>
+                <li><a href="https://github.com/chirag127/YouTube-AI-Navigator">GitHub</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>YouTube AI Navigator</h1>
+            <p class="tagline">Your intelligent guide through the YouTube universe.</p>
+            <p class="description">
+                Navigate YouTube smarter with AI-powered insights, smart segmentation, and instant context from 10+ data
+                sources. Free, private, and zero-config.
+            </p>
+            <div class="cta-buttons">
+                <a href="https://chrome.google.com/webstore" class="btn btn-primary">
+                    <span>🚀</span>
+                    Add to Chrome
+                </a>
+                <a href="https://github.com/chirag127/YouTube-AI-Navigator" class="btn btn-secondary">
+                    <span>📖</span>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧭</div>
+                    <h3>Smart Segmentation</h3>
+                    <p>AI automatically partitions videos into logical chapters. Visual timeline with color-coded
+                        markers. Click to jump to any segment instantly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Context Engine queries 10+ specialized APIs in parallel. Gemini AI delivers expert-level insights
+                        with full context awareness.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Auto-Skip Technology</h3>
+                    <p>Configure granular auto-skip rules per segment category. Seamlessly skip sponsors, intros, and
+                        interaction reminders.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Interactive Chat</h3>
+                    <p>Ask follow-up questions about the video. Context-aware responses using video transcript.
+                        Multi-turn conversations with memory.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multi-Language</h3>
+                    <p>Output in 50+ languages. AI responds in your chosen language regardless of video's original
+                        language.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Comment Analysis</h3>
+                    <p>Sentiment analysis of top comments. Common themes and reactions. Controversial topics
+                        identification.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>10+</h3>
+                    <p>Data Sources</p>
+                </div>
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>Languages</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Free & Open Source</p>
+                </div>
+                <div class="stat-item">
+                    <h3>0</h3>
+                    <p>Tracking or Ads</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section id="privacy" class="privacy">
+        <div class="container">
+            <div class="privacy-content">
+                <h2 class="section-title">Privacy-First Design</h2>
+                <p style="font-size: 1.2rem; color: var(--gray); margin-bottom: 2rem;">
+                    Your data stays on your device. No tracking. No analytics. No telemetry. Just pure functionality.
+                </p>
+
+                <div class="privacy-badges">
+                    <div class="badge">
+                        <div class="badge-icon">🔒</div>
+                        <div class="badge-text">
+                            <strong>Local Storage Only</strong>
+                            <span>All data stays on your device</span>
+                        </div>
+                    </div>
+
+                    <div class="badge">
+                        <div class="badge-icon">🚫</div>
+                        <div class="badge-text">
+                            <strong>No Tracking</strong>
+                            <span>Zero analytics or telemetry</span>
+                        </div>
+                    </div>
+
+                    <div class="badge">
+                        <div class="badge-icon">🛡️</div>
+                        <div class="badge-text">
+                            <strong>Minimal Permissions</strong>
+                            <span>Only requests 'storage'</span>
+                        </div>
+                    </div>
+
+                    <div class="badge">
+                        <div class="badge-icon">📖</div>
+                        <div class="badge-text">
+                            <strong>Open Source</strong>
+                            <span>Verify the code yourself</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="privacy.html" class="btn btn-primary" style="margin-top: 2rem;">
+                    Read Full Privacy Policy
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>YouTube AI Navigator</h4>
+                    <p style="color: rgba(255, 255, 255, 0.8);">
+                        Your intelligent guide through the YouTube universe. Navigate smarter. Watch better.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="README.md">Documentation</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="https://github.com/chirag127/YouTube-AI-Navigator">GitHub Repository</a></li>
+                        <li><a href="https://github.com/chirag127/YouTube-AI-Navigator/issues">Report Issues</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://ai.google.dev/">Google Gemini API</a></li>
+                        <li><a href="https://developer.chrome.com/docs/extensions/">Chrome Extensions Docs</a></li>
+                        <li><a href="https://sponsor.ajay.app/">SponsorBlock</a></li>
+                        <li><a href="https://invidious.io/">Invidious</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/chirag127/YouTube-AI-Navigator/discussions">Discussions</a></li>
+                        <li><a href="https://github.com/chirag127/YouTube-AI-Navigator/issues">Feature Requests</a></li>
+                        <li><a href="https://github.com/chirag127/YouTube-AI-Navigator/blob/main/LICENSE">MIT
+                                License</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 YouTube AI Navigator. Open Source under MIT License. Built with ❤️ for the community.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
