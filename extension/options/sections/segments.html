@@ -1,0 +1,42 @@
+<section id="segments" class="tab-content">
+    <header class="section-header">
+        <h2>Segments & Actions</h2>
+        <p>Control how different video segments are handled</p>
+    </header>
+
+    <div class="card highlight-card">
+        <div class="form-group checkbox-row">
+            <div class="checkbox-label">
+                <label for="enableSegments">Enable Segment Detection</label>
+                <p class="help-text">
+                    Analyze video to identify sponsors, intros, and more.
+                </p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="enableSegments" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card" id="segmentSettingsContainer">
+        <div class="card-header-row">
+            <h3>Category Actions</h3>
+            <div class="global-actions">
+                <button id="skipAllBtn" class="btn btn-sm btn-secondary">
+                    Set All to Skip
+                </button>
+                <button id="speedAllBtn" class="btn btn-sm btn-secondary">
+                    Set All to Speed Up
+                </button>
+                <button id="resetAllBtn" class="btn btn-sm btn-outline">
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="segments-grid" id="segmentsGrid">
+            <!-- Generated dynamically by JS -->
+        </div>
+    </div>
+</section>

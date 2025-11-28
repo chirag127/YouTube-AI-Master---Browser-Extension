@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     scs = new SegmentClassificationService(gs, cs);
     try {
         await gs.fetchAvailableModels();
-    } catch (e) {}
+    } catch (e) { }
     for (const b of tbs) {
         b.addEventListener("click", () => {
             for (const x of tbs) x.classList.remove("active");
@@ -208,17 +208,27 @@ async function analyzeVideo(retryCount = 0) {
         setStatus("loading", "Analyzing comments...");
         const cr = await chrome.tabs
             .sendMessage(tab.id, { action: "GET_COMMENTS" })
-            .catch(() => ({ comments: [] }));
+            .catch((e) => {
+                console.error("Failed to get comments:", e);
+                return { comments: [] };
+            });
         const cms = cr?.comments || [];
+
+        console.log('[Sidepanel] Received comments:', cms);
+        console.log('[Sidepanel] Comments count:', cms.length);
 
         let ca = "No comments available to analyze.";
         if (cms.length > 0) {
             try {
+                console.log('[Sidepanel] Sending comments to Gemini:', cms);
                 ca = await gs.analyzeCommentSentiment(cms);
+                console.log('[Sidepanel] Comment analysis result:', ca);
             } catch (e) {
-                console.warn("Comment analysis failed:", e);
-                ca = "Failed to analyze comments.";
+                console.error("Comment analysis failed:", e);
+                ca = `Failed to analyze comments: ${e.message}`;
             }
+        } else {
+            console.warn('[Sidepanel] No comments found to analyze');
         }
 
         const insightsHtml = await parseMarkdown(an.insights);
@@ -364,7 +374,7 @@ async function seekVideo(sec) {
                 action: "SEEK_TO",
                 timestamp: sec,
             });
-    } catch (e) {}
+    } catch (e) { }
 }
 function fmtTime(s) {
     const m = Math.floor(s / 60),

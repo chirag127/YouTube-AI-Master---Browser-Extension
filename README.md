@@ -66,25 +66,63 @@ _Note: The extension works perfectly with just the Gemini Key. The other APIs si
 
 ## 🏗️ Architecture of Excellence
 
-The codebase is engineered for scale, readability, and maintainability.
+The codebase is engineered for production-grade reliability, performance, and maintainability.
 
 ### **Modular Design Pattern**
 
-We strictly adhere to the **Single Responsibility Principle**.
+We strictly adhere to the **Single Responsibility Principle** with maximum modularity:
 
--   **`extension/api/`**: Contains isolated, fault-tolerant wrappers for each external service (`tmdb.js`, `musicbrainz.js`, etc.).
--   **`extension/services/context-manager.js`**: The orchestrator. It uses heuristics to determine _intent_ (e.g., "Is this a movie review?") and selectively activates the relevant API agents.
--   **`extension/background/handlers/analyze-video.js`**: The main pipeline. It fuses the Transcript, Metadata, SponsorBlock segments, and External Context into a massive prompt payload for Gemini.
+-   **`extension/api/core/`**: Shared infrastructure (HTTP client, rate limiter, error handler)
+-   **`extension/api/`**: Isolated, fault-tolerant wrappers for each external service
+-   **`extension/services/context-manager.js`**: Orchestrates parallel API calls with graceful degradation
+-   **`extension/background/handlers/`**: Request handlers with comprehensive error handling
 
-### **Robust Error Handling**
+### **Production-Grade Reliability**
 
--   **Graceful Degradation:** The application assumes every network request might fail. It wraps every call in safe handlers that log errors without crashing the UI.
--   **Input Sanitization:** All external data is treated as untrusted and sanitized before being injected into the prompt or DOM.
+**Exponential Backoff Retry:**
+
+-   Automatically retries transient failures (rate limits, server errors, timeouts)
+-   Configurable retry attempts with exponential delays (1s → 2s → 4s)
+-   Fails fast on non-retryable errors (auth, bad request)
+
+**Rate Limiting:**
+
+-   Token bucket algorithm prevents exceeding API limits (15 RPM for Gemini free tier)
+-   Request queuing when limit reached
+-   Real-time statistics tracking
+
+**Timeout Protection:**
+
+-   All API calls have configurable timeouts (default 30s)
+-   Prevents hanging requests from blocking the extension
+-   Uses AbortController for clean cancellation
+
+**Error Classification:**
+
+-   Distinguishes between retryable and fatal errors
+-   Provides user-friendly, actionable error messages
+-   Structured logging for debugging
+
+### **Performance Optimizations**
+
+-   **Parallel Execution:** Context Manager fetches 10+ APIs simultaneously using `Promise.allSettled`
+-   **Request Caching:** Previously analyzed videos return instantly
+-   **Service Worker Keep-Alive:** Prevents termination during long operations
+-   **Model Fallback:** Automatically tries alternative models if primary fails
+
+### **Security & Validation**
+
+-   **Input Sanitization:** All external data validated and sanitized
+-   **Sender Verification:** Only accepts messages from extension pages
+-   **API Key Protection:** Stored securely in Chrome sync storage, never logged
 
 ### **Future-Proofing**
 
--   **Manifest V3 Compliant:** Built entirely on the new Service Worker architecture.
--   **Model Agnostic:** The `ModelManager` is designed to support future Gemini iterations (Flash, Pro, Ultra) instantly.
+-   **Manifest V3 Compliant:** Built on modern Service Worker architecture
+-   **Model Agnostic:** Supports any Gemini model (Flash, Pro, Ultra)
+-   **Extensible:** Easy to add new APIs or features
+
+For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 

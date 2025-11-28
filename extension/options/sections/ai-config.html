@@ -1,0 +1,77 @@
+<section id="ai-config" class="tab-content">
+    <header class="section-header">
+        <h2>AI Configuration</h2>
+        <p>Manage your Gemini API connection and model settings</p>
+    </header>
+
+    <div class="card">
+        <h3>API Connection</h3>
+        <div class="form-group">
+            <label for="apiKey">Gemini API Key</label>
+            <div class="input-with-button">
+                <input
+                    type="password"
+                    id="apiKey"
+                    class="form-input"
+                    placeholder="Enter your API key"
+                />
+                <button id="toggleApiKey" class="btn-icon" title="Show/Hide">
+                    👁️
+                </button>
+            </div>
+            <p class="help-text">
+                Get your free key from
+                <a href="https://ai.google.dev/" target="_blank"
+                    >Google AI Studio</a
+                >.
+            </p>
+        </div>
+        <div class="form-actions">
+            <button id="testConnection" class="btn btn-secondary">
+                Test Connection
+            </button>
+        </div>
+        <div id="apiStatus" class="status-indicator hidden"></div>
+    </div>
+
+    <div class="card">
+        <h3>Model Selection</h3>
+        <div class="form-group">
+            <label for="modelSelect">Gemini Model</label>
+            <div class="select-wrapper">
+                <select id="modelSelect" class="form-select">
+                    <option value="" disabled selected>
+                        Loading models...
+                    </option>
+                </select>
+                <button
+                    id="refreshModels"
+                    class="btn-icon"
+                    title="Refresh Models"
+                >
+                    🔄
+                </button>
+            </div>
+            <p class="help-text">
+                Select the AI model to use. Newer models may be faster or
+                smarter.
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>System Prompt</h3>
+        <div class="form-group">
+            <label for="customPrompt">Custom Instructions</label>
+            <textarea
+                id="customPrompt"
+                class="form-textarea"
+                rows="4"
+                placeholder="e.g., Focus on technical details, use bullet points..."
+            ></textarea>
+            <p class="help-text">
+                Optional instructions to guide the AI's behavior.
+            </p>
+        </div>
+    </div>
+</section>

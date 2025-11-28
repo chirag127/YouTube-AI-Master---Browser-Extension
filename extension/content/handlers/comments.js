@@ -130,12 +130,14 @@ class CommentsExtractor {
                     e = document.querySelectorAll(
                         "ytd-comment-thread-renderer"
                     );
+                console.log(`[CommentsExtractor] Found ${e.length} comment elements in DOM`);
+
                 for (const el of e) {
                     if (c.length >= 20) break;
                     try {
                         const a = el
-                                .querySelector("#author-text")
-                                ?.textContent?.trim(),
+                            .querySelector("#author-text")
+                            ?.textContent?.trim(),
                             t = el
                                 .querySelector("#content-text")
                                 ?.textContent?.trim(),
@@ -143,9 +145,19 @@ class CommentsExtractor {
                                 el
                                     .querySelector("#vote-count-middle")
                                     ?.textContent?.trim() || "0";
-                        if (a && t) c.push({ author: a, text: t, likes: l });
-                    } catch (e) {}
+
+                        console.log(`[CommentsExtractor] Parsed comment - Author: ${a}, Text: ${t?.substring(0, 50)}...`);
+
+                        if (a && t) {
+                            c.push({ author: a, text: t, likes: l });
+                        } else {
+                            console.warn('[CommentsExtractor] Skipping comment - missing author or text');
+                        }
+                    } catch (e) {
+                        console.error('[CommentsExtractor] Error parsing comment element:', e);
+                    }
                 }
+                console.log(`[CommentsExtractor] Successfully extracted ${c.length} comments from DOM`);
                 r(c);
             }, 1000)
         );

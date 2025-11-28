@@ -1,5 +1,24 @@
 export const comments = (comments) => {
-    const text = comments.map((c) => `- ${c.author}: ${c.text}`).join("\n");
+    // Debug: Log the comments structure
+    console.log('[Comments Prompt] Received comments:', comments);
+    console.log('[Comments Prompt] Comments count:', comments?.length);
+
+    // Handle empty or invalid comments
+    if (!comments || comments.length === 0) {
+        return `No comments available to analyze.`;
+    }
+
+    // Map comments with fallback for undefined properties
+    const text = comments
+        .map((c) => {
+            const author = c.author || c.authorText?.simpleText || 'Unknown';
+            const content = c.text || c.contentText || 'No text';
+            return `- ${author}: ${content}`;
+        })
+        .join("\n");
+
+    console.log('[Comments Prompt] Formatted text:', text);
+
     return `
     Task: Analyze the sentiment and key themes of these YouTube comments.
 

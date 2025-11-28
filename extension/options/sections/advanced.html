@@ -1,0 +1,45 @@
+<section id="advanced" class="tab-content">
+    <header class="section-header">
+        <h2>Advanced</h2>
+        <p>Backup, restore, and debug</p>
+    </header>
+
+    <div class="card">
+        <h3>Backup & Restore</h3>
+        <div class="form-actions">
+            <button id="exportSettings" class="btn btn-secondary">
+                Export Settings JSON
+            </button>
+            <button id="importSettings" class="btn btn-secondary">
+                Import Settings JSON
+            </button>
+            <input
+                type="file"
+                id="importFile"
+                accept=".json"
+                style="display: none"
+            />
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Troubleshooting</h3>
+        <div class="form-group checkbox-row">
+            <div class="checkbox-label">
+                <label for="debugMode">Debug Mode</label>
+                <p class="help-text">
+                    Enable detailed logging to the console.
+                </p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="debugMode" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="form-actions mt-4">
+            <button id="resetDefaults" class="btn btn-danger">
+                Reset All Settings to Default
+            </button>
+        </div>
+    </div>
+</section>

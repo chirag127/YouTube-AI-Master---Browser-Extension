@@ -6,10 +6,7 @@ import { segments } from "./segments.js";
 import { comprehensive } from "./comprehensive.js";
 
 export const prompts = {
-    summary,
     chat,
     comments,
-    faq,
-    segments,
     comprehensive,
 };

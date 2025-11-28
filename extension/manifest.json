@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "YouTube AI Master",
-    "version": "1.0.0",
-    "description": "The ultimate free YouTube tool utilizing Gemini AI to summarize, segment, and interact with video content.",
+    "version": "2.0.0",
+    "description": "Production-grade YouTube AI tool with Gemini AI - featuring intelligent retry, rate limiting, and fault-tolerant architecture.",
     "icons": {
         "16": "assets/icon16.png",
         "48": "assets/icon48.png",
