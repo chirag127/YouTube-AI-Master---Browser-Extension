@@ -8,9 +8,9 @@ export function createWidgetHTML() {
         </div>
     </div>
     <div class="yt-ai-tabs">
-        <div class="yt-ai-tab" data-tab="summary">Summary</div>
+        <div class="yt-ai-tab active" data-tab="summary">Summary</div>
         <div class="yt-ai-tab" data-tab="transcript">Transcript</div>
-        <div class="yt-ai-tab active" data-tab="segments">Segments</div>
+        <div class="yt-ai-tab" data-tab="segments">Segments</div>
         <div class="yt-ai-tab" data-tab="chat">Chat</div>
         <div class="yt-ai-tab" data-tab="comments">Comments</div>
     </div>

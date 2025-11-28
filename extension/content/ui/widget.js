@@ -13,6 +13,8 @@ let lastKnownContainer = null;
 function updateWidgetHeight() {
     if (!widgetContainer) return;
 
+    // Don't set fixed height - let it be dynamic based on content
+    // Only set max-height to prevent it from being too tall
     const player =
         document.querySelector("#movie_player") ||
         document.querySelector(".html5-video-player");
@@ -20,7 +22,6 @@ function updateWidgetHeight() {
         const height = player.offsetHeight;
         if (height > 0) {
             widgetContainer.style.maxHeight = `${height}px`;
-            widgetContainer.style.height = `${height}px`;
         }
     }
 }
@@ -180,17 +181,25 @@ export async function injectWidget() {
 }
 
 function setupWidgetLogic(container) {
-    // Close Button
+    // Close/Collapse Button - Toggle between expanded and collapsed states
     const closeBtn = container.querySelector("#yt-ai-close-btn");
     if (closeBtn) {
         closeBtn.addEventListener("click", () => {
-            log("Closing widget...");
-            container.remove();
-            if (resizeObserver) resizeObserver.disconnect();
-            if (containerObserver) containerObserver.disconnect();
-            if (positionCheckInterval) clearInterval(positionCheckInterval);
-            widgetContainer = null;
-            lastKnownContainer = null;
+            const isCollapsed = container.classList.contains("yt-ai-collapsed");
+
+            if (isCollapsed) {
+                // Expand the widget
+                log("Expanding widget...");
+                container.classList.remove("yt-ai-collapsed");
+                closeBtn.textContent = "❌";
+                closeBtn.title = "Collapse";
+            } else {
+                // Collapse the widget
+                log("Collapsing widget...");
+                container.classList.add("yt-ai-collapsed");
+                closeBtn.textContent = "⬇️";
+                closeBtn.title = "Expand";
+            }
         });
     }
 

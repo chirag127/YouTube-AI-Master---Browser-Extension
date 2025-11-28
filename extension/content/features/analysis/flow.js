@@ -69,8 +69,8 @@ export async function startAnalysis() {
             }
         }
 
-        // Switch to Segments tab by default
-        switchTab("segments");
+        // Switch to Summary tab by default
+        switchTab("summary");
     } catch (error) {
         showError(contentArea, error.message);
     } finally {
