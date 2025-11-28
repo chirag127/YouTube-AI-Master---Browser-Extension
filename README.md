@@ -19,6 +19,114 @@ YouTube AI Navigator transforms passive video consumption into active intelligen
 
 ---
 
+## 🚀 Installation & Setup
+
+### 1. Install the Extension
+
+> **Note:** This extension is currently in development and not yet published to the Chrome Web Store. Follow the Developer Mode installation instructions below to use it now.
+
+**Developer Mode Installation (Current Method)**
+
+Since the extension is not yet available on the Chrome Web Store, you'll need to load it manually using Chrome's Developer Mode:
+
+**Step 1: Download the Source Code**
+
+```bash
+git clone https://github.com/chirag127/YouTube-AI-Navigator.git
+cd YouTube-AI-Navigator
+```
+
+Alternatively, download the repository as a ZIP file from GitHub and extract it to a folder on your computer.
+
+**Step 2: Enable Developer Mode in Chrome**
+
+1. Open Google Chrome
+2. Navigate to `chrome://extensions/` (or click the three-dot menu → Extensions → Manage Extensions)
+3. In the top-right corner, toggle **Developer mode** ON (the switch will turn blue)
+
+**Step 3: Load the Extension**
+
+1. Click the **Load unpacked** button that appears after enabling Developer mode
+2. Navigate to the folder where you cloned/extracted the repository
+3. Select the `extension` folder (not the root folder)
+4. Click **Select Folder**
+
+**Step 4: Verify Installation**
+
+-   The extension should now appear in your extensions list with the YouTube AI Navigator icon
+-   You may see a warning banner stating "This extension is not listed in the Chrome Web Store" - this is normal for developer mode extensions
+-   Pin the extension to your toolbar for easy access (click the puzzle icon → pin YouTube AI Navigator)
+
+**Developer Mode Limitations**
+
+-   Chrome may display warnings about running extensions in developer mode
+-   The extension will be disabled if you restart Chrome with developer mode turned off
+-   You'll need to manually update the extension by pulling the latest code from GitHub
+
+**Updating the Extension**
+
+To update to the latest version:
+
+```bash
+cd YouTube-AI-Navigator
+git pull origin main
+```
+
+Then click the refresh icon on the extension card in `chrome://extensions/`.
+
+**From Chrome Web Store** _(Coming Soon)_
+
+Once published, you'll be able to install directly from the Chrome Web Store:
+
+1. Search for "YouTube AI Navigator" in the Chrome Web Store
+2. Click "Add to Chrome"
+3. Automatic updates will be handled by Chrome
+
+### 2. Configure Your API Key
+
+**Required: Google Gemini API Key**
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Click "Create API Key"
+3. Copy the generated key
+4. Open the extension settings (click the extension icon → Settings)
+5. Paste your API key in the "Gemini API Key" field
+6. Click "Save"
+
+**The extension is now fully functional.** All other API keys are optional enhancements.
+
+### 3. Optional: Enhance with Additional APIs
+
+For deeper contextual analysis, configure optional API keys:
+
+**TMDB (Movies & TV)**
+
+-   Visit [TMDB API](https://www.themoviedb.org/settings/api)
+-   Register for a free account
+-   Copy your API key (v3 auth)
+
+**IGDB (Gaming)**
+
+-   Visit [Twitch Developers](https://dev.twitch.tv/console/apps)
+-   Create an application
+-   Copy Client ID and Client Secret
+
+**NewsData.io (News)**
+
+-   Visit [NewsData.io](https://newsdata.io/register)
+-   Register for free tier (200 requests/day)
+-   Copy your API key
+
+**Google Fact Check API**
+
+-   Visit [Google Cloud Console](https://console.cloud.google.com/)
+-   Enable Fact Check Tools API
+-   Create credentials (API key)
+
+All other services (Semantic Scholar, Open Library, Wikidata, Datamuse, OpenMeteo, MusicBrainz, Genius) require **no API keys** and work out of the box.
+
+---
+
 ## ✨ Core Capabilities
 
 ### 🧭 Intelligent Navigation
@@ -154,70 +262,6 @@ Keys are stored securely in Chrome's sync storage, never logged or transmitted e
 
 **Minimal Permissions**
 The extension requests only the `storage` permission. No access to browsing history, tabs, or personal data.
-
----
-
-## 🚀 Installation & Setup
-
-### 1. Install the Extension
-
-**From Source (Developer Mode)**
-
-```bash
-git clone https://github.com/chirag127/YouTube-AI-Navigator.git
-cd YouTube-AI-Navigator
-```
-
-1. Open Chrome and navigate to `chrome://extensions/`
-2. Enable **Developer mode** (toggle in top-right corner)
-3. Click **Load unpacked**
-4. Select the `extension` folder
-
-**From Chrome Web Store** _(Coming Soon)_
-Search for "YouTube AI Navigator" in the Chrome Web Store and click "Add to Chrome".
-
-### 2. Configure Your API Key
-
-**Required: Google Gemini API Key**
-
-1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Click "Create API Key"
-3. Copy the generated key
-4. Open the extension settings (click the extension icon → Settings)
-5. Paste your API key in the "Gemini API Key" field
-6. Click "Save"
-
-**The extension is now fully functional.** All other API keys are optional enhancements.
-
-### 3. Optional: Enhance with Additional APIs
-
-For deeper contextual analysis, configure optional API keys:
-
-**TMDB (Movies & TV)**
-
--   Visit [TMDB API](https://www.themoviedb.org/settings/api)
--   Register for a free account
--   Copy your API key (v3 auth)
-
-**IGDB (Gaming)**
-
--   Visit [Twitch Developers](https://dev.twitch.tv/console/apps)
--   Create an application
--   Copy Client ID and Client Secret
-
-**NewsData.io (News)**
-
--   Visit [NewsData.io](https://newsdata.io/register)
--   Register for free tier (200 requests/day)
--   Copy your API key
-
-**Google Fact Check API**
-
--   Visit [Google Cloud Console](https://console.cloud.google.com/)
--   Enable Fact Check Tools API
--   Create credentials (API key)
-
-All other services (Semantic Scholar, Open Library, Wikidata, Datamuse, OpenMeteo, MusicBrainz, Genius) require **no API keys** and work out of the box.
 
 ---
 
