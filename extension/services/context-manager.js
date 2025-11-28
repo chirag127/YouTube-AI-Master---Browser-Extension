@@ -98,6 +98,25 @@ export class ContextManager {
             addTask("openlibrary", this.apis.openlibrary.searchBook(title));
         }
 
+        if (category === "Travel & Events" || category === "News & Politics") {
+            // Chained task for Weather: Geocode -> Get Weather
+            const weatherTask = this.apis.openmeteo
+                .getCoordinates(title)
+                .then((geo) => {
+                    if (geo && geo.latitude && geo.longitude) {
+                        return this.apis.openmeteo
+                            .getWeather(geo.latitude, geo.longitude)
+                            .then((weather) => ({
+                                location: geo.name,
+                                country: geo.country,
+                                weather,
+                            }));
+                    }
+                    return null;
+                });
+            addTask("openmeteo", weatherTask);
+        }
+
         // Execute all in parallel
         console.log(
             `[ContextManager] Starting ${tasks.length} parallel API calls...`

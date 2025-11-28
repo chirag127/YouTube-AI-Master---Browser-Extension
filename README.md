@@ -17,28 +17,6 @@ This extension implements a **Multi-Threaded Context Architecture** that autonom
 **Zero Cost. Zero Friction. Zero Compromise.**
 Every integrated API is free. No credit cards required. No mandatory sign-ups. Complete privacy.
 
----
-
-## 🌟 Core Capabilities
-
-### 🧠 **The Context Engine (New)**
-
-The heart of the system. When you open a video, the engine analyzes the metadata and instantly dispatches parallel agents to gather verified facts:
-
--   **Cinema & TV:** Fetches cast, plot, and ratings from **TMDB**.
--   **Music:** Retrieves artist discography and release data from **MusicBrainz**.
--   **Gaming:** Pulls game details, ratings, and platforms from **IGDB**.
--   **Science & Academia:** Cross-references papers and citations via **Semantic Scholar** and **Open Library**.
--   **News & Politics:** Verifies claims using **Google Fact Check Tools** and **NewsData.io**.
--   **General Knowledge:** Consults **Wikidata** and **Datamuse** for entity resolution.
--   **Environment:** Checks location-based context via **OpenMeteo**.
-
-### ⚡ **Instant Intelligence**
-
--   **Deep Summarization:** Beyond simple bullet points. Get structured breakdowns with "Key Insights," "Technical Analysis," and "Actionable Takeaways."
--   **Interactive Chat:** Have a conversation with the video. Ask about specific details, timestamps, or external references.
--   **Sentiment Analysis:** Understand the audience pulse with AI-driven comment analysis.
-
 ### 🎯 **Precision Navigation**
 
 -   **Smart Segmentation:** The AI automatically partitions the video into logical chapters.
