@@ -27,6 +27,28 @@ export function findSecondaryColumn() {
 
     return null;
 }
+export function isWidgetProperlyVisible(widget) {
+    if (!widget || !document.contains(widget)) return false;
+
+    const style = window.getComputedStyle(widget);
+    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+        return false;
+    }
+
+    const parent = widget.parentElement;
+    if (!parent) return false;
+
+    // Check if in correct container
+    const secondaryColumn = findSecondaryColumn();
+    if (!secondaryColumn) return false;
+    if (parent !== secondaryColumn) return false;
+
+    // Check if at top
+    if (parent.firstChild !== widget) return false;
+
+    return true;
+}
+
 export function seekVideo(t) { const v = document.querySelector('video'); if (v) { v.currentTime = t; v.play() } }
 export function getVideoElement() { return document.querySelector('video') }
 export function decodeHTML(h) { const t = document.createElement('textarea'); t.innerHTML = h; return t.value }

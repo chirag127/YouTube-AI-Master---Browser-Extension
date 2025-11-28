@@ -1,4 +1,4 @@
-import { findSecondaryColumn } from "../utils/dom.js";
+import { findSecondaryColumn, isWidgetProperlyVisible } from "../utils/dom.js";
 import { initTabs } from "./tabs.js";
 import { attachEventListeners } from "../handlers/events.js";
 import { log, logError, waitForElement } from "../core/debug.js";
@@ -103,17 +103,19 @@ export async function injectWidget() {
     // 1. Cleanup existing
     const existing = document.getElementById("yt-ai-master-widget");
     if (existing) {
-        if (existing.parentElement) {
-            // It exists, let's just ensure it's at the top and return
-            // But we need to re-attach observers if they were lost
+        if (isWidgetProperlyVisible(existing)) {
+            // Widget exists and is properly visible, just ensure observers are active
             widgetContainer = existing;
             const container = existing.parentElement;
             lastKnownContainer = container;
             ensureWidgetAtTop(container);
             setupObservers(container);
             startPositionMonitoring();
+            log("Widget already properly visible, reusing existing");
             return;
         }
+        // Widget exists but not properly visible, remove and re-inject
+        log("Widget exists but not properly visible, removing and re-injecting");
         existing.remove();
     }
 

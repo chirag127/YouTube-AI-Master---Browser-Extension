@@ -6,22 +6,6 @@ import { cl, cw, ce } from "../utils/shortcuts.js";
 // Re-export ModelManager for use in options page
 export { ModelManager };
 
-const LABEL_MAPPING = {
-    S: "Sponsor",
-    SP: "Self Promotion",
-    UP: "Unpaid Promotion",
-    EA: "Exclusive Access",
-    IR: "Interaction Reminder (Subscribe)",
-    H: "Highlight",
-    I: "Intermission/Intro Animation",
-    EC: "Endcards/Credits",
-    P: "Preview/Recap",
-    G: "Hook/Greetings",
-    T: "Tangents/Jokes",
-    NM: "Music: Non-Music Section",
-    C: "Content",
-};
-
 export class GeminiService {
     constructor(apiKey) {
         this.client = new GeminiClient(apiKey);
@@ -115,14 +99,24 @@ export class GeminiService {
             cl("[GeminiService] Successfully parsed segments:", parsed.segments.length);
             cl("[GeminiService] Full video label:", parsed.fullVideoLabel);
 
+            // Transform short keys to long keys for compatibility
+            const transformedSegments = parsed.segments.map(seg => ({
+                start: seg.s,
+                end: seg.e,
+                label: this._expandLabel(seg.l),
+                title: seg.t,
+                description: seg.d,
+                text: seg.d // For backward compatibility
+            }));
+
             // Log first few segments for debugging
-            if (parsed.segments.length > 0) {
-                cl("[GeminiService] First segment:", JSON.stringify(parsed.segments[0]));
+            if (transformedSegments.length > 0) {
+                cl("[GeminiService] First transformed segment:", JSON.stringify(transformedSegments[0]));
             }
 
             return {
-                segments: parsed.segments,
-                fullVideoLabel: parsed.fullVideoLabel || null
+                segments: transformedSegments,
+                fullVideoLabel: this._expandLabel(parsed.fullVideoLabel) || null
             };
         } catch (error) {
             ce("[GeminiService] Segment extraction failed:", error.message);
@@ -138,6 +132,28 @@ export class GeminiService {
         );
         const match = text.match(regex);
         return match ? match[1].trim() : null;
+    }
+
+    _expandLabel(shortCode) {
+        if (!shortCode) return null;
+
+        const labelMap = {
+            S: "Sponsor",
+            SP: "Self Promotion",
+            UP: "Unpaid Promotion",
+            EA: "Exclusive Access",
+            IR: "Interaction Reminder (Subscribe)",
+            H: "Highlight",
+            I: "Intermission/Intro Animation",
+            EC: "Endcards/Credits",
+            P: "Preview/Recap",
+            G: "Hook/Greetings",
+            T: "Tangents/Jokes",
+            NM: "Music: Non-Music Section",
+            C: "Content"
+        };
+
+        return labelMap[shortCode] || shortCode;
     }
 
     async generateContent(prompt, model = null) {

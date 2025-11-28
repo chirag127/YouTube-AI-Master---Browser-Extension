@@ -2,6 +2,7 @@ import { state, resetState } from "./state.js";
 import { injectWidget } from "../ui/widget.js";
 import { startAnalysis } from "./analyzer.js";
 import { log, logError } from "./debug.js";
+import { isWidgetProperlyVisible } from "../utils/dom.js";
 
 let lastUrl = window.location.href;
 let debounceTimer = null;
@@ -38,10 +39,10 @@ export function initObserver() {
         const u = new URLSearchParams(window.location.search),
             v = u.get("v");
 
-        // If video ID changed OR widget is missing, we might need to act
-        const widgetExists = document.getElementById("yt-ai-master-widget");
+        // If video ID changed OR widget is not properly visible, we might need to act
+        const widget = document.getElementById("yt-ai-master-widget");
 
-        if ((v && v !== state.currentVideoId) || (v && !widgetExists)) {
+        if ((v && v !== state.currentVideoId) || (v && !isWidgetProperlyVisible(widget))) {
             // Debounce to avoid multiple triggers
             if (debounceTimer) clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
@@ -97,16 +98,16 @@ function checkCurrentPage() {
         const u = new URLSearchParams(window.location.search),
             v = u.get("v");
         if (v) {
-            const widgetExists = document.getElementById("yt-ai-master-widget");
+            const widget = document.getElementById("yt-ai-master-widget");
 
-            if (v === state.currentVideoId && widgetExists) {
+            if (v === state.currentVideoId && isWidgetProperlyVisible(widget)) {
                 log(
-                    "Same video and widget exists, skipping re-initialization:",
+                    "Same video and widget is properly visible, skipping re-initialization:",
                     v
                 );
                 return;
             }
-            log("Video page detected (New ID or Missing Widget):", v);
+            log("Video page detected (New ID or Widget Not Properly Visible):", v);
             handleNewVideo(v);
         } else {
             log("No video ID found in URL");
