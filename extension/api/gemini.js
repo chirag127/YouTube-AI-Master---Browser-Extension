@@ -95,7 +95,8 @@ export class GeminiService {
             }
 
             if (parsedData) {
-                const segments = (parsedData.segments || []).map((p) => ({
+                const fullVideoLabelCode = parsedData.fullVideoLabel;
+                let segments = (parsedData.segments || []).map((p) => ({
                     start: p.s ?? p.start,
                     end: p.e ?? p.end,
                     label: LABEL_MAPPING[p.l] || p.l || p.label,
@@ -104,14 +105,21 @@ export class GeminiService {
                     description: p.d ?? p.description,
                 }));
 
+                // Safety: Remove segments that match the fullVideoLabel
+                if (fullVideoLabelCode) {
+                    segments = segments.filter(
+                        (s) => s.labelCode !== fullVideoLabelCode
+                    );
+                }
+
                 // Return object with segments and fullVideoLabel
                 return {
                     segments,
-                    fullVideoLabel: parsedData.fullVideoLabel
-                        ? LABEL_MAPPING[parsedData.fullVideoLabel] ||
-                          parsedData.fullVideoLabel
+                    fullVideoLabel: fullVideoLabelCode
+                        ? LABEL_MAPPING[fullVideoLabelCode] ||
+                          fullVideoLabelCode
                         : null,
-                    fullVideoLabelCode: parsedData.fullVideoLabel,
+                    fullVideoLabelCode: fullVideoLabelCode,
                 };
             }
 

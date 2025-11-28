@@ -63,21 +63,6 @@ export class GeniusLyricsAPI {
         const response = await fetch(url);
         const html = await response.text();
 
-        // Simple regex-based extraction since we are in SW (no DOMParser for full HTML doc usually reliable without caveats)
-        // Or we can use a lightweight parser if available.
-        // Genius lyrics are usually in containers with class starting with 'Lyrics__Container'
-
-        // Note: Genius HTML is complex.
-        // Strategy: Look for specific markers or use a cleaner approach if possible.
-        // The UserScript uses `document.createElement('div')` and assigns innerHTML, then parses.
-        // In Service Worker, we don't have `document`. We can use `OffscreenCanvas`? No.
-        // We can use `text` manipulation.
-
-        // Regex to extract text from specific divs might be fragile.
-        // Let's try to find the JSON data embedded in the page if available, or just regex the lyrics container.
-
-        // Fallback: Extract text between <div data-lyrics-container="true"> and </div>
-        // Removing HTML tags.
 
         const lyricsMatch = html.match(
             /<div[^>]*data-lyrics-container="true"[^>]*>(.*?)<\/div>/gs

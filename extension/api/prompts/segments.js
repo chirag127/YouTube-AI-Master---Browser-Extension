@@ -15,13 +15,16 @@ export const segments = (context) => {
     1. MERGE adjacent segments of the same category if they cover the same topic. Do NOT fragment continuous topics.
     2. Descriptions MUST be concise summaries. NO raw transcript.
     3. Use SHORT keys (S, SP, UP, IR, etc.) for labels in the JSON.
-    4. If >50% of the video belongs to ONE category (Sponsor, Exclusive Access, Unpaid/Self Promotion), set "fullVideoLabel" to that category's code. Otherwise null.
-
-    Context:
-    ${buildContextString(context)}
+    4. FULL VIDEO LABEL RULE:
+       - Calculate the total duration of the video based on the transcript.
+       - If a single category (e.g., Sponsor, Self Promotion, etc.) occupies MORE THAN 50% of the video's total duration:
+         - Set "fullVideoLabel" to that category's code (e.g., "S").
+         - DO NOT create any segments for that specific category. The "fullVideoLabel" covers it.
+         - Only create segments for OTHER categories (e.g., if full video is Sponsor, still mark Intermissions or Self Promotion if they exist).
+       - If no category exceeds 50%, set "fullVideoLabel" to null.
 
     Categories(LABEL_CODE):
-    - Sponsor(S): Part of a video promoting a product or service not directly related to the creator. The creator will receive payment or compensation in the form of money or free products. If the entire video is about the product or service, use a Full Video Label. Don't make segments covering the entire video Sponsor.
+    - Sponsor(S): Part of a video promoting a product or service not directly related to the creator. The creator will receive payment or compensation in the form of money or free products. If the entire video is about the product or service, use a Full Video Label.
     - Self Promotion(SP): Promoting a product or service that is directly related to the creator themselves. This usually includes merchandise or promotion of monetized platforms.
     - Unpaid Promotion(UP): The creator will not receive any payment in exchange for this promotion. This includes charity drives or free shout outs for products or other people they like.
     - Interaction Reminder(IR): Explicit reminders to like, subscribe or interact with them on any paid or free platform(s) (e.g. click on a video). If about something specific it should be Unpaid/Self Promotion instead. Can be bundled with Self Promotion into Endcards/Credits.
