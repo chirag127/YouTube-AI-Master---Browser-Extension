@@ -29,19 +29,6 @@ The AI automatically partitions videos into logical chapters, identifying:
 -   Content segments (intro, main content, outro)
 -   Sponsor segments (with SponsorBlock integration)
 -   Interaction reminders (like, subscribe, notifications)
--   Non-music sections in music videos
--   Self-promotion and unpaid promotions
-
-**Visual Timeline**
-Color-coded markers overlay the YouTube player's progress bar, providing instant visual comprehension of video structure. Click any segment to jump directly to that timestamp.
-
-**Auto-Skip Technology**
-Configure granular auto-skip rules per segment category. The extension monitors playback in real-time and seamlessly skips unwanted content without interrupting your flow.
-
-### 🤖 AI-Powered Analysis
-
-**Context Engine Architecture**
-Before generating analysis, the extension executes a parallel data-gathering operation across multiple specialized APIs:
 
 | Domain        | Service           | Purpose                                     | API Key Required |
 | ------------- | ----------------- | ------------------------------------------- | ---------------- |
@@ -257,6 +244,13 @@ Configure per-category auto-skip rules:
 -   Skip intros/outros
 -   Skip interaction reminders
 -   Skip self-promotion
+
+**Auto-Liker**
+Automate your engagement:
+
+-   **Watch Threshold**: Set percentage (0-100%) of video to watch before liking
+-   **Live Streams**: Option to include/exclude live streams
+-   **Subscription Logic**: Option to only like videos from subscribed channels
 
 **Custom Prompts**
 Modify the AI prompt template in settings to customize analysis style and focus areas.

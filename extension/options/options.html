@@ -142,6 +142,72 @@
                                 <span class="slider round"></span>
                             </label>
                         </div>
+
+                        <div class="divider"></div>
+
+                        <div class="form-group checkbox-row">
+                            <div class="checkbox-label">
+                                <label for="autoLike">Auto-Like Videos</label>
+                                <p class="help-text">
+                                    Automatically like videos when you watch
+                                    them.
+                                </p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoLike" />
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div
+                            id="autoLikeSettings"
+                            class="nested-settings hidden"
+                        >
+                            <div class="form-group">
+                                <label for="autoLikeThreshold"
+                                    >Watch Threshold:
+                                    <span id="thresholdValue">50%</span></label
+                                >
+                                <input
+                                    type="range"
+                                    id="autoLikeThreshold"
+                                    class="form-range"
+                                    min="0"
+                                    max="100"
+                                    value="50"
+                                />
+                                <p class="help-text">
+                                    Percentage of video to watch before liking.
+                                </p>
+                            </div>
+
+                            <div class="form-group checkbox-row">
+                                <div class="checkbox-label">
+                                    <label for="likeIfNotSubscribed"
+                                        >Like if not subscribed</label
+                                    >
+                                </div>
+                                <label class="switch sm">
+                                    <input
+                                        type="checkbox"
+                                        id="likeIfNotSubscribed"
+                                    />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="form-group checkbox-row">
+                                <div class="checkbox-label">
+                                    <label for="autoLikeLive"
+                                        >Like Live Streams</label
+                                    >
+                                </div>
+                                <label class="switch sm">
+                                    <input type="checkbox" id="autoLikeLive" />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card">
