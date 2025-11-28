@@ -18,27 +18,52 @@ export const segments = (context) => {
 
     ${buildContextString(context)}
 
+    TIMING PREDICTION PROTOCOL (CRITICAL):
+    - **TRANSCRIPT TIMING LIMITATION**: The provided transcript contains sentence-level or multi-sentence timing blocks, NOT word-level timing.
+    - **YOUR RESPONSIBILITY**: You MUST intelligently predict word-level timing within each transcript block to create accurate segment boundaries.
+    - **PREDICTION STRATEGY**:
+      * Analyze the text content within each timestamp block
+      * Estimate word count and speaking rate
+      * Calculate approximate word positions within the time range
+      * Identify topic/category transitions that may occur MID-BLOCK (not just at block boundaries)
+      * Create segment boundaries at the ESTIMATED word-level timing, even if it falls within a transcript block
+    - **EXAMPLE**: If transcript shows [10.0s-20.0s: "Today's video is sponsored by NordVPN. Now let's talk about the main topic..."]
+      * You should predict: Sponsor segment ends ~13-14s (after "NordVPN"), Content begins ~14-15s
+      * DO NOT wait until 20.0s to change segments just because that's the transcript block boundary
+    - **ACCURACY GOAL**: Segment boundaries should be accurate to within ±1-2 seconds of the actual topic/category change
+
     CRITICAL INSTRUCTIONS:
     1. SEGMENTATION STRATEGY:
        - **Identify SPECIAL categories first** (Sponsor, Self Promotion, Intro, etc.).
        - **Segment "Content" by TOPIC**. Do NOT create one huge "Content" segment.
        - **MANDATORY**: If the video is > 2 minutes, you MUST return at least 3-5 segments minimum.
        - **MANDATORY**: For videos > 10 minutes, you MUST return at least 8-12 segments.
-       - **FORBIDDEN**: Do NOT return a single segment for the entire video.
        - **REQUIRED**: Break down content into logical topic changes, scene changes, or subject matter shifts.
-    2. MERGE adjacent segments ONLY if they are the EXACT SAME category AND cover the same specific topic.
-    3. Descriptions MUST be concise summaries (1-2 sentences). NO raw transcript.
-    4. Use SHORT keys (S, SP, UP, IR, etc.) for labels in the JSON.
-    5. **OUTPUT FORMAT**: Return ONLY the JSON object. NO markdown code blocks, NO explanations, NO additional text.
-    4. FULL VIDEO LABEL RULE:
+       - **TOPIC CONTINUITY**: MERGE adjacent segments of the same category ONLY if they cover the SAME specific topic. Do NOT fragment continuous topics into multiple segments.
+    2. **DESCRIPTION QUALITY**:
+       - Descriptions MUST be concise summaries (1-2 sentences max)
+       - **FORBIDDEN**: Do NOT include raw transcript text or direct quotes
+       - **REQUIRED**: Summarize the topic/content in your own words
+       - Focus on WHAT is being discussed, not HOW it's being said
+    3. **JSON FORMAT**: Use SHORT keys (S, SP, UP, IR, etc.) for labels in the JSON.
+    4. **OUTPUT FORMAT**: Return ONLY the JSON object. NO markdown code blocks, NO explanations, NO additional text.
+    5. FULL VIDEO LABEL RULE:
        - Calculate the total duration of the video based on the transcript.
        - If a single category (e.g., Sponsor, Self Promotion, etc.) occupies MORE THAN 50% of the video's total duration:
-         - Set "fullVideoLabel" to that category's code (e.g., "S").
-       - Many videos are completely being sponsored by one company. So does will be the full sponsor.
-    5. SPONSORBLOCK (STRICT PRIORITY):
-       - IF Community Segments are provided: They are VERIFIED GROUND TRUTH. Use their EXACT times/categories.
-       - IF NOT provided: Analyze transcript to find these categories.
-       - Include Chapter titles if available.
+         - Set "fullVideoLabel" to that category's code (e.g., "S")
+         - **DO NOT create segments for that specific category** (the fullVideoLabel covers it)
+         - **ONLY create segments for OTHER categories** (e.g., if full video is Sponsor, still mark Intermissions or Self Promotion if they exist)
+       - If NO category exceeds 50%, set "fullVideoLabel" to null
+       - Many videos are completely sponsored by one company - these should use fullVideoLabel: "S"
+    6. SPONSORBLOCK REFERENCE (STRICT ADHERENCE):
+       - **Community Segments (SponsorBlock) are VERIFIED GROUND TRUTH** - they have been confirmed by multiple users
+       - IF Community Segments are provided:
+         * Use them as PRIMARY REFERENCE for timing and categories
+         * You MUST prioritize them over your own analysis
+         * Use their EXACT start/end times and category codes
+         * You may refine descriptions or adjust boundaries by ±1-2s if transcript provides additional context
+       - IF NOT provided: Analyze transcript independently to identify all categories
+       - Include Chapter titles from video description if available
 
     Categories(LABEL_CODE):
     - Sponsor(S): Part of a video promoting a product or service not directly related to the creator. The creator will receive payment or compensation in the form of money or free products. If the entire video is about the product or service, use a Full Video Label.
@@ -54,6 +79,27 @@ export const segments = (context) => {
     - Exclusive Access(EA): (Full Video Label Only) When the creator showcases a product, service or location that they've received free or subsidised access to in the video that cannot be completely removed by cuts.
     - Highlight(H)
     - Content(C): The primary content of the video. Use this for sections that do not fit into any other specific category.
+
+    ADVANCED TIMING PREDICTION TECHNIQUES:
+    1. **Speaking Rate Analysis**:
+       - Count words in transcript blocks and divide by time range to estimate actual speaking rate
+
+    2. **Transition Detection Signals**:
+       - Phrases like "Now let's...", "Moving on to...", "But first...", "Speaking of..." indicate topic changes
+       - Sponsor transitions: "This video is sponsored by...", "Thanks to [brand] for...", "Now back to..."
+       - Self-promotion: "Check out my...", "Link in description...", "My course/merch..."
+       - Interaction reminders: "Don't forget to like...", "Subscribe for...", "Hit the bell..."
+
+    3. **Context Clues for Timing**:
+       - If a transcript block contains multiple topics, estimate proportional time allocation
+       - Sponsor mentions are typically 30-90 seconds (use this to calibrate your predictions)
+       - Intros are typically 5-15 seconds, Outros/Endcards 10-30 seconds
+       - Use these typical durations to validate your timing predictions
+
+    4. **Boundary Refinement**:
+       - Segment boundaries should align with natural speech pauses (typically at sentence endings)
+       - Avoid cutting mid-sentence unless absolutely necessary
+       - If uncertain between two possible boundaries, choose the one that creates more balanced segment lengths
 
     JSON Format:
     {
