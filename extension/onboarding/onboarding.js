@@ -30,7 +30,7 @@ class OnboardingFlow {
 
     getDefaults() {
         return {
-            ai: { apiKey: '', model: 'gemini-2.0-flash-exp' },
+            ai: { apiKey: '', model: 'gemini-2.5-flash-lite-preview-09-2025' },
             automation: { autoAnalyze: true },
             segments: { enabled: true },
             ui: { outputLanguage: 'en' },

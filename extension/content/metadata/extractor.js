@@ -1,10 +1,4 @@
-/**
- * Video Metadata Extractor
- * Extracts title, description, and other metadata from YouTube pages
- * Priority: DeArrow (community titles) > DOM extraction > ytInitialPlayerResponse > Piped API (last fallback)
- */
-
-import pipedAPI from "../../api/piped.js";
+// Video Metadata Extractor - DeArrow + DOM extraction
 import deArrowAPI from "../../api/dearrow.js";
 
 class MetadataExtractor {
@@ -24,21 +18,10 @@ class MetadataExtractor {
         logFn(`[MetadataExtractor] ${icons[level]} ${msg}`);
     }
 
-    /**
-     * Extract video metadata with DeArrow first, then DOM extraction, Piped API as last fallback
-     * @param {string} videoId - The video ID
-     * @param {Object} options - Options
-     * @param {boolean} options.usePiped - Whether to try Piped API as fallback (default: false)
-     * @param {boolean} options.useDeArrow - Whether to try DeArrow for better titles (default: true)
-     * @param {boolean} options.usePrivateDeArrow - Use privacy-preserving DeArrow API (default: true)
-     * @returns {Promise<Object>} Metadata object with title, description, author, etc.
-     */
     async extract(videoId, options = {}) {
         const {
-            usePiped = false,
             useDeArrow = true,
             usePrivateDeArrow = true,
-            useInnerTube = true,
         } = options;
 
         this.log("info", `Extracting metadata for: ${videoId}`);
@@ -72,44 +55,7 @@ class MetadataExtractor {
             }
         }
 
-        // Try InnerTube API (Priority 1 - Most reliable and complete)
-        if (useInnerTube) {
-            try {
-                this.log("info", "Fetching metadata via InnerTube API...");
-                const response = await chrome.runtime.sendMessage({
-                    action: 'INNERTUBE_GET_VIDEO_INFO',
-                    videoId
-                });
 
-                if (response.success && response.metadata) {
-                    const innertubeData = response.metadata;
-                    metadata = {
-                        videoId,
-                        title: deArrowData?.title || innertubeData.title,
-                        originalTitle: innertubeData.title,
-                        deArrowTitle: deArrowData?.title || null,
-                        hasDeArrowTitle: !!deArrowData?.title,
-                        description: innertubeData.description || "",
-                        author: innertubeData.channel || "Unknown Channel",
-                        channelId: innertubeData.channelId,
-                        viewCount: innertubeData.viewCount || "Unknown",
-                        publishDate: innertubeData.publishDate,
-                        duration: innertubeData.duration,
-                        keywords: innertubeData.keywords || [],
-                        category: innertubeData.category,
-                        likes: innertubeData.likes,
-                        captionsAvailable: innertubeData.captionsAvailable,
-                        deArrowThumbnail: deArrowData?.thumbnail || null,
-                    };
-
-                    this.log("success", `Metadata from InnerTube: ${metadata.title}`);
-                    this._setCache(videoId, metadata);
-                    return metadata;
-                }
-            } catch (e) {
-                this.log("warn", `InnerTube fetch failed: ${e.message}`);
-            }
-        }
 
         // Get data from Main World Extractor for DOM fallback
         const initialData = await this.getInitialData();
@@ -194,51 +140,7 @@ class MetadataExtractor {
             }
         }
 
-        // Fallback to Piped API only if DOM extraction failed or returned poor data
-        if (usePiped) {
-            try {
-                this.log(
-                    "info",
-                    "Trying Piped API for metadata as last fallback..."
-                );
-                const pipedData = await pipedAPI.getVideoMetadata(videoId);
 
-                metadata = {
-                    videoId,
-                    title:
-                        deArrowData?.title ||
-                        pipedData.title ||
-                        "Unknown Title",
-                    originalTitle: pipedData.title || "Unknown Title",
-                    deArrowTitle: deArrowData?.title || null,
-                    hasDeArrowTitle: !!deArrowData?.title,
-                    description: pipedData.description || "",
-                    author: pipedData.author || "Unknown Channel",
-                    viewCount: pipedData.views || "Unknown",
-                    publishDate: pipedData.uploadDate || null,
-                    duration: pipedData.duration || null,
-                    keywords: [], // Piped doesn't provide keywords
-                    category: pipedData.category || null,
-                    likes: pipedData.likes,
-                    dislikes: pipedData.dislikes,
-                    uploaderVerified: pipedData.uploaderVerified,
-                    thumbnailUrl: pipedData.thumbnailUrl,
-                    deArrowThumbnail: deArrowData?.thumbnail || null,
-                };
-
-                const source = metadata.hasDeArrowTitle
-                    ? "DeArrow + Piped"
-                    : "Piped";
-                this.log(
-                    "success",
-                    `Metadata extracted from ${source}: ${metadata.title}`
-                );
-                this._setCache(videoId, metadata);
-                return metadata;
-            } catch (e) {
-                this.log("warn", `Piped API failed: ${e.message}`);
-            }
-        }
 
         // If both failed, return what we have (even if incomplete)
         if (!metadata || !metadata.title) {

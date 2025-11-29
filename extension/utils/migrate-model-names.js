@@ -1,23 +1,13 @@
-/**
- * Migration utility to clean up model names in storage
- * This should be run once on extension update to fix any stored model names
- * that have the 'models/' prefix
- */
-
+import { sg, ss, l, e } from './shortcuts.js';
 export async function migrateModelNames() {
     try {
-        const data = await chrome.storage.sync.get(['model']);
-
-        if (data.model && typeof data.model === 'string' && data.model.startsWith('models/')) {
-            const cleanedModel = data.model.replace('models/', '');
-            await chrome.storage.sync.set({ model: cleanedModel });
-            console.log(`[Migration] Cleaned model name: ${data.model} -> ${cleanedModel}`);
+        const d = await sg(['model']);
+        if (d.model && typeof d.model === 'string' && d.model.startsWith('models/')) {
+            const c = d.model.replace('models/', '');
+            await ss('model', c);
+            l(`[Migration] Cleaned model name: ${d.model} -> ${c}`);
             return true;
         }
-
         return false;
-    } catch (error) {
-        console.error('[Migration] Failed to migrate model names:', error);
-        return false;
-    }
+    } catch (x) { e('[Migration] Failed to migrate model names:', x); return false; }
 }

@@ -1,29 +1,14 @@
 // Transcript Fetcher - Strategy Orchestrator
-// Implements priority-based fallback system
-
-import { strategy as innertubeStrategy } from "./strategies/innertube-strategy.js";
-import { strategy as youtubeDirectStrategy } from "./strategies/youtube-direct-strategy.js";
-import { strategy as xhrStrategy } from "./strategies/xhr-strategy.js";
-import { strategy as backgroundProxyStrategy } from "./strategies/background-proxy-strategy.js";
-import { strategy as invidiousStrategy } from "./strategies/invidious-strategy.js";
-import { strategy as pipedStrategy } from "./strategies/piped-strategy.js";
-import { strategy as domStrategy } from "./strategies/dom-strategy.js";
 import { strategy as domAutomationStrategy } from "./strategies/dom-automation-strategy.js";
+import { strategy as invidiousStrategy } from "./strategies/invidious-strategy.js";
 import { strategy as speechToTextStrategy } from "./strategies/speech-to-text-strategy.js";
 import { strategy as geniusStrategy } from "./strategies/genius-strategy.js";
 
-// Prioritize strategies that work from content script context
 const STRATEGIES = [
-    innertubeStrategy, // Priority 0: YouTube.js InnerTube API (PRIMARY)
     domAutomationStrategy, // Priority 1: Automates UI to open/scrape transcript
-    // youtubeDirectStrategy, // Priority 2: Uses ytInitialPlayerResponse caption URLs
-    // xhrStrategy, // Priority 3: Intercepts live network requests
-    geniusStrategy, // Priority 4: Genius Lyrics (Music Videos only)
-    // backgroundProxyStrategy, // Priority 5: Disabled (Failed in logs)
-    // invidiousStrategy, // Priority 6: Disabled (Often blocked)
-    // pipedStrategy,          // Priority 7: Third-party API (Disabled)
-    // domStrategy, // Priority 8: Disabled (Brittle)
-    speechToTextStrategy, // Priority 9: Fallback (Gemini Audio Transcription)
+    invidiousStrategy, // Priority 2: Invidious API
+    geniusStrategy, // Priority 3: Genius Lyrics (Music Videos only)
+    speechToTextStrategy, // Priority 4: Fallback (Gemini Audio Transcription)
 ].sort((a, b) => a.priority - b.priority);
 
 /**
@@ -53,21 +38,14 @@ export async function fetchTranscript(videoId, lang = "en", timeout = 30000) {
 
     if (preferredMethod !== "auto") {
         const preferredStrategy = strategiesToTry.find((s) => {
-            if (preferredMethod === "innertube")
-                return s.name === "InnerTube API";
-            if (preferredMethod === "youtube-direct")
-                return s.name === "YouTube Direct API";
-            if (preferredMethod === "dom-automation")
-                return s.name === "DOM Automation";
-            if (preferredMethod === "xhr") return s.name === "XHR Interceptor";
+            if (preferredMethod === "dom-automation") return s.name === "DOM Automation";
+            if (preferredMethod === "invidious") return s.name === "Invidious API";
+            if (preferredMethod === "genius") return s.name === "Genius Lyrics";
             return false;
         });
 
         if (preferredStrategy) {
-            // Move preferred strategy to the top
-            strategiesToTry = strategiesToTry.filter(
-                (s) => s !== preferredStrategy
-            );
+            strategiesToTry = strategiesToTry.filter((s) => s !== preferredStrategy);
             strategiesToTry.unshift(preferredStrategy);
         }
     }

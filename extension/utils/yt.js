@@ -1,13 +1,9 @@
-// Ultra-minimal YouTube utilities
-export const log = (msg, ...args) => console.log(`[YT] ${msg}`, ...args);
-export const err = (msg, e) => console.error(`[YT] ❌ ${msg}`, e?.message || e);
-export const ok = (msg, ...args) => console.log(`[YT] ✅ ${msg}`, ...args);
-
-const cache = new Map();
-export const cached = (key, ttl = 300000) => ({
-    get: () => {
-        const item = cache.get(key);
-        return item && Date.now() - item.time < ttl ? item.val : null;
-    },
-    set: (val) => cache.set(key, { val, time: Date.now() })
+import { l, e as er } from './shortcuts.js';
+export const log = (m, ...a) => l(`[YT]${m}`, ...a);
+export const err = (m, e) => er(`[YT]${m}`, e?.message || e);
+export const ok = (m, ...a) => l(`[YT]✅${m}`, ...a);
+const c = new Map();
+export const cached = (k, ttl = 3e5) => ({
+    get: () => { const i = c.get(k); return i && Date.now() - i.t < ttl ? i.v : null; },
+    set: v => c.set(k, { v, t: Date.now() })
 });

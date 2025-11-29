@@ -1,207 +1,31 @@
-// Configuration Manager - Single Source of Truth
-// All extension settings with defaults
-
-export const DEFAULT_CONFIG = {
-    // === CACHE SETTINGS ===
-    cache: {
-        enabled: true,
-        ttl: 24 * 60 * 60 * 1000, // 24 hours in ms
-        transcripts: true,
-        comments: true,
-        metadata: true
-    },
-
-    // === SCROLL BEHAVIOR ===
-    scroll: {
-        autoScrollToComments: false, // DISABLED by default per user request
-        scrollBackAfterComments: true,
-        showScrollNotification: true,
-        smoothScroll: true
-    },
-
-    // === TRANSCRIPT SETTINGS ===
-    transcript: {
-        autoClose: true,
-        autoCloseDelay: 1000, // ms
-        autoCloseOnCached: false, // Don't close if from cache
-        language: 'en',
-        method: 'auto', // auto, innertube, invidious, dom, piped
-        includeTimestamps: true
-    },
-
-    // === COMMENTS SETTINGS ===
-    comments: {
-        enabled: true,
-        limit: 20,
-        includeReplies: false,
-        sortBy: 'top', // top, new
-        analyzeSentiment: true
-    },
-
-    // === METADATA SETTINGS ===
-    metadata: {
-        includeTitle: true,
-        includeAuthor: true,
-        includeViews: true,
-        includeDuration: true,
-        includeDescription: true,
-        includeTags: true,
-        includeUploadDate: true
-    },
-
-    // === UI SETTINGS ===
-    ui: {
-        theme: 'dark', // dark, light, auto
-        widgetPosition: 'secondary', // secondary, primary
-        autoExpand: false,
-        showTimestamps: true,
-        compactMode: false
-    },
-
-    // === AI SETTINGS ===
-    ai: {
-        apiKey: '',
-        model: 'gemini-2.5-flash-lite-preview-09-2025',
-        customPrompt: '',
-        outputLanguage: 'en',
-        temperature: 0.7,
-        maxTokens: 8192
-    },
-
-    // === AUTOMATION ===
-    automation: {
-        autoAnalyze: false,
-        autoLike: false,
-        autoLikeThreshold: 50,
-        likeIfNotSubscribed: false,
-        autoLikeLive: false
-    },
-
-    // === SEGMENTS ===
-    segments: {
-        enabled: true,
-        categories: {
-            sponsor: { action: 'skip', speed: 2 },
-            intro: { action: 'speed', speed: 2 },
-            outro: { action: 'speed', speed: 2 },
-            interaction: { action: 'skip', speed: 2 },
-            selfpromo: { action: 'skip', speed: 2 },
-            music_offtopic: { action: 'ignore', speed: 2 },
-            preview: { action: 'ignore', speed: 2 },
-            filler: { action: 'speed', speed: 2 }
-        }
-    },
-
-    // === EXTERNAL APIS ===
-    externalApis: {
-        tmdb: '',
-        newsData: '',
-        googleFactCheck: '',
-        twitchClientId: '',
-        twitchAccessToken: ''
-    },
-
-    // === ADVANCED ===
-    advanced: {
-        debugMode: false,
-        saveHistory: true,
-        maxHistoryItems: 100,
-        enableTelemetry: false
-    },
-
-    // === INTERNAL ===
-    _meta: {
-        version: '1.0.0',
-        lastUpdated: Date.now(),
-        onboardingCompleted: false
-    }
+import { sg, ss, nt, js, jp } from './shortcuts.js';
+export const DC = {
+    ca: { en: 1, ttl: 864e5, tr: 1, co: 1, md: 1 },
+    sc: { as: 0, sb: 1, sn: 1, sm: 1 },
+    tr: { ac: 1, ad: 1e3, ao: 0, lg: 'en', mt: 'auto', ts: 1 },
+    co: { en: 1, lm: 20, ir: 0, sb: 'top', as: 1 },
+    md: { ti: 1, au: 1, vw: 1, du: 1, ds: 1, tg: 1, ud: 1 },
+    ui: { th: 'dark', wp: 'secondary', ae: 0, st: 1, cm: 0 },
+    ai: { k: '', m: 'gemini-2.5-flash-lite-preview-09-2025', cp: '', ol: 'en', t: .7, mt: 8192 },
+    au: { aa: 0, al: 0, at: 50, ln: 0, ll: 0 },
+    sg: { en: 1, ct: { sp: { a: 'skip', s: 2 }, in: { a: 'speed', s: 2 }, ou: { a: 'speed', s: 2 }, it: { a: 'skip', s: 2 }, sf: { a: 'skip', s: 2 }, mo: { a: 'ignore', s: 2 }, pv: { a: 'ignore', s: 2 }, fl: { a: 'speed', s: 2 } } },
+    ex: { tm: '', nd: '', gf: '', tc: '', ta: '' },
+    ad: { db: 0, sh: 1, mh: 100, et: 0 },
+    _m: { v: '1.0.0', lu: Date.now(), ob: 0 }
 };
-
 export class ConfigManager {
-    constructor() {
-        this.config = { ...DEFAULT_CONFIG };
-        this.listeners = [];
-    }
-
-    async load() {
-        const stored = await chrome.storage.sync.get('config');
-        if (stored.config) {
-            this.config = this.merge(DEFAULT_CONFIG, stored.config);
-        }
-        return this.config;
-    }
-
-    async save() {
-        this.config._meta.lastUpdated = Date.now();
-        await chrome.storage.sync.set({ config: this.config });
-        this.notify();
-    }
-
-    get(path) {
-        if (!path) return this.config;
-        return path.split('.').reduce((obj, key) => obj?.[key], this.config);
-    }
-
-    set(path, value) {
-        const keys = path.split('.');
-        const last = keys.pop();
-        const target = keys.reduce((obj, key) => {
-            if (!obj[key]) obj[key] = {};
-            return obj[key];
-        }, this.config);
-        target[last] = value;
-    }
-
-    async update(path, value) {
-        this.set(path, value);
-        await this.save();
-    }
-
-    async reset() {
-        this.config = { ...DEFAULT_CONFIG };
-        await this.save();
-    }
-
-    subscribe(callback) {
-        this.listeners.push(callback);
-    }
-
-    notify() {
-        this.listeners.forEach(cb => cb(this.config));
-    }
-
-    merge(defaults, stored) {
-        const result = { ...defaults };
-        for (const key in stored) {
-            if (typeof stored[key] === 'object' && !Array.isArray(stored[key])) {
-                result[key] = this.merge(defaults[key] || {}, stored[key]);
-            } else {
-                result[key] = stored[key];
-            }
-        }
-        return result;
-    }
-
-    export() {
-        return JSON.stringify(this.config, null, 2);
-    }
-
-    async import(jsonString) {
-        try {
-            const imported = JSON.parse(jsonString);
-            this.config = this.merge(DEFAULT_CONFIG, imported);
-            await this.save();
-            return true;
-        } catch (e) {
-            console.error('[Config] Import failed:', e);
-            return false;
-        }
-    }
+    constructor() { this.c = { ...DC }; this.l = []; }
+    async load() { const s = await sg('cfg'); if (s.cfg) this.c = this.mg(DC, s.cfg); return this.c; }
+    async save() { this.c._m.lu = nt(); await ss('cfg', this.c); this.nt(); }
+    get(p) { if (!p) return this.c; return p.split('.').reduce((o, k) => o?.[k], this.c); }
+    set(p, v) { const k = p.split('.'), l = k.pop(), t = k.reduce((o, x) => { if (!o[x]) o[x] = {}; return o[x]; }, this.c); t[l] = v; }
+    async update(p, v) { this.set(p, v); await this.save(); }
+    async reset() { this.c = { ...DC }; await this.save(); }
+    sub(cb) { this.l.push(cb); }
+    nt() { this.l.forEach(cb => cb(this.c)); }
+    mg(d, s) { const r = { ...d }; for (const k in s) { if (typeof s[k] === 'object' && !Array.isArray(s[k])) r[k] = this.mg(d[k] || {}, s[k]); else r[k] = s[k]; } return r; }
+    exp() { return js(this.c); }
+    async imp(j) { try { const i = jp(j); this.c = this.mg(DC, i); await this.save(); return 1; } catch (e) { return 0; } }
 }
-
-// Singleton
-let instance = null;
-export function getConfig() {
-    if (!instance) instance = new ConfigManager();
-    return instance;
-}
+let inst = null;
+export const getCfg = () => { if (!inst) inst = new ConfigManager(); return inst; };
