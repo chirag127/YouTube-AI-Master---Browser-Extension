@@ -8,8 +8,8 @@ import { injectSegmentMarkers } from '../../segments/markers.js';
 import { setupAutoSkip } from '../../segments/autoskip.js';
 import { renderTimeline } from '../../segments/timeline.js';
 import { analyzeVideo } from './service.js';
-import { l } from '../../utils/shortcuts/logging.js';
-import { cw } from '../../utils/shortcuts/chrome.js';
+import { log as l } from '../../utils/shortcuts/core.js';
+import { cw } from '../../utils/shortcuts/core.js';
 import { id as i, $ } from '../../utils/shortcuts/dom.js';
 import { msg, Er } from '../../../utils/shortcuts/core.js';
 

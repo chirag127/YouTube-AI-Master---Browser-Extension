@@ -42,8 +42,8 @@ export async function initializeExtension() {
 }
 
 export async function waitForPageReady() {
-  const { ru } = await import(chrome.runtime.getURL('utils/shortcuts/runtime.js'));
-  const { dc, wn } = await import(ru('utils/shortcuts/global.js'));
+  const { ru } = await import(chrome.runtime.getURL('utils/shortcuts/url.js'));
+  const { d: dc, w: wn } = await import(ru('utils/shortcuts/dom.js'));
   const { on } = await import(ru('utils/shortcuts/dom.js'));
   return new Promise(r => {
     if (dc.readyState === 'complete') r();

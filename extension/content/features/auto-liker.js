@@ -1,7 +1,7 @@
 import { state } from '../core/state.js';
 
 import { on, of as off } from '../../utils/shortcuts/dom.js';
-import { loc } from '../../utils/shortcuts/global.js';
+import { loc } from '../../utils/shortcuts/core.js';
 import { log, err } from '../../utils/shortcuts/core.js';
 import { qs as $, qsa as $$ } from '../../utils/shortcuts/dom.js';
 
