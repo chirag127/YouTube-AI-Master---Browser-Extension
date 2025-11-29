@@ -19,8 +19,7 @@ export class TabLoader {
     const p = this.tabs[id];
     if (!p) return false;
     try {
-      const r = await ft(url(`options/${p}`));
-      const h = await r.text();
+      const h = await fetch(url(`options/${p}`)).then(r => r.text());
       const c = qs('.content-area');
       c.insertAdjacentHTML('beforeend', h);
       this.loaded.add(id);

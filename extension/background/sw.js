@@ -1,9 +1,9 @@
-import { l, w, e, rt, tab, url } from '../utils/shortcuts-sw.js';
+import { l, e, cw, rt, t, url } from '../utils/shortcuts.js';
 rt.onInstalled.addListener(async d => {
   if (d.reason === 'install') {
     l('YouTube AI Master installed');
     try {
-      await tab({ url: url('onboarding/onboarding.html') });
+      await t.create({ url: url('onboarding/onboarding.html') });
     } catch (x) {
       e('Failed to open onboarding:', x);
     }
@@ -120,7 +120,7 @@ rt.onMessage.addListener((req, snd, rsp) => {
           rsp({ success: true });
           break;
         default:
-          w('Unknown message type:', act);
+          cw('Unknown message type:', act);
           rsp({ success: false, error: 'Unknown message type' });
       }
     } catch (err) {
