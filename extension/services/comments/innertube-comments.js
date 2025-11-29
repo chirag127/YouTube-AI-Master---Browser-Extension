@@ -1,29 +1,23 @@
 // InnerTube Comments Fetcher
-import { getComments } from '../../api/youtube-innertube.js';
+// Uses message passing to background script
 import { log, err, ok } from '../../utils/yt.js';
 
 export const fetchComments = async (videoId, limit = 20) => {
     try {
         log(`[Comments] Fetching: ${videoId} (limit: ${limit})`);
 
-        const comments = await getComments(videoId);
-        const items = [];
+        const response = await chrome.runtime.sendMessage({
+            action: 'INNERTUBE_GET_COMMENTS',
+            videoId,
+            limit
+        });
 
-        for await (const comment of comments) {
-            if (items.length >= limit) break;
-
-            items.push({
-                author: comment.author.name,
-                text: comment.content.text,
-                likes: comment.vote_count,
-                published: comment.published.text,
-                isCreator: comment.author.is_creator,
-                replyCount: comment.reply_count
-            });
+        if (!response.success) {
+            throw new Error(response.error || 'Comments fetch failed');
         }
 
-        ok(`[Comments] Fetched ${items.length} comments`);
-        return items;
+        ok(`[Comments] Fetched ${response.comments.length} comments`);
+        return response.comments;
 
     } catch (e) {
         err('[Comments] Fetch failed', e);

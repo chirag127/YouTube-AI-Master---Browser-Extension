@@ -21,6 +21,7 @@ import { handleSaveChatMessage } from "./handlers/chat-history.js";
 import { handleSaveComments } from "./handlers/comments-storage.js";
 import { handleTranscribeAudio } from "./handlers/transcribe-audio.js";
 import { handleGetLyrics } from "./handlers/get-lyrics.js";
+import { handleGetTranscript as handleInnertubeTranscript, handleGetVideoInfo, handleGetComments } from "./handlers/innertube.js";
 
 import { migrateModelNames } from "../utils/migrate-model-names.js";
 
@@ -114,6 +115,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     break;
                 case "GET_LYRICS":
                     await handleGetLyrics(sanitized, sendResponse);
+                    break;
+                case "INNERTUBE_GET_TRANSCRIPT":
+                    sendResponse(await handleInnertubeTranscript(sanitized));
+                    break;
+                case "INNERTUBE_GET_VIDEO_INFO":
+                    sendResponse(await handleGetVideoInfo(sanitized));
+                    break;
+                case "INNERTUBE_GET_COMMENTS":
+                    sendResponse(await handleGetComments(sanitized));
                     break;
                 case "OPEN_OPTIONS":
                     chrome.runtime.openOptionsPage();
