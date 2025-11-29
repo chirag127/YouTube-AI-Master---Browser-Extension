@@ -1,6 +1,7 @@
 import { log, logError } from './debug.js';
+
 import { rt } from '../../utils/shortcuts/runtime.js';
-import { on } from '../../utils/shortcuts/event.js';
+import { on } from '../../utils/shortcuts/dom.js';
 
 export async function initializeExtension() {
   log('=== YouTube AI Master Initialization ===');

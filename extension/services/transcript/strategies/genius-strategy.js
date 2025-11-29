@@ -2,7 +2,7 @@ import { $ } from '../../../utils/shortcuts/dom.js';
 import { l, w } from '../../../utils/shortcuts/logging.js';
 import { rt } from '../../../utils/shortcuts/runtime.js';
 import { isMusicVideo } from '../utils/music-classifier.js';
-async function fetchViaGenius(videoId) {
+async function fetchViaGenius() {
   const title = $('h1.ytd-watch-metadata')?.textContent?.trim();
   const channel = $('.ytd-channel-name a')?.textContent?.trim();
   if (!title) {

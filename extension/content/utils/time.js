@@ -1,4 +1,4 @@
-import { mf } from '../../utils/shortcuts/math.js';
+import { mf } from '../../utils/shortcuts/core.js';
 
 export function formatTime(s) {
   const h = mf(s / 3600),

@@ -3,9 +3,8 @@ import { initTabs } from './tabs.js';
 import { attachEventListeners } from '../handlers/events.js';
 import { log, logError, waitForElement } from '../core/debug.js';
 import { createWidgetHTML } from './components/widget/structure.js';
-import { $, id as ge, on, ce } from '../../utils/shortcuts/dom.js';
-import { si, co as csi } from '../../utils/shortcuts/global.js';
-import { to as st } from '../../utils/shortcuts/global.js';
+import { qs as $, id as ge, on, ce } from '../../utils/shortcuts/dom.js';
+import { si, csi, st } from '../../utils/shortcuts/core.js';
 
 let widgetContainer = null,
   resizeObserver = null,

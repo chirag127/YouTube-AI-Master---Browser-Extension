@@ -2,12 +2,8 @@ import { state } from '../../core/state.js';
 import { showLoading, showPlaceholder } from '../components/loading.js';
 import { getComments } from '../../handlers/comments.js';
 import { parseMarkdown } from '../../../lib/marked-loader.js';
-import { msg } from '../../utils/shortcuts/runtime.js';
-import { sg, slc } from '../../utils/shortcuts/storage.js';
-import { to as st, dc as doc } from '../../utils/shortcuts/global.js';
-import { l, w } from '../../utils/shortcuts/logging.js';
-import { ce, tc, ap, ih } from '../../utils/shortcuts/dom.js';
-import { mp, jn } from '../../utils/shortcuts/array.js';
+import { msg, sg, slc, st, log as l, warn as w, mp, jn } from '../../utils/shortcuts/core.js';
+import { ce, tc, ap, ih, dc as doc } from '../../utils/shortcuts/dom.js';
 
 export async function renderComments(c) {
   if (state.analysisData?.commentAnalysis) {

@@ -3,7 +3,7 @@ import { gebi as i, on, ce, ap, tc, ih, rc, vl } from '../../utils/shortcuts/doc
 import { ft } from '../../utils/shortcuts/network.js';
 import { js, jp, isS } from '../../utils/shortcuts/core.js';
 import { ce as cr } from '../../utils/shortcuts/doc.js';
-import { sl } from '../../utils/shortcuts/storage.js';
+
 import { inc, fe } from '../../utils/shortcuts/array.js';
 import { mt, rp, tr, sw } from '../../utils/shortcuts/string.js';
 

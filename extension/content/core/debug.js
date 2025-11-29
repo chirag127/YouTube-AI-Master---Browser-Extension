@@ -1,6 +1,5 @@
-import { l, e } from '../../utils/shortcuts/logging.js';
-import { $ } from '../../utils/shortcuts/dom.js';
-import { to as st } from '../../utils/shortcuts/global.js';
+import { log as l, err as e, st } from '../../utils/shortcuts/core.js';
+import { qs as $ } from '../../utils/shortcuts/dom.js';
 
 export function log(m, d) {
   const t = new Date().toISOString().split('T')[1].slice(0, -1);

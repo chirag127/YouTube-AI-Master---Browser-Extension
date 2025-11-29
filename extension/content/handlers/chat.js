@@ -17,7 +17,7 @@ export async function sendChatMessage() {
       mp(state.currentTranscript, t => t.text),
       ' '
     );
-    const md = state.currentVideoId ? await metadataExtractor.extract(state.currentVideoId) : null;
+    const md = null;
     const r = await msg({ action: 'CHAT_WITH_VIDEO', question: q, context: ctx, metadata: md });
     el.innerHTML = r.success
       ? await parseMarkdown(r.answer || 'Sorry, I could not answer that.')

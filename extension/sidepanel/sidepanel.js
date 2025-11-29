@@ -15,8 +15,7 @@ const ss = new StorageService(),
   cs = new ChunkingService();
 let gs = null,
   scs = null,
-  ctx = '',
-  segs = [];
+  ctx = '';
 const ab = id('analyze-btn'),
   stEl = id('status'),
   aw = id('auth-warning'),
@@ -40,7 +39,9 @@ on(document, 'DOMContentLoaded', async () => {
   scs = new SegmentClassificationService(gs, cs);
   try {
     await gs.fetchAvailableModels();
-  } catch (x) {}
+  } catch (x) {
+    void x;
+  }
   for (const b of tbs) {
     on(b, 'click', () => {
       for (const x of tbs) x.classList.remove('active');
@@ -150,7 +151,6 @@ async function analyzeVideo(rc = 0) {
     setStatus('loading', 'Classifying segments...');
     try {
       const cls = await scs.classifyTranscript(ts);
-      segs = cls;
       renderTranscript(cls);
       ct.sendMessage(tab.id, { action: 'SHOW_SEGMENTS', segments: cls }).catch(x =>
         w('Failed to send segments:', x)
@@ -303,7 +303,9 @@ async function seekVideo(s) {
   try {
     const [t] = await ct.query({ active: true, currentWindow: true });
     if (t?.id) await ct.sendMessage(t.id, { action: 'SEEK_TO', timestamp: s });
-  } catch (x) {}
+  } catch (x) {
+    void x;
+  }
 }
 
 function fmtTime(s) {

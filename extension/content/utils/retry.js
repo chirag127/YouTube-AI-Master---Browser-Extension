@@ -1,4 +1,4 @@
-import { to as st } from '../../utils/shortcuts/global.js';
+import { st } from '../../utils/shortcuts/core.js';
 
 export async function retry(fn, max = 3, d = 1000) {
   for (let i = 1; i <= max; i++) {
