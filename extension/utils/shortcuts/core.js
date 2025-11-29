@@ -1,4 +1,7 @@
 export const js = o => JSON.stringify(o);
+export const p = Promise;
+export const pr = i => p.race(i);
+export const pa = i => p.all(i);
 export const jp = s => JSON.parse(s);
 export const jf = o => JSON.stringify(o, null, 2);
 export const jstr = jf;

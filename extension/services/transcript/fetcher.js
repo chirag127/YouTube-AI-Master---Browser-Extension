@@ -1,4 +1,4 @@
-import { sg, l, w, st, pr, p } from '../../utils/shortcuts.js';
+import { sg, l, cw, st, pr, p } from '../../utils/shortcuts.js';
 import { strategy as s1 } from './strategies/dom-automation-strategy.js';
 import { strategy as s2 } from './strategies/invidious-strategy.js';
 import { strategy as s3 } from './strategies/speech-to-text-strategy.js';
@@ -35,7 +35,7 @@ export async function fetchTranscript(v, lg = 'en', to = 30000) {
       }
     } catch (e) {
       le = e;
-      w(`[Fetcher] ${stg.name} failed:`, e.message);
+      cw(`[Fetcher] ${stg.name} failed:`, e.message);
     }
   }
   throw new Error(le?.message || 'All transcript fetch strategies failed');

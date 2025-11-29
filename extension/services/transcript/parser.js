@@ -1,4 +1,4 @@
-import { $$, jp, e } from '../../utils/shortcuts.js';
+import { $$, jp, ce } from '../../utils/shortcuts.js';
 export const extractCaptionTracks = pr => {
   if (!pr?.captions) return [];
   const r = pr.captions.playerCaptionsTracklistRenderer;
@@ -13,7 +13,7 @@ export const getPlayerResponse = () => {
       try {
         return jp(match[1]);
       } catch (x) {
-        e('Failed to parse ytInitialPlayerResponse:', x);
+        ce('Failed to parse ytInitialPlayerResponse:', x);
       }
     }
   }
