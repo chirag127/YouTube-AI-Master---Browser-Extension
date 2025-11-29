@@ -52,7 +52,7 @@ export class SettingsManager {
       throw x;
     }
   }
-  mergeWithDefaults(l) {
+  mergeWithDefaults(loadedSettings) {
     const d = this.getDefaults(),
       m = jp(js(d));
     const dm = (t, s) => {
@@ -64,7 +64,7 @@ export class SettingsManager {
       }
       return t;
     };
-    return dm(m, l);
+    return dm(m, loadedSettings);
   }
   get(p) {
     if (!p) return this.settings;
@@ -72,13 +72,13 @@ export class SettingsManager {
   }
   set(p, v) {
     const k = p.split('.'),
-      l = k.pop();
+      propKey = k.pop();
     if (!this.settings || typeof this.settings !== 'object') this.settings = this.getDefaults();
     const t = k.reduce((o, key) => {
       if (!o[key] || typeof o[key] !== 'object') o[key] = {};
       return o[key];
     }, this.settings);
-    t[l] = v;
+    t[propKey] = v;
     l(`[Settings] Set ${p} =`, v);
   }
   async update(p, v) {

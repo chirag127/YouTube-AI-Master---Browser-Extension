@@ -48,11 +48,13 @@ describe('SettingsManager', () => {
     settingsManager.set('ai.apiKey', 'new-key');
     await settingsManager.save();
 
-    expect(ss).toHaveBeenCalledWith(expect.objectContaining({
-      config: expect.objectContaining({
-        ai: expect.objectContaining({ apiKey: 'new-key' })
+    expect(ss).toHaveBeenCalledWith(
+      expect.objectContaining({
+        config: expect.objectContaining({
+          ai: expect.objectContaining({ apiKey: 'new-key' }),
+        }),
       })
-    }));
+    );
   });
 
   it('should update settings and save', async () => {

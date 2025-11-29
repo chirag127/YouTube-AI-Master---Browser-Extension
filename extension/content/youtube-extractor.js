@@ -2,9 +2,9 @@ const w = window,
   d = document;
 (async () => {
   const extId = document.currentScript?.src.split('://')[1]?.split('/')[0];
-  const baseUrl = extId ? `chrome-extension://${extId}/` : '';
-  const { l, e, jp, st } = await import(baseUrl + 'utils/shortcuts/global.js');
-  const { qs: $, ae: on } = await import(baseUrl + 'utils/shortcuts/dom.js');
+  const baseUrl = extId ? `chrome-extension://${extId}/` : '../';
+  const { log: l, err: e, jp, to: st } = await import(baseUrl + 'utils/shortcuts/core.js');
+  const { qs: $, on } = await import(baseUrl + 'utils/shortcuts/dom.js');
   const uc = s => s.toUpperCase();
   class YTE {
     constructor() {
