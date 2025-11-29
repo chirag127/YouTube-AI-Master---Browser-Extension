@@ -1,4 +1,4 @@
-import { cw } from '../../utils/shortcuts/chrome.js';
+import { cwr as cw } from '../../utils/shortcuts/chrome.js';
 import { ce } from '../../utils/shortcuts/dom.js';
 
 export function fillContentGaps(c, o) {

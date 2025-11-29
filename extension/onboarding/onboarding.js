@@ -33,7 +33,7 @@ class OnboardingFlow {
   }
   getDefaults() {
     return {
-      ai: { apiKey: '', model: 'gemini-2.5-flash-lite-preview-09-2025' },
+      ai: { GAK: '', model: 'gemini-2.5-flash-lite-preview-09-2025' },
       automation: { autoAnalyze: true },
       segments: { enabled: true },
       ui: { outputLanguage: 'en' },
@@ -109,8 +109,8 @@ class OnboardingFlow {
         }
         throw new Error(em);
       }
-      await this.saveSettings('ai.apiKey', k);
-      await chrome.storage.local.set({ geminiApiKey: k });
+      await this.saveSettings('ai.GAK', k);
+      await chrome.storage.local.set({ GAK: k });
       s.className = 'status-message success';
       s.textContent = '✓ Connection successful! API key saved.';
       st(() => this.nextStep(), 1500);
@@ -158,7 +158,7 @@ class OnboardingFlow {
   async loadStepData() {
     if (this.currentStep === 1) {
       const i = ge('apiKeyInput');
-      if (this.settings.ai?.apiKey) i.value = this.settings.ai.apiKey;
+      if (this.settings.ai?.GAK) i.value = this.settings.ai.GAK;
     } else if (this.currentStep === 2) {
       ge('outputLanguage').value = this.settings.ui?.outputLanguage || 'en';
       ge('autoAnalyze').checked = this.settings.automation?.autoAnalyze || false;

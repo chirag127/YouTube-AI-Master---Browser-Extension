@@ -29,13 +29,13 @@ const ab = id('analyze-btn'),
   ch = id('chat-history');
 
 on(document, 'DOMContentLoaded', async () => {
-  const { geminiApiKey } = await sl.get('geminiApiKey');
-  if (!geminiApiKey) {
+  const { GAK } = await sl.get('GAK');
+  if (!GAK) {
     aw.style.display = 'block';
     ab.disabled = true;
     return;
   }
-  gs = new GeminiService(geminiApiKey);
+  gs = new GeminiService(GAK);
   scs = new SegmentClassificationService(gs, cs);
   try {
     await gs.fetchAvailableModels();

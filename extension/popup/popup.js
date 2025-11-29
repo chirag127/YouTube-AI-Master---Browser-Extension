@@ -18,9 +18,9 @@ function showMsg(t, y = 'info') {
 }
 async function checkApi() {
   try {
-    const s = await sg(['apiKey', 'onboardingCompleted']),
-      lc = await sl('geminiApiKey'),
-      k = s.apiKey || lc.geminiApiKey;
+    const s = await sg('config'),
+      lc = await sl('GAK'),
+      k = s.config?.ai?.GAK || lc.GAK;
     if (k) {
       a.innerHTML = '<span>✅ Configured</span>';
       a.className = 'value success';

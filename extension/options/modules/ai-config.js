@@ -7,7 +7,7 @@ import {
   ih,
   rc,
   v as vl,
-  ce as cr,
+  ce as cr
 } from '../../utils/shortcuts/dom.js';
 import { isS, jp, js, sw } from '../../utils/shortcuts/core.js';
 import { inc, rp, trm } from '../../utils/shortcuts/string.js';
@@ -21,9 +21,9 @@ export class AIConfig {
   }
   async init() {
     const c = this.s.get().ai || {};
-    if (ModelManager && c.apiKey)
-      this.mm = new ModelManager(c.apiKey, 'https://generativelanguage.googleapis.com/v1beta');
-    this.set('apiKey', c.apiKey || '');
+    if (ModelManager && c.GAK)
+      this.mm = new ModelManager(c.GAK, 'https://generativelanguage.googleapis.com/v1beta');
+    this.set('apiKey', c.GAK || '');
     this.set('customPrompt', c.customPrompt || '');
     if (c.model) this.set('modelSelect', c.model);
     const els = {
@@ -37,8 +37,8 @@ export class AIConfig {
     if (els.ak)
       on(els.ak, 'change', async e => {
         const k = trm(vl(e.target));
-        await chrome.storage.local.set({ geminiApiKey: k });
-        await this.a.save('ai.apiKey', k);
+        await chrome.storage.local.set({ GAK: k });
+        await this.a.save('ai.GAK', k);
         this.mm = new ModelManager(k, 'https://generativelanguage.googleapis.com/v1beta');
         if (k) await this.loadModels(els.ms);
       });
@@ -104,7 +104,7 @@ export class AIConfig {
     tc(btn, 'Testing...');
     st.className = 'status-indicator hidden';
     try {
-      if (!c.apiKey) throw new Error('API Key missing');
+      if (!c.GAK) throw new Error('API Key missing');
       let m = vl(ms) || c.model || 'gemini-2.0-flash-exp';
       if (sw(m, 'models/')) m = rp(m, 'models/', '');
       if (
@@ -116,7 +116,7 @@ export class AIConfig {
       )
         m += '-latest';
       const r = await ft(
-        `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${c.apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${c.GAK}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
