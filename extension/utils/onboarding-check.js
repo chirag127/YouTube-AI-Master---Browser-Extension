@@ -1,4 +1,5 @@
-import { sg, ss, url, tab, w } from './shortcuts.js';
+import { ssg as sg, ss, url, tab, w } from './shortcuts/index.js';
+
 export class OnboardingChecker {
   static async isCompleted() {
     const r = await sg('obDone');

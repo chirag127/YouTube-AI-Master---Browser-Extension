@@ -4,4 +4,5 @@ export const rm = chrome.runtime.sendMessage;
 export const ro = chrome.runtime.onMessage;
 export const rc = chrome.runtime.connect;
 export const rl = chrome.runtime.reload;
-export const rg = chrome.runtime.getManifest;
+export const rman = chrome.runtime.getManifest;
+export const url = rurl;
