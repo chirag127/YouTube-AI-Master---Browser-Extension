@@ -9,9 +9,21 @@ async function getClient() {
     if (innertubeInstance) return innertubeInstance;
 
     console.log('[InnerTube BG] Initializing YouTube.js client...');
+
+    // Get YouTube cookies from the browser
+    const cookies = await chrome.cookies.getAll({ domain: '.youtube.com' });
+    const cookieString = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+
+    console.log('[InnerTube BG] Retrieved cookies:', cookies.length > 0 ? `${cookies.length} cookies` : 'No cookies');
+
     innertubeInstance = await Innertube.create({
-        fetch: (input, init) => fetch(input, init)
+        fetch: (input, init) => fetch(input, init),
+        cookie: cookieString || undefined,
+        generate_session_locally: false,
+        retrieve_player: false, // Faster initialization
+        enable_session_cache: true
     });
+
     console.log('[InnerTube BG] ✅ Client initialized');
     return innertubeInstance;
 }
