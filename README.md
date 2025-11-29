@@ -16,6 +16,7 @@ AI-powered YouTube analysis extension. Transcripts, insights, segments, comments
 
 ```bash
 npm install
+npm test  # Run headless test suite (Vitest + JSDOM)
 ```
 
 Load `extension/` folder in Chrome as unpacked extension.
@@ -33,13 +34,18 @@ Load `extension/` folder in Chrome as unpacked extension.
 - **Shortcuts**: All common operations use 1-2 letter aliases (`l`=log, `$`=querySelector, `sg`=storage.get)
 - **Minimal Tokens**: Stripped comments, compressed keys, dense ES6+ syntax
 - **Modular**: Maximum files, minimum tokens per file
+- **ESM Integrity**: Import validation tests ensure zero runtime errors
+- **Named Exports Only**: No default exports, explicit named exports throughout
 
 ### Key Files
 
-- `utils/shortcuts.js` - 70+ ultra-short utility aliases
-- `utils/config.js` - Compressed config with short keys (ca, tr, co, md, ui, ai, etc.)
-- `content/transcript/strategy-manager.js` - Strategy manager for transcript extraction
-- `api/gemini-client.js` - Gemini API client
+- `utils/shortcuts/` - Modular ultra-short utility aliases (dom.js, log.js, core.js, etc.)
+- `utils/config.js` - Compressed config with short keys
+- `content/transcript/strategy-manager.js` - Multi-strategy transcript extraction
+- `api/gemini-client.js` - Gemini API client with rate limiting
+- `tests/` - Comprehensive test suite (45 tests, 11 files)
+  - `import-validation.test.js` - Validates all imports match exports
+  - `integrity.test.js` - Syntax and circular dependency checks
 
 ### Storage Keys (Compressed)
 
