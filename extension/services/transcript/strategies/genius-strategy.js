@@ -1,4 +1,7 @@
-import { $, l, cw, rt } from '../../../utils/shortcuts.js';
+import { $ } from '../../../utils/shortcuts/dom.js';
+import { l } from '../../../utils/shortcuts/logging.js';
+import { cw } from '../../../utils/shortcuts/chrome.js';
+import { rt } from '../../../utils/shortcuts/runtime.js';
 import geniusAPI from '../../../api/genius-lyrics.js';
 import { isMusicVideo } from '../utils/music-classifier.js';
 async function fetchViaGenius(videoId, lang = 'en') {

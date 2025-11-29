@@ -71,7 +71,7 @@ export class HttpClient {
     try {
       const data = await response.json();
       message = data.error?.message || data.message || message;
-    } catch { }
+    } catch {}
 
     const error = new Error(message);
     error.status = response.status;

@@ -1,4 +1,7 @@
-import { sl, l, nt, keys, sw } from '../../utils/shortcuts.js';
+import { sl } from '../../utils/shortcuts/storage.js';
+import { l } from '../../utils/shortcuts/logging.js';
+import { nw as nt, ok as keys } from '../../utils/shortcuts/core.js';
+import { sl as sw } from '../../utils/shortcuts/storage.js';
 
 const V = 1,
   E = 86400000;

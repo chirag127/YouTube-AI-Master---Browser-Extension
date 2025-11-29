@@ -1,4 +1,5 @@
-import { mt, loc } from '../../utils/shortcuts.js';
+import { mt } from '../../utils/shortcuts/string.js';
+import { loc } from '../../utils/shortcuts/global.js';
 
 export function extractVideoId(u) {
   const ps = [/[?&]v=([^&]+)/, /\/embed\/([^/?]+)/, /\/v\/([^/?]+)/, /youtu\.be\/([^/?]+)/];

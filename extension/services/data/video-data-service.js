@@ -1,5 +1,6 @@
 import vc from '../cache/video-cache.js';
-import { msg, l } from '../../utils/shortcuts.js';
+import { msg } from '../../utils/shortcuts/runtime.js';
+import { l } from '../../utils/shortcuts/logging.js';
 
 class VideoDataService {
   constructor() {

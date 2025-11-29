@@ -1,4 +1,5 @@
-import { sl, nt } from '../../utils/shortcuts.js';
+import { sl } from '../../utils/shortcuts/storage.js';
+import { nw as nt } from '../../utils/shortcuts/core.js';
 
 export async function saveTranscript(v, m, t, s) {
   if (!v) throw new Error('Video ID required');

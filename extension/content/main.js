@@ -1,15 +1,18 @@
 (async () => {
   if (window.location.hostname !== 'www.youtube.com') return;
-  const { l, e, w, url, cr, ce, ap, qs, on, cl, dc, to, nw } = await import(
-    chrome.runtime.getURL('utils/shortcuts/index.js')
-  );
+  const { l, e } = await import(chrome.runtime.getURL('utils/shortcuts/logging.js'));
+  const { url } = await import(chrome.runtime.getURL('utils/shortcuts/runtime.js'));
+  const { cr } = await import(chrome.runtime.getURL('utils/shortcuts/chrome.js'));
+  const { ce, ap, $: qs, on } = await import(chrome.runtime.getURL('utils/shortcuts/dom.js'));
+  const { cl, dc, to, nw } = await import(chrome.runtime.getURL('utils/shortcuts/global.js'));
+
   const s = ce('script');
   s.type = 'module';
   s.src = url('content/youtube-extractor.js');
   s.onload = function () {
     this.remove();
   };
-  ap(document.head || document.documentElement, s);
+  ap(dc.head || dc.documentElement, s);
   l('YAM: Start');
   try {
     const { initializeExtension: ie, waitForPageReady: wp } = await import(

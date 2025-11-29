@@ -1,4 +1,5 @@
-import { mfl, pS, js } from '../../utils/shortcuts.js';
+import { mf as mfl } from '../../utils/shortcuts/math.js';
+import { pI as pS, js } from '../../utils/shortcuts/core.js';
 
 export function formatTime(s) {
   const h = mfl(s / 3600),

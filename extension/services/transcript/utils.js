@@ -1,4 +1,5 @@
-import { rp, tr, fn } from '../../utils/shortcuts.js';
+import { rp, tr } from '../../utils/shortcuts/string.js';
+import { fn } from '../../utils/shortcuts/array.js';
 
 export function cleanText(t) {
   return tr(rp(rp(t, /\s+/g, ' '), /\[.*?\]/g, ''));

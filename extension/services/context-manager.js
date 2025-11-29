@@ -8,7 +8,8 @@ import { GoogleFactCheckAPI } from '../api/google-factcheck.js';
 import { WikidataAPI } from '../api/wikidata.js';
 import { DatamuseAPI } from '../api/datamuse.js';
 import { OpenMeteoAPI } from '../api/openmeteo.js';
-import { l, cw } from '../utils/shortcuts.js';
+import { l } from '../utils/shortcuts/logging.js';
+import { cw } from '../utils/shortcuts/chrome.js';
 
 export class ContextManager {
   constructor(s) {

@@ -1,4 +1,5 @@
-import { mfl, pS } from '../../utils/shortcuts.js';
+import { mf as mfl } from '../../utils/shortcuts/math.js';
+import { pI as pS } from '../../utils/shortcuts/core.js';
 
 export const validateSegments = s => {
   if (!Array.isArray(s)) return [];

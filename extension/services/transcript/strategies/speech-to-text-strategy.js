@@ -1,4 +1,6 @@
-import { l, cw, rt } from '../../../utils/shortcuts.js';
+import { l } from '../../../utils/shortcuts/logging.js';
+import { cw } from '../../../utils/shortcuts/chrome.js';
+import { rt } from '../../../utils/shortcuts/runtime.js';
 const getAudioUrl = () => {
   try {
     const pr = window.ytInitialPlayerResponse;

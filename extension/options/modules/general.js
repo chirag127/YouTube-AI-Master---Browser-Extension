@@ -1,4 +1,5 @@
-import { i, on, lr } from '../../utils/shortcuts.js';
+import { id as i, on } from '../../utils/shortcuts/dom.js';
+import { slr as lr } from '../../utils/shortcuts/storage.js';
 
 export class GeneralSettings {
   constructor(s, a) {

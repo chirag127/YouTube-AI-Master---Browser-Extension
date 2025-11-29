@@ -1,4 +1,4 @@
-import { i } from '../../utils/shortcuts.js';
+import { id as i } from '../../utils/shortcuts/dom.js';
 
 export class ExternalAPIs {
   constructor(s, a) {

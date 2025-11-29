@@ -1,4 +1,10 @@
-import { l, ce, ls, fl, js, jp, lc, inc, fn, nt, sl, us, slc } from '../../utils/shortcuts.js';
+import { l } from '../../utils/shortcuts/logging.js';
+import { ce } from '../../utils/shortcuts/dom.js';
+import { fl, fn, us, ic as inc } from '../../utils/shortcuts/array.js';
+import { js, jp, nw as nt } from '../../utils/shortcuts/core.js';
+import { lc } from '../../utils/shortcuts/string.js';
+import { sl, slc } from '../../utils/shortcuts/storage.js';
+import { ls } from '../../utils/shortcuts/global.js';
 export class ComprehensiveHistory {
   constructor() {
     this.k = 'comprehensive_history';

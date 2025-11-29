@@ -1,4 +1,10 @@
-import { id, ss, sg, sls, slg, l, w, cw, ct, url, cr, to } from '../utils/shortcuts/index.js';
+import { id } from '../utils/shortcuts/dom.js';
+import { ss, sg, sls, slg } from '../utils/shortcuts/storage.js';
+import { l, w } from '../utils/shortcuts/logging.js';
+import { cw, cr } from '../utils/shortcuts/chrome.js';
+import { tab as ct } from '../utils/shortcuts/tabs.js';
+import { url } from '../utils/shortcuts/runtime.js';
+import { to } from '../utils/shortcuts/global.js';
 const a = id('api-status'),
   p = id('page-status'),
   b = id('analyze-btn'),

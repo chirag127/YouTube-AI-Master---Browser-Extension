@@ -1,5 +1,8 @@
 import { GeminiClient } from '../../../api/gemini-client.js';
-import { sg, cw, sw, rp, tr, lc } from '../../../utils/shortcuts.js';
+import { sg } from '../../../utils/shortcuts/storage.js';
+import { cw } from '../../../utils/shortcuts/chrome.js';
+import { sl as sw } from '../../../utils/shortcuts/storage.js';
+import { rp, tr, lc } from '../../../utils/shortcuts/string.js';
 
 export async function isMusicVideo(t, c) {
   try {

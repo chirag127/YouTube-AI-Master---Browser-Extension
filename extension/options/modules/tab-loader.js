@@ -1,4 +1,7 @@
-import { ft, url, $, l, ce } from '../../utils/shortcuts.js';
+import { ft } from '../../utils/shortcuts/network.js';
+import { url } from '../../utils/shortcuts/runtime.js';
+import { $, ce } from '../../utils/shortcuts/dom.js';
+import { l } from '../../utils/shortcuts/logging.js';
 
 export class TabLoader {
   constructor() {

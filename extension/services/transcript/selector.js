@@ -1,5 +1,5 @@
 import { CAPTION_KIND, DEFAULT_LANGUAGE } from './constants.js';
-import { fn } from '../../utils/shortcuts.js';
+import { fn } from '../../utils/shortcuts/array.js';
 
 export function findTrackByLanguage(t, l) {
   return fn(t, x => x.languageCode === l) || null;

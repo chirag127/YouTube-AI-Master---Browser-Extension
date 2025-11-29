@@ -15,7 +15,10 @@ import { TranscriptSettings } from './modules/transcript-settings.js';
 import { CommentsSettings } from './modules/comments-settings.js';
 import { MetadataSettings } from './modules/metadata-settings.js';
 import { ScrollSettings } from './modules/scroll-settings.js';
-import { on, i, l, ce, vs, url, tab } from '../utils/shortcuts.js';
+import { on, id as i, ce, vs } from '../utils/shortcuts/dom.js';
+import { l } from '../utils/shortcuts/logging.js';
+import { url } from '../utils/shortcuts/runtime.js';
+import { tab } from '../utils/shortcuts/tabs.js';
 
 on(document, 'DOMContentLoaded', async () => {
   l('[Options] Initializing...');

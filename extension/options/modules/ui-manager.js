@@ -1,4 +1,6 @@
-import { ft, i, st, $$, on, ce } from '../../utils/shortcuts.js';
+import { ft } from '../../utils/shortcuts/network.js';
+import { id as i, $$, on, ce } from '../../utils/shortcuts/dom.js';
+import { to as st } from '../../utils/shortcuts/global.js';
 
 export class UIManager {
   constructor() {

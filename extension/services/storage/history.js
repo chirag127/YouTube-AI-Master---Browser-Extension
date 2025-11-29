@@ -1,4 +1,7 @@
-import { sl, lc, inc, nt } from '../../utils/shortcuts.js';
+import { sl } from '../../utils/shortcuts/storage.js';
+import { nw as nt } from '../../utils/shortcuts/core.js';
+import { lc } from '../../utils/shortcuts/string.js';
+import { ic as inc } from '../../utils/shortcuts/array.js';
 
 export async function getHistory() {
   const r = await sl('history_index');

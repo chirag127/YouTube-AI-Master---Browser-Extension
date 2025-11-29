@@ -1,4 +1,6 @@
-import { jp, fl, mp, jn, tr, isS } from '../../../utils/shortcuts.js';
+import { jp, isS } from '../../../utils/shortcuts/core.js';
+import { fl, mp, jn } from '../../../utils/shortcuts/array.js';
+import { tr } from '../../../utils/shortcuts/string.js';
 
 export const parse = d => {
   if (isS(d)) d = jp(d);

@@ -1,4 +1,5 @@
-import { $$, jp, ce } from '../../utils/shortcuts.js';
+import { $$, ce } from '../../utils/shortcuts/dom.js';
+import { jp } from '../../utils/shortcuts/core.js';
 export const extractCaptionTracks = pr => {
   if (!pr?.captions) return [];
   const r = pr.captions.playerCaptionsTracklistRenderer;

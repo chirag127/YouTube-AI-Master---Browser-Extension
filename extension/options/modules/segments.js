@@ -1,5 +1,5 @@
 import { SEGMENT_CATEGORIES, DEFAULT_SEGMENT_CONFIG } from './settings-manager.js';
-import { i, on } from '../../utils/shortcuts.js';
+import { id as i, on } from '../../utils/shortcuts/dom.js';
 
 export class SegmentsConfig {
   constructor(s, a) {

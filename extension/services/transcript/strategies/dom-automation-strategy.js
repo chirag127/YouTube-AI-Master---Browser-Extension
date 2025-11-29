@@ -1,4 +1,10 @@
-import { $, $$, l, cw, ce, cd, st, nt, spt, mp, tr } from '../../../utils/shortcuts.js';
+import { $, $$, ce } from '../../../utils/shortcuts/dom.js';
+import { l, d as cd } from '../../../utils/shortcuts/logging.js';
+import { cw } from '../../../utils/shortcuts/chrome.js';
+import { to as st } from '../../../utils/shortcuts/global.js';
+import { nw as nt } from '../../../utils/shortcuts/core.js';
+import { sp as spt, mp } from '../../../utils/shortcuts/array.js';
+import { tr } from '../../../utils/shortcuts/string.js';
 class DOMAutomationStrategy {
   constructor() {
     this.name = 'DOM Automation';

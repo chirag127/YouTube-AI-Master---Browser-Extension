@@ -1,4 +1,8 @@
-import { sg, l, cw, st, pr, p } from '../../utils/shortcuts.js';
+import { sg } from '../../utils/shortcuts/storage.js';
+import { l } from '../../utils/shortcuts/logging.js';
+import { cw } from '../../utils/shortcuts/chrome.js';
+import { to as st } from '../../utils/shortcuts/global.js';
+import { pr } from '../../utils/shortcuts/async.js';
 import { strategy as s1 } from './strategies/dom-automation-strategy.js';
 import { strategy as s2 } from './strategies/invidious-strategy.js';
 import { strategy as s3 } from './strategies/speech-to-text-strategy.js';

@@ -1,4 +1,6 @@
-import { st, ct, l, ce, on, i, es } from '../../utils/shortcuts.js';
+import { to as st, co as ct } from '../../utils/shortcuts/global.js';
+import { l } from '../../utils/shortcuts/logging.js';
+import { ce, on, id as i } from '../../utils/shortcuts/dom.js';
 
 export class AutoSave {
   constructor(sm, d = 500, nm = null) {

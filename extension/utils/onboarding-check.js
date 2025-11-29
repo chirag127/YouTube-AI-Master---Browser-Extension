@@ -1,4 +1,7 @@
-import { sg, ss, url, tab, w } from './shortcuts/index.js';
+import { sg, ss } from './shortcuts/storage.js';
+import { url } from './shortcuts/runtime.js';
+import { tab } from './shortcuts/tabs.js';
+import { w } from './shortcuts/logging.js';
 
 export class OnboardingChecker {
   static async isCompleted() {

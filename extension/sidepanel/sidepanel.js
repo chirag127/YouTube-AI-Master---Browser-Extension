@@ -3,7 +3,14 @@ import { GeminiService } from '../api/gemini.js';
 import { SegmentClassificationService } from '../services/segments/index.js';
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
-import { id, $$, on, sl, l, cw, e, ct, ce, st, mf, pd } from '../utils/shortcuts.js';
+import { id, $$, on, ce } from '../utils/shortcuts/dom.js';
+import { sl } from '../utils/shortcuts/storage.js';
+import { l, e } from '../utils/shortcuts/logging.js';
+import { cw } from '../utils/shortcuts/chrome.js';
+import { tab as ct } from '../utils/shortcuts/tabs.js';
+import { to as st } from '../utils/shortcuts/global.js';
+import { mf } from '../utils/shortcuts/math.js';
+import { pd } from '../utils/shortcuts/string.js';
 
 const ss = new StorageService(),
   cs = new ChunkingService();

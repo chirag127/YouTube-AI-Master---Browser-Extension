@@ -1,4 +1,5 @@
-import { sl, nt } from '../../utils/shortcuts.js';
+import { sl } from '../../utils/shortcuts/storage.js';
+import { nw as nt } from '../../utils/shortcuts/core.js';
 
 export async function saveVideoData(v, d) {
   const k = `video_${v}`,

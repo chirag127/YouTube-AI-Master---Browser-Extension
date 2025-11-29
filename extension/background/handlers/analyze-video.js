@@ -3,7 +3,12 @@ import { getApiKey as gk } from '../utils/api-key.js';
 import gl from '../../api/genius-lyrics.js';
 import sb from '../../api/sponsorblock.js';
 import { ContextManager as CM } from '../../services/context-manager.js';
-import { l, w, e, si, ci, cr, sg, ok, E, css, ic, lc } from '../../utils/shortcuts/index.js';
+import { l, w, e } from '../../utils/shortcuts/logging.js';
+import { si, ci } from '../../utils/shortcuts/global.js';
+import { cr, css } from '../../utils/shortcuts/chrome.js';
+import { sg } from '../../utils/shortcuts/storage.js';
+import { ok, E } from '../../utils/shortcuts/core.js';
+import { ic, lc } from '../../utils/shortcuts/string.js';
 let ka = null;
 const ska = () => {
   if (!ka) ka = si(() => cr.getPlatformInfo(() => {}), 2e4);

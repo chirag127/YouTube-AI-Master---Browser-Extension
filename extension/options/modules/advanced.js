@@ -1,4 +1,7 @@
-import { i, on, js, jp, st, ce, cr } from '../../utils/shortcuts.js';
+import { id as i, on, ce } from '../../utils/shortcuts/dom.js';
+import { js, jp } from '../../utils/shortcuts/core.js';
+import { to as st } from '../../utils/shortcuts/global.js';
+import { cr } from '../../utils/shortcuts/chrome.js';
 
 export class AdvancedSettings {
   constructor(s, a) {

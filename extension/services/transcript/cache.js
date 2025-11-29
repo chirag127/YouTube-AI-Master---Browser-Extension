@@ -1,4 +1,4 @@
-import { sw } from '../../utils/shortcuts.js';
+import { sl as sw } from '../../utils/shortcuts/storage.js';
 
 const c = new Map();
 function k(v, l) {

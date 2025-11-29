@@ -1,4 +1,7 @@
-import { sg, ss, l, ce, js, jp, nt } from '../../utils/shortcuts.js';
+import { sg, ss } from '../../utils/shortcuts/storage.js';
+import { l } from '../../utils/shortcuts/logging.js';
+import { ce } from '../../utils/shortcuts/dom.js';
+import { js, jp, nw as nt } from '../../utils/shortcuts/core.js';
 
 export const SEGMENT_CATEGORIES = [
   { id: 'sponsor', label: 'Sponsor', color: '#00d400' },

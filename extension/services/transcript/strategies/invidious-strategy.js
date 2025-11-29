@@ -1,4 +1,4 @@
-import { msg } from '../../../utils/shortcuts.js';
+import { msg } from '../../../utils/shortcuts/runtime.js';
 
 export async function fetchViaInvidious(v, l = 'en') {
   const r = await msg('FETCH_INVIDIOUS_TRANSCRIPT', { videoId: v, lang: l });

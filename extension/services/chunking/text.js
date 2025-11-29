@@ -1,4 +1,4 @@
-import { tr, sub, lio } from '../../utils/shortcuts.js';
+import { tr, sb as sub, li as lio } from '../../utils/shortcuts/string.js';
 
 export function chunkText(t, s = 20000, o = 500) {
   if (!t) return [];

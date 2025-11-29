@@ -1,4 +1,5 @@
-import { st, raf, cr } from '../../utils/shortcuts.js';
+import { to as st, raf } from '../../utils/shortcuts/global.js';
+import { cr } from '../../utils/shortcuts/chrome.js';
 
 export class NotificationManager {
   constructor() {
