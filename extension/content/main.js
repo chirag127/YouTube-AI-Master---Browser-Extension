@@ -98,6 +98,10 @@ async function handleGetMetadata(request, sendResponse) {
 async function handleGetTranscript(request, sendResponse) {
     try {
         const { videoId } = request;
+
+        // Check if transcript is cached
+        const wasCached = await checkTranscriptCache(videoId);
+
         const { getTranscript } = await import(
             chrome.runtime.getURL("content/transcript/service.js")
         );
@@ -105,6 +109,21 @@ async function handleGetTranscript(request, sendResponse) {
 
         if (!transcript || transcript.length === 0) {
             throw new Error("This video does not have captions available");
+        }
+
+        // Only auto-close if transcript was NOT from cache (i.e., freshly fetched)
+        if (!wasCached) {
+            try {
+                const { collapseTranscriptWidget } = await import(
+                    chrome.runtime.getURL("content/ui/renderers/transcript.js")
+                );
+                setTimeout(() => collapseTranscriptWidget(), 1000);
+                console.log("[Transcript] Auto-closing widget (fresh fetch)");
+            } catch (e) {
+                console.warn("Could not auto-close transcript widget:", e);
+            }
+        } else {
+            console.log("[Transcript] Keeping widget open (cached data)");
         }
 
         sendResponse({ success: true, transcript });
@@ -132,6 +151,28 @@ async function handleGetComments(request, sendResponse) {
     } catch (error) {
         console.error("Comments fetch error:", error);
         sendResponse({ comments: [] });
+    }
+}
+
+async function checkTranscriptCache(videoId) {
+    try {
+        const key = `video_${videoId}_transcript`;
+        const result = await chrome.storage.local.get(key);
+
+        if (result[key]) {
+            const cached = result[key];
+            const age = Date.now() - cached.timestamp;
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+            if (age < maxAge && cached.data?.length > 0) {
+                console.log(`[Transcript] Cache exists (age: ${Math.round(age / 1000 / 60)}min)`);
+                return true;
+            }
+        }
+        return false;
+    } catch (e) {
+        console.warn("[Transcript] Cache check failed:", e);
+        return false;
     }
 }
 

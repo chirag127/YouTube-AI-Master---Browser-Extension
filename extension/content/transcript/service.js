@@ -48,6 +48,7 @@ export class TranscriptService {
     /**
      * Main entry point - tries all methods in priority order
      * Priority Order:
+     * 0. Cache Check (NO NETWORK)
      * 1. XHR Interceptor (Fastest if available)
      * 2. Invidious API (Primary - CORS-free, reliable)
      * 3. YouTube Direct API (Direct timedtext endpoint)
@@ -57,6 +58,17 @@ export class TranscriptService {
      */
     async getTranscript(v, l = 'en') {
         logger.info(`Fetching transcript for video: ${v}, language: ${l}`)
+
+        // Priority 0: Check Cache First
+        try {
+            const cached = await this._checkCache(v, l)
+            if (cached && cached.length > 0) {
+                logger.success(`Cache hit: ${cached.length} segments (NO NETWORK)`)
+                return cached
+            }
+        } catch (e) {
+            logger.warn('Cache check failed:', e.message)
+        }
 
         // Priority order as documented
         const methods = [
@@ -152,6 +164,27 @@ export class TranscriptService {
 
         const renderer = playerResponse.captions.playerCaptionsTracklistRenderer
         return renderer?.captionTracks || []
+    }
+
+    // ============================================================================
+    // METHOD 0: Cache Check (NO NETWORK)
+    // ============================================================================
+    async _checkCache(v, l) {
+        const key = `video_${v}_transcript`
+        const result = await chrome.storage.local.get(key)
+
+        if (result[key]) {
+            const cached = result[key]
+            const age = Date.now() - cached.timestamp
+            const maxAge = 24 * 60 * 60 * 1000 // 24 hours
+
+            if (age < maxAge && cached.data?.length > 0) {
+                logger.debug(`Cache hit: ${cached.data.length} segments (age: ${Math.round(age / 1000 / 60)}min)`)
+                return cached.data
+            }
+            logger.debug('Cache expired or empty')
+        }
+        return null
     }
 
     // ============================================================================

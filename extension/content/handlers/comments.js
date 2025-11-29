@@ -63,8 +63,20 @@ class CommentsExtractor {
 
     async getComments() {
         console.log("[CommentsExtractor] 💬 === STARTING COMMENT EXTRACTION ===");
+        const videoId = this.getCurrentVideoId();
 
-        // Strategy 1: Intercepted Comments (Passive)
+        // Strategy 0: Check Cache First (NO SCROLL)
+        try {
+            const cached = await this.checkCache(videoId);
+            if (cached && cached.length > 0) {
+                console.log(`[CommentsExtractor] ✅ Strategy 0: Using cached comments (${cached.length}) - NO SCROLL`);
+                return cached;
+            }
+        } catch (e) {
+            console.warn("[CommentsExtractor] ⚠️ Cache check failed:", e.message);
+        }
+
+        // Strategy 1: Intercepted Comments (Passive - NO SCROLL)
         if (this.hasIntercepted && this.comments.length > 0) {
             console.log("[CommentsExtractor] ✅ Strategy 1: Using intercepted comments", {
                 count: this.comments.length
@@ -73,9 +85,8 @@ class CommentsExtractor {
         }
         console.log("[CommentsExtractor] ⏭️ Strategy 1: No intercepted comments available");
 
-        // Strategy 2: InnerTube API (Primary - Most reliable)
+        // Strategy 2: InnerTube API (Primary - NO SCROLL)
         try {
-            const videoId = this.getCurrentVideoId();
             console.log("[CommentsExtractor] 🔧 Strategy 2: Trying InnerTube API...", {
                 videoId,
                 limit: 20
@@ -99,7 +110,7 @@ class CommentsExtractor {
             });
 
             if (response.success && response.comments?.length > 0) {
-                console.log(`[CommentsExtractor] ✅ Strategy 2: InnerTube fetched ${response.comments.length} comments`);
+                console.log(`[CommentsExtractor] ✅ Strategy 2: InnerTube fetched ${response.comments.length} comments - NO SCROLL`);
                 return response.comments;
             } else {
                 console.warn(`[CommentsExtractor] ⚠️ Strategy 2: InnerTube returned no comments`, {
@@ -115,9 +126,36 @@ class CommentsExtractor {
             });
         }
 
-        // Strategy 3: DOM Scraping (Fallback)
-        console.log("[CommentsExtractor] 🔧 Strategy 3: Falling back to DOM scraping");
+        // Strategy 3: DOM Scraping (LAST RESORT - REQUIRES SCROLL)
+        console.log("[CommentsExtractor] 🔧 Strategy 3: DOM scraping - WILL SCROLL");
+        await this.scrollToComments();
         return this.fetchCommentsFromDOM();
+    }
+
+    async checkCache(videoId) {
+        const key = `video_${videoId}_comments`;
+        const result = await chrome.storage.local.get(key);
+
+        if (result[key]) {
+            const cached = result[key];
+            const age = Date.now() - cached.timestamp;
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+            if (age < maxAge && cached.data?.length > 0) {
+                console.log(`[CommentsExtractor] 📦 Cache hit: ${cached.data.length} comments (age: ${Math.round(age / 1000 / 60)}min)`);
+                return cached.data;
+            }
+            console.log(`[CommentsExtractor] 📦 Cache expired or empty`);
+        }
+        return null;
+    }
+
+    async scrollToComments() {
+        const { getScrollManager } = await import(
+            chrome.runtime.getURL("content/utils/scroll-manager.js")
+        );
+        const scrollManager = getScrollManager();
+        await scrollManager.scrollToComments();
     }
 
     getCurrentVideoId() {

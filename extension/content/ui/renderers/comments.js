@@ -15,7 +15,7 @@ export async function renderComments(c) {
         if (!cm.length) {
             showPlaceholder(
                 c,
-                "No comments found. Scroll down to load comments first."
+                "No comments found. Comments may be disabled for this video."
             );
             return;
         }
@@ -26,6 +26,9 @@ export async function renderComments(c) {
             comments: cm,
         });
         if (r.success) {
+            // IMMEDIATE scroll to top - before rendering
+            scrollBackToTop();
+
             if (!state.analysisData) state.analysisData = {};
             state.analysisData.commentAnalysis = r.analysis;
             const html = await parseMarkdown(r.analysis);
@@ -41,4 +44,58 @@ export async function renderComments(c) {
     } catch (e) {
         c.innerHTML = `<div class="yt-ai-error-msg">Failed: ${e.message}</div>`;
     }
+}
+
+function scrollBackToTop() {
+    console.log("[CommentsRenderer] 📜 IMMEDIATE scroll to top");
+
+    // Triple-force instant scroll
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // Force repaint
+    void document.body.offsetHeight;
+
+    // Verify scroll position
+    requestAnimationFrame(() => {
+        if (window.scrollY > 0) {
+            console.warn("[CommentsRenderer] ⚠️ Scroll failed, retrying...");
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }
+        console.log("[CommentsRenderer] ✅ Final scroll position:", window.scrollY);
+    });
+
+    // Visual feedback
+    showScrollNotification();
+}
+
+function showScrollNotification() {
+    const notification = document.createElement('div');
+    notification.id = 'yt-ai-scroll-notification';
+    notification.textContent = '⬆️ Scrolled to top';
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: #3ea6ff;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        animation: slideIn 0.3s ease-out;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
 }
