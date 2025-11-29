@@ -5,7 +5,7 @@ AI-powered YouTube analysis extension. Transcripts, insights, segments, comments
 ## Features
 
 - **AI Analysis**: Gemini-powered summaries, insights, FAQ
-- **Smart Transcripts**: Multi-strategy fetching (DOM, Invidious, Genius, Speech-to-Text)
+- **Smart Transcripts**: Multi-strategy fetching (DOM Automation, Genius, Speech-to-Text)
 - **Segment Classification**: Auto-detect sponsors, intros, content sections
 - **Comment Analysis**: Sentiment analysis, key themes
 - **DeArrow Integration**: Community-sourced clickbait-free titles
@@ -38,9 +38,8 @@ Load `extension/` folder in Chrome as unpacked extension.
 
 - `utils/shortcuts.js` - 70+ ultra-short utility aliases
 - `utils/config.js` - Compressed config with short keys (ca, tr, co, md, ui, ai, etc.)
-- `services/transcript/fetcher.js` - Priority-based transcript strategies
-- `api/gemini.js` - Gemini API client with fallback models
-- `api/invidious.js` - Privacy-friendly YouTube API
+- `content/transcript/strategy-manager.js` - Strategy manager for transcript extraction
+- `api/gemini-client.js` - Gemini API client
 
 ### Storage Keys (Compressed)
 
@@ -55,21 +54,20 @@ Load `extension/` folder in Chrome as unpacked extension.
 ## Transcript Strategies (Priority Order)
 
 1. **DOM Automation** - Automates YouTube UI to extract captions
-2. **Invidious API** - Privacy-friendly YouTube frontend
-3. **Genius Lyrics** - Music videos only
-4. **Speech-to-Text** - Gemini audio transcription fallback
+2. **Genius Lyrics** - Music videos only
+3. **Speech-to-Text** - Gemini audio transcription fallback
 
 ## APIs Used
 
-| Service      | Purpose                    | Key Required |
-| ------------ | -------------------------- | ------------ |
-| Gemini       | AI analysis, transcription | ✅ Required  |
-| Invidious    | Transcripts, metadata      | ⚫ No key    |
-| Genius       | Lyrics for music videos    | ⚫ No key    |
-| SponsorBlock | Segment database           | ⚫ No key    |
-| DeArrow      | Clickbait-free titles      | ⚫ No key    |
-| TMDB         | Movie/TV metadata          | ⚪ Optional  |
-| NewsData     | News context               | ⚪ Optional  |
+| Service | Purpose                    | Key Required |
+| ------- | -------------------------- | ------------ |
+| Gemini  | AI analysis, transcription | ✅ Required  |
+
+| Genius | Lyrics for music videos | ⚫ No key |
+| SponsorBlock | Segment database | ⚫ No key |
+| DeArrow | Clickbait-free titles | ⚫ No key |
+| TMDB | Movie/TV metadata | ⚪ Optional |
+| NewsData | News context | ⚪ Optional |
 
 ## Development
 
@@ -91,7 +89,7 @@ extension/
 
 ```js
 import { l, w } from './utils/shortcuts/log.js';
-import { qs, qsa } from './utils/shortcuts/doc.js';
+import { $ } from './utils/shortcuts/dom.js';
 import { sg, ss } from './utils/shortcuts/storage.js';
 
 l('Log message'); // console.log
@@ -105,4 +103,4 @@ MIT - See LICENSE file
 
 ## Credits
 
-Built with Gemini AI, Invidious, SponsorBlock, DeArrow, and other open-source projects.
+Built with Gemini AI, SponsorBlock, DeArrow, and other open-source projects.

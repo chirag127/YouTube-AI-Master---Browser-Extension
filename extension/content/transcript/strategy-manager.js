@@ -1,13 +1,9 @@
-import * as xhrIntercept from './strategies/xhr-intercept.js';
-import * as youtubeDirect from './strategies/youtube-direct.js';
-import * as backgroundProxy from './strategies/background-proxy.js';
-import * as domParser from './strategies/dom-parser.js';
-import * as invidious from './strategies/invidious.js';
+import * as domAutomation from './strategies/dom-automation.js';
+import * as genius from './strategies/genius.js';
+import * as speechToText from './strategies/speech-to-text.js';
 import { lg, wn, er } from '../../utils/shortcuts/log.js';
 
-const strategies = [xhrIntercept, youtubeDirect, backgroundProxy, domParser, invidious].sort(
-  (a, b) => a.priority - b.priority
-);
+const strategies = [domAutomation, genius, speechToText].sort((a, b) => a.priority - b.priority);
 
 export const extractTranscript = async (vid, lang = 'en') => {
   lg(`[Transcript] Starting extraction for ${vid}, lang: ${lang}`);
