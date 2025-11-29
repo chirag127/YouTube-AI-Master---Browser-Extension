@@ -2,9 +2,14 @@ export const l = (m, ...a) => console.log(m, ...a);
 export const w = (m, ...a) => console.warn(m, ...a);
 export const e = (m, ...a) => console.error(m, ...a);
 export const d = (m, ...a) => console.debug(m, ...a);
-export const ce = (m, ...a) => console.error(m, ...a);
+export const cl = l;
+export const cw = w;
+export const ce = e;
+export const cd = d;
 export const $ = (s, p = document) => p.querySelector(s);
 export const $$ = (s, p = document) => [...p.querySelectorAll(s)];
+export const qs = $;
+export const qsa = $$;
 export const _id = i => document.getElementById(i);
 export const _cl = c => document.getElementsByClassName(c);
 export const _tg = t => document.getElementsByTagName(t);
@@ -23,6 +28,8 @@ export const tab = o => chrome.tabs.create(o);
 export const js = o => JSON.stringify(o);
 export const jp = s => JSON.parse(s);
 export const jf = o => JSON.stringify(o, null, 2);
+export const jstr = jf;
+export const jpar = jp;
 export const ft = async (u, o = {}, t = 5e3) => {
     try {
         const c = new AbortController(), i = setTimeout(() => c.abort(), t);
@@ -39,7 +46,9 @@ export const ftx = async (u, o = {}) => {
     try { const r = await fetch(u, o); return r.ok ? await r.text() : null; }
     catch (x) { return null; }
 };
+export const safeFetch = ft;
 export const sl = ms => new Promise(r => setTimeout(r, ms));
+export const sleep = sl;
 export const nt = () => Date.now();
 export const tm = () => performance.now();
 export const mp = (a, f) => a.map(f);
