@@ -1,4 +1,4 @@
-import { sg, ss, nt, js, jp } from './shortcuts.js';
+import { sg, ss, nw, js, jp } from './shortcuts/index.js';
 export const DC = {
   ca: { en: 1, ttl: 864e5, tr: 1, co: 1, md: 1 },
   sc: { as: 0, sb: 1, sn: 1, sm: 1 },
@@ -36,7 +36,7 @@ export class ConfigManager {
     return this.c;
   }
   async save() {
-    this.c._m.lu = nt();
+    this.c._m.lu = nw();
     await ss('cfg', this.c);
     this.nt();
   }

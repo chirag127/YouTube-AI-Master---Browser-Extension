@@ -1,7 +1,6 @@
 export const cr = chrome.runtime;
 export const ct = chrome.tabs;
 export const cs = chrome.storage;
-export const cl = chrome.storage.local;
 export const cy = chrome.storage.sync;
 export const ca = chrome.action;
 export const cw = chrome.windows;
@@ -21,4 +20,3 @@ export const ctts = chrome.ttsEngine;
 export const cwn = chrome.webNavigation;
 export const cwr = chrome.webRequest;
 export const css = chrome.storage.sync;
-export const csl = chrome.storage.local;

@@ -1,4 +1,4 @@
-import { id, ss, sl, l, cw, ct, url, cr, st } from '../utils/shortcuts.js';
+import { id, ss, sg, sls, slg, l, w, cw, ct, url, cr, to } from '../utils/shortcuts/index.js';
 const a = id('api-status'),
   p = id('page-status'),
   b = id('analyze-btn'),
@@ -9,12 +9,12 @@ const a = id('api-status'),
 function showMsg(t, y = 'info') {
   m.textContent = t;
   m.className = `show ${y}`;
-  st(() => m.classList.remove('show'), 3000);
+  to(() => m.classList.remove('show'), 3000);
 }
 async function checkApi() {
   try {
-    const s = await ss.get(['apiKey', 'onboardingCompleted']),
-      lc = await sl.get('geminiApiKey'),
+    const s = await sg(['apiKey', 'onboardingCompleted']),
+      lc = await slg('geminiApiKey'),
       k = s.apiKey || lc.geminiApiKey;
     if (k) {
       a.innerHTML = '<span>✅ Configured</span>';
@@ -29,7 +29,7 @@ async function checkApi() {
     }
     return false;
   } catch (x) {
-    cw('API check failed:', x);
+    w('API check failed:', x);
     return false;
   }
 }
@@ -47,7 +47,7 @@ async function checkPage() {
     b.disabled = true;
     return false;
   } catch (x) {
-    cw('Page check failed:', x);
+    w('Page check failed:', x);
     return false;
   }
 }

@@ -3,7 +3,7 @@ import { injectWidget } from '../ui/widget.js';
 import { startAnalysis } from './analyzer.js';
 import { log, logError } from './debug.js';
 import { isWidgetProperlyVisible } from '../utils/dom.js';
-import { st, ct, i, on, loc } from '../utils/shortcuts.js';
+import { to, co, id, on, loc } from '../../utils/shortcuts.js';
 
 let lastUrl = loc.href;
 let dt = null;
@@ -14,23 +14,23 @@ export function initObserver() {
     if (loc.href !== lastUrl) {
       lastUrl = loc.href;
       log('URL changed:', lastUrl);
-      if (dt) ct(dt);
-      dt = st(() => checkCurrentPage(), 300);
+      if (dt) co(dt);
+      dt = to(() => checkCurrentPage(), 300);
     }
   });
   on(document, 'yt-navigate-finish', () => {
     log('YouTube navigation finished');
-    if (dt) cst(dt);
-    dt = st(() => checkCurrentPage(), 500);
+    if (dt) co(dt);
+    dt = to(() => checkCurrentPage(), 500);
   });
   const o = new MutationObserver(() => {
     if (loc.pathname !== '/watch') return;
     const u = new URLSearchParams(loc.search),
       v = u.get('v');
-    const w = i('yt-ai-master-widget');
+    const w = id('yt-ai-master-widget');
     if ((v && v !== state.currentVideoId) || (v && !isWidgetProperlyVisible(w))) {
-      if (dt) ct(dt);
-      dt = st(() => handleNewVideo(v), 300);
+      if (dt) co(dt);
+      dt = to(() => handleNewVideo(v), 300);
     }
   });
   uo.observe(document.body, { childList: true, subtree: true });
@@ -48,8 +48,8 @@ async function handleNewVideo(v) {
   try {
     await injectWidget();
     log('Widget injected successfully');
-    st(() => {
-      const w = i('yt-ai-master-widget');
+    to(() => {
+      const w = id('yt-ai-master-widget');
       if (w && w.parentElement) {
         const p = w.parentElement;
         if (p.firstChild !== w) {
@@ -58,7 +58,7 @@ async function handleNewVideo(v) {
         }
       }
     }, 500);
-    if (state.settings.autoAnalyze) st(() => startAnalysis(), 1500);
+    if (state.settings.autoAnalyze) to(() => startAnalysis(), 1500);
   } catch (e) {
     logError('Widget injection failed', e);
   }
@@ -70,7 +70,7 @@ function checkCurrentPage() {
     const u = new URLSearchParams(loc.search),
       v = u.get('v');
     if (v) {
-      const w = i('yt-ai-master-widget');
+      const w = id('yt-ai-master-widget');
       if (v === state.currentVideoId && isWidgetProperlyVisible(w)) {
         log('Same video and widget is properly visible, skipping re-initialization:', v);
         return;

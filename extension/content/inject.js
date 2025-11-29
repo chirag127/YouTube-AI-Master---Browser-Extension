@@ -1,15 +1,1 @@
-(async () => {
-  try {
-    const { url, ce, ap, l, e, dc } = await import(chrome.runtime.getURL('utils/shortcuts.js'));
-    const s = ce('script');
-    s.src = url('content/transcript/xhr-interceptor.js');
-    s.type = 'module';
-    ap(dc.head || dc.documentElement, s);
-    s.onload = function () {
-      this.remove();
-    };
-    l('[YAM]Interceptor injected');
-  } catch (x) {
-    e('[YAM]Inject fail:', x);
-  }
-})();
+(async () => { try { const { url, ce, ap, l, dc } = await import(chrome.runtime.getURL('utils/shortcuts/index.js')); const s = ce('script'); s.src = url('content/transcript/xhr-interceptor.js'); s.type = 'module'; ap(dc.head || dc.documentElement, s); s.onload = function () { this.remove() }; l('[YAM]Interceptor') } catch (x) { console.error('[YAM]Inject:', x) } })();

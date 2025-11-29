@@ -3,7 +3,7 @@
  * Implements exponential backoff for transient failures
  */
 
-import { l, w, e, st, cst, mn, prom } from '../../utils/shortcuts.js';
+import { l, to, co, mn, np } from '../../utils/shortcuts.js';
 
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 const RETRYABLE_ERRORS = new Set(['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND']);
@@ -23,14 +23,14 @@ export class HttpClient {
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         const controller = new AbortController();
-        const timeoutId = st(() => controller.abort(), this.timeout);
+        const timeoutId = to(() => controller.abort(), this.timeout);
 
         const response = await fetch(url, {
           ...options,
           signal: controller.signal,
         });
 
-        cst(timeoutId);
+        co(timeoutId);
 
         if (response.ok) {
           return response;
@@ -71,7 +71,7 @@ export class HttpClient {
     try {
       const data = await response.json();
       message = data.error?.message || data.message || message;
-    } catch {}
+    } catch { }
 
     const error = new Error(message);
     error.status = response.status;
@@ -80,6 +80,6 @@ export class HttpClient {
   }
 
   _sleep(ms) {
-    return prom(resolve => st(resolve, ms));
+    return np(resolve => to(resolve, ms));
   }
 }

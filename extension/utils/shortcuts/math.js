@@ -21,7 +21,7 @@ export const lg = Math.log;
 export const l2 = Math.log2;
 export const l1 = Math.log10;
 export const sg = Math.sign;
-export const tr = Math.trunc;
+export const mtr = Math.trunc;
 export const rnd = (n, d = 0) => mr(n * pw(10, d)) / pw(10, d);
 export const clp = (n, mi, ma) => mn(mx(n, mi), ma);
 export const rng = (mi, ma) => mf(rn() * (ma - mi + 1)) + mi;

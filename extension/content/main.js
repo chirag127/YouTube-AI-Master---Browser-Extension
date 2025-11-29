@@ -1,7 +1,7 @@
 (async () => {
   if (window.location.hostname !== 'www.youtube.com') return;
   const { l, e, w, url, cr, ce, ap, qs, on, cl, dc, to, nw } = await import(
-    chrome.runtime.getURL('utils/shortcuts.js')
+    chrome.runtime.getURL('utils/shortcuts/index.js')
   );
   const s = ce('script');
   s.type = 'module';

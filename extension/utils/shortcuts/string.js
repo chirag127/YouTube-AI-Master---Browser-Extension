@@ -24,3 +24,5 @@ export const cp = (s, i) => s.codePointAt(i);
 export const nc = (s, p) => s.normalize(p);
 export const lz = (s, v) => s.localeCompare(v);
 export const ct = (s, v, p) => s.concat(v, p);
+export const sub = (s, i, l) => s.substr(i, l);
+export const rep = (s, a, b) => s.replace(a, b);
