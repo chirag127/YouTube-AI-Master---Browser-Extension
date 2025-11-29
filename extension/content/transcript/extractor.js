@@ -1,4 +1,4 @@
-import { fetchTranscript } from '../../services/transcript/fetcher.js';
+import { extractTranscript } from './strategy-manager.js';
 import { lg, wn, er } from '../../utils/shortcuts/log.js';
 import { jp } from '../../utils/shortcuts/core.js';
 import { st } from '../../utils/shortcuts/time.js';
@@ -39,13 +39,13 @@ class TranscriptExtractor {
       }
     }
     try {
-      const r = await fetchTranscript(vid, lang, timeout);
-      if (r?.length) {
-        this.log('success', `${r.length} segments extracted`);
-        this._setCache(vid, lang, r);
-        return r;
+      const r = await extractTranscript(vid, lang);
+      if (r.success && r.data?.length) {
+        this.log('success', `${r.data.length} segments extracted via ${r.method}`);
+        this._setCache(vid, lang, r.data);
+        return r.data;
       }
-      throw new Error('Empty result from fetcher');
+      throw new Error(r.error || 'Extraction failed');
     } catch (x) {
       this.log('error', x.message);
       throw x;
