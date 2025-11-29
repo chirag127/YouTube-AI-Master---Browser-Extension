@@ -1,6 +1,6 @@
 import { url } from '../../utils/shortcuts/runtime.js';
 import { $ } from '../../utils/shortcuts/dom.js';
-import { l, e as ce2 } from '../../utils/shortcuts/logging.js';
+import { l, e as ce2 } from '../../utils/../../utils/shortcuts/log.js';
 import { pa } from '../../utils/shortcuts/async.js';
 import { ok } from '../../utils/shortcuts/core.js';
 

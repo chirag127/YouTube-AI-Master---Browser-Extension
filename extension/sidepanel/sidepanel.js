@@ -5,7 +5,7 @@ import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
 import { id, $$, on, ce } from '../utils/shortcuts/dom.js';
 import { sl } from '../utils/shortcuts/storage.js';
-import { l, e, w } from '../utils/shortcuts/logging.js';
+import { l, e, w } from '../utils/../../utils/shortcuts/log.js';
 import { tab as ct } from '../utils/shortcuts/tabs.js';
 import { to as st } from '../utils/shortcuts/global.js';
 import { mf } from '../utils/shortcuts/math.js';

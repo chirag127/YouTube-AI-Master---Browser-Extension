@@ -1,5 +1,5 @@
 import { sg } from '../../utils/shortcuts/storage.js';
-import { l } from '../../utils/shortcuts/logging.js';
+import { l } from '../../utils/../../utils/shortcuts/log.js';
 import { cw } from '../../utils/shortcuts/chrome.js';
 import { to as st } from '../../utils/shortcuts/global.js';
 import { pr, np } from '../../utils/shortcuts/async.js';

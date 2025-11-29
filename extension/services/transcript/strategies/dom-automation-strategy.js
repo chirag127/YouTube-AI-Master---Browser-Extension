@@ -1,5 +1,5 @@
 import { $ } from '../../../utils/shortcuts/dom.js';
-import { l, d as cd, w, e as ce } from '../../../utils/shortcuts/logging.js';
+import { l, d as cd, w, e as ce } from '../../../utils/../../utils/shortcuts/log.js';
 import { to as st } from '../../../utils/shortcuts/global.js';
 import { nw as nt } from '../../../utils/shortcuts/core.js';
 import { sp as spt, mp } from '../../../utils/shortcuts/array.js';

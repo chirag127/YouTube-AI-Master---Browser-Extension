@@ -1,4 +1,4 @@
-import { l } from '../../../utils/shortcuts/logging.js';
+import { l } from '../../../utils/../../utils/shortcuts/log.js';
 import { cw } from '../../../utils/shortcuts/chrome.js';
 import { rt } from '../../../utils/shortcuts/runtime.js';
 const getAudioUrl = () => {

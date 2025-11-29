@@ -1,5 +1,5 @@
 import { to as st, co as ct } from '../../utils/shortcuts/global.js';
-import { l } from '../../utils/shortcuts/logging.js';
+import { l } from '../../utils/../../utils/shortcuts/log.js';
 import { ce, on, id as i } from '../../utils/shortcuts/dom.js';
 import { oe } from '../../utils/shortcuts/core.js';
 

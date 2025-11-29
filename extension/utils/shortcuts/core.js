@@ -28,3 +28,4 @@ export const TE = TypeError;
 export const RE = ReferenceError;
 export const SE = SyntaxError;
 export const RGE = RangeError;
+export * from './storage.js';

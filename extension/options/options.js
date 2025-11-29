@@ -16,7 +16,7 @@ import { CommentsSettings } from './modules/comments-settings.js';
 import { MetadataSettings } from './modules/metadata-settings.js';
 import { ScrollSettings } from './modules/scroll-settings.js';
 import { on, id as i, ce, vs } from '../utils/shortcuts/dom.js';
-import { l } from '../utils/shortcuts/logging.js';
+import { l } from '../utils/../../utils/shortcuts/log.js';
 import { url } from '../utils/shortcuts/runtime.js';
 import { tab } from '../utils/shortcuts/tabs.js';
 

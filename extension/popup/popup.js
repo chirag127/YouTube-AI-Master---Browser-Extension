@@ -1,6 +1,6 @@
 import { id } from '../utils/shortcuts/dom.js';
 import { sg, slg } from '../utils/shortcuts/storage.js';
-import { w } from '../utils/shortcuts/logging.js';
+import { w } from '../utils/../../utils/shortcuts/log.js';
 import { cr } from '../utils/shortcuts/chrome.js';
 import { tab as ct } from '../utils/shortcuts/tabs.js';
 import { url } from '../utils/shortcuts/runtime.js';

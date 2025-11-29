@@ -1,4 +1,4 @@
-import { l, e as er } from './shortcuts/logging.js';
+import { l, e as er } from './../../utils/shortcuts/log.js';
 import { nw } from './shortcuts/core.js';
 export const log = (m, ...a) => l(`[YT]${m}`, ...a);
 export const err = (m, e) => er(`[YT]${m}`, e?.message || e);

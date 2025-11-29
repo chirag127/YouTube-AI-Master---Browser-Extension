@@ -1,5 +1,5 @@
 import { sl } from '../../utils/shortcuts/storage.js';
-import { l } from '../../utils/shortcuts/logging.js';
+import { l } from '../../utils/../../utils/shortcuts/log.js';
 import { nw as nt, ok as keys } from '../../utils/shortcuts/core.js';
 import { sl as sw } from '../../utils/shortcuts/storage.js';
 

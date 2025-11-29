@@ -1,5 +1,5 @@
 import { $ } from '../../../utils/shortcuts/dom.js';
-import { l, w } from '../../../utils/shortcuts/logging.js';
+import { l, w } from '../../../utils/../../utils/shortcuts/log.js';
 import { rt } from '../../../utils/shortcuts/runtime.js';
 import { isMusicVideo } from '../utils/music-classifier.js';
 async function fetchViaGenius() {
