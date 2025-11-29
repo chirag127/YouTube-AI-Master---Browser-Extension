@@ -1,4 +1,5 @@
-import { ce, qs } from '../../utils/shortcuts/dom.js';
+const gu = p => chrome.runtime.getURL(p);
+const { ce, qs } = await import(gu('utils/shortcuts/dom.js'));
 export function findSecondaryColumn() {
   const s = [
     '#secondary-inner',

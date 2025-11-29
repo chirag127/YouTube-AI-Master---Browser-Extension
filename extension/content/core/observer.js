@@ -1,8 +1,10 @@
-import { state, resetState } from './state.js';
-import { injectWidget } from '../ui/widget.js';
-import { isWidgetProperlyVisible } from '../utils/dom.js';
-import { err as e, to as st, ct } from '../../utils/shortcuts/core.js';
-import { on as ae, qs, mo } from '../../utils/shortcuts/dom.js';
+const gu = p => chrome.runtime.getURL(p);
+
+const { state, resetState } = await import(gu('content/core/state.js'));
+const { injectWidget } = await import(gu('content/ui/widget.js'));
+const { isWidgetProperlyVisible } = await import(gu('content/utils/dom.js'));
+const { err: e, to: st, ct } = await import(gu('utils/shortcuts/core.js'));
+const { on: ae, qs, mo } = await import(gu('utils/shortcuts/dom.js'));
 
 let lastUrl = location.href;
 let dt = null;

@@ -1,10 +1,11 @@
-import { findSecondaryColumn, isWidgetProperlyVisible } from '../utils/dom.js';
-import { initTabs } from './tabs.js';
-import { attachEventListeners } from '../handlers/events.js';
-import { createWidgetHTML } from './components/widget/structure.js';
-import { qs as $, id as ge, on, el as ce, wfe, mo } from '../../utils/shortcuts/dom.js';
-import { ti as si, ci as csi, to as st } from '../../utils/shortcuts/core.js';
-import { log, err as logError } from '../../utils/shortcuts/core.js';
+const gu = p => chrome.runtime.getURL(p);
+
+const { findSecondaryColumn, isWidgetProperlyVisible } = await import(gu('content/utils/dom.js'));
+const { initTabs } = await import(gu('content/ui/tabs.js'));
+const { attachEventListeners } = await import(gu('content/handlers/events.js'));
+const { createWidgetHTML } = await import(gu('content/ui/components/widget/structure.js'));
+const { qs: $, id: ge, on, el: ce, wfe, mo } = await import(gu('utils/shortcuts/dom.js'));
+const { ti: si, ci: csi, to: st, log, err: logError } = await import(gu('utils/shortcuts/core.js'));
 
 let widgetContainer = null,
   resizeObserver = null,

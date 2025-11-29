@@ -1,5 +1,5 @@
-import { slg } from '../../utils/shortcuts/storage.js';
-import { assign } from '../../utils/shortcuts/core.js';
+const gu = p => chrome.runtime.getURL(p);
+let slg, assign;
 
 export const state = {
   currentVideoId: null,
@@ -22,6 +22,12 @@ export function resetState() {
   state.currentTranscript = [];
 }
 export async function loadSettings() {
+  if (!slg) {
+    const storage = await import(gu('utils/shortcuts/storage.js'));
+    slg = storage.slg;
+    const core = await import(gu('utils/shortcuts/core.js'));
+    assign = core.assign;
+  }
   try {
     const r = await slg([
       'autoAnalyze',

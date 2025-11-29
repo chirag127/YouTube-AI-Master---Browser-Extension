@@ -1,11 +1,13 @@
-import { state } from '../core/state.js';
-import { renderSummary } from './renderers/summary.js';
-import { renderTranscript } from './renderers/transcript.js';
-import { renderSegments } from './renderers/segments.js';
-import { renderChat } from './renderers/chat.js';
-import { renderComments } from './renderers/comments.js';
-import { qs as $, qsa as $$, id as ge, on } from '../../utils/shortcuts/dom.js';
-import { e } from '../../utils/shortcuts/log.js';
+const gu = p => chrome.runtime.getURL(p);
+
+const { state } = await import(gu('content/core/state.js'));
+const { renderSummary } = await import(gu('content/ui/renderers/summary.js'));
+const { renderTranscript } = await import(gu('content/ui/renderers/transcript.js'));
+const { renderSegments } = await import(gu('content/ui/renderers/segments.js'));
+const { renderChat } = await import(gu('content/ui/renderers/chat.js'));
+const { renderComments } = await import(gu('content/ui/renderers/comments.js'));
+const { qs: $, qsa: $$, id: ge, on } = await import(gu('utils/shortcuts/dom.js'));
+const { e } = await import(gu('utils/shortcuts/log.js'));
 
 export function initTabs(c) {
   $$('.yt-ai-tab', c).forEach(t => on(t, 'click', () => switchTab(t.dataset.tab, c)));
