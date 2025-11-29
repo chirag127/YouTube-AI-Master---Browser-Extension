@@ -71,7 +71,7 @@ export class GeniusLyricsAPI {
         rp(
           rp(
             title,
-            /[([](official|video|audio|lyric|lyrics|hq|hd|4k|mv|music video)[)\]]/gi,
+            /[([](?:official|video|audio|lyric|lyrics|hq|hd|4k|mv|music video)[)\]]/gi,
             ''
           ),
           /ft\.|feat\.|featuring/gi,

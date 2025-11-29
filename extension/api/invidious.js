@@ -130,7 +130,9 @@ function pcd(d) {
   try {
     const j = jp(d);
     if (j.events) return pj3(j);
-  } catch (e) { }
+  } catch (err) {
+    d('Parse error:', err);
+  }
   log.warn('Unknown fmt, generic parse');
   return pg(d);
 }
