@@ -1,5 +1,5 @@
-import { $, $$ } from '../../../utils/shortcuts/dom.js';
-import { l, d as cd, w } from '../../../utils/shortcuts/logging.js';
+import { $ } from '../../../utils/shortcuts/dom.js';
+import { l, d as cd, w, e as ce } from '../../../utils/shortcuts/logging.js';
 import { to as st } from '../../../utils/shortcuts/global.js';
 import { nw as nt } from '../../../utils/shortcuts/core.js';
 import { sp as spt, mp } from '../../../utils/shortcuts/array.js';
@@ -19,7 +19,7 @@ class DOMAutomationStrategy {
       debug: (m, ...a) => cd(`[${p}]🔍${m}`, ...a),
     };
   }
-  async fetch(v, lg = 'en') {
+  async fetch(v) {
     this.logger.info(`Starting DOM automation for ${v}...`);
     try {
       let tc = $(
@@ -60,7 +60,7 @@ class DOMAutomationStrategy {
       if (stb) break;
     }
     if (!stb) {
-      const btns = $$('button, ytd-button-renderer');
+      const btns = $('button, ytd-button-renderer');
       stb = btns.find(b => b.textContent.includes('Show transcript'));
     }
     if (stb) {
@@ -72,14 +72,14 @@ class DOMAutomationStrategy {
   async _waitForSegments(to = 5000) {
     const st = nt();
     while (nt() - st < to) {
-      const s = $$('ytd-transcript-segment-renderer');
+      const s = $('ytd-transcript-segment-renderer');
       if (s.length > 0) return;
       await this._wait(500);
     }
     throw new Error('Timeout waiting for transcript segments');
   }
   _scrapeSegments() {
-    const ses = $$('ytd-transcript-segment-renderer'),
+    const ses = $('ytd-transcript-segment-renderer'),
       s = [];
     ses.forEach(el => {
       const tse = $('.segment-timestamp', el),

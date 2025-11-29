@@ -7,7 +7,7 @@ import { strategy as s1 } from './strategies/dom-automation-strategy.js';
 import { strategy as s3 } from './strategies/speech-to-text-strategy.js';
 import { strategy as s4 } from './strategies/genius-strategy.js';
 
-const S = [s1, s2, s4, s3].sort((a, b) => a.priority - b.priority);
+const S = [s1, s4, s3].sort((a, b) => a.priority - b.priority);
 
 export async function fetchTranscript(v, lg = 'en', to = 30000) {
   let le;

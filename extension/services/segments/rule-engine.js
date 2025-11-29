@@ -20,8 +20,8 @@ export function annotateTranscript(transcriptSegments, metadata) {
           if (rule.detect(segment.text, context)) {
             hints.push(rule.type);
           }
-        } catch (e) {
-          
+        } catch (err) {
+          void err;
         }
       }
 

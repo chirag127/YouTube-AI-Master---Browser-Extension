@@ -1,5 +1,5 @@
 import { url } from '../../utils/shortcuts/runtime.js';
-import { $, ce } from '../../utils/shortcuts/dom.js';
+import { $ } from '../../utils/shortcuts/dom.js';
 import { l, e as ce2 } from '../../utils/shortcuts/logging.js';
 import { pa } from '../../utils/shortcuts/async.js';
 import { ok } from '../../utils/shortcuts/core.js';

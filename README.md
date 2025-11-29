@@ -90,17 +90,13 @@ extension/
 ### Shortcuts Usage
 
 ```js
-import { l, w, e, $, $$, sg, ss, ft, js, jp } from './utils/shortcuts.js';
+import { l, w } from './utils/shortcuts/log.js';
+import { qs, qsa } from './utils/shortcuts/doc.js';
+import { sg, ss } from './utils/shortcuts/storage.js';
 
 l('Log message'); // console.log
-w('Warning'); // console.warn
-const el = $('.selector'); // querySelector
-const all = $$('.items'); // querySelectorAll
-const cfg = await sg('cfg'); // storage.sync.get
-await ss('key', val); // storage.sync.set
-const data = await ft(url); // fetch with timeout
-const str = js(obj); // JSON.stringify
-const obj = jp(str); // JSON.parse
+const el = qs('.selector'); // document.querySelector
+const cfg = await sg('cfg'); // chrome.storage.sync.get
 ```
 
 ## License
