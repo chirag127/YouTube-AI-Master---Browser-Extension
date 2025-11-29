@@ -1,247 +1,155 @@
-/**
- * YouTube Data Extractor
- * Runs in the Main World to access ytInitialPlayerResponse and intercept network requests.
- */
-class YouTubeExtractor {
+class YTE {
     constructor() {
-        this.originalFetch = window.fetch.bind(window);
-        this.listeners = new Map();
-        this.interceptedUrls = new Set(); // To avoid infinite loops
-        this.initInterceptor();
-        this.initNavigationListener();
-
-        // Listen for requests from Isolated World
-        window.addEventListener("message", (event) => {
-            if (event.source !== window) return;
-            if (event.data.type === "YT_GET_DATA") {
-                this.emit("data_response", this.getInitialData());
-            }
+        this.of = window.fetch.bind(window);
+        this.ls = new Map();
+        this.iu = new Set();
+        this.ii();
+        this.inl();
+        window.addEventListener("message", (e) => {
+            if (e.source !== window) return;
+            if (e.data.type === "YT_GET_DATA")
+                this.e("data_response", this.gid());
         });
-
-        // Expose for debugging/manual access if needed
         window._ytExtractor = this;
-
-        console.log("[YouTubeExtractor] Initialized in Main World");
+        console.log("[YTE] Init");
     }
 
-    initInterceptor() {
-        window.fetch = async (...args) => {
-            const [resource, config] = args;
-            const url = resource ? resource.toString() : "";
-
-            // Avoid intercepting our own re-fetches
-            if (this.interceptedUrls.has(url)) {
-                return this.originalFetch(resource, config);
-            }
-
-            const response = await this.originalFetch(resource, config);
-
-            // Async processing
-            this.processResponse(url, response).catch((err) => {
-                console.error(
-                    "[YouTubeExtractor] Error processing response:",
-                    err
-                );
-            });
-
-            return response;
+    ii() {
+        window.fetch = async (...a) => {
+            const [r, c] = a;
+            const u = r ? r.toString() : "";
+            if (this.iu.has(u)) return this.of(r, c);
+            const res = await this.of(r, c);
+            this.pr(u, res).catch((e) => console.error("[YTE] Err:", e));
+            return res;
         };
     }
 
-    async processResponse(url, response) {
-        if (url.includes("/youtubei/v1/player")) {
+    async pr(u, r) {
+        if (u.includes("/youtubei/v1/player")) {
             try {
-                const clone = response.clone();
-                const data = await clone.json();
-                this.emit("metadata", data);
-            } catch (e) {
-                /* ignore json parse errors */
-            }
-        } else if (url.includes("/youtubei/v1/next")) {
+                this.e("metadata", await r.clone().json());
+            } catch (e) {}
+        } else if (u.includes("/youtubei/v1/next")) {
             try {
-                const clone = response.clone();
-                const data = await clone.json();
-                this.emit("comments", data);
-            } catch (e) {
-                /* ignore */
-            }
+                this.e("comments", await r.clone().json());
+            } catch (e) {}
         } else if (
-            url.includes("/api/timedtext") ||
-            url.includes("/youtubei/v1/get_transcript")
+            u.includes("/api/timedtext") ||
+            u.includes("/youtubei/v1/get_transcript")
         ) {
-            // Found transcript URL!
-            // Instead of cloning/reading the original response (which might fail or be empty),
-            // we capture the URL and re-fetch it explicitly.
-            this.handleTimedTextUrl(url);
-        } else if (url.includes("/youtubei/v1/live_chat/get_live_chat")) {
+            this.htu(u);
+        } else if (u.includes("/youtubei/v1/live_chat/get_live_chat")) {
             try {
-                const clone = response.clone();
-                const data = await clone.json();
-                this.emit("live_chat", data);
-            } catch (e) {
-                /* ignore */
-            }
-        } else if (url.includes("/youtubei/v1/reel/")) {
+                this.e("live_chat", await r.clone().json());
+            } catch (e) {}
+        } else if (u.includes("/youtubei/v1/reel/")) {
             try {
-                const clone = response.clone();
-                const data = await clone.json();
-                this.emit("shorts_data", data);
-            } catch (e) {
-                /* ignore */
-            }
+                this.e("shorts_data", await r.clone().json());
+            } catch (e) {}
         }
     }
 
-    async handleTimedTextUrl(url) {
-        if (this.interceptedUrls.has(url)) return; // Already handling/handled
-
-        console.log("[YouTubeExtractor] Captured transcript URL, re-fetching:", url);
-        this.interceptedUrls.add(url);
-
+    async htu(u) {
+        if (this.iu.has(u)) return;
+        console.log("[YTE] Cap tr:", u);
+        this.iu.add(u);
         try {
-            // Perform a clean fetch using the original fetch function
-            const response = await this.originalFetch(url);
-
-            // Check if response is ok
-            if (!response.ok) {
-                console.error("[YouTubeExtractor] Re-fetch failed:", response.status);
-                this.interceptedUrls.delete(url); // Allow retry
+            const r = await this.of(u);
+            if (!r.ok) {
+                console.error("[YTE] Fail:", r.status);
+                this.iu.delete(u);
                 return;
             }
-
-            const data = await response.json();
-
-            console.log("[YouTubeExtractor] Successfully re-fetched transcript data");
-            this.emit("transcript", data);
-
-            // Remove from set after a while to allow future refreshes if needed,
-            // but keep it briefly to avoid immediate duplicate processing
-            setTimeout(() => {
-                this.interceptedUrls.delete(url);
-            }, 10000);
-
-        } catch (error) {
-            console.error("[YouTubeExtractor] Error re-fetching transcript:", error);
-            this.interceptedUrls.delete(url);
+            const d = await r.json();
+            console.log("[YTE] Got tr");
+            this.e("transcript", d);
+            setTimeout(() => this.iu.delete(u), 1e4);
+        } catch (e) {
+            console.error("[YTE] Err:", e);
+            this.iu.delete(u);
         }
     }
 
-    initNavigationListener() {
+    inl() {
         document.addEventListener("yt-navigate-finish", (e) => {
-            const videoId =
+            const vid =
                 e.detail?.response?.playerResponse?.videoDetails?.videoId;
-            console.log("[YouTubeExtractor] Navigation finished:", videoId);
-            this.emit("navigation", { videoId, detail: e.detail });
+            console.log("[YTE] Nav:", vid);
+            this.e("navigation", { videoId: vid, detail: e.detail });
         });
     }
 
-    getInitialData() {
-        // Try to get from window first
-        let playerResponse = window.ytInitialPlayerResponse;
-
-        // If not available, try to get from ytd-app element (Polymer data binding)
-        if (!playerResponse) {
+    gid() {
+        let pr = window.ytInitialPlayerResponse;
+        if (!pr) {
             try {
-                const app = document.querySelector("ytd-app");
-                playerResponse =
-                    app?.data?.playerResponse || app?.__data?.playerResponse;
-            } catch (e) {
-                /* ignore */
-            }
+                const a = document.querySelector("ytd-app");
+                pr = a?.data?.playerResponse || a?.__data?.playerResponse;
+            } catch (e) {}
         }
-
-        // If still not available, try to scrape from script tags
-        if (!playerResponse) {
+        if (!pr) {
             try {
-                for (const script of document.querySelectorAll("script")) {
-                    const text = script.textContent || "";
-                    const match = text.match(
+                for (const s of document.querySelectorAll("script")) {
+                    const m = (s.textContent || "").match(
                         /ytInitialPlayerResponse\s*=\s*({.+?});/s
                     );
-                    if (match) {
-                        playerResponse = JSON.parse(match[1]);
+                    if (m) {
+                        pr = JSON.parse(m[1]);
                         break;
                     }
                 }
-            } catch (e) {
-                /* ignore */
-            }
+            } catch (e) {}
         }
-
-        // Try to get from ytplayer.config
-        if (!playerResponse && window.ytplayer?.config?.args?.player_response) {
+        if (!pr && window.ytplayer?.config?.args?.player_response) {
             try {
-                playerResponse = JSON.parse(
-                    window.ytplayer.config.args.player_response
-                );
-            } catch (e) {
-                /* ignore */
-            }
+                pr = JSON.parse(window.ytplayer.config.args.player_response);
+            } catch (e) {}
         }
-
         return {
-            playerResponse: playerResponse,
+            playerResponse: pr,
             initialData: window.ytInitialData,
             cfg: window.ytcfg?.data_,
         };
     }
 
-    on(event, callback) {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, []);
-        }
-        this.listeners.get(event)?.push(callback);
+    on(e, c) {
+        if (!this.ls.has(e)) this.ls.set(e, []);
+        this.ls.get(e)?.push(c);
     }
 
-    emit(event, data) {
-        const listeners = this.listeners.get(event);
-        if (listeners) {
-            listeners.forEach((cb) => cb(data));
-        }
-        // Also post to Content Script (Isolated World)
-        window.postMessage(
-            { type: `YT_${event.toUpperCase()}`, payload: data },
-            "*"
-        );
+    e(ev, d) {
+        this.ls.get(ev)?.forEach((c) => c(d));
+        window.postMessage({ type: `YT_${ev.toUpperCase()}`, payload: d }, "*");
     }
 
-    // Helper to manually extract current metadata if needed
-    extractMetadata() {
-        const playerResponse = window.ytInitialPlayerResponse;
-        if (!playerResponse) return null;
-
-        const details = playerResponse.videoDetails;
-        const microformat =
-            playerResponse.microformat?.playerMicroformatRenderer;
-
+    em() {
+        const pr = window.ytInitialPlayerResponse;
+        if (!pr) return null;
+        const d = pr.videoDetails,
+            m = pr.microformat?.playerMicroformatRenderer;
         return {
-            title: details?.title,
-            videoId: details?.videoId,
-            author: details?.author,
-            viewCount: details?.viewCount,
-            lengthSeconds: details?.lengthSeconds,
-            description: details?.shortDescription,
-            isLive: details?.isLiveContent,
-            keywords: details?.keywords || [],
-            channelId: details?.channelId,
-            uploadDate: microformat?.uploadDate || "",
+            title: d?.title,
+            videoId: d?.videoId,
+            author: d?.author,
+            viewCount: d?.viewCount,
+            lengthSeconds: d?.lengthSeconds,
+            description: d?.shortDescription,
+            isLive: d?.isLiveContent,
+            keywords: d?.keywords || [],
+            channelId: d?.channelId,
+            uploadDate: m?.uploadDate || "",
         };
     }
 
-    extractShortsMetadata() {
-        const activeShort = document.querySelector(
-            "ytd-reel-video-renderer[is-active]"
-        );
-        if (!activeShort) return null;
-        // Scrape DOM for Shorts as fallback
-        const title = activeShort.querySelector(
+    esm() {
+        const as = document.querySelector("ytd-reel-video-renderer[is-active]");
+        if (!as) return null;
+        const t = as.querySelector(
             ".ytd-reel-player-header-renderer-title"
         )?.textContent;
-        const channel =
-            activeShort.querySelector(".ytd-channel-name")?.textContent;
-        return { title: title?.trim(), channel: channel?.trim() };
+        const c = as.querySelector(".ytd-channel-name")?.textContent;
+        return { title: t?.trim(), channel: c?.trim() };
     }
 }
-
-// Initialize
-new YouTubeExtractor();
+new YTE();

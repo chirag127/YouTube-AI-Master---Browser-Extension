@@ -1,7 +1,8 @@
 import { handleFetchInvidiousTranscript } from "./invidious.js";
+import { rp, tr, pF, jp, fl, mp, jn, ft, ftx } from "../../utils/shortcuts.js";
 
-function decodeHTMLEntities(text) {
-    const entities = {
+function dec(t) {
+    const e = {
         "&amp;": "&",
         "&lt;": "<",
         "&gt;": ">",
@@ -9,83 +10,72 @@ function decodeHTMLEntities(text) {
         "&#39;": "'",
         "&nbsp;": " ",
     };
-    return text.replace(/&[^;]+;/g, (match) => entities[match] || match);
+    return rp(t, /&[^;]+;/g, (m) => e[m] || m);
 }
 
-function parseXML(xmlText) {
-    const segments = [];
-    const regex =
-        /<text start="([\d.]+)"(?:\s+dur="([\d.]+)")?[^>]*>([^<]*)<\/text>/g;
-    let match;
-    while ((match = regex.exec(xmlText)) !== null) {
-        const text = decodeHTMLEntities(match[3]);
-        if (text.trim())
-            segments.push({
-                start: parseFloat(match[1]),
-                duration: match[2] ? parseFloat(match[2]) : 0,
-                text,
-            });
+function pXML(x) {
+    const s = [],
+        r =
+            /<text start="([\d.]+)"(?:\s+dur="([\d.]+)")?[^>]*>([^<]*)<\/text>/g;
+    let m;
+    while ((m = r.exec(x)) !== null) {
+        const t = dec(m[3]);
+        if (tr(t))
+            s.push({ start: pF(m[1]), duration: m[2] ? pF(m[2]) : 0, text: t });
     }
-    return segments;
+    return s;
 }
 
-async function fetchYouTubeDirectAPI(videoId, lang = "en") {
-    const formats = ["json3", "srv3"];
-    for (const fmt of formats) {
+async function fYT(vid, l = "en") {
+    const fs = ["json3", "srv3"];
+    for (const f of fs) {
         try {
-            const url = `https://www.youtube.com/api/timedtext?v=${videoId}&lang=${lang}&fmt=${fmt}`;
-            const response = await fetch(url);
-            if (!response.ok) continue;
-
-            if (fmt === "json3") {
-                const text = await response.text();
-                if (!text) continue;
-                const data = JSON.parse(text);
-                if (data.events) {
-                    const segments = data.events
-                        .filter((e) => e.segs)
-                        .map((e) => ({
+            const u = `https://www.youtube.com/api/timedtext?v=${vid}&lang=${l}&fmt=${f}`;
+            if (f === "json3") {
+                const t = await ftx(u);
+                if (!t) continue;
+                const d = jp(t);
+                if (d.events) {
+                    const s = mp(
+                        fl(d.events, (e) => e.segs),
+                        (e) => ({
                             start: e.tStartMs / 1000,
                             duration: (e.dDurationMs || 0) / 1000,
-                            text: e.segs.map((s) => s.utf8).join(""),
-                        }));
-                    if (segments.length)
-                        return { success: true, data: segments };
+                            text: jn(
+                                mp(e.segs, (s) => s.utf8),
+                                ""
+                            ),
+                        })
+                    );
+                    if (s.length) return { success: true, data: s };
                 }
             } else {
-                const xmlText = await response.text();
-                const segments = parseXML(xmlText);
-                if (segments.length) return { success: true, data: segments };
+                const x = await ftx(u);
+                const s = pXML(x);
+                if (s.length) return { success: true, data: s };
             }
         } catch (e) {}
     }
     return { success: false, error: "YouTube Direct API failed" };
 }
 
-export async function handleFetchTranscript(request, sendResponse) {
-    const { videoId, lang = "en" } = request;
-    const methods = [
+export async function handleFetchTranscript(req, rsp) {
+    const { videoId, lang = "en" } = req;
+    const ms = [
         {
             name: "Invidious API",
-            fn: () => handleFetchInvidiousTranscript(request),
+            fn: () => handleFetchInvidiousTranscript(req),
         },
-        {
-            name: "YouTube Direct API",
-            fn: () => fetchYouTubeDirectAPI(videoId, lang),
-        },
+        { name: "YouTube Direct API", fn: () => fYT(videoId, lang) },
     ];
-
-    for (const method of methods) {
+    for (const m of ms) {
         try {
-            const result = await method.fn();
-            if (result.success && result.data) {
-                sendResponse(result);
+            const r = await m.fn();
+            if (r.success && r.data) {
+                rsp(r);
                 return;
             }
         } catch (e) {}
     }
-    sendResponse({
-        success: false,
-        error: "All transcript fetch methods failed",
-    });
+    rsp({ success: false, error: "All transcript fetch methods failed" });
 }

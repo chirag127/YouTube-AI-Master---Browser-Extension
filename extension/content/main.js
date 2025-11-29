@@ -1,213 +1,159 @@
 (async () => {
-    if (window.location.hostname !== "www.youtube.com") {
-        return;
-    }
-
-    // Import shortcuts
-    const { l, e, w, url, rt, _cr, ap } = await import(
+    if (window.location.hostname !== "www.youtube.com") return;
+    const { l, e, w, url, rt, _cr, ap, qs, on } = await import(
         chrome.runtime.getURL("utils/shortcuts.js")
     );
-
-    // Inject Main World Extractor
-    const script = _cr("script");
-    script.src = url("content/youtube-extractor.js");
-    script.onload = function () {
+    const s = _cr("script");
+    s.src = url("content/youtube-extractor.js");
+    s.onload = function () {
         this.remove();
     };
-    ap(document.head || document.documentElement, script);
-
-    l("YouTube AI Master: Starting...");
+    ap(document.head || document.documentElement, s);
+    l("YAM: Start");
 
     try {
-        const { initializeExtension, waitForPageReady } = await import(
+        const { initializeExtension: ie, waitForPageReady: wp } = await import(
             url("content/core/init.js")
         );
-        await waitForPageReady();
-        const success = await initializeExtension();
-
-        if (success) {
-            l("YouTube AI Master: Ready ✓");
-        } else {
-            e("YouTube AI Master: Initialization failed");
-        }
-    } catch (error) {
-        e("YouTube AI Master: Fatal error", error);
+        await wp();
+        if (await ie()) l("YAM: Ready");
+        else e("YAM: Init fail");
+    } catch (x) {
+        e("YAM: Fatal", x);
     }
 })();
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    const action = request.action || request.type;
-
-    switch (action) {
+chrome.runtime.onMessage.addListener((req, snd, rsp) => {
+    const act = req.action || req.type;
+    switch (act) {
         case "START_ANALYSIS":
             import(chrome.runtime.getURL("content/core/analyzer.js"))
-                .then(({ startAnalysis }) => {
-                    startAnalysis();
-                    sendResponse({ success: true });
+                .then(({ startAnalysis: sa }) => {
+                    sa();
+                    rsp({ success: true });
                 })
-                .catch((error) => {
-                    console.error("Analysis import failed:", error);
-                    sendResponse({ success: false, error: error.message });
+                .catch((x) => {
+                    console.error("Imp fail:", x);
+                    rsp({ success: false, error: x.message });
                 });
             return true;
-
         case "GET_METADATA":
-            handleGetMetadata(request, sendResponse);
+            hGM(req, rsp);
             return true;
-
         case "GET_TRANSCRIPT":
-            handleGetTranscript(request, sendResponse);
+            hGT(req, rsp);
             return true;
-
         case "GET_COMMENTS":
-            handleGetComments(request, sendResponse);
+            hGC(req, rsp);
             return true;
-
         case "SEEK_TO":
-            handleSeekTo(request, sendResponse);
+            hST(req, rsp);
             return true;
-
         case "SHOW_SEGMENTS":
-            handleShowSegments(request, sendResponse);
+            hSS(req, rsp);
             return true;
-
         default:
             return false;
     }
 });
 
-async function handleGetMetadata(request, sendResponse) {
+async function hGM(req, rsp) {
     try {
-        const { videoId } = request;
-        const { MetadataExtractor } = await import(
+        const { MetadataExtractor: ME } = await import(
             chrome.runtime.getURL("content/metadata/extractor.js")
         );
-        const metadata = await MetadataExtractor.extract(videoId);
-
-        sendResponse({ success: true, metadata });
-    } catch (error) {
-        console.error("[Metadata] Error:", error);
-        sendResponse({
+        rsp({ success: true, metadata: await ME.extract(req.videoId) });
+    } catch (x) {
+        console.error("[Meta] Err:", x);
+        rsp({
             success: true,
             metadata: {
                 title:
                     document.title.replace(" - YouTube", "") || "YouTube Video",
-                author: "Unknown Channel",
+                author: "Unknown",
                 viewCount: "Unknown",
-                videoId: request.videoId,
+                videoId: req.videoId,
             },
         });
     }
 }
 
-async function handleGetTranscript(request, sendResponse) {
+async function hGT(req, rsp) {
     try {
-        const { videoId } = request;
-
-        // Check if transcript is cached
-        const wasCached = await checkTranscriptCache(videoId);
-
-        const { getTranscript } = await import(
+        const { videoId: vid } = req;
+        const wc = await cTC(vid);
+        const { getTranscript: gT } = await import(
             chrome.runtime.getURL("content/transcript/service.js")
         );
-        const transcript = await getTranscript(videoId);
-
-        if (!transcript || transcript.length === 0) {
-            throw new Error("This video does not have captions available");
-        }
-
-        // Only auto-close if transcript was NOT from cache (i.e., freshly fetched)
-        if (!wasCached) {
+        const t = await gT(vid);
+        if (!t || !t.length) throw new Error("No caps");
+        if (!wc) {
             try {
-                const { collapseTranscriptWidget } = await import(
+                const { collapseTranscriptWidget: cTW } = await import(
                     chrome.runtime.getURL("content/ui/renderers/transcript.js")
                 );
-                setTimeout(() => collapseTranscriptWidget(), 1000);
-                console.log("[Transcript] Auto-closing widget (fresh fetch)");
-            } catch (e) {
-                console.warn("Could not auto-close transcript widget:", e);
-            }
-        } else {
-            console.log("[Transcript] Keeping widget open (cached data)");
+                setTimeout(() => cTW(), 1e3);
+                console.log("[Tr] Auto-close");
+            } catch (e) {}
         }
-
-        sendResponse({ success: true, transcript });
-    } catch (error) {
-        console.error("Transcript fetch error:", error);
-        let errorMsg = error.message;
-
-        if (errorMsg.includes("Transcript is disabled")) {
-            errorMsg = "This video does not have captions/subtitles enabled";
-        } else if (errorMsg.includes("No transcript found")) {
-            errorMsg = "No transcript available for this video";
-        }
-
-        sendResponse({ error: errorMsg });
+        rsp({ success: true, transcript: t });
+    } catch (x) {
+        console.error("Tr fetch err:", x);
+        let m = x.message;
+        if (m.includes("Transcript is disabled")) m = "No caps enabled";
+        else if (m.includes("No transcript found")) m = "No caps avail";
+        rsp({ error: m });
     }
 }
 
-async function handleGetComments(request, sendResponse) {
+async function hGC(req, rsp) {
     try {
-        const { getComments } = await import(
+        const { getComments: gC } = await import(
             chrome.runtime.getURL("content/handlers/comments.js")
         );
-        const comments = await getComments();
-        sendResponse({ success: true, comments });
-    } catch (error) {
-        console.error("Comments fetch error:", error);
-        sendResponse({ comments: [] });
+        rsp({ success: true, comments: await gC() });
+    } catch (x) {
+        console.error("Comm err:", x);
+        rsp({ comments: [] });
     }
 }
 
-async function checkTranscriptCache(videoId) {
+async function cTC(vid) {
     try {
-        const key = `video_${videoId}_transcript`;
-        const result = await chrome.storage.local.get(key);
-
-        if (result[key]) {
-            const cached = result[key];
-            const age = Date.now() - cached.timestamp;
-            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
-            if (age < maxAge && cached.data?.length > 0) {
-                console.log(
-                    `[Transcript] Cache exists (age: ${Math.round(
-                        age / 1000 / 60
-                    )}min)`
-                );
+        const k = `video_${vid}_transcript`;
+        const r = await chrome.storage.local.get(k);
+        if (r[k]) {
+            const c = r[k],
+                a = Date.now() - c.timestamp;
+            if (a < 864e5 && c.data?.length > 0) {
+                console.log(`[Tr] Cache hit`);
                 return true;
             }
         }
         return false;
     } catch (e) {
-        console.warn("[Transcript] Cache check failed:", e);
         return false;
     }
 }
 
-function handleSeekTo(request, sendResponse) {
+function hST(req, rsp) {
     try {
-        const { timestamp } = request;
-        const video = document.querySelector("video");
-
-        if (video) {
-            video.currentTime = timestamp;
-            sendResponse({ success: true });
-        } else {
-            throw new Error("Video element not found");
-        }
-    } catch (error) {
-        console.error("Seek error:", error);
-        sendResponse({ success: false, error: error.message });
+        const v = document.querySelector("video");
+        if (v) {
+            v.currentTime = req.timestamp;
+            rsp({ success: true });
+        } else throw new Error("No video");
+    } catch (x) {
+        console.error("Seek err:", x);
+        rsp({ success: false, error: x.message });
     }
 }
 
-async function handleShowSegments(request, sendResponse) {
+async function hSS(req, rsp) {
     try {
-        const { segments } = request;
-        sendResponse({ success: true });
-    } catch (error) {
-        console.error("Show segments error:", error);
-        sendResponse({ success: false, error: error.message });
+        rsp({ success: true });
+    } catch (x) {
+        console.error("Seg err:", x);
+        rsp({ success: false, error: x.message });
     }
 }

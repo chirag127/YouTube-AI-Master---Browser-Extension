@@ -1,5 +1,6 @@
-export async function handleGetSettings(sendResponse) {
-    const settings = await chrome.storage.sync.get([
+import { sg } from "../../utils/shortcuts.js";
+export async function handleGetSettings(rsp) {
+    const s = await sg([
         "apiKey",
         "model",
         "summaryLength",
@@ -10,5 +11,5 @@ export async function handleGetSettings(sendResponse) {
         "autoSkipIntros",
         "saveHistory",
     ]);
-    sendResponse({ success: true, data: settings });
+    rsp({ success: true, data: s });
 }

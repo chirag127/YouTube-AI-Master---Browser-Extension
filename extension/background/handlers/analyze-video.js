@@ -1,291 +1,175 @@
 import { initializeServices, getServices } from "../services.js";
 import { getApiKey } from "../utils/api-key.js";
-import geniusLyricsAPI from "../../api/genius-lyrics.js";
-import sponsorBlockAPI from "../../api/sponsorblock.js";
+import gl from "../../api/genius-lyrics.js";
+import sb from "../../api/sponsorblock.js";
 import { ContextManager } from "../../services/context-manager.js";
+import {
+    l,
+    w,
+    e,
+    si,
+    csi,
+    rt,
+    sg,
+    mfl,
+    pd,
+    js,
+    ks,
+} from "../../utils/shortcuts.js";
 
-let keepAliveInterval = null;
-
-function startKeepAlive() {
-    if (keepAliveInterval) return;
-    keepAliveInterval = setInterval(
-        () => chrome.runtime.getPlatformInfo(() => {}),
-        20000
-    );
+let ka = null;
+function ska() {
+    if (ka) return;
+    ka = si(() => rt.getPlatformInfo(() => {}), 2e4);
 }
-
-function stopKeepAlive() {
-    if (keepAliveInterval) {
-        clearInterval(keepAliveInterval);
-        keepAliveInterval = null;
+function stka() {
+    if (ka) {
+        csi(ka);
+        ka = null;
     }
 }
 
-export async function handleAnalyzeVideo(request, sendResponse) {
+export async function handleAnalyzeVideo(req, rsp) {
     const {
-        transcript,
-        metadata,
-        comments = [],
-        options = {},
-        useCache = true,
-    } = request;
-    const videoId = metadata?.videoId;
-    startKeepAlive();
-
+        transcript: t,
+        metadata: m,
+        comments: c = [],
+        options: o = {},
+        useCache: uc = true,
+    } = req;
+    const vid = m?.videoId;
+    ska();
     try {
-        const apiKey = await getApiKey();
-        if (!apiKey) {
-            sendResponse({ success: false, error: "API Key not configured" });
+        const k = await getApiKey();
+        if (!k) {
+            rsp({ success: false, error: "API Key not configured" });
             return;
         }
+        await initializeServices(k);
+        const {
+            gemini: g,
+            segmentClassification: sc,
+            storage: s,
+        } = getServices();
 
-        await initializeServices(apiKey);
-        const { gemini, segmentClassification, storage } = getServices();
-
-        if (useCache && videoId) {
-            const cached = await storage.getVideoData(videoId);
-            // Only use cache if we have summary AND segments (and segments is not empty array)
-            if (
-                cached?.summary &&
-                cached?.segments &&
-                cached.segments.length > 0
-            ) {
-                console.log(
-                    "[AnalyzeVideo] Returning cached data with segments"
-                );
-                sendResponse({
+        if (uc && vid) {
+            const cd = await s.getVideoData(vid);
+            if (cd?.summary && cd?.segments && cd.segments.length > 0) {
+                l("[AV] Cache hit");
+                rsp({
                     success: true,
                     fromCache: true,
                     data: {
-                        summary: cached.summary,
-                        faq: cached.faq,
-                        insights: cached.insights,
-                        segments: cached.segments,
-                        timestamps: cached.timestamps,
+                        summary: cd.summary,
+                        faq: cd.faq,
+                        insights: cd.insights,
+                        segments: cd.segments,
+                        timestamps: cd.timestamps,
                     },
                 });
                 return;
-            } else if (cached?.summary) {
-                console.log(
-                    "[AnalyzeVideo] Cache exists but segments missing/empty. Re-generating segments..."
-                );
-                // If we have summary but no segments, we might want to just generate segments
-                // But for simplicity and robustness, let's re-run the whole flow or at least the segment part.
-                // Given the structure, we'll proceed to generate.
             }
         }
 
-        let lyrics = null;
-        const isMusic =
-            metadata?.category === "Music" ||
-            metadata?.title?.toLowerCase().includes("official video") ||
-            metadata?.title?.toLowerCase().includes("lyrics");
-
-        if (isMusic || !transcript?.length) {
+        let lyr = null;
+        const im =
+            m?.category === "Music" ||
+            m?.title?.toLowerCase().includes("official video") ||
+            m?.title?.toLowerCase().includes("lyrics");
+        if (im || !t?.length) {
             try {
-                lyrics = await geniusLyricsAPI.getLyrics(
-                    metadata.title,
-                    metadata.author
-                );
+                lyr = await gl.getLyrics(m.title, m.author);
             } catch (e) {}
         }
 
-        // Fetch SponsorBlock segments
-        let sponsorBlockSegments = [];
-        if (videoId) {
+        let sbs = [];
+        if (vid) {
             try {
-                sponsorBlockSegments = await sponsorBlockAPI.fetchSegments(
-                    videoId
-                );
-                console.log(
-                    `[AnalyzeVideo] SponsorBlock segments: ${sponsorBlockSegments.length}`
-                );
-            } catch (e) {
-                console.warn(
-                    "[AnalyzeVideo] SponsorBlock fetch failed:",
-                    e.message
-                );
+                sbs = await sb.fetchSegments(vid);
+                l(`[AV] SB: ${sbs.length}`);
+            } catch (x) {
+                w("[AV] SB fail:", x.message);
             }
         }
 
-        // Fetch External Context (APIs)
-        let externalContext = {};
+        let ec = {};
         try {
-            console.log("[AnalyzeVideo] Starting ContextManager fetch...");
-
-            // Step 1: Check chrome.storage.sync availability
-            console.log(
-                "[AnalyzeVideo] Checking chrome.storage.sync availability..."
+            l("[AV] Ctx fetch");
+            if (!chrome.storage?.sync) throw new Error("Sync NA");
+            const st = await sg(null);
+            if (!st || !ks(st).length) w("[AV] No settings");
+            if (!m) throw new Error("No meta");
+            const cm = new ContextManager(st);
+            const fp = cm.fetchContext(m);
+            const tp = new Promise((_, r) =>
+                setTimeout(() => r(new Error("Ctx timeout")), 1e4)
             );
-            if (!chrome.storage || !chrome.storage.sync) {
-                throw new Error("chrome.storage.sync is not available");
-            }
-
-            // Step 2: Retrieve settings with detailed logging
-            console.log(
-                "[AnalyzeVideo] Retrieving settings from chrome.storage.sync..."
-            );
-            const settings = await chrome.storage.sync.get(null);
-            console.log(
-                "[AnalyzeVideo] Settings retrieved:",
-                Object.keys(settings || {})
-            );
-
-            // Step 3: Validate settings
-            if (!settings || Object.keys(settings).length === 0) {
-                console.warn(
-                    "[AnalyzeVideo] Warning: No settings found in chrome.storage.sync"
-                );
-            }
-
-            // Step 4: Validate metadata
-            if (!metadata) {
-                throw new Error("Metadata is null/undefined");
-            }
-            console.log(
-                "[AnalyzeVideo] Metadata validation - Title:",
-                metadata.title ? "✓" : "✗",
-                "Category:",
-                metadata.category ? "✓" : "✗",
-                "Author:",
-                metadata.author ? "✓" : "✗"
-            );
-
-            // Step 5: Create ContextManager
-            console.log(
-                "[AnalyzeVideo] Creating ContextManager with settings..."
-            );
-            const contextManager = new ContextManager(settings);
-            console.log("[AnalyzeVideo] ContextManager created successfully");
-
-            // Step 6: Execute fetchContext with timeout
-            console.log(
-                "[AnalyzeVideo] Starting context fetch with 10-second timeout..."
-            );
-            const fetchPromise = contextManager.fetchContext(metadata);
-            const timeoutPromise = new Promise((_, reject) =>
-                setTimeout(
-                    () => reject(new Error("ContextManager timeout after 10s")),
-                    10000
-                )
-            );
-
-            externalContext = await Promise.race([
-                fetchPromise,
-                timeoutPromise,
-            ]);
-            console.log(
-                "[AnalyzeVideo] ContextManager completed successfully, keys:",
-                Object.keys(externalContext || {})
-            );
-        } catch (e) {
-            console.error("[AnalyzeVideo] ContextManager failed:", e.message);
-            console.error("[AnalyzeVideo] Error stack:", e.stack);
-
-            // Provide specific error context
-            if (e.message.includes("timeout")) {
-                console.warn(
-                    "[AnalyzeVideo] Issue: External API calls are taking too long (>10s)"
-                );
-            } else if (e.message.includes("chrome.storage")) {
-                console.warn(
-                    "[AnalyzeVideo] Issue: chrome.storage.sync not accessible"
-                );
-            } else if (e.message.includes("Metadata")) {
-                console.warn(
-                    "[AnalyzeVideo] Issue: Missing or invalid metadata"
-                );
-            } else {
-                console.warn(
-                    "[AnalyzeVideo] Issue: Unexpected error - check API keys and network connectivity"
-                );
-            }
+            ec = await Promise.race([fp, tp]);
+            l("[AV] Ctx done");
+        } catch (x) {
+            e("[AV] Ctx err:", x.message);
         }
 
-        if ((!transcript || !transcript.length) && !lyrics) {
-            throw new Error("No transcript or lyrics available");
-        }
+        if ((!t || !t.length) && !lyr) throw new Error("No content");
 
-        const formatTime = (s) => {
-            const m = Math.floor(s / 60);
-            const sec = Math.floor(s % 60);
-            return `${m}:${sec.toString().padStart(2, "0")}`;
+        const ac = {
+            transcript: t || [],
+            lyrics: lyr,
+            comments: c || [],
+            metadata: m,
+            sponsorBlockSegments: sbs,
+            externalContext: ec,
         };
+        const an = await g.generateComprehensiveAnalysis(ac, {
+            model: "gemini-2.5-flash-lite-preview-09-2025",
+            language: o.language || "English",
+            length: o.length || "Medium",
+        });
 
-        // Construct Unified Context
-        const analysisContext = {
-            transcript: transcript || [],
-            lyrics: lyrics,
-            comments: comments || [],
-            metadata: metadata,
-            sponsorBlockSegments: sponsorBlockSegments,
-            externalContext: externalContext,
-        };
-
-        const analysis = await gemini.generateComprehensiveAnalysis(
-            analysisContext,
-            {
-                model: "gemini-2.5-flash-lite-preview-09-2025",
-                language: options.language || "English",
-                length: options.length || "Medium",
-            }
-        );
-
-        let segments = [];
-        let fullVideoLabel = null;
-        console.log("[AnalyzeVideo] Options:", JSON.stringify(options));
-        if (options.generateSegments !== false) {
-            console.log("[AnalyzeVideo] Generating segments...");
-            const segmentResult =
-                await segmentClassification.classifyTranscript({
-                    transcript: transcript || [],
-                    metadata,
-                    lyrics,
-                    comments,
-                });
-            segments = segmentResult.segments;
-            fullVideoLabel = segmentResult.fullVideoLabel;
-            console.log(
-                "[AnalyzeVideo] Segments generated:",
-                segments.length,
-                "Full Label:",
-                fullVideoLabel
-            );
-        } else {
-            console.log(
-                "[AnalyzeVideo] Segment generation disabled in options"
-            );
+        let seg = [],
+            fvl = null;
+        if (o.generateSegments !== false) {
+            l("[AV] Gen segs");
+            const sr = await sc.classifyTranscript({
+                transcript: t || [],
+                metadata: m,
+                lyrics: lyr,
+                comments: c,
+            });
+            seg = sr.segments;
+            fvl = sr.fullVideoLabel;
+            l(`[AV] Segs: ${seg.length}`);
         }
 
-        if (videoId && storage) {
+        if (vid && s) {
             try {
-                await storage.saveVideoData(videoId, {
-                    metadata,
-                    transcript,
-                    summary: analysis.summary,
-                    faq: analysis.faq || "",
-                    insights: analysis.insights || "",
-                    segments,
-                    timestamps: analysis.timestamps,
+                await s.saveVideoData(vid, {
+                    metadata: m,
+                    transcript: t,
+                    summary: an.summary,
+                    faq: an.faq || "",
+                    insights: an.insights || "",
+                    segments: seg,
+                    timestamps: an.timestamps,
                 });
             } catch (e) {}
         }
 
-        sendResponse({
+        rsp({
             success: true,
             fromCache: false,
             data: {
-                summary: analysis.summary,
-                faq: analysis.faq,
-                insights: analysis.insights,
-                segments,
-                fullVideoLabel,
-                timestamps: analysis.timestamps,
+                summary: an.summary,
+                faq: an.faq,
+                insights: an.insights,
+                segments: seg,
+                fullVideoLabel: fvl,
+                timestamps: an.timestamps,
             },
         });
-    } catch (error) {
-        sendResponse({ success: false, error: error.message });
+    } catch (x) {
+        rsp({ success: false, error: x.message });
     } finally {
-        stopKeepAlive();
+        stka();
     }
 }
