@@ -1,14 +1,14 @@
-import { w, e } from '../../utils/shortcuts.js';
+import { cw, ce } from '../../utils/shortcuts.js';
 
 export function fillContentGaps(c, o) {
   if (!o || !o.length) {
-    w('[Gaps] No transcript provided to fillContentGaps');
+    cw('[Gaps] No transcript provided to fillContentGaps');
     return [];
   }
   try {
     const l = o[o.length - 1];
     if (!l || typeof l.start === 'undefined') {
-      w('[Gaps] Invalid transcript format');
+      cw('[Gaps] Invalid transcript format');
       return [];
     }
     const end = l.start + (l.duration || 0),
@@ -24,7 +24,7 @@ export function fillContentGaps(c, o) {
     if (t < end - 1) f.push({ label: 'Content', start: t, end, text: 'Main Content' });
     return f;
   } catch (x) {
-    e('[Gaps] Error in fillContentGaps:', x);
+    ce('[Gaps] Error in fillContentGaps:', x);
     return [];
   }
 }

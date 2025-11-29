@@ -1,4 +1,4 @@
-import { tr, sub } from '../../utils/shortcuts.js';
+import { tr, sub, lio } from '../../utils/shortcuts.js';
 
 export function chunkText(t, s = 20000, o = 500) {
   if (!t) return [];
@@ -8,8 +8,8 @@ export function chunkText(t, s = 20000, o = 500) {
   while (i < t.length) {
     let e = i + s;
     if (e < t.length) {
-      const sp = t.lastIndexOf(' ', e),
-        p = t.lastIndexOf('.', e);
+      const sp = lio(t, ' ', e),
+        p = lio(t, '.', e);
       if (p > i + s * 0.5) e = p + 1;
       else if (sp > i) e = sp + 1;
     }

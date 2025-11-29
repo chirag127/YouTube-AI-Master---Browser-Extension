@@ -1,4 +1,4 @@
-import { ge } from '../../utils/shortcuts.js';
+import { i } from '../../utils/shortcuts.js';
 
 export class ExternalAPIs {
   constructor(s, a) {
@@ -21,7 +21,7 @@ export class ExternalAPIs {
     });
   }
   set(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.value = v;
   }
 }

@@ -1,4 +1,4 @@
-import { mf, pd } from '../../utils/shortcuts.js';
+import { mfl, pS } from '../../utils/shortcuts.js';
 
 export const validateSegments = s => {
   if (!Array.isArray(s)) return [];
@@ -24,12 +24,12 @@ export const validateSegments = s => {
     .filter(x => x);
 };
 export const formatTimestamp = s => {
-  const h = mf(s / 3600),
-    m = mf((s % 3600) / 60),
-    sc = mf(s % 60);
+  const h = mfl(s / 3600),
+    m = mfl((s % 3600) / 60),
+    sc = mfl(s % 60);
   return h > 0 ? `${h}:${pad(m)}:${pad(sc)}` : `${m}:${pad(sc)}`;
 };
-const pad = n => pd(n.toString(), 2, '0');
+const pad = n => pS(n.toString(), 2, '0');
 export const createClickableTimestamp = (t, y, c) => ({
   time: t,
   type: y,

@@ -3,7 +3,7 @@ import { injectWidget } from '../ui/widget.js';
 import { startAnalysis } from './analyzer.js';
 import { log, logError } from './debug.js';
 import { isWidgetProperlyVisible } from '../utils/dom.js';
-import { st, cst, ge, on, loc } from '../utils/shortcuts.js';
+import { st, ct, i, on, loc } from '../utils/shortcuts.js';
 
 let lastUrl = loc.href;
 let dt = null;
@@ -14,7 +14,7 @@ export function initObserver() {
     if (loc.href !== lastUrl) {
       lastUrl = loc.href;
       log('URL changed:', lastUrl);
-      if (dt) cst(dt);
+      if (dt) ct(dt);
       dt = st(() => checkCurrentPage(), 300);
     }
   });
@@ -27,9 +27,9 @@ export function initObserver() {
     if (loc.pathname !== '/watch') return;
     const u = new URLSearchParams(loc.search),
       v = u.get('v');
-    const w = ge('yt-ai-master-widget');
+    const w = i('yt-ai-master-widget');
     if ((v && v !== state.currentVideoId) || (v && !isWidgetProperlyVisible(w))) {
-      if (dt) cst(dt);
+      if (dt) ct(dt);
       dt = st(() => handleNewVideo(v), 300);
     }
   });
@@ -49,7 +49,7 @@ async function handleNewVideo(v) {
     await injectWidget();
     log('Widget injected successfully');
     st(() => {
-      const w = ge('yt-ai-master-widget');
+      const w = i('yt-ai-master-widget');
       if (w && w.parentElement) {
         const p = w.parentElement;
         if (p.firstChild !== w) {
@@ -70,7 +70,7 @@ function checkCurrentPage() {
     const u = new URLSearchParams(loc.search),
       v = u.get('v');
     if (v) {
-      const w = ge('yt-ai-master-widget');
+      const w = i('yt-ai-master-widget');
       if (v === state.currentVideoId && isWidgetProperlyVisible(w)) {
         log('Same video and widget is properly visible, skipping re-initialization:', v);
         return;

@@ -1,17 +1,17 @@
-import { l, e, cw, rt, t, url } from '../utils/shortcuts.js';
-rt.onInstalled.addListener(async d => {
+import { l, e, cw, cr, ct, url } from '../utils/shortcuts.js';
+cr.onInstalled.addListener(async d => {
   if (d.reason === 'install') {
     l('YouTube AI Master installed');
     try {
-      await t.create({ url: url('onboarding/onboarding.html') });
+      await ct.create({ url: url('onboarding/onboarding.html') });
     } catch (x) {
       e('Failed to open onboarding:', x);
     }
   } else if (d.reason === 'update') {
-    l('YouTube AI Master updated to version', rt.getManifest().version);
+    l('YouTube AI Master updated to version', cr.getManifest().version);
   }
 });
-rt.onMessage.addListener((req, snd, rsp) => {
+cr.onMessage.addListener((req, snd, rsp) => {
   const act = req.action || req.type;
   l('Background received message:', act);
   (async () => {
@@ -116,7 +116,7 @@ rt.onMessage.addListener((req, snd, rsp) => {
           break;
         }
         case 'OPEN_OPTIONS':
-          rt.openOptionsPage();
+          cr.openOptionsPage();
           rsp({ success: true });
           break;
         default:

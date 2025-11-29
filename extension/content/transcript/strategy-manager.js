@@ -3,7 +3,7 @@ import * as invidious from './strategies/invidious.js';
 import * as youtubeDirect from './strategies/youtube-direct.js';
 import * as backgroundProxy from './strategies/background-proxy.js';
 import * as domParser from './strategies/dom-parser.js';
-import { l, w, e } from '../../utils/shortcuts.js';
+import { l, cw, e } from '../../utils/shortcuts.js';
 
 const strategies = [xhrIntercept, invidious, youtubeDirect, backgroundProxy, domParser].sort(
   (a, b) => a.priority - b.priority
@@ -22,7 +22,7 @@ export const extractTranscript = async (vid, lang = 'en') => {
       }
     } catch (x) {
       err = x;
-      w(`[Transcript] ${s.name} failed:`, x.message);
+      cw(`[Transcript] ${s.name} failed:`, x.message);
     }
   }
   e('[Transcript] All methods failed');

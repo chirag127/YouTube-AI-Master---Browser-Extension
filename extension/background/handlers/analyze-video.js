@@ -3,7 +3,7 @@ import { getApiKey } from '../utils/api-key.js';
 import gl from '../../api/genius-lyrics.js';
 import sb from '../../api/sponsorblock.js';
 import { ContextManager } from '../../services/context-manager.js';
-import { l, w, e, si, csi, rt, sg, mfl, pd, js, ks } from '../../utils/shortcuts-sw.js';
+import { l, cw, e, si, ci, rt, sg, js, ks, E } from '../../utils/shortcuts.js';
 
 let ka = null;
 function ska() {
@@ -12,7 +12,7 @@ function ska() {
 }
 function stka() {
   if (ka) {
-    csi(ka);
+    ci(ka);
     ka = null;
   }
 }
@@ -79,20 +79,20 @@ export async function handleAnalyzeVideo(req, rsp) {
     let ec = {};
     try {
       l('[AV] Ctx fetch');
-      if (!chrome.storage?.sync) throw new Error('Sync NA');
+      if (!chrome.storage?.sync) throw new E('Sync NA');
       const st = await sg(null);
-      if (!st || !ks(st).length) w('[AV] No settings');
-      if (!m) throw new Error('No meta');
+      if (!st || !ks(st).length) cw('[AV] No settings');
+      if (!m) throw new E('No meta');
       const cm = new ContextManager(st);
       const fp = cm.fetchContext(m);
-      const tp = new Promise((_, r) => setTimeout(() => r(new Error('Ctx timeout')), 1e4));
+      const tp = new Promise((_, r) => setTimeout(() => r(new E('Ctx timeout')), 1e4));
       ec = await Promise.race([fp, tp]);
       l('[AV] Ctx done');
     } catch (x) {
       e('[AV] Ctx err:', x.message);
     }
 
-    if ((!t || !t.length) && !lyr) throw new Error('No content');
+    if ((!t || !t.length) && !lyr) throw new E('No content');
 
     const ac = {
       transcript: t || [],

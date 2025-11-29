@@ -1,4 +1,4 @@
-import { sg, ss, l, e, js, jp, nt } from '../../utils/shortcuts.js';
+import { sg, ss, l, ce, js, jp, nt } from '../../utils/shortcuts.js';
 
 export const SEGMENT_CATEGORIES = [
   { id: 'sponsor', label: 'Sponsor', color: '#00d400' },
@@ -32,7 +32,7 @@ export class SettingsManager {
       l('[SettingsManager] Final settings:', this.settings);
       return this.settings;
     } catch (x) {
-      e('[SettingsManager] Load error:', x);
+      ce('[SettingsManager] Load error:', x);
       this.settings = this.getDefaults();
       return this.settings;
     }
@@ -48,7 +48,7 @@ export class SettingsManager {
       this.notify();
       return true;
     } catch (x) {
-      e('[SettingsManager] Save error:', x);
+      ce('[SettingsManager] Save error:', x);
       throw x;
     }
   }
@@ -226,7 +226,7 @@ export class SettingsManager {
       await this.save();
       return true;
     } catch (x) {
-      e('[Settings] Import failed:', x);
+      ce('[Settings] Import failed:', x);
       return false;
     }
   }

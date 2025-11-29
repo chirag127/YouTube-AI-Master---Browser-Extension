@@ -1,4 +1,4 @@
-import { ge, on, lr } from '../../utils/shortcuts.js';
+import { i, on, lr } from '../../utils/shortcuts.js';
 
 export class GeneralSettings {
   constructor(s, a) {
@@ -23,7 +23,7 @@ export class GeneralSettings {
       autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
       saveHistory: { path: 'advanced.saveHistory' },
     });
-    const ch = ge('clearHistory');
+    const ch = i('clearHistory');
     if (ch)
       on(ch, 'click', async () => {
         if (confirm('Clear all history? This cannot be undone.')) {
@@ -33,11 +33,11 @@ export class GeneralSettings {
       });
   }
   set(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.checked = v;
   }
 }

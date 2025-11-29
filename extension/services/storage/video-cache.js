@@ -1,9 +1,9 @@
-import { sl } from '../../utils/shortcuts.js';
+import { sl, nt } from '../../utils/shortcuts.js';
 
 export async function saveVideoData(v, d) {
   const k = `video_${v}`,
     e = await getVideoData(v),
-    m = { videoId: v, timestamp: Date.now(), lastAccessed: Date.now(), ...e, ...d };
+    m = { videoId: v, timestamp: nt(), lastAccessed: nt(), ...e, ...d };
   await sl({ [k]: m });
   return m;
 }
@@ -11,7 +11,7 @@ export async function getVideoData(v) {
   const r = await sl(`video_${v}`),
     d = r[`video_${v}`];
   if (d) {
-    d.lastAccessed = Date.now();
+    d.lastAccessed = nt();
     await sl({ [`video_${v}`]: d });
   }
   return d || null;
@@ -58,7 +58,7 @@ export async function saveCommentsCache(v, c, cs) {
 export async function saveChatMessage(v, r, m) {
   const d = await getVideoData(v),
     h = d?.chatHistory || [];
-  h.push({ role: r, message: m, timestamp: Date.now() });
+  h.push({ role: r, message: m, timestamp: nt() });
   return saveVideoData(v, { chatHistory: h });
 }
 export async function saveMetadataCache(v, m) {

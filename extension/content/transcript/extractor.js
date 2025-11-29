@@ -1,5 +1,5 @@
 import { fetchTranscript } from '../../services/transcript/fetcher.js';
-import { l, w, e, on, qsa, jp, st, $$ } from '../../utils/shortcuts.js';
+import { l, cw, e, on, jp, st, $$ } from '../../utils/shortcuts.js';
 
 class TranscriptExtractor {
   constructor() {
@@ -22,7 +22,7 @@ class TranscriptExtractor {
 
   log(lvl, msg) {
     const i = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' };
-    const f = lvl === 'error' ? e : lvl === 'warn' ? w : l;
+    const f = lvl === 'error' ? e : lvl === 'warn' ? cw : l;
     f(`[TranscriptExtractor] ${i[lvl] || ''} ${msg}`);
   }
 

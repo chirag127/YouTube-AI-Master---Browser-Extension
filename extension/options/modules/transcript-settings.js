@@ -1,4 +1,4 @@
-import { ge } from '../../utils/shortcuts.js';
+import { i } from '../../utils/shortcuts.js';
 
 export class TranscriptSettings {
   constructor(s, a) {
@@ -29,11 +29,11 @@ export class TranscriptSettings {
     });
   }
   set(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.checked = v;
   }
 }

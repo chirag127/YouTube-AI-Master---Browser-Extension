@@ -1,6 +1,6 @@
 import { initializeServices, getServices } from '../services.js';
 import { getApiKey } from '../utils/api-key.js';
-import { l, slc } from '../../utils/shortcuts-sw.js';
+import { l, slc } from '../../utils/shortcuts.js';
 
 export async function handleAnalyzeComments(req, rsp) {
   const { comments: c } = req;

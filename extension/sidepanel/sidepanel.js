@@ -3,7 +3,7 @@ import { GeminiService } from '../api/gemini.js';
 import { SegmentClassificationService } from '../services/segments/index.js';
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
-import { ge, $$, on, lg, l, w, e, tq, tsm, ce, st, mf, pd } from '../utils/shortcuts.js';
+import { id, $$, on, sl, l, cw, e, ct, ce, st, mf, pd } from '../utils/shortcuts.js';
 
 const ss = new StorageService(),
   cs = new ChunkingService();
@@ -11,20 +11,20 @@ let gs = null,
   scs = null,
   ctx = '',
   segs = [];
-const ab = ge('analyze-btn'),
-  stEl = ge('status'),
-  aw = ge('auth-warning'),
+const ab = id('analyze-btn'),
+  stEl = id('status'),
+  aw = id('auth-warning'),
   tbs = $$('.tab-btn'),
   tcs = $$('.tab-content'),
-  sc = ge('summary-content'),
-  ic = ge('insights-content'),
-  tc = ge('transcript-container'),
-  ci = ge('chat-input'),
-  csb = ge('chat-send-btn'),
-  ch = ge('chat-history');
+  sc = id('summary-content'),
+  ic = id('insights-content'),
+  tc = id('transcript-container'),
+  ci = id('chat-input'),
+  csb = id('chat-send-btn'),
+  ch = id('chat-history');
 
 on(document, 'DOMContentLoaded', async () => {
-  const { geminiApiKey } = await lg('geminiApiKey');
+  const { geminiApiKey } = await sl.get('geminiApiKey');
   if (!geminiApiKey) {
     aw.style.display = 'block';
     ab.disabled = true;
@@ -40,7 +40,7 @@ on(document, 'DOMContentLoaded', async () => {
       for (const x of tbs) x.classList.remove('active');
       for (const x of tcs) x.classList.remove('active');
       b.classList.add('active');
-      ge(`${b.getAttribute('data-tab')}-tab`).classList.add('active');
+      id(`${b.getAttribute('data-tab')}-tab`).classList.add('active');
     });
   }
   on(csb, 'click', handleChat);
@@ -93,7 +93,7 @@ function appendMsg(r, t) {
 }
 
 async function updateMsg(id, t) {
-  const d = ge(id);
+  const d = document.getElementById(id); // Use document.getElementById directly or id()
   if (d) {
     d.innerHTML = await parseMarkdown(t);
     ch.scrollTop = ch.scrollHeight;
@@ -108,7 +108,7 @@ async function analyzeVideo(rc = 0) {
     setStatus('loading', 'Fetching video info...');
     ab.disabled = true;
     showLoadingState();
-    const [tab] = await tq({ active: true, currentWindow: true });
+    const [tab] = await ct.query({ active: true, currentWindow: true });
     if (!tab || !tab.url.includes('youtube.com/watch'))
       throw new Error('Please open a YouTube video page.');
     const u = new URLSearchParams(new URL(tab.url).search),
@@ -121,7 +121,7 @@ async function analyzeVideo(rc = 0) {
       if (r.error) throw new Error(r.error);
       md = r.metadata;
     } catch (x) {
-      w('Metadata fetch failed, using fallback:', x);
+      cw('Metadata fetch failed, using fallback:', x);
       md = { title: 'Unknown Title', author: 'Unknown Channel', videoId: v };
     }
     setStatus('loading', 'Fetching transcript...');
@@ -146,14 +146,14 @@ async function analyzeVideo(rc = 0) {
       const cls = await scs.classifyTranscript(ts);
       segs = cls;
       renderTranscript(cls);
-      tsm(tab.id, { action: 'SHOW_SEGMENTS', segments: cls }).catch(x =>
-        w('Failed to send segments:', x)
+      ct.sendMessage(tab.id, { action: 'SHOW_SEGMENTS', segments: cls }).catch(x =>
+        cw('Failed to send segments:', x)
       );
     } catch (x) {
-      w('Segment classification failed:', x);
+      cw('Segment classification failed:', x);
       renderTranscript(ts.map(t => ({ ...t, label: null })));
     }
-    const opts = await lg(['summaryLength', 'targetLanguage']);
+    const opts = await sl.get(['summaryLength', 'targetLanguage']);
     const so = {
       length: opts.summaryLength || 'Medium',
       language: opts.targetLanguage || 'English',
@@ -162,7 +162,7 @@ async function analyzeVideo(rc = 0) {
     const an = await gs.generateComprehensiveAnalysis(ctx, so);
     await renderMd(an.summary, sc);
     setStatus('loading', 'Analyzing comments...');
-    const cr = await tsm(tab.id, { action: 'GET_COMMENTS' }).catch(x => {
+    const cr = await ct.sendMessage(tab.id, { action: 'GET_COMMENTS' }).catch(x => {
       e('Failed to get comments:', x);
       return { comments: [] };
     });
@@ -179,7 +179,7 @@ async function analyzeVideo(rc = 0) {
         e('Comment analysis failed:', x);
         ca = `Failed to analyze comments: ${x.message}`;
       }
-    } else w('[Sidepanel] No comments found to analyze');
+    } else cw('[Sidepanel] No comments found to analyze');
     const ih = await parseMarkdown(an.insights),
       ch = await parseMarkdown(ca),
       fh = await parseMarkdown(an.faq);
@@ -188,7 +188,7 @@ async function analyzeVideo(rc = 0) {
     try {
       await ss.saveTranscript(v, md, ts, an.summary);
     } catch (x) {
-      w('Failed to save to history:', x);
+      cw('Failed to save to history:', x);
     }
   } catch (x) {
     e('Analysis error:', x);
@@ -206,7 +206,7 @@ async function analyzeVideo(rc = 0) {
 async function smr(tid, m, mr = 3) {
   for (let i = 0; i < mr; i++) {
     try {
-      return await tsm(tid, m);
+      return await ct.sendMessage(tid, m);
     } catch (x) {
       if (i === mr - 1) throw x;
       await new Promise(r => st(r, 500 * (i + 1)));
@@ -295,8 +295,8 @@ function getSgDesc(l) {
 
 async function seekVideo(s) {
   try {
-    const [t] = await tq({ active: true, currentWindow: true });
-    if (t?.id) await tsm(t.id, { action: 'SEEK_TO', timestamp: s });
+    const [t] = await ct.query({ active: true, currentWindow: true });
+    if (t?.id) await ct.sendMessage(t.id, { action: 'SEEK_TO', timestamp: s });
   } catch (x) {}
 }
 

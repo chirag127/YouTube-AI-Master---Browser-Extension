@@ -1,5 +1,5 @@
 import deArrowAPI from '../../api/dearrow.js';
-import { l, w, e, $, on, st, jp } from '../utils/shortcuts.js';
+import { l, cw, e, $, on, st, jp } from '../utils/shortcuts.js';
 
 class MetadataExtractor {
   constructor() {
@@ -9,7 +9,7 @@ class MetadataExtractor {
 
   log(lvl, msg) {
     const i = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' };
-    const f = lvl === 'error' ? e : lvl === 'warn' ? w : l;
+    const f = lvl === 'error' ? e : lvl === 'warn' ? cw : l;
     f(`[MetadataExtractor] ${i[lvl]} ${msg}`);
   }
 

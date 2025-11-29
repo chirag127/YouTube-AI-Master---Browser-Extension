@@ -1,4 +1,4 @@
-import { st, raf, ce } from '../../utils/shortcuts.js';
+import { st, raf, cr } from '../../utils/shortcuts.js';
 
 export class NotificationManager {
   constructor() {
@@ -8,14 +8,14 @@ export class NotificationManager {
     this.init();
   }
   init() {
-    this.container = ce('div');
+    this.container = cr('div');
     this.container.id = 'notification-container';
     this.container.style.cssText =
       'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
     document.body.appendChild(this.container);
   }
   show(m, t = 'success', d = 3000) {
-    const n = ce('div');
+    const n = cr('div');
     n.className = `notification notification-${t}`;
     const i = this.getIcon(t);
     n.innerHTML = `<span class="notification-icon">${i}</span><span class="notification-message">${m}</span>`;

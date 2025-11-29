@@ -1,26 +1,26 @@
-import { l, e, $, $$, jp, inc, mt, tc, tr, uc, fc, ps, st, doc, win } from '../utils/shortcuts.js';
+import { l, e, $, $$, jp, uc, st, w, d } from '../utils/shortcuts.js';
 class YTE {
   constructor() {
-    this.of = win.fetch.bind(win);
+    this.of = w.fetch.bind(w);
     this.ls = new Map();
     this.iu = new Set();
     this.ii();
     this.inl();
-    win.addEventListener('message', e => {
-      if (e.source !== win) return;
+    w.addEventListener('message', e => {
+      if (e.source !== w) return;
       if (e.data.type === 'YT_GET_DATA') this.e('data_response', this.gid());
     });
-    win._ytExtractor = this;
+    w._ytExtractor = this;
     l('[YTE] Init');
   }
 
   ii() {
-    window.fetch = async (...a) => {
+    w.fetch = async (...a) => {
       const [r, c] = a;
       const u = r ? r.toString() : '';
       if (this.iu.has(u)) return this.of(r, c);
       const res = await this.of(r, c);
-      this.pr(u, res).catch(e => console.error('[YTE] Err:', e));
+      this.pr(u, res).catch(err => e('[YTE] Err:', err));
       return res;
     };
   }
@@ -49,38 +49,38 @@ class YTE {
 
   async htu(u) {
     if (this.iu.has(u)) return;
-    console.log('[YTE] Cap tr:', u);
+    l('[YTE] Cap tr:', u);
     this.iu.add(u);
     try {
       const r = await this.of(u);
       if (!r.ok) {
-        console.error('[YTE] Fail:', r.status);
+        e('[YTE] Fail:', r.status);
         this.iu.delete(u);
         return;
       }
       const d = await r.json();
-      console.log('[YTE] Got tr');
+      l('[YTE] Got tr');
       this.e('transcript', d);
-      setTimeout(() => this.iu.delete(u), 1e4);
-    } catch (e) {
-      console.error('[YTE] Err:', e);
+      st(() => this.iu.delete(u), 1e4);
+    } catch (err) {
+      e('[YTE] Err:', err);
       this.iu.delete(u);
     }
   }
 
   inl() {
-    document.addEventListener('yt-navigate-finish', e => {
+    d.addEventListener('yt-navigate-finish', e => {
       const vid = e.detail?.response?.playerResponse?.videoDetails?.videoId;
-      console.log('[YTE] Nav:', vid);
+      l('[YTE] Nav:', vid);
       this.e('navigation', { videoId: vid, detail: e.detail });
     });
   }
 
   gid() {
-    let pr = window.ytInitialPlayerResponse;
+    let pr = w.ytInitialPlayerResponse;
     if (!pr) {
       try {
-        const a = document.querySelector('ytd-app');
+        const a = $('ytd-app');
         pr = a?.data?.playerResponse || a?.__data?.playerResponse;
       } catch (e) {}
     }
@@ -89,21 +89,21 @@ class YTE {
         for (const s of document.querySelectorAll('script')) {
           const m = (s.textContent || '').match(/ytInitialPlayerResponse\s*=\s*({.+?});/s);
           if (m) {
-            pr = JSON.parse(m[1]);
+            pr = jp(m[1]);
             break;
           }
         }
       } catch (e) {}
     }
-    if (!pr && window.ytplayer?.config?.args?.player_response) {
+    if (!pr && w.ytplayer?.config?.args?.player_response) {
       try {
-        pr = JSON.parse(window.ytplayer.config.args.player_response);
+        pr = jp(w.ytplayer.config.args.player_response);
       } catch (e) {}
     }
     return {
       playerResponse: pr,
-      initialData: window.ytInitialData,
-      cfg: window.ytcfg?.data_,
+      initialData: w.ytInitialData,
+      cfg: w.ytcfg?.data_,
     };
   }
 
@@ -114,11 +114,11 @@ class YTE {
 
   e(ev, d) {
     this.ls.get(ev)?.forEach(c => c(d));
-    window.postMessage({ type: `YT_${ev.toUpperCase()}`, payload: d }, '*');
+    w.postMessage({ type: `YT_${uc(ev)}`, payload: d }, '*');
   }
 
   em() {
-    const pr = window.ytInitialPlayerResponse;
+    const pr = w.ytInitialPlayerResponse;
     if (!pr) return null;
     const d = pr.videoDetails,
       m = pr.microformat?.playerMicroformatRenderer;
@@ -145,4 +145,3 @@ class YTE {
   }
 }
 new YTE();
-

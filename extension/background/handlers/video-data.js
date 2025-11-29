@@ -1,6 +1,6 @@
 import { handleGetTranscript, handleGetVideoInfo, handleGetComments } from './innertube.js';
 import { getHistory } from '../../services/storage/comprehensive-history.js';
-import { lg, ls, lr, l, e } from '../../utils/shortcuts-sw.js';
+import { lg, ls, lr, l, e, nt } from '../../utils/shortcuts.js';
 
 const CV = 1;
 const CE = 24 * 60 * 60 * 1000;
@@ -10,7 +10,7 @@ async function getCached(vid, type) {
   const r = await lg(k);
   if (r[k]) {
     const c = r[k];
-    if (c.version === CV && Date.now() - c.timestamp < CE) {
+    if (c.version === CV && nt() - c.timestamp < CE) {
       l(`[VideoData] Cache hit: ${k}`);
       return c.data;
     }
@@ -21,7 +21,7 @@ async function getCached(vid, type) {
 
 async function setCache(vid, type, data) {
   const k = `video_${vid}_${type}`;
-  await ls({ [k]: { version: CV, timestamp: Date.now(), data } });
+  await ls({ [k]: { version: CV, timestamp: nt(), data } });
   l(`[VideoData] Cached: ${k}`);
 }
 

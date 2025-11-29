@@ -1,10 +1,10 @@
-import { ce, rp, sw } from '../utils/shortcuts.js';
+import { cr, rp, sw } from '../utils/shortcuts.js';
 
 export async function parseMarkdown(m) {
   if (!m) return '';
   let h = m;
   const eh = t => {
-    const d = ce('div');
+    const d = cr('div');
     d.textContent = t;
     return d.innerHTML;
   };

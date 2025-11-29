@@ -1,15 +1,15 @@
 import { ModelManager } from '../../api/gemini.js';
 import {
-  ge,
+  i,
   on,
   ft,
   js,
-  e,
+  ce,
   cr,
   sw,
   inc,
   mt,
-  fc,
+  fe,
   ap,
   tc,
   ih,
@@ -35,12 +35,12 @@ export class AIConfig {
     this.set('customPrompt', c.customPrompt || '');
     if (c.model) this.set('modelSelect', c.model);
     const els = {
-      ak: ge('apiKey'),
-      tak: ge('toggleApiKey'),
-      ms: ge('modelSelect'),
-      rm: ge('refreshModels'),
-      tc: ge('testConnection'),
-      cp: ge('customPrompt'),
+      ak: i('apiKey'),
+      tak: i('toggleApiKey'),
+      ms: i('modelSelect'),
+      rm: i('refreshModels'),
+      tc: i('testConnection'),
+      cp: i('customPrompt'),
     };
     if (els.ak)
       on(els.ak, 'change', async e => {
@@ -76,7 +76,7 @@ export class AIConfig {
         ih(sel, '<option value="" disabled>No models found</option>');
         return;
       }
-      fc(m, x => {
+      fe(m, x => {
         const n = isS(x) ? rp(x, 'models/', '') : rp(x.name, 'models/', '') || x;
         const o = cr('option');
         o.value = n;
@@ -95,7 +95,7 @@ export class AIConfig {
         await this.a.save('ai.model', m[0]);
       }
     } catch (x) {
-      e('Failed to fetch models:', x);
+      ce('Failed to fetch models:', x);
       ih(sel, '<option value="" disabled>Failed to load</option>');
       this.a.notifications?.error(`Failed: ${x.message}`);
     } finally {
@@ -103,9 +103,9 @@ export class AIConfig {
     }
   }
   async test() {
-    const btn = ge('testConnection'),
-      st = ge('apiStatus'),
-      ms = ge('modelSelect'),
+    const btn = i('testConnection'),
+      st = i('apiStatus'),
+      ms = i('modelSelect'),
       c = this.s.get().ai || {};
     btn.disabled = true;
     tc(btn, 'Testing...');
@@ -149,7 +149,7 @@ export class AIConfig {
     }
   }
   set(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.value = v;
   }
 }

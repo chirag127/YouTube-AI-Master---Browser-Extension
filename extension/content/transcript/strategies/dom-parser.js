@@ -1,4 +1,4 @@
-import { qs, qsa, ft, $, $$ } from '../../../utils/shortcuts.js';
+import { ft, $, $$ } from '../../../utils/shortcuts.js';
 
 export const name = 'DOM Parser';
 export const priority = 5;

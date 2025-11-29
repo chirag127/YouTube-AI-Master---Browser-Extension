@@ -1,4 +1,4 @@
-import { ge } from '../../utils/shortcuts.js';
+import { i } from '../../utils/shortcuts.js';
 
 export class MetadataSettings {
   constructor(s, a) {
@@ -33,7 +33,7 @@ export class MetadataSettings {
     });
   }
   chk(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.checked = v;
   }
 }

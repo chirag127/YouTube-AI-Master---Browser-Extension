@@ -1,6 +1,6 @@
 import { initializeServices, getServices } from '../services.js';
 import { getApiKey } from '../utils/api-key.js';
-import { mfl, mp, jn } from '../../utils/shortcuts-sw.js';
+import { mfl, mp, jn } from '../../utils/shortcuts.js';
 
 export async function handleGenerateSummary(req, rsp) {
   const { transcript, settings, metadata } = req;

@@ -1,4 +1,4 @@
-import { l, e, ls, lg, js, jp, lc, inc, fl, fn, nt, sl, us, slc } from '../utils/shortcuts.js';
+import { l, ce, ls, fl, js, jp, lc, inc, fn, nt, sl, us, slc } from '../../utils/shortcuts.js';
 export class ComprehensiveHistory {
   constructor() {
     this.k = 'comprehensive_history';
@@ -83,7 +83,7 @@ export class ComprehensiveHistory {
       await sl({ [this.k]: i });
       return true;
     } catch (x) {
-      e('[History] Import failed:', x);
+      ce('[History] Import failed:', x);
       return false;
     }
   }

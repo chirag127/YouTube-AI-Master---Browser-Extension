@@ -1,5 +1,5 @@
 import geniusAPI from '../../api/genius-lyrics.js';
-import { e } from '../../utils/shortcuts-sw.js';
+import { e } from '../../utils/shortcuts.js';
 
 export async function handleGetLyrics(req, rsp) {
   try {

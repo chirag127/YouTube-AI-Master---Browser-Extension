@@ -1,11 +1,11 @@
-import { ge, sg, lg, l, w, tq, tsm, url, rt, tab, st } from '../utils/shortcuts.js';
-const a = ge('api-status'),
-  p = ge('page-status'),
-  b = ge('analyze-btn'),
-  h = ge('history-btn'),
-  o = ge('options-btn'),
-  m = ge('message'),
-  g = ge('setup-guide-btn');
+import { id, ss, sl, l, cw, ct, url, cr, st } from '../utils/shortcuts.js';
+const a = id('api-status'),
+  p = id('page-status'),
+  b = id('analyze-btn'),
+  h = id('history-btn'),
+  o = id('options-btn'),
+  m = id('message'),
+  g = id('setup-guide-btn');
 function showMsg(t, y = 'info') {
   m.textContent = t;
   m.className = `show ${y}`;
@@ -13,8 +13,8 @@ function showMsg(t, y = 'info') {
 }
 async function checkApi() {
   try {
-    const s = await sg(['apiKey', 'onboardingCompleted']),
-      lc = await lg('geminiApiKey'),
+    const s = await ss.get(['apiKey', 'onboardingCompleted']),
+      lc = await sl.get('geminiApiKey'),
       k = s.apiKey || lc.geminiApiKey;
     if (k) {
       a.innerHTML = '<span>✅ Configured</span>';
@@ -25,17 +25,17 @@ async function checkApi() {
     a.className = 'value warning';
     if (!s.onboardingCompleted) {
       g.style.display = 'block';
-      g.onclick = () => rt.openOptionsPage();
+      g.onclick = () => cr.openOptionsPage();
     }
     return false;
   } catch (x) {
-    w('API check failed:', x);
+    cw('API check failed:', x);
     return false;
   }
 }
 async function checkPage() {
   try {
-    const [t] = await tq({ active: true, currentWindow: true });
+    const [t] = await ct.query({ active: true, currentWindow: true });
     if (t && t.url && t.url.includes('youtube.com/watch')) {
       p.innerHTML = '<span>✅ YouTube Video</span>';
       p.className = 'value success';
@@ -47,22 +47,22 @@ async function checkPage() {
     b.disabled = true;
     return false;
   } catch (x) {
-    w('Page check failed:', x);
+    cw('Page check failed:', x);
     return false;
   }
 }
 b.onclick = async () => {
   try {
-    const [t] = await tq({ active: true, currentWindow: true });
+    const [t] = await ct.query({ active: true, currentWindow: true });
     if (!t) return;
-    await tsm(t.id, { action: 'ANALYZE_VIDEO' });
+    await ct.sendMessage(t.id, { action: 'ANALYZE_VIDEO' });
     showMsg('Analysis started!', 'success');
   } catch (x) {
     showMsg('Failed to start analysis', 'error');
   }
 };
-h.onclick = () => tab({ url: url('history/history.html') });
-o.onclick = () => rt.openOptionsPage();
+h.onclick = () => ct.create({ url: url('history/history.html') });
+o.onclick = () => cr.openOptionsPage();
 (async () => {
   await checkApi();
   await checkPage();

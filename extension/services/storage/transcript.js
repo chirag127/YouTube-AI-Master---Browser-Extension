@@ -1,8 +1,8 @@
-import { sl } from '../../utils/shortcuts.js';
+import { sl, nt } from '../../utils/shortcuts.js';
 
 export async function saveTranscript(v, m, t, s) {
   if (!v) throw new Error('Video ID required');
-  const d = { videoId: v, metadata: m, transcript: t, summary: s, timestamp: Date.now() };
+  const d = { videoId: v, metadata: m, transcript: t, summary: s, timestamp: nt() };
   await sl({ [`video_${v}`]: d });
   return d;
 }

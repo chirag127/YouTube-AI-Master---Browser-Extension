@@ -1,21 +1,21 @@
-import { ce } from '../../utils/shortcuts.js';
+import { cr } from '../../utils/shortcuts.js';
 
 export function createTranscriptDisplay(s) {
-  const c = ce('div');
+  const c = cr('div');
   c.className = 'ytai-transcript-display';
   for (const seg of s) c.appendChild(createTranscriptLine(seg));
   return c;
 }
 
 function createTranscriptLine(s) {
-  const l = ce('div');
+  const l = cr('div');
   l.className = 'ytai-transcript-line';
   l.dataset.start = s.start;
   l.dataset.duration = s.duration;
-  const ts = ce('span');
+  const ts = cr('span');
   ts.className = 'ytai-transcript-timestamp';
   ts.textContent = formatTimestamp(s.start);
-  const tx = ce('span');
+  const tx = cr('span');
   tx.className = 'ytai-transcript-text';
   tx.textContent = s.text;
   l.appendChild(ts);

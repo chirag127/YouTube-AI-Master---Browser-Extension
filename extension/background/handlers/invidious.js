@@ -1,4 +1,4 @@
-import { ft, ftx, fj, mp, fl, jn, tr, rp, mfl } from '../../utils/shortcuts-sw.js';
+import { ft, ftx, fj, mp, fl, jn, tr, rp, mfl } from '../../utils/shortcuts.js';
 
 async function getInvidiousInstances() {
   return [

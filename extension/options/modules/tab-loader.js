@@ -1,4 +1,4 @@
-import { ft, url, qs, l, e } from '../../utils/shortcuts.js';
+import { ft, url, $, l, ce } from '../../utils/shortcuts.js';
 
 export class TabLoader {
   constructor() {
@@ -20,13 +20,13 @@ export class TabLoader {
     if (!p) return false;
     try {
       const h = await fetch(url(`options/${p}`)).then(r => r.text());
-      const c = qs('.content-area');
+      const c = $('.content-area');
       c.insertAdjacentHTML('beforeend', h);
       this.loaded.add(id);
       l(`[TabLoader] Loaded ${id}`);
       return true;
     } catch (x) {
-      e(`[TabLoader] Failed to load ${id}:`, x);
+      ce(`[TabLoader] Failed to load ${id}:`, x);
       return false;
     }
   }

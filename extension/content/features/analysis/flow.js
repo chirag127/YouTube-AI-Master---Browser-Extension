@@ -8,12 +8,12 @@ import { injectSegmentMarkers } from '../../segments/markers.js';
 import { setupAutoSkip } from '../../segments/autoskip.js';
 import { renderTimeline } from '../../segments/timeline.js';
 import { analyzeVideo } from './service.js';
-import { l, w, ge, $, msg } from '../../utils/shortcuts.js';
+import { l, cw, i, $, msg, E } from '../../utils/shortcuts.js';
 
 export async function startAnalysis() {
   if (state.isAnalyzing || !state.currentVideoId) return;
   state.isAnalyzing = true;
-  const ca = ge('yt-ai-content-area');
+  const ca = i('yt-ai-content-area');
   try {
     showLoading(ca, 'Extracting video metadata...');
     const md = await metadataExtractor.extract(state.currentVideoId);
@@ -22,7 +22,7 @@ export async function startAnalysis() {
     try {
       ts = await TranscriptExtractor.extract(state.currentVideoId);
     } catch (e) {
-      w('[Flow] Transcript extraction failed:', e);
+      cw('[Flow] Transcript extraction failed:', e);
     }
     state.currentTranscript = ts || [];
     showLoading(ca, 'Extracting comments...');
@@ -30,7 +30,7 @@ export async function startAnalysis() {
     try {
       cm = await getComments();
     } catch (e) {
-      w('[Flow] Comments extraction failed:', e);
+      cw('[Flow] Comments extraction failed:', e);
     }
     showLoading(ca, `Analyzing content with AI...`);
     l('[Flow] Starting AI analysis...', {
@@ -39,7 +39,7 @@ export async function startAnalysis() {
     });
     const r = await analyzeVideo(ts, md, cm);
     l('[Flow] AI analysis result received', r);
-    if (!r.success) throw new Error(r.error || 'Analysis failed');
+    if (!r.success) throw new E(r.error || 'Analysis failed');
     state.analysisData = r.data;
     if (state.analysisData.segments) {
       injectSegmentMarkers(state.analysisData.segments);
@@ -62,7 +62,7 @@ export async function startAnalysis() {
         chatHistory: state.chatHistory || [],
       });
     } catch (e) {
-      w('[Flow] History save failed:', e);
+      cw('[Flow] History save failed:', e);
     }
     switchTab('summary');
   } catch (e) {

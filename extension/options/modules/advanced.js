@@ -1,4 +1,4 @@
-import { ge, on, js, jp, st, ce, cr } from '../../utils/shortcuts.js';
+import { i, on, js, jp, st, ce, cr } from '../../utils/shortcuts.js';
 
 export class AdvancedSettings {
   constructor(s, a) {
@@ -9,10 +9,10 @@ export class AdvancedSettings {
     this.chk('debugMode', this.s.get().advanced?.debugMode ?? false);
     this.a.attachToAll({ debugMode: { path: 'advanced.debugMode' } });
     const els = {
-      ex: ge('exportSettings'),
-      im: ge('importSettings'),
-      if: ge('importFile'),
-      rd: ge('resetDefaults'),
+      ex: i('exportSettings'),
+      im: i('importSettings'),
+      if: i('importFile'),
+      rd: i('resetDefaults'),
     };
     if (els.ex)
       on(els.ex, 'click', () => {
@@ -38,7 +38,7 @@ export class AdvancedSettings {
               st(() => window.location.reload(), 1000);
             } else throw new Error('Import failed');
           } catch (x) {
-            e('Import failed:', x);
+            ce('Import failed:', x);
             this.a.notifications?.error('Invalid settings file');
           }
         };
@@ -54,7 +54,7 @@ export class AdvancedSettings {
       });
   }
   chk(id, v) {
-    const el = ge(id);
+    const el = i(id);
     if (el) el.checked = v;
   }
 }

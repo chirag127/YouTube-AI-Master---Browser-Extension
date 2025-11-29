@@ -1,4 +1,4 @@
-import { sl, lc, inc } from '../../utils/shortcuts.js';
+import { sl, lc, inc, nt } from '../../utils/shortcuts.js';
 
 export async function getHistory() {
   const r = await sl('history_index');
@@ -7,7 +7,7 @@ export async function getHistory() {
 export async function updateHistory(v, m) {
   const i = await getHistory(),
     n = i.filter(x => x.videoId !== v);
-  n.unshift({ videoId: v, title: m.title, author: m.author, timestamp: Date.now() });
+  n.unshift({ videoId: v, title: m.title, author: m.author, timestamp: nt() });
   await sl({ history_index: n });
 }
 export async function deleteFromHistory(v) {

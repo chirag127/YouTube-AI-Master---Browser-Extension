@@ -1,4 +1,4 @@
-import { sl, l } from '../../utils/shortcuts.js';
+import { sl, l, nt, keys, sw } from '../../utils/shortcuts.js';
 
 const V = 1,
   E = 86400000;
@@ -10,7 +10,7 @@ class VideoCache {
     const k = `${id}:${t}`;
     if (this.m.has(k)) {
       const c = this.m.get(k);
-      if (Date.now() - c.ts < E) {
+      if (nt() - c.ts < E) {
         l(`[VideoCache] Memory hit: ${k}`);
         return c.d;
       }
@@ -20,7 +20,7 @@ class VideoCache {
       r = await sl(sk);
     if (r[sk]) {
       const c = r[sk];
-      if (c.v === V && Date.now() - c.ts < E) {
+      if (c.v === V && nt() - c.ts < E) {
         l(`[VideoCache] Storage hit: ${sk}`);
         this.m.set(k, { d: c.d, ts: c.ts });
         return c.d;
@@ -32,7 +32,7 @@ class VideoCache {
   async set(id, t, d) {
     const k = `${id}:${t}`,
       sk = `video_${id}_${t}`,
-      ts = Date.now();
+      ts = nt();
     this.m.set(k, { d, ts });
     await sl({ [sk]: { v: V, ts, d } });
     l(`[VideoCache] Cached: ${sk}`);
@@ -47,7 +47,7 @@ class VideoCache {
     } else {
       this.m.clear();
       const a = await sl(null),
-        vk = Object.keys(a).filter(k => k.startsWith('video_'));
+        vk = keys(a).filter(k => sw(k, 'video_'));
       await sl(vk, null);
     }
   }

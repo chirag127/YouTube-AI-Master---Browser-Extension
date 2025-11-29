@@ -1,5 +1,5 @@
 import { handleFetchInvidiousTranscript } from './invidious.js';
-import { rp, tr, pF, jp, fl, mp, jn, ft, ftx } from '../../utils/shortcuts-sw.js';
+import { rp, tr, pF, jp, fl, mp, jn, ft, ftx } from '../../utils/shortcuts.js';
 
 function dec(t) {
   const e = {

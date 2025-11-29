@@ -1,7 +1,7 @@
 import { GeminiClient } from './gemini-client.js';
 import { ModelManager } from './models.js';
 import { prompts } from './prompts/index.js';
-import { l, w, e, jp, js, sbs, mp, tr, rp, cr as ce } from '../utils/shortcuts.js';
+import { l, cw, e, jp, js, sbs, mp, tr, rp } from '../utils/shortcuts.js';
 
 export { ModelManager };
 
@@ -19,7 +19,7 @@ export class GeminiService {
   async analyzeCommentSentiment(c, m = null) {
     l('[GS] ACS:', c?.length);
     if (!c || !c.length) {
-      w('[GS] No comms');
+      cw('[GS] No comms');
       return 'No comments available to analyze.';
     }
     l(`[GS] Gen anal for ${c.length}`);
@@ -126,7 +126,7 @@ export class GeminiService {
         try {
           await this.models.fetch();
         } catch (x) {
-          w('Mod fetch fail:', x.message);
+          cw('Mod fetch fail:', x.message);
           ml = fm;
         }
       }
@@ -143,13 +143,13 @@ export class GeminiService {
         return res;
       } catch (x) {
         errs.push({ model: mn, error: x.message });
-        w(`[GS] ${mn} fail:`, x.message);
+        cw(`[GS] ${mn} fail:`, x.message);
         if (x.retryable === false) throw x;
         if (i < ml.length - 1) l('[GS] Next...');
       }
     }
     const em = `All ${ml.length} failed. ${errs[0]?.error || 'Unknown'}`;
-    ce('[GS]', em);
+    e('[GS]', em);
     throw new Error(em);
   }
   getRateLimitStats() {

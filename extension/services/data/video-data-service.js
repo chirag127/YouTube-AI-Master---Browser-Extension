@@ -1,5 +1,5 @@
 import vc from '../cache/video-cache.js';
-import { sm, l } from '../../utils/shortcuts.js';
+import { msg, l } from '../../utils/shortcuts.js';
 
 class VideoDataService {
   constructor() {
@@ -7,7 +7,7 @@ class VideoDataService {
   }
   async getMetadata(id, o = {}) {
     return this._f(id, 'metadata', async () => {
-      const r = await sm({
+      const r = await msg({
         action: 'GET_VIDEO_DATA',
         videoId: id,
         dataType: 'metadata',
@@ -19,7 +19,7 @@ class VideoDataService {
   }
   async getTranscript(id, lg = 'en') {
     return this._f(id, 'transcript', async () => {
-      const r = await sm({
+      const r = await msg({
         action: 'GET_VIDEO_DATA',
         videoId: id,
         dataType: 'transcript',
@@ -31,7 +31,7 @@ class VideoDataService {
   }
   async getComments(id, lm = 20) {
     return this._f(id, 'comments', async () => {
-      const r = await sm({
+      const r = await msg({
         action: 'GET_VIDEO_DATA',
         videoId: id,
         dataType: 'comments',

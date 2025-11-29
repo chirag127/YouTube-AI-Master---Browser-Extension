@@ -1,4 +1,4 @@
-import { l, w, e, d, jp, js, cr } from '../../utils/shortcuts.js';
+import { l, cw, e, cd, jp, js, cr } from '../../utils/shortcuts.js';
 
 class TranscriptInterceptor {
   constructor() {
@@ -12,9 +12,9 @@ class TranscriptInterceptor {
     return {
       info: (m, ...a) => l(`[${p}] ℹ️ ${m}`, ...a),
       success: (m, ...a) => l(`[${p}] ✅ ${m}`, ...a),
-      warn: (m, ...a) => w(`[${p}] ⚠️ ${m}`, ...a),
+      warn: (m, ...a) => cw(`[${p}] ⚠️ ${m}`, ...a),
       error: (m, ...a) => e(`[${p}] ❌ ${m}`, ...a),
-      debug: (m, ...a) => d(`[${p}] 🔍 ${m}`, ...a),
+      debug: (m, ...a) => cd(`[${p}] 🔍 ${m}`, ...a),
     };
   }
 

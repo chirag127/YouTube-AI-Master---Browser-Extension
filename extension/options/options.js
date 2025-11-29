@@ -15,7 +15,7 @@ import { TranscriptSettings } from './modules/transcript-settings.js';
 import { CommentsSettings } from './modules/comments-settings.js';
 import { MetadataSettings } from './modules/metadata-settings.js';
 import { ScrollSettings } from './modules/scroll-settings.js';
-import { on, ge, l, e as er, vs, url, tab } from '../utils/shortcuts.js';
+import { on, i, l, ce, vs, url, tab } from '../utils/shortcuts.js';
 
 on(document, 'DOMContentLoaded', async () => {
   l('[Options] Initializing...');
@@ -31,9 +31,9 @@ on(document, 'DOMContentLoaded', async () => {
   l('[Options] Loading dynamic tabs...');
   await tabLoader.loadAll();
   const settings = settingsManager.get();
-  const welcomeBanner = ge('welcome-banner');
-  const startSetupBtn = ge('start-setup-btn');
-  const dismissBannerBtn = ge('dismiss-banner-btn');
+  const welcomeBanner = i('welcome-banner');
+  const startSetupBtn = i('start-setup-btn');
+  const dismissBannerBtn = i('dismiss-banner-btn');
   if (!settings._meta?.onboardingCompleted && !settings.ai?.apiKey) {
     welcomeBanner.style.display = 'block';
   }
@@ -66,7 +66,7 @@ on(document, 'DOMContentLoaded', async () => {
       m.init();
       l(`[Options] Initialized ${m.constructor.name}`);
     } catch (x) {
-      er(`[Options] Failed to init ${m.constructor.name}:`, x);
+      ce(`[Options] Failed to init ${m.constructor.name}:`, x);
     }
   });
   l('[Options] ✓ Fully initialized with auto-save');
