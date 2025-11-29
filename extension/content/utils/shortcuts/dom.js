@@ -15,3 +15,7 @@ export const tx = (e, t) => (e.innerText = t);
 export const fc = e => e.firstChild;
 export const of = rel;
 export const on = ael;
+
+export const $ = qs;
+export const $$ = qsa;
+export const ae = ael;

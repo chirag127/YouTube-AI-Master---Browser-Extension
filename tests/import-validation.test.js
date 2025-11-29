@@ -35,10 +35,11 @@ const parseImports = content => {
 const parseExports = content => {
     const exports = [];
     const patterns = [
-        /export\s+const\s+(\w+)\s*=/g,
-        /export\s+class\s+(\w+)/g,
-        /export\s+async\s+function\s+(\w+)/g,
-        /export\s+function\s+(\w+)/g,
+        /export\s+const\s+([\w$]+)\s*=/g,
+        /export\s+class\s+([\w$]+)/g,
+        /export\s+async\s+function\s+([\w$]+)/g,
+        /export\s+function\s+([\w$]+)/g,
+        /export\s+{\s*([\w$]+)\s*}/g,
     ];
 
     for (const pattern of patterns) {

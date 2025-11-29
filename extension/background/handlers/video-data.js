@@ -4,7 +4,7 @@ import { l, e } from '../../utils/shortcuts/log.js';;
 import { nw } from '../../utils/shortcuts/core.js';
 import { handleGetVideoInfo } from './video-info.js';
 import { handleFetchTranscript as handleGetTranscript } from './fetch-transcript.js';
-import { handleGetComments } from './comments.js';
+import { handleAnalyzeComments as handleGetComments } from './comments.js';
 const CV = 1;
 const CE = 864e5;
 const getCached = async (vid, type) => {
