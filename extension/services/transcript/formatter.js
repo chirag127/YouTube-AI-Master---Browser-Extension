@@ -6,14 +6,14 @@
  * @returns {string} Formatted time string
  */
 export function formatTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
 
-    if (h > 0) {
-        return `${h}:${pad(m)}:${pad(s)}`;
-    }
-    return `${m}:${pad(s)}`;
+  if (h > 0) {
+    return `${h}:${pad(m)}:${pad(s)}`;
+  }
+  return `${m}:${pad(s)}`;
 }
 
 /**
@@ -22,7 +22,7 @@ export function formatTime(seconds) {
  * @returns {string} Padded string
  */
 function pad(num) {
-    return num.toString().padStart(2, '0');
+  return num.toString().padStart(2, '0');
 }
 
 /**
@@ -31,7 +31,7 @@ function pad(num) {
  * @returns {string} Plain text transcript
  */
 export function formatAsPlainText(segments) {
-    return segments.map(seg => seg.text).join(' ');
+  return segments.map(seg => seg.text).join(' ');
 }
 
 /**
@@ -40,9 +40,7 @@ export function formatAsPlainText(segments) {
  * @returns {string} Formatted transcript with timestamps
  */
 export function formatWithTimestamps(segments) {
-    return segments
-        .map(seg => `[${formatTime(seg.start)}] ${seg.text}`)
-        .join('\n');
+  return segments.map(seg => `[${formatTime(seg.start)}] ${seg.text}`).join('\n');
 }
 
 /**
@@ -51,5 +49,5 @@ export function formatWithTimestamps(segments) {
  * @returns {string} JSON string
  */
 export function formatAsJSON(segments) {
-    return JSON.stringify(segments, null, 2);
+  return JSON.stringify(segments, null, 2);
 }

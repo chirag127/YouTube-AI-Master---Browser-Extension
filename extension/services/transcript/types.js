@@ -17,4 +17,4 @@
  * @property {boolean} [isTranslatable] - Can be translated
  */
 
-export { };
+export {};

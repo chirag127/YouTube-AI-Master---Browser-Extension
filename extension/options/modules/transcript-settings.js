@@ -1,41 +1,41 @@
 export class TranscriptSettings {
-    constructor(s, a) {
-        this.s = s;
-        this.a = a;
-    }
+  constructor(s, a) {
+    this.s = s;
+    this.a = a;
+  }
 
-    init() {
-        const c = this.s.get().transcript || {};
-        this.set('transcriptMethod', c.method || 'auto');
-        this.set('transcriptLanguage', c.language || 'en');
-        this.chk('includeTimestamps', c.includeTimestamps ?? true);
-        this.chk('transcriptAutoTranslate', c.autoTranslate ?? true);
-        this.chk('transcriptShowOriginal', c.showOriginal ?? false);
-        this.chk('transcriptHighlightKeywords', c.highlightKeywords ?? true);
-        this.chk('transcriptAutoClose', c.autoClose ?? true);
-        this.set('transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
-        this.chk('transcriptAutoCloseOnCached', c.autoCloseOnCached ?? false);
+  init() {
+    const c = this.s.get().transcript || {};
+    this.set('transcriptMethod', c.method || 'auto');
+    this.set('transcriptLanguage', c.language || 'en');
+    this.chk('includeTimestamps', c.includeTimestamps ?? true);
+    this.chk('transcriptAutoTranslate', c.autoTranslate ?? true);
+    this.chk('transcriptShowOriginal', c.showOriginal ?? false);
+    this.chk('transcriptHighlightKeywords', c.highlightKeywords ?? true);
+    this.chk('transcriptAutoClose', c.autoClose ?? true);
+    this.set('transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
+    this.chk('transcriptAutoCloseOnCached', c.autoCloseOnCached ?? false);
 
-        this.a.attachToAll({
-            transcriptMethod: { path: 'transcript.method' },
-            transcriptLanguage: { path: 'transcript.language' },
-            includeTimestamps: { path: 'transcript.includeTimestamps' },
-            transcriptAutoTranslate: { path: 'transcript.autoTranslate' },
-            transcriptShowOriginal: { path: 'transcript.showOriginal' },
-            transcriptHighlightKeywords: { path: 'transcript.highlightKeywords' },
-            transcriptAutoClose: { path: 'transcript.autoClose' },
-            transcriptAutoCloseDelay: { path: 'transcript.autoCloseDelay', transform: v => parseInt(v) },
-            transcriptAutoCloseOnCached: { path: 'transcript.autoCloseOnCached' }
-        });
-    }
+    this.a.attachToAll({
+      transcriptMethod: { path: 'transcript.method' },
+      transcriptLanguage: { path: 'transcript.language' },
+      includeTimestamps: { path: 'transcript.includeTimestamps' },
+      transcriptAutoTranslate: { path: 'transcript.autoTranslate' },
+      transcriptShowOriginal: { path: 'transcript.showOriginal' },
+      transcriptHighlightKeywords: { path: 'transcript.highlightKeywords' },
+      transcriptAutoClose: { path: 'transcript.autoClose' },
+      transcriptAutoCloseDelay: { path: 'transcript.autoCloseDelay', transform: v => parseInt(v) },
+      transcriptAutoCloseOnCached: { path: 'transcript.autoCloseOnCached' },
+    });
+  }
 
-    set(id, v) {
-        const el = document.getElementById(id);
-        if (el) el.value = v;
-    }
+  set(id, v) {
+    const el = document.getElementById(id);
+    if (el) el.value = v;
+  }
 
-    chk(id, v) {
-        const el = document.getElementById(id);
-        if (el) el.checked = v;
-    }
+  chk(id, v) {
+    const el = document.getElementById(id);
+    if (el) el.checked = v;
+  }
 }

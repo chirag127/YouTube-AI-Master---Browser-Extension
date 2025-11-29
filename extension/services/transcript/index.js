@@ -1,17 +1,17 @@
 // Main transcript service
 
-import { getPlayerResponse, extractCaptionTracks } from "./parser.js";
-import { fetchTranscript as fetchTranscriptFromFetcher } from "./fetcher.js";
-import { selectBestTrack } from "./selector.js";
-import { formatAsPlainText, formatWithTimestamps } from "./formatter.js";
+import { getPlayerResponse, extractCaptionTracks } from './parser.js';
+import { fetchTranscript as fetchTranscriptFromFetcher } from './fetcher.js';
+import { selectBestTrack } from './selector.js';
+import { formatAsPlainText, formatWithTimestamps } from './formatter.js';
 
 /**
  * Get available caption tracks for current video
  * @returns {Array} Available caption tracks
  */
 export function getAvailableCaptions() {
-    const playerResponse = getPlayerResponse();
-    return extractCaptionTracks(playerResponse);
+  const playerResponse = getPlayerResponse();
+  return extractCaptionTracks(playerResponse);
 }
 
 /**
@@ -21,11 +21,11 @@ export function getAvailableCaptions() {
  * @returns {Promise<Array>} Transcript segments
  */
 export async function fetchTranscript(videoId, languageCode) {
-    if (!videoId) {
-        throw new Error("Video ID is required");
-    }
+  if (!videoId) {
+    throw new Error('Video ID is required');
+  }
 
-    return fetchTranscriptFromFetcher(videoId, languageCode);
+  return fetchTranscriptFromFetcher(videoId, languageCode);
 }
 
 /**
@@ -34,15 +34,10 @@ export async function fetchTranscript(videoId, languageCode) {
  * @param {boolean} [includeTimestamps] - Include timestamps
  * @returns {Promise<string>} Formatted transcript
  */
-export async function getTranscriptText(
-    languageCode,
-    includeTimestamps = false
-) {
-    const segments = await fetchTranscript(languageCode);
+export async function getTranscriptText(languageCode, includeTimestamps = false) {
+  const segments = await fetchTranscript(languageCode);
 
-    return includeTimestamps
-        ? formatWithTimestamps(segments)
-        : formatAsPlainText(segments);
+  return includeTimestamps ? formatWithTimestamps(segments) : formatAsPlainText(segments);
 }
 
 /**
@@ -50,6 +45,6 @@ export async function getTranscriptText(
  * @returns {boolean} True if captions available
  */
 export function hasCaptions() {
-    const tracks = getAvailableCaptions();
-    return tracks.length > 0;
+  const tracks = getAvailableCaptions();
+  return tracks.length > 0;
 }

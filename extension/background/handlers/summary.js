@@ -1,42 +1,31 @@
-import { initializeServices, getServices } from "../services.js";
-import { getApiKey } from "../utils/api-key.js";
+import { initializeServices, getServices } from '../services.js';
+import { getApiKey } from '../utils/api-key.js';
+import { mfl, mp, jn } from '../../utils/shortcuts.js';
 
-export async function handleGenerateSummary(request, sendResponse) {
-    const { transcript, settings, metadata } = request;
-    const apiKey = settings?.apiKey || (await getApiKey());
-    if (!apiKey) {
-        sendResponse({ success: false, error: "API Key not configured" });
-        return;
-    }
-
-    await initializeServices(apiKey);
-    const { gemini } = getServices();
-
-    const formatTime = (s) => {
-        const m = Math.floor(s / 60);
-        const sec = Math.floor(s % 60);
-        return `${m}:${sec.toString().padStart(2, "0")}`;
-    };
-
-    const transcriptString = Array.isArray(transcript)
-        ? transcript.map((t) => `[${formatTime(t.start)}] ${t.text}`).join("\n")
-        : transcript;
-
-    const contextString = `Video Metadata:\nTitle: ${
-        metadata?.title || "Unknown"
-    }\nChannel: ${
-        metadata?.author || "Unknown"
-    }\n\nTranscript:\n${transcriptString}\n`;
-
-    const summary = await gemini.generateSummary(
-        contextString,
-        settings?.customPrompt,
-        settings?.model,
-        {
-            length: settings?.summaryLength,
-            language: settings?.outputLanguage,
-        }
-    );
-
-    sendResponse({ success: true, data: summary });
+export async function handleGenerateSummary(req, rsp) {
+  const { transcript, settings, metadata } = req;
+  const k = settings?.apiKey || (await getApiKey());
+  if (!k) {
+    rsp({ success: false, error: 'API Key not configured' });
+    return;
+  }
+  await initializeServices(k);
+  const { gemini } = getServices();
+  const ft = s => {
+    const m = mfl(s / 60);
+    const sec = mfl(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
+  const ts = Array.isArray(transcript)
+    ? jn(
+        mp(transcript, t => `[${ft(t.start)}] ${t.text}`),
+        '\n'
+      )
+    : transcript;
+  const ctx = `Video Metadata:\nTitle: ${metadata?.title || 'Unknown'}\nChannel: ${metadata?.author || 'Unknown'}\n\nTranscript:\n${ts}\n`;
+  const sum = await gemini.generateSummary(ctx, settings?.customPrompt, settings?.model, {
+    length: settings?.summaryLength,
+    language: settings?.outputLanguage,
+  });
+  rsp({ success: true, data: sum });
 }

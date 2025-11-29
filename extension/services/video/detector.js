@@ -6,21 +6,21 @@
  * @returns {string|null} Video ID or null
  */
 export function extractVideoId(url) {
-    const patterns = [
-        /[?&]v=([^&]+)/,           // ?v=VIDEO_ID
-        /\/embed\/([^/?]+)/,        // /embed/VIDEO_ID
-        /\/v\/([^/?]+)/,            // /v/VIDEO_ID
-        /youtu\.be\/([^/?]+)/       // youtu.be/VIDEO_ID
-    ];
+  const patterns = [
+    /[?&]v=([^&]+)/, // ?v=VIDEO_ID
+    /\/embed\/([^/?]+)/, // /embed/VIDEO_ID
+    /\/v\/([^/?]+)/, // /v/VIDEO_ID
+    /youtu\.be\/([^/?]+)/, // youtu.be/VIDEO_ID
+  ];
 
-    for (const pattern of patterns) {
-        const match = url.match(pattern);
-        if (match) {
-            return match[1];
-        }
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) {
+      return match[1];
     }
+  }
 
-    return null;
+  return null;
 }
 
 /**
@@ -28,7 +28,7 @@ export function extractVideoId(url) {
  * @returns {string|null} Current video ID or null
  */
 export function getCurrentVideoId() {
-    return extractVideoId(window.location.href);
+  return extractVideoId(window.location.href);
 }
 
 /**
@@ -36,5 +36,5 @@ export function getCurrentVideoId() {
  * @returns {boolean} True if on video page
  */
 export function isVideoPage() {
-    return window.location.pathname === '/watch';
+  return window.location.pathname === '/watch';
 }

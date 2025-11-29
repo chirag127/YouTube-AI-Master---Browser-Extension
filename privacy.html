@@ -1,695 +1,765 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Privacy Policy for YouTube AI Navigator - Comprehensive explanation of data collection, permissions, and user rights.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Privacy Policy for YouTube AI Navigator - Comprehensive explanation of data collection, permissions, and user rights."
+    />
     <title>Privacy Policy - YouTube AI Navigator</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #1557b0;
-            --secondary: #34a853;
-            --accent: #fbbc04;
-            --danger: #ea4335;
-            --dark: #202124;
-            --gray: #5f6368;
-            --light-gray: #f1f3f4;
-            --white: #ffffff;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-        }
+      :root {
+        --primary: #1a73e8;
+        --primary-dark: #1557b0;
+        --secondary: #34a853;
+        --accent: #fbbc04;
+        --danger: #ea4335;
+        --dark: #202124;
+        --gray: #5f6368;
+        --light-gray: #f1f3f4;
+        --white: #ffffff;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.8;
-            color: var(--dark);
-            background: var(--light-gray);
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.8;
+        color: var(--dark);
+        background: var(--light-gray);
+      }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
 
-        header {
-            background: var(--white);
-            box-shadow: var(--shadow);
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-        }
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
 
-        .header-content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+      .header-content {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-        }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+      }
 
-        .logo img {
-            width: 40px;
-            height: 40px;
-        }
+      .logo img {
+        width: 40px;
+        height: 40px;
+      }
 
-        .last-updated {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
+      .last-updated {
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
 
+      .content {
+        background: var(--white);
+        padding: 3rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--light-gray);
+      }
+
+      h3 {
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      h4 {
+        font-size: 1.1rem;
+        color: var(--gray);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+
+      ul,
+      ol {
+        margin-left: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      .tldr {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: var(--white);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+
+      .tldr h2 {
+        color: var(--white);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        margin-top: 0;
+      }
+
+      .tldr ul {
+        list-style: none;
+        margin-left: 0;
+      }
+
+      .tldr li::before {
+        content: '✅ ';
+        margin-right: 0.5rem;
+      }
+
+      .permission-card {
+        background: var(--light-gray);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary);
+      }
+
+      .permission-card h4 {
+        margin-top: 0;
+        color: var(--primary);
+        font-size: 1.2rem;
+      }
+
+      .permission-required {
+        border-left-color: var(--secondary);
+      }
+
+      .permission-not-requested {
+        border-left-color: var(--danger);
+        opacity: 0.7;
+      }
+
+      .permission-required h4::before {
+        content: '✅ ';
+      }
+
+      .permission-not-requested h4::before {
+        content: '❌ ';
+      }
+
+      .host-permission {
+        background: #e8f5e9;
+        border-left-color: var(--secondary);
+      }
+
+      .info-box {
+        background: #fff3cd;
+        border-left: 4px solid var(--accent);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+
+      .info-box strong {
+        color: #856404;
+      }
+
+      .warning-box {
+        background: #f8d7da;
+        border-left: 4px solid var(--danger);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+
+      .warning-box strong {
+        color: #721c24;
+      }
+
+      .success-box {
+        background: #d4edda;
+        border-left: 4px solid var(--secondary);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+
+      .success-box strong {
+        color: #155724;
+      }
+
+      code {
+        background: var(--light-gray);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+
+      th,
+      td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--light-gray);
+      }
+
+      th {
+        background: var(--light-gray);
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background 0.3s;
+      }
+
+      .back-link:hover {
+        background: var(--primary-dark);
+        text-decoration: none;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
         .content {
-            background: var(--white);
-            padding: 3rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
+          padding: 1.5rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 1rem;
+          font-size: 2rem;
         }
 
         h2 {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-top: 3rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--light-gray);
+          font-size: 1.5rem;
         }
-
-        h3 {
-            font-size: 1.3rem;
-            color: var(--dark);
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        h4 {
-            font-size: 1.1rem;
-            color: var(--gray);
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        p {
-            margin-bottom: 1rem;
-        }
-
-        ul,
-        ol {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-        }
-
-        .tldr {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-
-        .tldr h2 {
-            color: var(--white);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            margin-top: 0;
-        }
-
-        .tldr ul {
-            list-style: none;
-            margin-left: 0;
-        }
-
-        .tldr li::before {
-            content: "✅ ";
-            margin-right: 0.5rem;
-        }
-
-        .permission-card {
-            background: var(--light-gray);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--primary);
-        }
-
-        .permission-card h4 {
-            margin-top: 0;
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
-
-        .permission-required {
-            border-left-color: var(--secondary);
-        }
-
-        .permission-not-requested {
-            border-left-color: var(--danger);
-            opacity: 0.7;
-        }
-
-        .permission-required h4::before {
-            content: "✅ ";
-        }
-
-        .permission-not-requested h4::before {
-            content: "❌ ";
-        }
-
-        .host-permission {
-            background: #e8f5e9;
-            border-left-color: var(--secondary);
-        }
-
-        .info-box {
-            background: #fff3cd;
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .info-box strong {
-            color: #856404;
-        }
-
-        .warning-box {
-            background: #f8d7da;
-            border-left: 4px solid var(--danger);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .warning-box strong {
-            color: #721c24;
-        }
-
-        .success-box {
-            background: #d4edda;
-            border-left: 4px solid var(--secondary);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 4px;
-        }
-
-        .success-box strong {
-            color: #155724;
-        }
-
-        code {
-            background: var(--light-gray);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-
-        a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-        }
-
-        th,
-        td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        th {
-            background: var(--light-gray);
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 2rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--primary);
-            color: var(--white);
-            border-radius: 4px;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .back-link:hover {
-            background: var(--primary-dark);
-            text-decoration: none;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                padding: 1.5rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <div class="header-content">
-            <a href="index.html" class="logo">
-                <img src="extension/assets/icon48.png" alt="YouTube AI Navigator Logo">
-                <span>YouTube AI Navigator</span>
-            </a>
-            <p class="last-updated">Last Updated: November 28, 2025</p>
-        </div>
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <img src="extension/assets/icon48.png" alt="YouTube AI Navigator Logo" />
+          <span>YouTube AI Navigator</span>
+        </a>
+        <p class="last-updated">Last Updated: November 28, 2025</p>
+      </div>
     </header>
 
     <div class="container">
-        <div class="content">
-            <h1>Privacy Policy</h1>
+      <div class="content">
+        <h1>Privacy Policy</h1>
 
-            <div class="tldr">
-                <h2>TL;DR (Summary)</h2>
-                <ul>
-                    <li><strong>All data stays on your device</strong> (local storage only)</li>
-                    <li><strong>No tracking, no analytics, no telemetry</strong></li>
-                    <li><strong>API keys stored securely</strong> in Chrome sync storage</li>
-                    <li><strong>Only one permission requested:</strong> <code>storage</code></li>
-                    <li><strong>Open source</strong> - verify the code yourself</li>
-                </ul>
-            </div>
-
-            <h2>1. Data Collection & Storage</h2>
-
-            <h3>1.1 What Data We Store Locally</h3>
-            <p>The Extension stores the following data <strong>exclusively on your device</strong> using Chrome's local
-                storage:</p>
-
-            <h4>Video Analysis Data</h4>
-            <ul>
-                <li>Video ID (YouTube's public identifier)</li>
-                <li>Video metadata (title, author, duration, view count)</li>
-                <li>Generated AI summaries and analysis</li>
-                <li>Extracted transcripts</li>
-                <li>Segment classifications (intro, sponsor, outro, etc.)</li>
-                <li>Chat conversation history</li>
-            </ul>
-
-            <h4>User Preferences</h4>
-            <ul>
-                <li>API keys (Gemini, TMDB, IGDB, NewsData, etc.)</li>
-                <li>Selected AI model (Gemini Flash, Pro, etc.)</li>
-                <li>Output language preference</li>
-                <li>Summary length preference</li>
-                <li>Auto-analysis settings</li>
-                <li>Auto-skip segment preferences</li>
-            </ul>
-
-            <div class="info-box">
-                <strong>Purpose:</strong> This data enables the Extension to provide instant analysis for previously
-                watched videos (caching), remember your preferences across sessions, maintain chat conversation context,
-                and function offline for cached videos.
-            </div>
-
-            <div class="success-box">
-                <strong>Retention:</strong> Data is stored indefinitely until you manually clear it via the Extension
-                settings, uninstall the Extension, or clear Chrome's local storage.
-            </div>
-
-            <h2>2. Permissions Explained</h2>
-
-            <p>The Extension requests <strong>only ONE permission</strong> from Chrome:</p>
-
-            <div class="permission-card permission-required">
-                <h4><code>storage</code> Permission</h4>
-
-                <p><strong>Why We Need It:</strong></p>
-                <ul>
-                    <li><strong>Save API Keys Securely:</strong> Your Gemini API key and optional service keys are
-                        stored in Chrome's encrypted sync storage, allowing seamless access across your devices while
-                        maintaining security.</li>
-                    <li><strong>Cache Video Analysis:</strong> Previously analyzed videos are cached locally, enabling
-                        instant retrieval without redundant API calls, saving time and API quota.</li>
-                    <li><strong>Store User Preferences:</strong> Your settings (output language, AI model selection,
-                        summary length, auto-skip rules) are persisted across sessions.</li>
-                    <li><strong>Maintain Chat History:</strong> Conversation context is stored locally to enable
-                        multi-turn dialogues with the AI about video content.</li>
-                </ul>
-
-                <p><strong>What It Does NOT Allow:</strong></p>
-                <ul>
-                    <li>❌ Access to your browsing history</li>
-                    <li>❌ Access to data from other websites</li>
-                    <li>❌ Access to your personal information (name, email, etc.)</li>
-                    <li>❌ Tracking your activity across the web</li>
-                    <li>❌ Reading or modifying data on non-YouTube websites</li>
-                </ul>
-
-                <p><strong>Technical Implementation:</strong></p>
-                <ul>
-                    <li>Uses <code>chrome.storage.local</code> for video cache and analysis data (device-specific)</li>
-                    <li>Uses <code>chrome.storage.sync</code> for API keys and preferences (synced across Chrome
-                        browsers)</li>
-                    <li>All storage operations are scoped to the extension's isolated storage area</li>
-                    <li>No access to cookies, passwords, or other browser data</li>
-                </ul>
-
-                <p><strong>Chrome's Documentation:</strong> <a
-                        href="https://developer.chrome.com/docs/extensions/reference/api/storage"
-                        target="_blank">chrome.storage API</a></p>
-            </div>
-
-            <h3>Permissions We Do NOT Request</h3>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>activeTab</code></h4>
-                <p>We do not request access to your active tab. The Extension only interacts with YouTube pages via
-                    content scripts that run exclusively on <code>youtube.com</code>. We cannot access your active tab's
-                    content outside of YouTube.</p>
-            </div>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>tabs</code></h4>
-                <p>We cannot access your tabs list, tab URLs, or switch between tabs programmatically.</p>
-            </div>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>history</code></h4>
-                <p>We cannot access your browsing history or track which websites you visit.</p>
-            </div>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>cookies</code></h4>
-                <p>We cannot read or modify cookies from any website, including YouTube.</p>
-            </div>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>webRequest</code></h4>
-                <p>We do not intercept or modify network requests globally. Transcript extraction on YouTube pages uses
-                    content script injection, not network interception.</p>
-            </div>
-
-            <div class="permission-card permission-not-requested">
-                <h4><code>scripting</code></h4>
-                <p><strong>Removed in v2.0.0.</strong> Previously requested but unused. The Extension uses declarative
-                    content scripts instead of programmatic injection.</p>
-            </div>
-
-            <h2>3. Host Permissions Explained</h2>
-
-            <p>The Extension declares <code>host_permissions</code> for specific domains to enable API communication:
-            </p>
-
-            <div class="permission-card host-permission">
-                <h4>YouTube Domains</h4>
-                <p><code>https://www.youtube.com/*</code>, <code>https://youtube.com/*</code></p>
-                <ul>
-                    <li><strong>Purpose:</strong> Inject content scripts to display the AI widget, timeline markers, and
-                        segment controls</li>
-                    <li><strong>Scope:</strong> Only YouTube video pages</li>
-                    <li><strong>Data Access:</strong> Video ID, title, author, transcript (publicly available data)</li>
-                </ul>
-            </div>
-
-            <div class="permission-card host-permission">
-                <h4>Google Gemini AI</h4>
-                <p><code>https://generativelanguage.googleapis.com/*</code></p>
-                <ul>
-                    <li><strong>Purpose:</strong> Send video transcripts and metadata to Gemini AI for analysis</li>
-                    <li><strong>Data Sent:</strong> Video transcript, title, description, your custom prompt</li>
-                    <li><strong>Required:</strong> Yes (core functionality)</li>
-                </ul>
-            </div>
-
-            <div class="permission-card host-permission">
-                <h4>Invidious Instances</h4>
-                <p>Multiple domains (e.g., <code>https://*.invidious.io/*</code>)</p>
-                <ul>
-                    <li><strong>Purpose:</strong> Fetch video transcripts when YouTube's direct method fails</li>
-                    <li><strong>Data Sent:</strong> Video ID only</li>
-                    <li><strong>Required:</strong> No (fallback method)</li>
-                </ul>
-            </div>
-
-            <div class="permission-card host-permission">
-                <h4>Piped Instances</h4>
-                <p>Multiple domains (e.g., <code>https://pipedapi.kavin.rocks/*</code>)</p>
-                <ul>
-                    <li><strong>Purpose:</strong> Fetch video transcripts (privacy-friendly alternative)</li>
-                    <li><strong>Data Sent:</strong> Video ID only</li>
-                    <li><strong>Required:</strong> No (fallback method)</li>
-                </ul>
-            </div>
-
-            <div class="permission-card host-permission">
-                <h4>Wildcard Permission</h4>
-                <p><code>*://*/*</code></p>
-                <ul>
-                    <li><strong>Purpose:</strong> Enable communication with user-configured optional API services (TMDB,
-                        IGDB, NewsData, etc.)</li>
-                    <li><strong>Scope:</strong> Only used when you explicitly configure API keys for optional services
-                    </li>
-                    <li><strong>Data Sent:</strong> Video title and metadata to configured services only</li>
-                    <li><strong>Required:</strong> No (optional enhancements)</li>
-                </ul>
-            </div>
-
-            <div class="warning-box">
-                <strong>Important:</strong> The wildcard permission does NOT grant access to all websites. It only
-                allows the Extension to make HTTP requests to external APIs when you explicitly configure them. The
-                Extension cannot read or modify content on arbitrary websites.
-            </div>
-
-            <h2>4. Data Transmission</h2>
-
-            <h3>4.1 What Data Leaves Your Browser</h3>
-            <p>The Extension transmits data to external services <strong>only when you explicitly trigger an
-                    analysis</strong>:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Data Sent</th>
-                        <th>Purpose</th>
-                        <th>Required</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Google Gemini AI</strong></td>
-                        <td>Video transcript, metadata, chat messages</td>
-                        <td>Generate AI-powered summaries and answers</td>
-                        <td>✅ Yes</td>
-                    </tr>
-                    <tr>
-                        <td>TMDB</td>
-                        <td>Video title</td>
-                        <td>Movie & TV show metadata</td>
-                        <td>⚪ Optional</td>
-                    </tr>
-                    <tr>
-                        <td>IGDB</td>
-                        <td>Video title</td>
-                        <td>Video game metadata</td>
-                        <td>⚪ Optional</td>
-                    </tr>
-                    <tr>
-                        <td>NewsData.io</td>
-                        <td>Video title, keywords</td>
-                        <td>News article search</td>
-                        <td>⚪ Optional</td>
-                    </tr>
-                    <tr>
-                        <td>Invidious/Piped</td>
-                        <td>Video ID</td>
-                        <td>Fetch transcripts (fallback)</td>
-                        <td>⚪ Optional</td>
-                    </tr>
-                    <tr>
-                        <td>SponsorBlock</td>
-                        <td>Video ID</td>
-                        <td>Community-verified segments</td>
-                        <td>⚪ Optional</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>4.2 What Data NEVER Leaves Your Browser</h3>
-            <ul>
-                <li>❌ Your browsing history</li>
-                <li>❌ Your personal information (name, email, etc.)</li>
-                <li>❌ Your Chrome profile data</li>
-                <li>❌ Data from other websites</li>
-                <li>❌ Your YouTube watch history (beyond the current video)</li>
-            </ul>
-
-            <h2>5. Security Measures</h2>
-
-            <div class="success-box">
-                <strong>HTTPS Only:</strong> All external API requests use HTTPS encryption.
-            </div>
-
-            <div class="success-box">
-                <strong>No Third-Party Tracking:</strong> The Extension does not integrate any analytics, telemetry, or
-                tracking services (Google Analytics, Sentry, etc.).
-            </div>
-
-            <div class="success-box">
-                <strong>API Key Protection:</strong>
-                <ul>
-                    <li>API keys are stored in Chrome's secure storage</li>
-                    <li>Never logged to console (in production builds)</li>
-                    <li>Never transmitted except to the official API endpoints</li>
-                    <li>Never shared with third parties</li>
-                </ul>
-            </div>
-
-            <h2>6. Your Rights & Controls</h2>
-
-            <h3>6.1 Data Access</h3>
-            <p>You can access all data stored by the Extension:</p>
-            <ol>
-                <li>Open Chrome DevTools (<code>F12</code>)</li>
-                <li>Go to <strong>Application</strong> tab</li>
-                <li>Expand <strong>Local Storage</strong> → <code>chrome-extension://[extension-id]</code></li>
-                <li>View all stored data</li>
-            </ol>
-
-            <h3>6.2 Data Deletion</h3>
-            <p><strong>Clear Specific Video Data:</strong></p>
-            <ul>
-                <li>Open Extension settings → History</li>
-                <li>Click "Delete" next to any video</li>
-            </ul>
-
-            <p><strong>Clear All Data:</strong></p>
-            <ul>
-                <li>Open Extension settings → General</li>
-                <li>Click "Clear All History"</li>
-            </ul>
-
-            <p><strong>Uninstall Extension:</strong></p>
-            <ul>
-                <li>Go to <code>chrome://extensions/</code></li>
-                <li>Click "Remove" on YouTube AI Navigator</li>
-                <li>All local data is automatically deleted</li>
-            </ul>
-
-            <h2>7. Legal Compliance</h2>
-
-            <h3>GDPR (EU Users)</h3>
-            <p><strong>Legal Basis for Processing:</strong></p>
-            <ul>
-                <li><strong>Consent:</strong> You explicitly configure API keys and trigger analysis</li>
-                <li><strong>Legitimate Interest:</strong> Caching for performance optimization</li>
-            </ul>
-
-            <p><strong>Your GDPR Rights:</strong></p>
-            <ul>
-                <li>Right to access your data (see Section 6.1)</li>
-                <li>Right to deletion (see Section 6.2)</li>
-                <li>Right to data portability (export feature)</li>
-                <li>Right to withdraw consent (uninstall Extension)</li>
-            </ul>
-
-            <h3>CCPA (California Users)</h3>
-            <p><strong>Categories of Personal Information Collected:</strong></p>
-            <ul>
-                <li>Identifiers: Video IDs (public YouTube identifiers)</li>
-                <li>Internet Activity: Video viewing context (title, metadata)</li>
-            </ul>
-
-            <p><strong>Sale of Personal Information:</strong> We do NOT sell your personal information.</p>
-
-            <h2>8. Open Source Transparency</h2>
-
-            <p>YouTube AI Navigator is <strong>open source</strong>. You can verify our privacy claims by reviewing the
-                source code:</p>
-
-            <p><strong>GitHub Repository:</strong> <a href="https://github.com/chirag127/YouTube-AI-Navigator"
-                    target="_blank">https://github.com/chirag127/YouTube-AI-Navigator</a></p>
-
-            <p><strong>What You Can Verify:</strong></p>
-            <ul>
-                <li>✅ No tracking or analytics code</li>
-                <li>✅ No data transmission except to declared APIs</li>
-                <li>✅ Secure storage implementation</li>
-                <li>✅ Minimal permissions usage</li>
-            </ul>
-
-            <h2>9. Contact</h2>
-
-            <p><strong>Questions or Concerns:</strong></p>
-            <ul>
-                <li>Open an issue on <a href="https://github.com/chirag127/YouTube-AI-Navigator/issues"
-                        target="_blank">GitHub</a></li>
-            </ul>
-
-            <p><strong>Security Vulnerabilities:</strong></p>
-            <p>Please report security issues privately to the repository owner.</p>
-
-            <h2>10. Changes to This Policy</h2>
-
-            <p>We may update this Privacy Policy to reflect changes in the Extension's functionality or legal
-                requirements. Changes will be posted on this page with an updated "Last Updated" date.</p>
-
-            <div class="info-box">
-                <strong>Notification:</strong> Major changes will be announced via the Extension's update notes.
-            </div>
-
-            <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="tldr">
+          <h2>TL;DR (Summary)</h2>
+          <ul>
+            <li><strong>All data stays on your device</strong> (local storage only)</li>
+            <li><strong>No tracking, no analytics, no telemetry</strong></li>
+            <li><strong>API keys stored securely</strong> in Chrome sync storage</li>
+            <li><strong>Only one permission requested:</strong> <code>storage</code></li>
+            <li><strong>Open source</strong> - verify the code yourself</li>
+          </ul>
         </div>
+
+        <h2>1. Data Collection & Storage</h2>
+
+        <h3>1.1 What Data We Store Locally</h3>
+        <p>
+          The Extension stores the following data <strong>exclusively on your device</strong> using
+          Chrome's local storage:
+        </p>
+
+        <h4>Video Analysis Data</h4>
+        <ul>
+          <li>Video ID (YouTube's public identifier)</li>
+          <li>Video metadata (title, author, duration, view count)</li>
+          <li>Generated AI summaries and analysis</li>
+          <li>Extracted transcripts</li>
+          <li>Segment classifications (intro, sponsor, outro, etc.)</li>
+          <li>Chat conversation history</li>
+        </ul>
+
+        <h4>User Preferences</h4>
+        <ul>
+          <li>API keys (Gemini, TMDB, IGDB, NewsData, etc.)</li>
+          <li>Selected AI model (Gemini Flash, Pro, etc.)</li>
+          <li>Output language preference</li>
+          <li>Summary length preference</li>
+          <li>Auto-analysis settings</li>
+          <li>Auto-skip segment preferences</li>
+        </ul>
+
+        <div class="info-box">
+          <strong>Purpose:</strong> This data enables the Extension to provide instant analysis for
+          previously watched videos (caching), remember your preferences across sessions, maintain
+          chat conversation context, and function offline for cached videos.
+        </div>
+
+        <div class="success-box">
+          <strong>Retention:</strong> Data is stored indefinitely until you manually clear it via
+          the Extension settings, uninstall the Extension, or clear Chrome's local storage.
+        </div>
+
+        <h2>2. Permissions Explained</h2>
+
+        <p>The Extension requests <strong>only ONE permission</strong> from Chrome:</p>
+
+        <div class="permission-card permission-required">
+          <h4><code>storage</code> Permission</h4>
+
+          <p><strong>Why We Need It:</strong></p>
+          <ul>
+            <li>
+              <strong>Save API Keys Securely:</strong> Your Gemini API key and optional service keys
+              are stored in Chrome's encrypted sync storage, allowing seamless access across your
+              devices while maintaining security.
+            </li>
+            <li>
+              <strong>Cache Video Analysis:</strong> Previously analyzed videos are cached locally,
+              enabling instant retrieval without redundant API calls, saving time and API quota.
+            </li>
+            <li>
+              <strong>Store User Preferences:</strong> Your settings (output language, AI model
+              selection, summary length, auto-skip rules) are persisted across sessions.
+            </li>
+            <li>
+              <strong>Maintain Chat History:</strong> Conversation context is stored locally to
+              enable multi-turn dialogues with the AI about video content.
+            </li>
+          </ul>
+
+          <p><strong>What It Does NOT Allow:</strong></p>
+          <ul>
+            <li>❌ Access to your browsing history</li>
+            <li>❌ Access to data from other websites</li>
+            <li>❌ Access to your personal information (name, email, etc.)</li>
+            <li>❌ Tracking your activity across the web</li>
+            <li>❌ Reading or modifying data on non-YouTube websites</li>
+          </ul>
+
+          <p><strong>Technical Implementation:</strong></p>
+          <ul>
+            <li>
+              Uses <code>chrome.storage.local</code> for video cache and analysis data
+              (device-specific)
+            </li>
+            <li>
+              Uses <code>chrome.storage.sync</code> for API keys and preferences (synced across
+              Chrome browsers)
+            </li>
+            <li>All storage operations are scoped to the extension's isolated storage area</li>
+            <li>No access to cookies, passwords, or other browser data</li>
+          </ul>
+
+          <p>
+            <strong>Chrome's Documentation:</strong>
+            <a
+              href="https://developer.chrome.com/docs/extensions/reference/api/storage"
+              target="_blank"
+              >chrome.storage API</a
+            >
+          </p>
+        </div>
+
+        <h3>Permissions We Do NOT Request</h3>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>activeTab</code></h4>
+          <p>
+            We do not request access to your active tab. The Extension only interacts with YouTube
+            pages via content scripts that run exclusively on <code>youtube.com</code>. We cannot
+            access your active tab's content outside of YouTube.
+          </p>
+        </div>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>tabs</code></h4>
+          <p>We cannot access your tabs list, tab URLs, or switch between tabs programmatically.</p>
+        </div>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>history</code></h4>
+          <p>We cannot access your browsing history or track which websites you visit.</p>
+        </div>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>cookies</code></h4>
+          <p>We cannot read or modify cookies from any website, including YouTube.</p>
+        </div>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>webRequest</code></h4>
+          <p>
+            We do not intercept or modify network requests globally. Transcript extraction on
+            YouTube pages uses content script injection, not network interception.
+          </p>
+        </div>
+
+        <div class="permission-card permission-not-requested">
+          <h4><code>scripting</code></h4>
+          <p>
+            <strong>Removed in v2.0.0.</strong> Previously requested but unused. The Extension uses
+            declarative content scripts instead of programmatic injection.
+          </p>
+        </div>
+
+        <h2>3. Host Permissions Explained</h2>
+
+        <p>
+          The Extension declares <code>host_permissions</code> for specific domains to enable API
+          communication:
+        </p>
+
+        <div class="permission-card host-permission">
+          <h4>YouTube Domains</h4>
+          <p><code>https://www.youtube.com/*</code>, <code>https://youtube.com/*</code></p>
+          <ul>
+            <li>
+              <strong>Purpose:</strong> Inject content scripts to display the AI widget, timeline
+              markers, and segment controls
+            </li>
+            <li><strong>Scope:</strong> Only YouTube video pages</li>
+            <li>
+              <strong>Data Access:</strong> Video ID, title, author, transcript (publicly available
+              data)
+            </li>
+          </ul>
+        </div>
+
+        <div class="permission-card host-permission">
+          <h4>Google Gemini AI</h4>
+          <p><code>https://generativelanguage.googleapis.com/*</code></p>
+          <ul>
+            <li>
+              <strong>Purpose:</strong> Send video transcripts and metadata to Gemini AI for
+              analysis
+            </li>
+            <li>
+              <strong>Data Sent:</strong> Video transcript, title, description, your custom prompt
+            </li>
+            <li><strong>Required:</strong> Yes (core functionality)</li>
+          </ul>
+        </div>
+
+        <div class="permission-card host-permission">
+          <h4>Invidious Instances</h4>
+          <p>Multiple domains (e.g., <code>https://*.invidious.io/*</code>)</p>
+          <ul>
+            <li>
+              <strong>Purpose:</strong> Fetch video transcripts when YouTube's direct method fails
+            </li>
+            <li><strong>Data Sent:</strong> Video ID only</li>
+            <li><strong>Required:</strong> No (fallback method)</li>
+          </ul>
+        </div>
+
+        <div class="permission-card host-permission">
+          <h4>Piped Instances</h4>
+          <p>Multiple domains (e.g., <code>https://pipedapi.kavin.rocks/*</code>)</p>
+          <ul>
+            <li>
+              <strong>Purpose:</strong> Fetch video transcripts (privacy-friendly alternative)
+            </li>
+            <li><strong>Data Sent:</strong> Video ID only</li>
+            <li><strong>Required:</strong> No (fallback method)</li>
+          </ul>
+        </div>
+
+        <div class="permission-card host-permission">
+          <h4>Wildcard Permission</h4>
+          <p><code>*://*/*</code></p>
+          <ul>
+            <li>
+              <strong>Purpose:</strong> Enable communication with user-configured optional API
+              services (TMDB, IGDB, NewsData, etc.)
+            </li>
+            <li>
+              <strong>Scope:</strong> Only used when you explicitly configure API keys for optional
+              services
+            </li>
+            <li>
+              <strong>Data Sent:</strong> Video title and metadata to configured services only
+            </li>
+            <li><strong>Required:</strong> No (optional enhancements)</li>
+          </ul>
+        </div>
+
+        <div class="warning-box">
+          <strong>Important:</strong> The wildcard permission does NOT grant access to all websites.
+          It only allows the Extension to make HTTP requests to external APIs when you explicitly
+          configure them. The Extension cannot read or modify content on arbitrary websites.
+        </div>
+
+        <h2>4. Data Transmission</h2>
+
+        <h3>4.1 What Data Leaves Your Browser</h3>
+        <p>
+          The Extension transmits data to external services
+          <strong>only when you explicitly trigger an analysis</strong>:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Data Sent</th>
+              <th>Purpose</th>
+              <th>Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Google Gemini AI</strong></td>
+              <td>Video transcript, metadata, chat messages</td>
+              <td>Generate AI-powered summaries and answers</td>
+              <td>✅ Yes</td>
+            </tr>
+            <tr>
+              <td>TMDB</td>
+              <td>Video title</td>
+              <td>Movie & TV show metadata</td>
+              <td>⚪ Optional</td>
+            </tr>
+            <tr>
+              <td>IGDB</td>
+              <td>Video title</td>
+              <td>Video game metadata</td>
+              <td>⚪ Optional</td>
+            </tr>
+            <tr>
+              <td>NewsData.io</td>
+              <td>Video title, keywords</td>
+              <td>News article search</td>
+              <td>⚪ Optional</td>
+            </tr>
+            <tr>
+              <td>Invidious/Piped</td>
+              <td>Video ID</td>
+              <td>Fetch transcripts (fallback)</td>
+              <td>⚪ Optional</td>
+            </tr>
+            <tr>
+              <td>SponsorBlock</td>
+              <td>Video ID</td>
+              <td>Community-verified segments</td>
+              <td>⚪ Optional</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>4.2 What Data NEVER Leaves Your Browser</h3>
+        <ul>
+          <li>❌ Your browsing history</li>
+          <li>❌ Your personal information (name, email, etc.)</li>
+          <li>❌ Your Chrome profile data</li>
+          <li>❌ Data from other websites</li>
+          <li>❌ Your YouTube watch history (beyond the current video)</li>
+        </ul>
+
+        <h2>5. Security Measures</h2>
+
+        <div class="success-box">
+          <strong>HTTPS Only:</strong> All external API requests use HTTPS encryption.
+        </div>
+
+        <div class="success-box">
+          <strong>No Third-Party Tracking:</strong> The Extension does not integrate any analytics,
+          telemetry, or tracking services (Google Analytics, Sentry, etc.).
+        </div>
+
+        <div class="success-box">
+          <strong>API Key Protection:</strong>
+          <ul>
+            <li>API keys are stored in Chrome's secure storage</li>
+            <li>Never logged to console (in production builds)</li>
+            <li>Never transmitted except to the official API endpoints</li>
+            <li>Never shared with third parties</li>
+          </ul>
+        </div>
+
+        <h2>6. Your Rights & Controls</h2>
+
+        <h3>6.1 Data Access</h3>
+        <p>You can access all data stored by the Extension:</p>
+        <ol>
+          <li>Open Chrome DevTools (<code>F12</code>)</li>
+          <li>Go to <strong>Application</strong> tab</li>
+          <li>
+            Expand <strong>Local Storage</strong> → <code>chrome-extension://[extension-id]</code>
+          </li>
+          <li>View all stored data</li>
+        </ol>
+
+        <h3>6.2 Data Deletion</h3>
+        <p><strong>Clear Specific Video Data:</strong></p>
+        <ul>
+          <li>Open Extension settings → History</li>
+          <li>Click "Delete" next to any video</li>
+        </ul>
+
+        <p><strong>Clear All Data:</strong></p>
+        <ul>
+          <li>Open Extension settings → General</li>
+          <li>Click "Clear All History"</li>
+        </ul>
+
+        <p><strong>Uninstall Extension:</strong></p>
+        <ul>
+          <li>Go to <code>chrome://extensions/</code></li>
+          <li>Click "Remove" on YouTube AI Navigator</li>
+          <li>All local data is automatically deleted</li>
+        </ul>
+
+        <h2>7. Legal Compliance</h2>
+
+        <h3>GDPR (EU Users)</h3>
+        <p><strong>Legal Basis for Processing:</strong></p>
+        <ul>
+          <li><strong>Consent:</strong> You explicitly configure API keys and trigger analysis</li>
+          <li><strong>Legitimate Interest:</strong> Caching for performance optimization</li>
+        </ul>
+
+        <p><strong>Your GDPR Rights:</strong></p>
+        <ul>
+          <li>Right to access your data (see Section 6.1)</li>
+          <li>Right to deletion (see Section 6.2)</li>
+          <li>Right to data portability (export feature)</li>
+          <li>Right to withdraw consent (uninstall Extension)</li>
+        </ul>
+
+        <h3>CCPA (California Users)</h3>
+        <p><strong>Categories of Personal Information Collected:</strong></p>
+        <ul>
+          <li>Identifiers: Video IDs (public YouTube identifiers)</li>
+          <li>Internet Activity: Video viewing context (title, metadata)</li>
+        </ul>
+
+        <p>
+          <strong>Sale of Personal Information:</strong> We do NOT sell your personal information.
+        </p>
+
+        <h2>8. Open Source Transparency</h2>
+
+        <p>
+          YouTube AI Navigator is <strong>open source</strong>. You can verify our privacy claims by
+          reviewing the source code:
+        </p>
+
+        <p>
+          <strong>GitHub Repository:</strong>
+          <a href="https://github.com/chirag127/YouTube-AI-Navigator" target="_blank"
+            >https://github.com/chirag127/YouTube-AI-Navigator</a
+          >
+        </p>
+
+        <p><strong>What You Can Verify:</strong></p>
+        <ul>
+          <li>✅ No tracking or analytics code</li>
+          <li>✅ No data transmission except to declared APIs</li>
+          <li>✅ Secure storage implementation</li>
+          <li>✅ Minimal permissions usage</li>
+        </ul>
+
+        <h2>9. Contact</h2>
+
+        <p><strong>Questions or Concerns:</strong></p>
+        <ul>
+          <li>
+            Open an issue on
+            <a href="https://github.com/chirag127/YouTube-AI-Navigator/issues" target="_blank"
+              >GitHub</a
+            >
+          </li>
+        </ul>
+
+        <p><strong>Security Vulnerabilities:</strong></p>
+        <p>Please report security issues privately to the repository owner.</p>
+
+        <h2>10. Changes to This Policy</h2>
+
+        <p>
+          We may update this Privacy Policy to reflect changes in the Extension's functionality or
+          legal requirements. Changes will be posted on this page with an updated "Last Updated"
+          date.
+        </p>
+
+        <div class="info-box">
+          <strong>Notification:</strong> Major changes will be announced via the Extension's update
+          notes.
+        </div>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+      </div>
     </div>
 
     <footer>
-        <p>&copy; 2025 YouTube AI Navigator. Open Source under MIT License.</p>
-        <p><a href="https://github.com/chirag127/YouTube-AI-Navigator">GitHub</a> | <a href="PRIVACY.md">Privacy Policy
-                (Markdown)</a></p>
+      <p>&copy; 2025 YouTube AI Navigator. Open Source under MIT License.</p>
+      <p>
+        <a href="https://github.com/chirag127/YouTube-AI-Navigator">GitHub</a> |
+        <a href="PRIVACY.md">Privacy Policy (Markdown)</a>
+      </p>
     </footer>
-</body>
-
+  </body>
 </html>

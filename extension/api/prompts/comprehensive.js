@@ -1,14 +1,14 @@
-import { buildContextString } from "./utils.js";
+import { buildContextString } from './utils.js';
 
 export const comprehensive = (context, options) => {
-    const transcript =
-        context.transcript && context.transcript.length > 0
-            ? typeof context.transcript === "string"
-                ? context.transcript
-                : JSON.stringify(context.transcript)
-            : "No transcript available. Please analyze based on the Context provided above (Metadata, Lyrics, Comments).";
+  const transcript =
+    context.transcript && context.transcript.length > 0
+      ? typeof context.transcript === 'string'
+        ? context.transcript
+        : JSON.stringify(context.transcript)
+      : 'No transcript available. Please analyze based on the Context provided above (Metadata, Lyrics, Comments).';
 
-    return `
+  return `
     Role: You are an advanced AI video analyst.
     Task: Provide a comprehensive analysis of this video.
 
@@ -16,7 +16,7 @@ export const comprehensive = (context, options) => {
     ${buildContextString(context)}
 
     Directives:
-    1. **Summary**: A ${options.length || "Medium"} length summary.
+    1. **Summary**: A ${options.length || 'Medium'} length summary.
     2. **Key Insights**: Bullet points of the most valuable takeaways.
     3. **Timestamps**: Include [MM:SS] timestamps references where appropriate.
     4. **FAQ**: 3-5 relevant Q&A pairs.

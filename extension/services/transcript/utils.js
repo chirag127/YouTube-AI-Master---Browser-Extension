@@ -6,10 +6,10 @@
  * @returns {string} Cleaned text
  */
 export function cleanText(text) {
-    return text
-        .replace(/\s+/g, ' ')
-        .replace(/\[.*?\]/g, '')
-        .trim();
+  return text
+    .replace(/\s+/g, ' ')
+    .replace(/\[.*?\]/g, '')
+    .trim();
 }
 
 /**
@@ -19,27 +19,27 @@ export function cleanText(text) {
  * @returns {Array} Text chunks
  */
 export function splitIntoChunks(segments, maxChunkSize = 2000) {
-    const chunks = [];
-    let currentChunk = '';
+  const chunks = [];
+  let currentChunk = '';
 
-    for (const segment of segments) {
-        const text = segment.text + ' ';
+  for (const segment of segments) {
+    const text = segment.text + ' ';
 
-        if (currentChunk.length + text.length > maxChunkSize) {
-            if (currentChunk) {
-                chunks.push(currentChunk.trim());
-            }
-            currentChunk = text;
-        } else {
-            currentChunk += text;
-        }
-    }
-
-    if (currentChunk) {
+    if (currentChunk.length + text.length > maxChunkSize) {
+      if (currentChunk) {
         chunks.push(currentChunk.trim());
+      }
+      currentChunk = text;
+    } else {
+      currentChunk += text;
     }
+  }
 
-    return chunks;
+  if (currentChunk) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks;
 }
 
 /**
@@ -49,8 +49,5 @@ export function splitIntoChunks(segments, maxChunkSize = 2000) {
  * @returns {Object|null} Segment at time or null
  */
 export function findSegmentAtTime(segments, time) {
-    return segments.find(seg =>
-        time >= seg.start &&
-        time < seg.start + seg.duration
-    ) || null;
+  return segments.find(seg => time >= seg.start && time < seg.start + seg.duration) || null;
 }

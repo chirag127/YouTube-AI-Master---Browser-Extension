@@ -1,21 +1,19 @@
-import { initializeServices, getServices } from "../services.js";
-import { getApiKey } from "../utils/api-key.js";
+import { initializeServices, getServices } from '../services.js';
+import { getApiKey } from '../utils/api-key.js';
 
-export async function handleGetCachedData(request, sendResponse) {
-    const { videoId } = request;
-    const apiKey = await getApiKey();
-    if (apiKey) await initializeServices(apiKey);
-
-    const { storage } = getServices();
-    if (!storage) {
-        sendResponse({ success: false });
-        return;
-    }
-
-    try {
-        const data = await storage.getVideoData(videoId);
-        sendResponse({ success: true, data });
-    } catch (e) {
-        sendResponse({ success: false, error: e.message });
-    }
+export async function handleGetCachedData(req, rsp) {
+  const { videoId } = req;
+  const k = await getApiKey();
+  if (k) await initializeServices(k);
+  const { storage } = getServices();
+  if (!storage) {
+    rsp({ success: false });
+    return;
+  }
+  try {
+    const d = await storage.getVideoData(videoId);
+    rsp({ success: true, data: d });
+  } catch (e) {
+    rsp({ success: false, error: e.message });
+  }
 }

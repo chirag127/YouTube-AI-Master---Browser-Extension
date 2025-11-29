@@ -1,4 +1,4 @@
-import { GeminiClient } from "../../../api/gemini-client.js";
+import { GeminiClient } from '../../../api/gemini-client.js';
 
 /**
  * Classify if a video is a music video using Gemini
@@ -7,19 +7,19 @@ import { GeminiClient } from "../../../api/gemini-client.js";
  * @returns {Promise<boolean>}
  */
 export async function isMusicVideo(title, channel) {
-    try {
-        const settings = await chrome.storage.sync.get(["apiKey", "model"]);
-        if (!settings.apiKey) return false;
+  try {
+    const settings = await chrome.storage.sync.get(['apiKey', 'model']);
+    if (!settings.apiKey) return false;
 
-        const client = new GeminiClient(settings.apiKey);
-        let model = settings.model || "gemini-2.5-flash-preview-09-2025";
+    const client = new GeminiClient(settings.apiKey);
+    let model = settings.model || 'gemini-2.5-flash-preview-09-2025';
 
-        // Strip models/ prefix if present
-        if (model.startsWith('models/')) {
-            model = model.replace('models/', '');
-        }
+    // Strip models/ prefix if present
+    if (model.startsWith('models/')) {
+      model = model.replace('models/', '');
+    }
 
-        const prompt = `
+    const prompt = `
             Analyze this YouTube video metadata:
             Title: "${title}"
             Channel: "${channel}"
@@ -28,10 +28,10 @@ export async function isMusicVideo(title, channel) {
             Return ONLY "true" or "false".
         `;
 
-        const result = await client.generateContent(prompt, model);
-        return result.trim().toLowerCase() === "true";
-    } catch (e) {
-        console.warn("[MusicClassifier] Failed to classify:", e);
-        return false;
-    }
+    const result = await client.generateContent(prompt, model);
+    return result.trim().toLowerCase() === 'true';
+  } catch (e) {
+    console.warn('[MusicClassifier] Failed to classify:', e);
+    return false;
+  }
 }

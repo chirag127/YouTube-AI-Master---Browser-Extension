@@ -6,8 +6,8 @@
  * @param {*} data - Optional data
  */
 export function log(message, data) {
-    const timestamp = new Date().toISOString().split('T')[1].slice(0, -1);
-    console.log(`[YTAI ${timestamp}] ${message}`, data || '');
+  const timestamp = new Date().toISOString().split('T')[1].slice(0, -1);
+  console.log(`[YTAI ${timestamp}] ${message}`, data || '');
 }
 
 /**
@@ -16,7 +16,7 @@ export function log(message, data) {
  * @param {Error} error - Error object
  */
 export function logError(context, error) {
-    console.error(`[YTAI ERROR] ${context}:`, error);
+  console.error(`[YTAI ERROR] ${context}:`, error);
 }
 
 /**
@@ -25,9 +25,9 @@ export function logError(context, error) {
  * @returns {boolean} True if exists
  */
 export function checkElement(selector) {
-    const exists = !!document.querySelector(selector);
-    log(`Element check: ${selector}`, exists ? '✓' : '✗');
-    return exists;
+  const exists = !!document.querySelector(selector);
+  log(`Element check: ${selector}`, exists ? '✓' : '✗');
+  return exists;
 }
 
 /**
@@ -37,28 +37,28 @@ export function checkElement(selector) {
  * @returns {Promise<Element>} Element when found
  */
 export function waitForElement(selector, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-        const element = document.querySelector(selector);
-        if (element) {
-            return resolve(element);
-        }
+  return new Promise((resolve, reject) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      return resolve(element);
+    }
 
-        const observer = new MutationObserver(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                observer.disconnect();
-                resolve(element);
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
-        setTimeout(() => {
-            observer.disconnect();
-            reject(new Error(`Timeout waiting for ${selector}`));
-        }, timeout);
+    const observer = new MutationObserver(() => {
+      const element = document.querySelector(selector);
+      if (element) {
+        observer.disconnect();
+        resolve(element);
+      }
     });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    setTimeout(() => {
+      observer.disconnect();
+      reject(new Error(`Timeout waiting for ${selector}`));
+    }, timeout);
+  });
 }

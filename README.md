@@ -4,13 +4,13 @@ AI-powered YouTube analysis extension. Transcripts, insights, segments, comments
 
 ## Features
 
--   **AI Analysis**: Gemini-powered summaries, insights, FAQ
--   **Smart Transcripts**: Multi-strategy fetching (DOM, Invidious, Genius, Speech-to-Text)
--   **Segment Classification**: Auto-detect sponsors, intros, content sections
--   **Comment Analysis**: Sentiment analysis, key themes
--   **DeArrow Integration**: Community-sourced clickbait-free titles
--   **SponsorBlock**: Skip/speed through segments
--   **Privacy-First**: All processing client-side, no tracking
+- **AI Analysis**: Gemini-powered summaries, insights, FAQ
+- **Smart Transcripts**: Multi-strategy fetching (DOM, Invidious, Genius, Speech-to-Text)
+- **Segment Classification**: Auto-detect sponsors, intros, content sections
+- **Comment Analysis**: Sentiment analysis, key themes
+- **DeArrow Integration**: Community-sourced clickbait-free titles
+- **SponsorBlock**: Skip/speed through segments
+- **Privacy-First**: All processing client-side, no tracking
 
 ## Quick Start
 
@@ -30,23 +30,23 @@ Load `extension/` folder in Chrome as unpacked extension.
 
 ### Ultra-Compressed Design
 
--   **Shortcuts**: All common operations use 1-2 letter aliases (`l`=log, `$`=querySelector, `sg`=storage.get)
--   **Minimal Tokens**: Stripped comments, compressed keys, dense ES6+ syntax
--   **Modular**: Maximum files, minimum tokens per file
+- **Shortcuts**: All common operations use 1-2 letter aliases (`l`=log, `$`=querySelector, `sg`=storage.get)
+- **Minimal Tokens**: Stripped comments, compressed keys, dense ES6+ syntax
+- **Modular**: Maximum files, minimum tokens per file
 
 ### Key Files
 
--   `utils/shortcuts.js` - 70+ ultra-short utility aliases
--   `utils/config.js` - Compressed config with short keys (ca, tr, co, md, ui, ai, etc.)
--   `services/transcript/fetcher.js` - Priority-based transcript strategies
--   `api/gemini.js` - Gemini API client with fallback models
--   `api/invidious.js` - Privacy-friendly YouTube API
+- `utils/shortcuts.js` - 70+ ultra-short utility aliases
+- `utils/config.js` - Compressed config with short keys (ca, tr, co, md, ui, ai, etc.)
+- `services/transcript/fetcher.js` - Priority-based transcript strategies
+- `api/gemini.js` - Gemini API client with fallback models
+- `api/invidious.js` - Privacy-friendly YouTube API
 
 ### Storage Keys (Compressed)
 
--   `cfg` - Main config object
--   `obDone` - Onboarding completed
--   `apiKey` - Gemini API key
+- `cfg` - Main config object
+- `obDone` - Onboarding completed
+- `apiKey` - Gemini API key
 
 ### Default Model
 
@@ -90,14 +90,14 @@ extension/
 ### Shortcuts Usage
 
 ```js
-import { l, w, e, $, $$, sg, ss, ft, js, jp } from "./utils/shortcuts.js";
+import { l, w, e, $, $$, sg, ss, ft, js, jp } from './utils/shortcuts.js';
 
-l("Log message"); // console.log
-w("Warning"); // console.warn
-const el = $(".selector"); // querySelector
-const all = $$(".items"); // querySelectorAll
-const cfg = await sg("cfg"); // storage.sync.get
-await ss("key", val); // storage.sync.set
+l('Log message'); // console.log
+w('Warning'); // console.warn
+const el = $('.selector'); // querySelector
+const all = $$('.items'); // querySelectorAll
+const cfg = await sg('cfg'); // storage.sync.get
+await ss('key', val); // storage.sync.set
 const data = await ft(url); // fetch with timeout
 const str = js(obj); // JSON.stringify
 const obj = jp(str); // JSON.parse

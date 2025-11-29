@@ -1,456 +1,259 @@
-/**
- * Invidious API Service
- * Primary method for fetching video data and transcripts
- * Documentation: https://docs.invidious.io/api/
- */
-import { l, w, e, d, i, fj, ftx, jp, pI, pF, _cr } from "../utils/shortcuts.js";
+import { l, w, e, d, i, fj, ftx, jp, pI, pF, _cr, mp, fl, jn, tr, rp } from '../utils/shortcuts.js';
 
-// Fallback instances (reliable ones based on live API data)
 const FALLBACK_INSTANCES = [
-    "https://inv.nadeko.net",
-    "https://invidious.nerdvpn.de",
-    "https://invidious.f5.si",
-    "https://inv.perditum.com",
-    "https://yewtu.be",
+  'https://inv.nadeko.net',
+  'https://invidious.nerdvpn.de',
+  'https://invidious.f5.si',
+  'https://inv.perditum.com',
+  'https://yewtu.be',
 ];
+let cil = null,
+  ilct = 0;
+const ILCD = 5 * 60 * 1000;
+let wi = null,
+  lic = 0;
+const ICI = 5 * 60 * 1000;
 
-// Cache for instances list
-let cachedInstancesList = null;
-let instancesListCacheTime = 0;
-const INSTANCES_LIST_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-// Cache for working instance
-let workingInstance = null;
-let lastInstanceCheck = 0;
-const INSTANCE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
-
-/**
- * Logger utility for consistent logging
- */
 class Logger {
-    constructor(prefix) {
-        this.prefix = prefix;
-    }
-
-    info(message, ...args) {
-        i(`[${this.prefix}] ℹ️ ${message}`, ...args);
-    }
-
-    success(message, ...args) {
-        l(`[${this.prefix}] ✅ ${message}`, ...args);
-    }
-
-    warn(message, ...args) {
-        w(`[${this.prefix}] ⚠️ ${message}`, ...args);
-    }
-
-    error(message, ...args) {
-        e(`[${this.prefix}] ❌ ${message}`, ...args);
-    }
-
-    debug(message, ...args) {
-        d(`[${this.prefix}] 🔍 ${message}`, ...args);
-    }
+  constructor(p) {
+    this.p = p;
+  }
+  info(m, ...a) {
+    i(`[${this.p}] ℹ️ ${m}`, ...a);
+  }
+  success(m, ...a) {
+    l(`[${this.p}] ✅ ${m}`, ...a);
+  }
+  warn(m, ...a) {
+    w(`[${this.p}] ⚠️ ${m}`, ...a);
+  }
+  error(m, ...a) {
+    e(`[${this.p}] ❌ ${m}`, ...a);
+  }
+  debug(m, ...a) {
+    d(`[${this.p}] 🔍 ${m}`, ...a);
+  }
 }
+const log = new Logger('Invidious');
 
-const logger = new Logger("Invidious");
-
-/**
- * Find a working Invidious instance
- * @returns {Promise<string>} Working instance URL
- */
-async function findWorkingInstance() {
-    const now = Date.now();
-
-    // Return cached instance if still valid
-    if (workingInstance && now - lastInstanceCheck < INSTANCE_CHECK_INTERVAL) {
-        logger.debug(`Using cached instance: ${workingInstance}`);
-        return workingInstance;
-    }
-
-    logger.info("Finding working Invidious instance...");
-
-    const instances = await getInstancesList();
-
-    for (const instance of instances) {
-        try {
-            logger.debug(`Testing instance: ${instance}`);
-            const response = await fetch(`${instance}/api/v1/stats`, {
-                method: "GET",
-                signal: AbortSignal.timeout(5000), // 5 second timeout
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                logger.success(`Found working instance: ${instance}`, {
-                    version: data.software?.version,
-                    openRegistrations: data.openRegistrations,
-                });
-                workingInstance = instance;
-                lastInstanceCheck = now;
-                return instance;
-            }
-        } catch (error) {
-            logger.warn(`Instance ${instance} failed:`, error.message);
-        }
-    }
-
-    throw new Error("No working Invidious instance found");
-}
-
-/**
- * Fetch video data from Invidious API
- * @param {string} videoId - YouTube video ID
- * @param {string} region - ISO 3166 country code
- * @returns {Promise<Object>} Video data
- */
-export async function fetchVideoData(videoId, region = "US") {
-    logger.info(`Fetching video data for: ${videoId}`);
-
-    const instance = await findWorkingInstance();
-    const url = `${instance}/api/v1/videos/${videoId}?region=${region}`;
-
-    logger.debug(`Request URL: ${url}`);
-
+async function fwi() {
+  const n = Date.now();
+  if (wi && n - lic < ICI) {
+    log.debug(`Cached inst: ${wi}`);
+    return wi;
+  }
+  log.info('Finding inst...');
+  const ins = await gil();
+  for (const inst of ins) {
     try {
-        const response = await fetch(url, {
-            method: "GET",
-            signal: AbortSignal.timeout(10000), // 10 second timeout
+      log.debug(`Testing: ${inst}`);
+      const r = await fetch(`${inst}/api/v1/stats`, {
+        method: 'GET',
+        signal: AbortSignal.timeout(5e3),
+      });
+      if (r.ok) {
+        const d = await r.json();
+        log.success(`Found: ${inst}`, {
+          v: d.software?.version,
+          or: d.openRegistrations,
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        logger.success(`Video data fetched successfully`, {
-            title: data.title,
-            author: data.author,
-            lengthSeconds: data.lengthSeconds,
-            viewCount: data.viewCount,
-            captionsAvailable: data.captions?.length || 0,
-        });
-
-        return data;
-    } catch (error) {
-        logger.error(`Failed to fetch video data:`, error.message);
-        throw error;
+        wi = inst;
+        lic = n;
+        return inst;
+      }
+    } catch (x) {
+      log.warn(`${inst} fail:`, x.message);
     }
+  }
+  throw new Error('No working inst');
 }
 
-/**
- * Fetch captions/transcript from Invidious API
- * @param {string} videoId - YouTube video ID
- * @param {string} lang - Language code (default: 'en')
- * @returns {Promise<Array>} Transcript segments
- */
-export async function fetchTranscript(videoId, lang = "en") {
-    logger.info(`Fetching transcript for: ${videoId} (lang: ${lang})`);
-
-    try {
-        // First, get video data to find available captions
-        const videoData = await fetchVideoData(videoId);
-
-        if (!videoData.captions || videoData.captions.length === 0) {
-            throw new Error("No captions available for this video");
-        }
-
-        logger.debug(
-            `Available captions:`,
-            videoData.captions.map((c) => ({
-                label: c.label,
-                languageCode: c.language_code,
-            }))
-        );
-
-        // Find caption track for requested language
-        let captionTrack = videoData.captions.find(
-            (c) => c.language_code === lang
-        );
-
-        // Fallback to first available caption if requested language not found
-        if (!captionTrack) {
-            logger.warn(
-                `Language '${lang}' not found, using fallback: ${videoData.captions[0].language_code}`
-            );
-            captionTrack = videoData.captions[0];
-        }
-
-        logger.debug(`Selected caption track:`, {
-            label: captionTrack.label,
-            languageCode: captionTrack.language_code,
-            url: captionTrack.url,
-        });
-
-        // Fetch caption data
-        const captionUrl = captionTrack.url;
-        const response = await fetch(captionUrl, {
-            signal: AbortSignal.timeout(10000),
-        });
-
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch captions: HTTP ${response.status}`
-            );
-        }
-
-        const captionText = await response.text();
-        logger.debug(
-            `Caption data received, length: ${captionText.length} bytes`
-        );
-
-        // Parse caption format (usually WebVTT or XML)
-        const segments = parseCaptionData(captionText);
-
-        logger.success(
-            `Transcript parsed successfully: ${segments.length} segments`
-        );
-
-        return segments;
-    } catch (error) {
-        logger.error(`Failed to fetch transcript:`, error.message);
-        throw error;
-    }
+async function gil() {
+  if (cil && Date.now() - ilct < ILCD) return cil;
+  cil = FALLBACK_INSTANCES;
+  ilct = Date.now();
+  return cil;
 }
 
-/**
- * Parse caption data (WebVTT or XML format)
- * @param {string} data - Raw caption data
- * @returns {Array} Transcript segments
- */
-function parseCaptionData(data) {
-    logger.debug("Parsing caption data...");
-
-    // Try WebVTT format first
-    if (data.includes("WEBVTT")) {
-        return parseWebVTT(data);
-    }
-
-    // Try XML format
-    if (data.trim().startsWith("<?xml") || data.includes("<transcript>")) {
-        return parseXML(data);
-    }
-
-    // Try JSON3 format
-    try {
-        const json = jp(data);
-        if (json.events) {
-            return parseJSON3(json);
-        }
-    } catch (e) {
-        // Not JSON, continue
-    }
-
-    logger.warn("Unknown caption format, attempting generic parse");
-    return parseGeneric(data);
-}
-
-/**
- * Parse WebVTT format captions
- */
-function parseWebVTT(data) {
-    logger.debug("Parsing WebVTT format");
-    const segments = [];
-    const lines = data.split("\n");
-    let currentSegment = null;
-
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-
-        // Skip empty lines and WEBVTT header
-        if (!line || line.startsWith("WEBVTT") || line.startsWith("NOTE")) {
-            continue;
-        }
-
-        // Timestamp line (e.g., "00:00:00.000 --> 00:00:02.000")
-        if (line.includes("-->")) {
-            const [startStr, endStr] = line.split("-->").map((s) => s.trim());
-            const start = parseTimestamp(startStr);
-            const end = parseTimestamp(endStr);
-
-            currentSegment = {
-                start,
-                duration: end - start,
-                text: "",
-            };
-        }
-        // Text line
-        else if (currentSegment) {
-            currentSegment.text += (currentSegment.text ? " " : "") + line;
-
-            // Check if next line is empty or timestamp (end of segment)
-            if (
-                i + 1 >= lines.length ||
-                !lines[i + 1].trim() ||
-                lines[i + 1].includes("-->")
-            ) {
-                segments.push(currentSegment);
-                currentSegment = null;
-            }
-        }
-    }
-
-    logger.debug(`Parsed ${segments.length} WebVTT segments`);
-    return segments;
-}
-
-/**
- * Parse XML format captions
- */
-function parseXML(data) {
-    logger.debug("Parsing XML format");
-    const segments = [];
-    const regex = /<text start="([\d.]+)" dur="([\d.]+)"[^>]*>([^<]*)<\/text>/g;
-    let match;
-
-    while ((match = regex.exec(data)) !== null) {
-        segments.push({
-            start: pF(match[1]),
-            duration: pF(match[2]),
-            text: decodeHTML(match[3]),
-        });
-    }
-
-    logger.debug(`Parsed ${segments.length} XML segments`);
-    return segments;
-}
-
-/**
- * Parse JSON3 format (YouTube's format)
- */
-function parseJSON3(data) {
-    logger.debug("Parsing JSON3 format");
-    const segments = data.events
-        .filter((event) => event.segs)
-        .map((event) => ({
-            start: event.tStartMs / 1000,
-            duration: (event.dDurationMs || 0) / 1000,
-            text: event.segs.map((seg) => seg.utf8).join(""),
-        }));
-
-    logger.debug(`Parsed ${segments.length} JSON3 segments`);
-    return segments;
-}
-
-/**
- * Generic parser for unknown formats
- */
-function parseGeneric(data) {
-    logger.debug("Attempting generic parse");
-    // Basic fallback - split by lines and create segments
-    const lines = data.split("\n").filter((line) => line.trim());
-    return lines.map((line, index) => ({
-        start: index * 2, // Assume 2 seconds per line
-        duration: 2,
-        text: line.trim(),
-    }));
-}
-
-/**
- * Parse timestamp string to seconds
- * Supports formats: HH:MM:SS.mmm, MM:SS.mmm, SS.mmm
- */
-function parseTimestamp(timestamp) {
-    const parts = timestamp.split(":");
-    let seconds = 0;
-
-    if (parts.length === 3) {
-        // HH:MM:SS.mmm
-        seconds = pI(parts[0]) * 3600 + pI(parts[1]) * 60 + pF(parts[2]);
-    } else if (parts.length === 2) {
-        // MM:SS.mmm
-        seconds = pI(parts[0]) * 60 + pF(parts[1]);
-    } else {
-        // SS.mmm
-        seconds = pF(parts[0]);
-    }
-
-    return seconds;
-}
-
-/**
- * Decode HTML entities
- */
-function decodeHTML(text) {
-    const textarea = _cr("textarea");
-    textarea.innerHTML = text;
-    return textarea.value;
-}
-
-/**
- * Get video metadata from Invidious
- * @param {string} videoId - YouTube video ID
- * @returns {Promise<Object>} Video metadata
- */
-export async function fetchMetadata(videoId) {
-    logger.info(`Fetching metadata for: ${videoId}`);
-
-    try {
-        const data = await fetchVideoData(videoId);
-
-        const metadata = {
-            videoId: data.videoId,
-            title: data.title,
-            author: data.author,
-            authorId: data.authorId,
-            lengthSeconds: data.lengthSeconds,
-            viewCount: data.viewCount,
-            likeCount: data.likeCount,
-            published: data.published,
-            description: data.description,
-            keywords: data.keywords || [],
-            genre: data.genre,
-            isFamilyFriendly: data.isFamilyFriendly,
-            captionsAvailable: (data.captions?.length || 0) > 0,
-            availableLanguages:
-                data.captions?.map((c) => c.language_code) || [],
-        };
-
-        logger.success("Metadata extracted successfully");
-        return metadata;
-    } catch (error) {
-        logger.error("Failed to fetch metadata:", error.message);
-        throw error;
-    }
-}
-
-/**
- * Search videos using Invidious
- * @param {string} query - Search query
- * @param {Object} options - Search options
- * @returns {Promise<Array>} Search results
- */
-export async function searchVideos(query, options = {}) {
-    logger.info(`Searching for: ${query}`);
-
-    const instance = await findWorkingInstance();
-    const params = new URLSearchParams({
-        q: query,
-        page: options.page || 1,
-        sort: options.sort || "relevance",
-        type: options.type || "video",
-        ...options,
+export async function fetchVideoData(vid, reg = 'US') {
+  log.info(`Fetch vid: ${vid}`);
+  const inst = await fwi();
+  const u = `${inst}/api/v1/videos/${vid}?region=${reg}`;
+  log.debug(`URL: ${u}`);
+  try {
+    const d = await fj(u, { signal: AbortSignal.timeout(1e4) });
+    log.success(`Vid data ok`, {
+      t: d.title,
+      a: d.author,
+      l: d.lengthSeconds,
+      v: d.viewCount,
+      c: d.captions?.length || 0,
     });
+    return d;
+  } catch (x) {
+    log.error(`Vid fetch fail:`, x.message);
+    throw x;
+  }
+}
 
-    const url = `${instance}/api/v1/search?${params}`;
-    logger.debug(`Search URL: ${url}`);
-
-    try {
-        const response = await fetch(url, {
-            signal: AbortSignal.timeout(10000),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const results = await response.json();
-        logger.success(`Found ${results.length} results`);
-
-        return results;
-    } catch (error) {
-        logger.error("Search failed:", error.message);
-        throw error;
+export async function fetchTranscript(vid, lang = 'en') {
+  log.info(`Fetch tr: ${vid} (${lang})`);
+  try {
+    const vd = await fetchVideoData(vid);
+    if (!vd.captions || vd.captions.length === 0) throw new Error('No caps');
+    log.debug(
+      `Avail caps:`,
+      mp(vd.captions, c => ({ l: c.label, lc: c.language_code }))
+    );
+    let ct = vd.captions.find(c => c.language_code === lang);
+    if (!ct) {
+      log.warn(`Lang '${lang}' not found, using: ${vd.captions[0].language_code}`);
+      ct = vd.captions[0];
     }
+    log.debug(`Sel cap:`, { l: ct.label, lc: ct.language_code, u: ct.url });
+    const cu = ct.url;
+    const ctTxt = await ftx(cu, { signal: AbortSignal.timeout(1e4) });
+    log.debug(`Cap data len: ${ctTxt.length}`);
+    const segs = pcd(ctTxt);
+    log.success(`Tr parsed: ${segs.length} segs`);
+    return segs;
+  } catch (x) {
+    log.error(`Tr fail:`, x.message);
+    throw x;
+  }
+}
+
+function pcd(d) {
+  log.debug('Parsing cap data...');
+  if (d.includes('WEBVTT')) return pwv(d);
+  if (tr(d).startsWith('<?xml') || d.includes('<transcript>')) return px(d);
+  try {
+    const j = jp(d);
+    if (j.events) return pj3(j);
+  } catch (e) {}
+  log.warn('Unknown fmt, generic parse');
+  return pg(d);
+}
+
+function pwv(d) {
+  log.debug('Parsing WebVTT');
+  const s = [],
+    l = d.split('\n');
+  let cs = null;
+  for (let i = 0; i < l.length; i++) {
+    const ln = tr(l[i]);
+    if (!ln || ln.startsWith('WEBVTT') || ln.startsWith('NOTE')) continue;
+    if (ln.includes('-->')) {
+      const [ss, es] = mp(ln.split('-->'), x => tr(x));
+      const st = pts(ss),
+        en = pts(es);
+      cs = { start: st, duration: en - st, text: '' };
+    } else if (cs) {
+      cs.text += (cs.text ? ' ' : '') + ln;
+      if (i + 1 >= l.length || !tr(l[i + 1]) || l[i + 1].includes('-->')) {
+        s.push(cs);
+        cs = null;
+      }
+    }
+  }
+  log.debug(`Parsed ${s.length} VTT segs`);
+  return s;
+}
+
+function px(d) {
+  log.debug('Parsing XML');
+  const s = [],
+    r = /<text start="([\d.]+)" dur="([\d.]+)"[^>]*>([^<]*)<\/text>/g;
+  let m;
+  while ((m = r.exec(d)) !== null) s.push({ start: pF(m[1]), duration: pF(m[2]), text: dh(m[3]) });
+  log.debug(`Parsed ${s.length} XML segs`);
+  return s;
+}
+
+function pj3(d) {
+  log.debug('Parsing JSON3');
+  const s = mp(
+    fl(d.events, e => e.segs),
+    e => ({
+      start: e.tStartMs / 1e3,
+      duration: (e.dDurationMs || 0) / 1e3,
+      text: jn(
+        mp(e.segs, sg => sg.utf8),
+        ''
+      ),
+    })
+  );
+  log.debug(`Parsed ${s.length} JSON3 segs`);
+  return s;
+}
+
+function pg(d) {
+  log.debug('Generic parse');
+  const l = fl(d.split('\n'), x => tr(x));
+  return mp(l, (ln, i) => ({ start: i * 2, duration: 2, text: tr(ln) }));
+}
+
+function pts(ts) {
+  const p = ts.split(':');
+  let s = 0;
+  if (p.length === 3) s = pI(p[0]) * 3600 + pI(p[1]) * 60 + pF(p[2]);
+  else if (p.length === 2) s = pI(p[0]) * 60 + pF(p[1]);
+  else s = pF(p[0]);
+  return s;
+}
+
+function dh(t) {
+  const ta = _cr('textarea');
+  ta.innerHTML = t;
+  return ta.value;
+}
+
+export async function fetchMetadata(vid) {
+  log.info(`Fetch meta: ${vid}`);
+  try {
+    const d = await fetchVideoData(vid);
+    const m = {
+      videoId: d.videoId,
+      title: d.title,
+      author: d.author,
+      authorId: d.authorId,
+      lengthSeconds: d.lengthSeconds,
+      viewCount: d.viewCount,
+      likeCount: d.likeCount,
+      published: d.published,
+      description: d.description,
+      keywords: d.keywords || [],
+      genre: d.genre,
+      isFamilyFriendly: d.isFamilyFriendly,
+      captionsAvailable: (d.captions?.length || 0) > 0,
+      availableLanguages: mp(d.captions || [], c => c.language_code),
+    };
+    log.success('Meta extracted');
+    return m;
+  } catch (x) {
+    log.error('Meta fail:', x.message);
+    throw x;
+  }
+}
+
+export async function searchVideos(q, o = {}) {
+  log.info(`Search: ${q}`);
+  const inst = await fwi();
+  const p = new URLSearchParams({
+    q,
+    page: o.page || 1,
+    sort: o.sort || 'relevance',
+    type: o.type || 'video',
+    ...o,
+  });
+  const u = `${inst}/api/v1/search?${p}`;
+  log.debug(`Search URL: ${u}`);
+  try {
+    const r = await fj(u, { signal: AbortSignal.timeout(1e4) });
+    log.success(`Found ${r.length}`);
+    return r;
+  } catch (x) {
+    log.error('Search fail:', x.message);
+    throw x;
+  }
 }

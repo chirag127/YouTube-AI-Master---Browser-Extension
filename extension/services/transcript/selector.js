@@ -9,7 +9,7 @@ import { CAPTION_KIND, DEFAULT_LANGUAGE } from './constants.js';
  * @returns {Object|null} Caption track or null
  */
 export function findTrackByLanguage(tracks, languageCode) {
-    return tracks.find(track => track.languageCode === languageCode) || null;
+  return tracks.find(track => track.languageCode === languageCode) || null;
 }
 
 /**
@@ -19,10 +19,10 @@ export function findTrackByLanguage(tracks, languageCode) {
  * @returns {Object|null} Manual caption track or null
  */
 export function getManualTrack(tracks, languageCode) {
-    return tracks.find(
-        track => track.languageCode === languageCode &&
-            track.kind !== CAPTION_KIND.ASR
-    ) || null;
+  return (
+    tracks.find(track => track.languageCode === languageCode && track.kind !== CAPTION_KIND.ASR) ||
+    null
+  );
 }
 
 /**
@@ -32,22 +32,22 @@ export function getManualTrack(tracks, languageCode) {
  * @returns {Object|null} Best caption track or null
  */
 export function selectBestTrack(tracks, preferredLanguage = DEFAULT_LANGUAGE) {
-    if (!tracks || tracks.length === 0) {
-        return null;
-    }
+  if (!tracks || tracks.length === 0) {
+    return null;
+  }
 
-    // Try manual track in preferred language
-    const manualTrack = getManualTrack(tracks, preferredLanguage);
-    if (manualTrack) {
-        return manualTrack;
-    }
+  // Try manual track in preferred language
+  const manualTrack = getManualTrack(tracks, preferredLanguage);
+  if (manualTrack) {
+    return manualTrack;
+  }
 
-    // Try any track in preferred language
-    const preferredTrack = findTrackByLanguage(tracks, preferredLanguage);
-    if (preferredTrack) {
-        return preferredTrack;
-    }
+  // Try any track in preferred language
+  const preferredTrack = findTrackByLanguage(tracks, preferredLanguage);
+  if (preferredTrack) {
+    return preferredTrack;
+  }
 
-    // Fallback to first available track
-    return tracks[0];
+  // Fallback to first available track
+  return tracks[0];
 }

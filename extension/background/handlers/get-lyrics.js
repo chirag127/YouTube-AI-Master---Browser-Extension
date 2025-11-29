@@ -1,12 +1,13 @@
-import geniusAPI from "../../api/genius-lyrics.js";
+import geniusAPI from '../../api/genius-lyrics.js';
+import { e } from '../../utils/shortcuts.js';
 
-export async function handleGetLyrics(request, sendResponse) {
-    try {
-        const { title, artist } = request;
-        const result = await geniusAPI.getLyrics(title, artist);
-        sendResponse({ success: true, result });
-    } catch (error) {
-        console.error("[GetLyrics] Error:", error);
-        sendResponse({ success: false, error: error.message });
-    }
+export async function handleGetLyrics(req, rsp) {
+  try {
+    const { title, artist } = req;
+    const res = await geniusAPI.getLyrics(title, artist);
+    rsp({ success: true, result: res });
+  } catch (x) {
+    e('[GetLyrics] Error:', x);
+    rsp({ success: false, error: x.message });
+  }
 }

@@ -1,0 +1,15 @@
+{
+  "name": "youtube-ai-navigator",
+  "version": "1.0.0",
+  "description": "YouTube AI Navigator Extension",
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,json,html,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\"",
+    "lint": "eslint \"extension/**/*.js\"",
+    "lint:fix": "eslint \"extension/**/*.js\" --fix"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.0",
+    "eslint": "^8.55.0"
+  }
+}

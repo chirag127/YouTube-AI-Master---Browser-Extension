@@ -1,100 +1,38 @@
-import { GeminiClient } from "../../api/gemini-client.js";
+import { GeminiClient } from '../../api/gemini-client.js';
+import { l, w, e, js, jp, rp, tr, sg, ft } from '../../utils/shortcuts.js';
 
-/**
- * Handle audio transcription using Gemini API
- * @param {Object} request - Request object containing audioUrl and lang
- * @param {Function} sendResponse - Callback to send response
- */
-export async function handleTranscribeAudio(request, sendResponse) {
+export async function handleTranscribeAudio(req, rsp) {
+  try {
+    const { audioUrl, lang } = req;
+    if (!audioUrl) throw new Error('No audio URL provided');
+    const s = await sg(['apiKey', 'model']);
+    if (!s.apiKey) throw new Error('Gemini API key not found');
+    let m = s.model || 'gemini-2.5-flash-preview-09-2025';
+    if (m.startsWith('models/')) m = rp(m, 'models/', '');
+    const c = new GeminiClient(s.apiKey);
+    l('[TranscribeAudio] Fetching audio...', audioUrl);
+    const ar = await ft(audioUrl);
+    if (!ar.ok) throw new Error(`Failed to fetch audio: ${ar.status}`);
+    const ab = await ar.arrayBuffer();
+    const b64 = btoa(new Uint8Array(ab).reduce((d, b) => d + String.fromCharCode(b), ''));
+    l(`[TranscribeAudio] Audio fetched. Size: ${ab.byteLength} bytes`);
+    const pt = `Transcribe the following audio into a JSON array of segments. Language: ${lang || 'en'}. Format: JSON only. No markdown. Structure: [{"start": number (seconds), "text": "string"}]. If the audio is music or no speech, return [].`;
+    const parts = [{ inlineData: { mimeType: 'audio/mp4', data: b64 } }, { text: pt }];
+    l('[TranscribeAudio] Sending to Gemini...');
+    const txt = await c.generateContent(parts, m);
+    let seg = [];
     try {
-        const { audioUrl, lang } = request;
-
-        if (!audioUrl) {
-            throw new Error("No audio URL provided");
-        }
-
-        // Get settings for API key
-        const settings = await chrome.storage.sync.get(["apiKey", "model"]);
-        if (!settings.apiKey) {
-            throw new Error("Gemini API key not found");
-        }
-
-        let model = settings.model || "gemini-2.5-flash-preview-09-2025";
-
-        // Strip models/ prefix if present
-        if (model.startsWith('models/')) {
-            model = model.replace('models/', '');
-        }
-
-        const client = new GeminiClient(settings.apiKey);
-
-        console.log("[TranscribeAudio] Fetching audio...", audioUrl);
-
-        // Fetch audio as blob/arraybuffer
-        const audioRes = await fetch(audioUrl);
-        if (!audioRes.ok) {
-            throw new Error(`Failed to fetch audio: ${audioRes.status}`);
-        }
-
-        const arrayBuffer = await audioRes.arrayBuffer();
-        const base64Audio = btoa(
-            new Uint8Array(arrayBuffer).reduce(
-                (data, byte) => data + String.fromCharCode(byte),
-                ""
-            )
-        );
-
-        console.log(
-            `[TranscribeAudio] Audio fetched. Size: ${arrayBuffer.byteLength} bytes`
-        );
-
-        // Prepare prompt
-        const promptText = `
-            Transcribe the following audio into a JSON array of segments.
-            Language: ${lang || "en"}.
-            Format: JSON only. No markdown.
-            Structure: [{"start": number (seconds), "text": "string"}]
-            If the audio is music or no speech, return [].
-        `;
-
-        const parts = [
-            {
-                inlineData: {
-                    mimeType: "audio/mp4", // Assuming mp4/m4a from YouTube
-                    data: base64Audio,
-                },
-            },
-            { text: promptText },
-        ];
-
-        console.log("[TranscribeAudio] Sending to Gemini...");
-        const text = await client.generateContent(parts, model);
-
-        // Parse JSON
-        let segments = [];
-        try {
-            // Clean markdown code blocks if present
-            const cleanText = text
-                .replace(/```json/g, "")
-                .replace(/```/g, "")
-                .trim();
-            segments = JSON.parse(cleanText);
-        } catch (e) {
-            console.warn(
-                "[TranscribeAudio] JSON parse failed, trying to extract array",
-                e
-            );
-            const match = text.match(/\[.*\]/s);
-            if (match) {
-                segments = JSON.parse(match[0]);
-            } else {
-                throw new Error("Failed to parse transcription response");
-            }
-        }
-
-        sendResponse({ success: true, segments });
-    } catch (error) {
-        console.error("[TranscribeAudio] Error:", error);
-        sendResponse({ success: false, error: error.message });
+      const cln = tr(rp(rp(txt, /```json/g, ''), /```/g, ''));
+      seg = jp(cln);
+    } catch (x) {
+      w('[TranscribeAudio] JSON parse failed, trying to extract array', x);
+      const m = txt.match(/\[.*\]/s);
+      if (m) seg = jp(m[0]);
+      else throw new Error('Failed to parse transcription response');
     }
+    rsp({ success: true, segments: seg });
+  } catch (x) {
+    e('[TranscribeAudio] Error:', x);
+    rsp({ success: false, error: x.message });
+  }
 }

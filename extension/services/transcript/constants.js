@@ -1,8 +1,8 @@
 // Transcript service constants
 
 export const CAPTION_KIND = {
-    ASR: 'asr',
-    MANUAL: 'manual'
+  ASR: 'asr',
+  MANUAL: 'manual',
 };
 
 export const DEFAULT_LANGUAGE = 'en';

@@ -1,15 +1,10 @@
-export async function handleGetMetadata(request, sendResponse) {
-    const { videoId } = request;
-    console.warn(
-        "[Background] GET_METADATA called - this should be handled by content script"
-    );
-    sendResponse({
-        success: true,
-        data: {
-            title: "YouTube Video",
-            author: "Unknown Channel",
-            viewCount: "Unknown",
-            videoId: videoId,
-        },
-    });
+import { w } from '../../utils/shortcuts.js';
+
+export async function handleGetMetadata(req, rsp) {
+  const { videoId } = req;
+  w('[Background] GET_METADATA called - this should be handled by content script');
+  rsp({
+    success: true,
+    data: { title: 'YouTube Video', author: 'Unknown Channel', viewCount: 'Unknown', videoId },
+  });
 }

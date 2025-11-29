@@ -1,15 +1,15 @@
-import { buildContextString } from "./utils.js";
+import { buildContextString } from './utils.js';
 
 export const chat = (question, context, metadata) => {
-    const contextObj = {
-        metadata: metadata || {},
-        transcript: context,
-        lyrics: null,
-        comments: [],
-        sponsorBlockSegments: metadata?.sponsorBlockSegments || [],
-    };
+  const contextObj = {
+    metadata: metadata || {},
+    transcript: context,
+    lyrics: null,
+    comments: [],
+    sponsorBlockSegments: metadata?.sponsorBlockSegments || [],
+  };
 
-    return `
+  return `
     Role: You are a helpful AI assistant for a YouTube video.
 
     ${buildContextString(contextObj)}

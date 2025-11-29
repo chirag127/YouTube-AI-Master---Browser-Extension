@@ -8,13 +8,13 @@
  * @returns {string} Clean model name without prefix
  */
 export function cleanModelName(modelName) {
-    if (!modelName) return '';
+  if (!modelName) return '';
 
-    if (typeof modelName === 'string' && modelName.startsWith('models/')) {
-        return modelName.replace('models/', '');
-    }
+  if (typeof modelName === 'string' && modelName.startsWith('models/')) {
+    return modelName.replace('models/', '');
+  }
 
-    return modelName;
+  return modelName;
 }
 
 /**
@@ -22,7 +22,7 @@ export function cleanModelName(modelName) {
  * @returns {string} Default model name
  */
 export function getDefaultModel() {
-    return 'gemini-2.5-flash-preview-09-2025';
+  return 'gemini-2.5-flash-preview-09-2025';
 }
 
 /**
@@ -31,6 +31,6 @@ export function getDefaultModel() {
  * @returns {string} Clean, valid model name
  */
 export function getValidModelName(modelName) {
-    const cleaned = cleanModelName(modelName);
-    return cleaned || getDefaultModel();
+  const cleaned = cleanModelName(modelName);
+  return cleaned || getDefaultModel();
 }

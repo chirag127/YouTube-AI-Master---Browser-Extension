@@ -1,251 +1,158 @@
-import { GeminiClient } from "./gemini-client.js";
-import { ModelManager } from "./models.js";
-import { prompts } from "./prompts/index.js";
-import { cl, cw, ce, jp, js, sbs } from "../utils/shortcuts.js";
+import { GeminiClient } from './gemini-client.js';
+import { ModelManager } from './models.js';
+import { prompts } from './prompts/index.js';
+import { l, w, e, jp, js, sbs, mp, tr, rp } from '../utils/shortcuts.js';
 
-// Re-export ModelManager for use in options page
 export { ModelManager };
 
 export class GeminiService {
-    constructor(apiKey) {
-        this.client = new GeminiClient(apiKey);
-        this.models = new ModelManager(
-            apiKey,
-            "https://generativelanguage.googleapis.com/v1beta"
-        );
+  constructor(apiKey) {
+    this.client = new GeminiClient(apiKey);
+    this.models = new ModelManager(apiKey, 'https://generativelanguage.googleapis.com/v1beta');
+  }
+  async fetchAvailableModels() {
+    return this.models.fetch();
+  }
+  async chatWithVideo(q, c, m = null, md = null) {
+    return this.generateContent(prompts.chat(q, c, md), m);
+  }
+  async analyzeCommentSentiment(c, m = null) {
+    l('[GS] ACS:', c?.length);
+    if (!c || !c.length) {
+      w('[GS] No comms');
+      return 'No comments available to analyze.';
     }
-    async fetchAvailableModels() {
-        return this.models.fetch();
+    l(`[GS] Gen anal for ${c.length}`);
+    return this.generateContent(prompts.comments(c), m);
+  }
+  async generateComprehensiveAnalysis(ctx, opt = {}) {
+    try {
+      const r = await this.generateContent(prompts.comprehensive(ctx, opt));
+      const s = this._extractSection(r, 'Summary');
+      const i = this._extractSection(r, 'Key Insights');
+      const f = this._extractSection(r, 'FAQ');
+      return {
+        summary: s || r,
+        insights: i || '',
+        faq: f || '',
+        timestamps: [],
+      };
+    } catch (x) {
+      e('[GS] Anal fail:', x);
+      throw x;
     }
-
-    async chatWithVideo(question, context, model = null, metadata = null) {
-        return this.generateContent(
-            prompts.chat(question, context, metadata),
-            model
-        );
+  }
+  async extractSegments(ctx) {
+    try {
+      l('[GS] Ext segs');
+      const r = await this.generateContent(prompts.segments(ctx));
+      l('[GS] Raw len:', r.length);
+      l('[GS] 1st 1k:', sbs(r, 0, 1000));
+      let cr = tr(r);
+      cr = rp(cr, /```json\s*/g, '');
+      cr = rp(cr, /```\s*/g, '');
+      cr = tr(cr);
+      let jm = cr.match(/\{[\s\S]*\}/);
+      if (!jm) {
+        e('[GS] No JSON:', r);
+        return { segments: [], fullVideoLabel: null };
+      }
+      const jsStr = jm[0];
+      l('[GS] JSON len:', jsStr.length);
+      const p = jp(jsStr);
+      if (!p.segments || !Array.isArray(p.segments)) {
+        e('[GS] Inv struct:', p);
+        return { segments: [], fullVideoLabel: null };
+      }
+      l('[GS] Parsed:', p.segments.length);
+      l('[GS] FVL:', p.fullVideoLabel);
+      const ts = mp(p.segments, s => ({
+        start: s.s,
+        end: s.e,
+        label: this._expandLabel(s.l),
+        title: s.t,
+        description: s.d,
+        text: s.d,
+      }));
+      if (ts.length > 0) l('[GS] 1st seg:', js(ts[0]));
+      return {
+        segments: ts,
+        fullVideoLabel: this._expandLabel(p.fullVideoLabel) || null,
+      };
+    } catch (x) {
+      e('[GS] Seg fail:', x.message);
+      e('[GS] Stack:', x.stack);
+      return { segments: [], fullVideoLabel: null };
     }
-
-    async analyzeCommentSentiment(comments, model = null) {
-        cl(
-            "[GeminiService] analyzeCommentSentiment called with:",
-            comments?.length
-        );
-        if (!comments || !comments.length) {
-            cw("[GeminiService] No comments provided");
-            return "No comments available to analyze.";
-        }
-        cl(
-            `[GeminiService] Generating comment analysis for ${comments.length} comments`
-        );
-        const prompt = prompts.comments(comments);
-        return this.generateContent(prompt, model);
-    }
-
-    async generateComprehensiveAnalysis(context, options = {}) {
+  }
+  _extractSection(t, sn) {
+    const r = new RegExp(`## ${sn}\\s*([\\s\\S]*?)(?=##|$)`, 'i');
+    const m = t.match(r);
+    return m ? tr(m[1]) : null;
+  }
+  _expandLabel(sc) {
+    if (!sc) return null;
+    const lm = {
+      S: 'Sponsor',
+      SP: 'Self Promotion',
+      UP: 'Unpaid Promotion',
+      EA: 'Exclusive Access',
+      IR: 'Interaction Reminder (Subscribe)',
+      H: 'Highlight',
+      I: 'Intermission/Intro Animation',
+      EC: 'Endcards/Credits',
+      P: 'Preview/Recap',
+      G: 'Hook/Greetings',
+      T: 'Tangents/Jokes',
+      NM: 'Music: Non-Music Section',
+      C: 'Content',
+    };
+    return lm[sc] || sc;
+  }
+  async generateContent(p, m = null) {
+    let ml = [];
+    const fm = [
+      'gemini-2.5-flash-lite-preview-09-2025',
+      'gemini-2.0-flash-exp',
+      'gemini-2.5-flash-preview-09-2025',
+      'gemini-1.5-flash-002',
+      'gemini-1.5-flash-001',
+      'gemini-1.5-pro-latest',
+      'gemini-1.5-pro-002',
+    ];
+    if (m) ml = [m];
+    else {
+      if (this.models.models.length === 0) {
         try {
-            const response = await this.generateContent(
-                prompts.comprehensive(context, options)
-            );
-
-            const summary = this._extractSection(response, "Summary");
-            const insights = this._extractSection(response, "Key Insights");
-            const faq = this._extractSection(response, "FAQ");
-
-            return {
-                summary: summary || response,
-                insights: insights || "",
-                faq: faq || "",
-                timestamps: [],
-            };
-        } catch (error) {
-            ce("[GeminiService] Analysis failed:", error);
-            throw error;
+          await this.models.fetch();
+        } catch (x) {
+          w('Mod fetch fail:', x.message);
+          ml = fm;
         }
+      }
+      if (this.models.models.length > 0) ml = this.models.getList();
+      else if (ml.length === 0) ml = fm;
     }
-
-    async extractSegments(context) {
-        try {
-            cl("[GeminiService] Extracting segments...");
-            const prompt = prompts.segments(context);
-            const response = await this.generateContent(prompt);
-
-            cl("[GeminiService] Raw segment response length:", response.length);
-            cl("[GeminiService] First 1000 chars:", sbs(response, 0, 1000));
-
-            // Remove markdown code blocks if present
-            let cleanedResponse = response.trim();
-            cleanedResponse = cleanedResponse.replace(/```json\s*/g, "");
-            cleanedResponse = cleanedResponse.replace(/```\s*/g, "");
-            cleanedResponse = cleanedResponse.trim();
-
-            // Try to find JSON object
-            let jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
-
-            if (!jsonMatch) {
-                ce(
-                    "[GeminiService] No JSON found in response. Full response:",
-                    response
-                );
-                return { segments: [], fullVideoLabel: null };
-            }
-
-            const jsonStr = jsonMatch[0];
-            cl("[GeminiService] Extracted JSON string length:", jsonStr.length);
-
-            const parsed = jp(jsonStr);
-
-            if (!parsed.segments || !Array.isArray(parsed.segments)) {
-                ce("[GeminiService] Invalid segments structure:", parsed);
-                return { segments: [], fullVideoLabel: null };
-            }
-
-            cl(
-                "[GeminiService] Successfully parsed segments:",
-                parsed.segments.length
-            );
-            cl("[GeminiService] Full video label:", parsed.fullVideoLabel);
-
-            // Transform short keys to long keys for compatibility
-            const transformedSegments = parsed.segments.map((seg) => ({
-                start: seg.s,
-                end: seg.e,
-                label: this._expandLabel(seg.l),
-                title: seg.t,
-                description: seg.d,
-                text: seg.d, // For backward compatibility
-            }));
-
-            // Log first few segments for debugging
-            if (transformedSegments.length > 0) {
-                cl(
-                    "[GeminiService] First transformed segment:",
-                    js(transformedSegments[0])
-                );
-            }
-
-            return {
-                segments: transformedSegments,
-                fullVideoLabel:
-                    this._expandLabel(parsed.fullVideoLabel) || null,
-            };
-        } catch (error) {
-            ce("[GeminiService] Segment extraction failed:", error.message);
-            ce("[GeminiService] Error stack:", error.stack);
-            return { segments: [], fullVideoLabel: null };
-        }
+    const errs = [];
+    for (let i = 0; i < ml.length; i++) {
+      const mn = ml[i];
+      try {
+        l(`[GS] Try: ${mn} (${i + 1}/${ml.length})`);
+        const res = await this.client.generateContent(p, mn);
+        if (i > 0) l(`[GS] Fallback succ: ${mn}`);
+        return res;
+      } catch (x) {
+        errs.push({ model: mn, error: x.message });
+        w(`[GS] ${mn} fail:`, x.message);
+        if (x.retryable === false) throw x;
+        if (i < ml.length - 1) l('[GS] Next...');
+      }
     }
-
-    _extractSection(text, sectionName) {
-        const regex = new RegExp(
-            `## ${sectionName}\\s*([\\s\\S]*?)(?=##|$)`,
-            "i"
-        );
-        const match = text.match(regex);
-        return match ? match[1].trim() : null;
-    }
-
-    _expandLabel(shortCode) {
-        if (!shortCode) return null;
-
-        const labelMap = {
-            S: "Sponsor",
-            SP: "Self Promotion",
-            UP: "Unpaid Promotion",
-            EA: "Exclusive Access",
-            IR: "Interaction Reminder (Subscribe)",
-            H: "Highlight",
-            I: "Intermission/Intro Animation",
-            EC: "Endcards/Credits",
-            P: "Preview/Recap",
-            G: "Hook/Greetings",
-            T: "Tangents/Jokes",
-            NM: "Music: Non-Music Section",
-            C: "Content",
-        };
-
-        return labelMap[shortCode] || shortCode;
-    }
-
-    async generateContent(prompt, model = null) {
-        let modelList = [];
-        const fallbackModels = [
-            "gemini-2.5-flash-lite-preview-09-2025",
-            "gemini-2.0-flash-exp",
-            "gemini-2.5-flash-preview-09-2025",
-            "gemini-1.5-flash-002",
-            "gemini-1.5-flash-001",
-            "gemini-1.5-pro-latest",
-            "gemini-1.5-pro-002",
-        ];
-
-        if (model) {
-            modelList = [model];
-        } else {
-            if (this.models.models.length === 0) {
-                try {
-                    await this.models.fetch();
-                } catch (error) {
-                    cw(
-                        "Failed to fetch models, using fallback list:",
-                        error.message
-                    );
-                    modelList = fallbackModels;
-                }
-            }
-            if (this.models.models.length > 0) {
-                modelList = this.models.getList();
-            } else if (modelList.length === 0) {
-                modelList = fallbackModels;
-            }
-        }
-
-        const errors = [];
-
-        for (let i = 0; i < modelList.length; i++) {
-            const modelName = modelList[i];
-            try {
-                cl(
-                    `[GeminiService] Attempting model: ${modelName} (${i + 1}/${
-                        modelList.length
-                    })`
-                );
-
-                const result = await this.client.generateContent(
-                    prompt,
-                    modelName
-                );
-
-                if (i > 0) {
-                    cl(
-                        `[GeminiService] Fallback model succeeded: ${modelName}`
-                    );
-                }
-
-                return result;
-            } catch (error) {
-                errors.push({ model: modelName, error: error.message });
-                cw(`[GeminiService] Model ${modelName} failed:`, error.message);
-
-                // Don't retry if it's a non-retryable error
-                if (error.retryable === false) {
-                    throw error;
-                }
-
-                // Don't wait after last attempt
-                if (i < modelList.length - 1) {
-                    cl("[GeminiService] Falling back to next model...");
-                }
-            }
-        }
-
-        const errorMsg = `All ${modelList.length} Gemini models failed. ${
-            errors[0]?.error || "Unknown error"
-        }`;
-        ce("[GeminiService]", errorMsg);
-        throw new Error(errorMsg);
-    }
-
-    getRateLimitStats() {
-        return this.client.getRateLimitStats();
-    }
+    const em = `All ${ml.length} failed. ${errs[0]?.error || 'Unknown'}`;
+    ce('[GS]', em);
+    throw new Error(em);
+  }
+  getRateLimitStats() {
+    return this.client.getRateLimitStats();
+  }
 }

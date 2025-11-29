@@ -1,108 +1,81 @@
-import { cl, ce, cw, jstr } from "../utils/shortcuts.js";
+import { l, ce, cw, js, ks, mp, jn, fj, fn } from '../utils/shortcuts.js';
 
-const API_BASE = "https://sponsor.ajay.app/api";
-
-// SponsorBlock category mapping
-const CATEGORY_MAP = {
-    sponsor: "Sponsor",
-    selfpromo: "Self Promotion",
-    interaction: "Interaction Reminder",
-    intro: "Intermission/Intro",
-    outro: "Endcards/Credits",
-    preview: "Preview/Recap",
-    music_offtopic: "Off-Topic",
-    poi_highlight: "Highlight",
-    filler: "Filler/Tangent",
-    exclusive_access: "Exclusive Access",
-    chapter: "Chapter",
+const API_BASE = 'https://sponsor.ajay.app/api';
+const CM = {
+  sponsor: 'Sponsor',
+  selfpromo: 'Self Promotion',
+  interaction: 'Interaction Reminder',
+  intro: 'Intermission/Intro',
+  outro: 'Endcards/Credits',
+  preview: 'Preview/Recap',
+  music_offtopic: 'Off-Topic',
+  poi_highlight: 'Highlight',
+  filler: 'Filler/Tangent',
+  exclusive_access: 'Exclusive Access',
+  chapter: 'Chapter',
 };
 
-/**
- * Generate SHA256 hash prefix for privacy
- */
-async function _generateHash(videoID) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(videoID);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-    return hashHex.substring(0, 4); // First 4 chars for privacy
+async function _gh(vid) {
+  const e = new TextEncoder();
+  const d = e.encode(vid);
+  const hb = await crypto.subtle.digest('SHA-256', d);
+  const ha = Array.from(new Uint8Array(hb));
+  const hh = mp(ha, b => b.toString(16).padStart(2, '0')).join('');
+  return hh.substring(0, 4);
 }
 
-/**
- * Map category code to readable name
- */
-function _mapCategory(code) {
-    return CATEGORY_MAP[code] || code;
+function _mc(c) {
+  return CM[c] || c;
 }
 
-/**
- * Fetch segments from SponsorBlock API
- */
-export async function fetchSegments(videoID) {
-    if (!videoID) {
-        cw("[SponsorBlock] No videoID provided");
-        return [];
+export async function fetchSegments(vid) {
+  if (!vid) {
+    cw('[SB] No vid');
+    return [];
+  }
+  try {
+    l(`[SB] Fetch: ${vid}`);
+    const hp = await _gh(vid);
+    const c = ks(CM);
+    const cp = jn(
+      mp(c, x => `category=${x}`),
+      '&'
+    );
+    const u = `${API_BASE}/skipSegments/${hp}?service=YouTube&${cp}`;
+    l(`[SB] URL: ${u}`);
+    const r = await fetch(u);
+    if (r.status === 404) {
+      l('[SB] 404');
+      return [];
     }
-
-    try {
-        cl(`[SponsorBlock] Fetching segments for: ${videoID}`);
-        const hashPrefix = await _generateHash(videoID);
-
-        // Explicitly request all categories including chapters
-        const categories = Object.keys(CATEGORY_MAP);
-        const categoryParams = categories.map((c) => `category=${c}`).join("&");
-        const url = `${API_BASE}/skipSegments/${hashPrefix}?service=YouTube&${categoryParams}`;
-
-        cl(`[SponsorBlock] API URL: ${url}`);
-        const response = await fetch(url);
-
-        if (response.status === 404) {
-            cl("[SponsorBlock] No segments found (404)");
-            return [];
-        }
-
-        if (response.status === 429) {
-            cw("[SponsorBlock] Rate limited (429)");
-            return [];
-        }
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        cl(`[SponsorBlock] Raw response:`, jstr(data));
-
-        // Find matching video in response
-        const videoData = data.find((v) => v.videoID === videoID);
-
-        if (!videoData || !videoData.segments) {
-            cl("[SponsorBlock] No segments for this video");
-            return [];
-        }
-
-        // Map segments to our format
-        const segments = videoData.segments.map((seg) => ({
-            start: seg.segment[0],
-            end: seg.segment[1],
-            category: _mapCategory(seg.category),
-            categoryCode: seg.category,
-            UUID: seg.UUID,
-            votes: seg.votes,
-            locked: seg.locked,
-            actionType: seg.actionType || "skip",
-            description: seg.description || "",
-        }));
-
-        cl(`[SponsorBlock] Mapped ${segments.length} segments`);
-        return segments;
-    } catch (error) {
-        ce("[SponsorBlock] Fetch failed:", error.message);
-        return []; // Graceful fallback
+    if (r.status === 429) {
+      cw('[SB] 429');
+      return [];
     }
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+    l(`[SB] Resp:`, js(d));
+    const vd = d.find(v => v.videoID === vid);
+    if (!vd || !vd.segments) {
+      l('[SB] No segs');
+      return [];
+    }
+    const s = mp(vd.segments, sg => ({
+      start: sg.segment[0],
+      end: sg.segment[1],
+      category: _mc(sg.category),
+      categoryCode: sg.category,
+      UUID: sg.UUID,
+      votes: sg.votes,
+      locked: sg.locked,
+      actionType: sg.actionType || 'skip',
+      description: sg.description || '',
+    }));
+    l(`[SB] Mapped ${s.length}`);
+    return s;
+  } catch (x) {
+    ce('[SB] Fail:', x.message);
+    return [];
+  }
 }
-
 export default { fetchSegments };

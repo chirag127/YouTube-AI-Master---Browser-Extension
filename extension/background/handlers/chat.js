@@ -1,22 +1,16 @@
-import { initializeServices, getServices } from "../services.js";
-import { getApiKey } from "../utils/api-key.js";
+import { initializeServices, getServices } from '../services.js';
+import { getApiKey } from '../utils/api-key.js';
 
-export async function handleChatWithVideo(request, sendResponse) {
-    const { question, context, metadata } = request;
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-        sendResponse({ success: false, error: "API Key not configured" });
-        return;
-    }
-
-    await initializeServices(apiKey);
-    const { gemini } = getServices();
-
-    const contextString = `Video Metadata:\nTitle: ${
-        metadata?.title || "Unknown"
-    }\nChannel: ${
-        metadata?.author || "Unknown"
-    }\n\nTranscript Context:\n${context}\n`;
-    const answer = await gemini.chatWithVideo(question, contextString, null);
-    sendResponse({ success: true, answer });
+export async function handleChatWithVideo(req, rsp) {
+  const { question, context, metadata } = req;
+  const k = await getApiKey();
+  if (!k) {
+    rsp({ success: false, error: 'API Key not configured' });
+    return;
+  }
+  await initializeServices(k);
+  const { gemini } = getServices();
+  const ctx = `Video Metadata:\nTitle: ${metadata?.title || 'Unknown'}\nChannel: ${metadata?.author || 'Unknown'}\n\nTranscript Context:\n${context}\n`;
+  const ans = await gemini.chatWithVideo(question, ctx, null);
+  rsp({ success: true, answer: ans });
 }

@@ -8,16 +8,16 @@
  * @returns {Promise} Result of function
  */
 export async function retry(fn, maxAttempts = 3, delay = 1000) {
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-            return await fn();
-        } catch (error) {
-            if (attempt === maxAttempts) {
-                throw error;
-            }
-            await sleep(delay * attempt);
-        }
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxAttempts) {
+        throw error;
+      }
+      await sleep(delay * attempt);
     }
+  }
 }
 
 /**
@@ -26,5 +26,5 @@ export async function retry(fn, maxAttempts = 3, delay = 1000) {
  * @returns {Promise} Promise that resolves after delay
  */
 export function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
