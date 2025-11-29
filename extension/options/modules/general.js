@@ -1,33 +1,20 @@
 export class GeneralSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const c = this.s.get();
+        this.set('outputLanguage', c.ai?.outputLanguage || 'en');
+        this.chk('autoAnalyze', c.automation?.autoAnalyze ?? true);
+        this.chk('autoSummarize', c.automation?.autoSummarize ?? true);
+        this.chk('autoExtractKeyPoints', c.automation?.autoExtractKeyPoints ?? true);
+        this.chk('autoDetectLanguage', c.automation?.autoDetectLanguage ?? true);
+        this.chk('autoLoadTranscript', c.automation?.autoLoadTranscript ?? true);
+        this.chk('saveHistory', c.advanced?.saveHistory ?? true);
 
-    loadSettings() {
-        const config = this.settings.get();
-
-        // Language
-        this.setValue('outputLanguage', config.ai?.outputLanguage || 'en');
-
-        // Automation
-        this.setChecked('autoAnalyze', config.automation?.autoAnalyze ?? true);
-        this.setChecked('autoSummarize', config.automation?.autoSummarize ?? true);
-        this.setChecked('autoExtractKeyPoints', config.automation?.autoExtractKeyPoints ?? true);
-        this.setChecked('autoDetectLanguage', config.automation?.autoDetectLanguage ?? true);
-        this.setChecked('autoLoadTranscript', config.automation?.autoLoadTranscript ?? true);
-
-        // Data & Privacy
-        this.setChecked('saveHistory', config.advanced?.saveHistory ?? true);
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             outputLanguage: { path: 'ai.outputLanguage' },
             autoAnalyze: { path: 'automation.autoAnalyze' },
             autoSummarize: { path: 'automation.autoSummarize' },
@@ -37,24 +24,21 @@ export class GeneralSettings {
             saveHistory: { path: 'advanced.saveHistory' }
         });
 
-        // Clear History
         document.getElementById('clearHistory')?.addEventListener('click', async () => {
             if (confirm('Clear all history? This cannot be undone.')) {
                 await chrome.storage.local.remove('comprehensive_history');
-                if (this.autoSave.notifications) {
-                    this.autoSave.notifications.success('History cleared');
-                }
+                this.a.notifications?.success('History cleared');
             }
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 
-    setChecked(id, checked) {
+    chk(id, v) {
         const el = document.getElementById(id);
-        if (el) el.checked = checked;
+        if (el) el.checked = v;
     }
 }

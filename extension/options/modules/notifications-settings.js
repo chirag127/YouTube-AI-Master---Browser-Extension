@@ -1,33 +1,25 @@
 export class NotificationsSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const n = this.s.get().notifications || {};
+        this.chk('notificationsEnabled', n.enabled ?? true);
+        this.set('notificationPosition', n.position || 'top-right');
+        this.set('notificationDuration', n.duration || 3000);
+        this.chk('notificationSound', n.sound ?? false);
+        this.chk('notifyOnSave', n.showOnSave ?? true);
+        this.chk('notifyOnError', n.showOnError ?? true);
+        this.chk('notifyOnProgress', n.showProgress ?? true);
+        this.chk('notifyOnComplete', n.showOnComplete ?? true);
+        this.chk('notifyOnSegmentSkip', n.showOnSegmentSkip ?? true);
 
-    loadSettings() {
-        const config = this.settings.get();
-
-        this.setChecked('notificationsEnabled', config.notifications?.enabled ?? true);
-        this.setValue('notificationPosition', config.notifications?.position || 'top-right');
-        this.setValue('notificationDuration', config.notifications?.duration || 3000);
-        this.setChecked('notificationSound', config.notifications?.sound ?? false);
-        this.setChecked('notifyOnSave', config.notifications?.showOnSave ?? true);
-        this.setChecked('notifyOnError', config.notifications?.showOnError ?? true);
-        this.setChecked('notifyOnProgress', config.notifications?.showProgress ?? true);
-        this.setChecked('notifyOnComplete', config.notifications?.showOnComplete ?? true);
-        this.setChecked('notifyOnSegmentSkip', config.notifications?.showOnSegmentSkip ?? true);
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             notificationsEnabled: { path: 'notifications.enabled' },
             notificationPosition: { path: 'notifications.position' },
-            notificationDuration: { path: 'notifications.duration', transform: (v) => parseInt(v) },
+            notificationDuration: { path: 'notifications.duration', transform: v => parseInt(v) },
             notificationSound: { path: 'notifications.sound' },
             notifyOnSave: { path: 'notifications.showOnSave' },
             notifyOnError: { path: 'notifications.showOnError' },
@@ -37,13 +29,13 @@ export class NotificationsSettings {
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 
-    setChecked(id, checked) {
+    chk(id, v) {
         const el = document.getElementById(id);
-        if (el) el.checked = checked;
+        if (el) el.checked = v;
     }
 }

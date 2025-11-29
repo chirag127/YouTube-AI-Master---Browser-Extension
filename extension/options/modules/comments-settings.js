@@ -1,31 +1,23 @@
 export class CommentsSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const c = this.s.get().comments || {};
+        this.chk('commentsEnabled', c.enabled ?? true);
+        this.set('commentsLimit', c.limit || 20);
+        this.chk('includeReplies', c.includeReplies ?? true);
+        this.set('commentsSortBy', c.sortBy || 'top');
+        this.chk('analyzeSentiment', c.analyzeSentiment ?? true);
+        this.chk('filterSpam', c.filterSpam ?? true);
+        this.chk('showAuthorBadges', c.showAuthorBadges ?? true);
+        this.chk('highlightPinned', c.highlightPinned ?? true);
 
-    loadSettings() {
-        const config = this.settings.get();
-
-        this.setChecked('commentsEnabled', config.comments?.enabled ?? true);
-        this.setValue('commentsLimit', config.comments?.limit || 20);
-        this.setChecked('includeReplies', config.comments?.includeReplies ?? true);
-        this.setValue('commentsSortBy', config.comments?.sortBy || 'top');
-        this.setChecked('analyzeSentiment', config.comments?.analyzeSentiment ?? true);
-        this.setChecked('filterSpam', config.comments?.filterSpam ?? true);
-        this.setChecked('showAuthorBadges', config.comments?.showAuthorBadges ?? true);
-        this.setChecked('highlightPinned', config.comments?.highlightPinned ?? true);
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             commentsEnabled: { path: 'comments.enabled' },
-            commentsLimit: { path: 'comments.limit', transform: (v) => parseInt(v) },
+            commentsLimit: { path: 'comments.limit', transform: v => parseInt(v) },
             includeReplies: { path: 'comments.includeReplies' },
             commentsSortBy: { path: 'comments.sortBy' },
             analyzeSentiment: { path: 'comments.analyzeSentiment' },
@@ -35,13 +27,13 @@ export class CommentsSettings {
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 
-    setChecked(id, checked) {
+    chk(id, v) {
         const el = document.getElementById(id);
-        if (el) el.checked = checked;
+        if (el) el.checked = v;
     }
 }

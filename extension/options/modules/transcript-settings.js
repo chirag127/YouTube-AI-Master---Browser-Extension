@@ -1,30 +1,22 @@
 export class TranscriptSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const c = this.s.get().transcript || {};
+        this.set('transcriptMethod', c.method || 'auto');
+        this.set('transcriptLanguage', c.language || 'en');
+        this.chk('includeTimestamps', c.includeTimestamps ?? true);
+        this.chk('transcriptAutoTranslate', c.autoTranslate ?? true);
+        this.chk('transcriptShowOriginal', c.showOriginal ?? false);
+        this.chk('transcriptHighlightKeywords', c.highlightKeywords ?? true);
+        this.chk('transcriptAutoClose', c.autoClose ?? true);
+        this.set('transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
+        this.chk('transcriptAutoCloseOnCached', c.autoCloseOnCached ?? false);
 
-    loadSettings() {
-        const config = this.settings.get();
-
-        this.setValue('transcriptMethod', config.transcript?.method || 'auto');
-        this.setValue('transcriptLanguage', config.transcript?.language || 'en');
-        this.setChecked('includeTimestamps', config.transcript?.includeTimestamps ?? true);
-        this.setChecked('transcriptAutoTranslate', config.transcript?.autoTranslate ?? true);
-        this.setChecked('transcriptShowOriginal', config.transcript?.showOriginal ?? false);
-        this.setChecked('transcriptHighlightKeywords', config.transcript?.highlightKeywords ?? true);
-        this.setChecked('transcriptAutoClose', config.transcript?.autoClose ?? true);
-        this.setValue('transcriptAutoCloseDelay', config.transcript?.autoCloseDelay || 1000);
-        this.setChecked('transcriptAutoCloseOnCached', config.transcript?.autoCloseOnCached ?? false);
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             transcriptMethod: { path: 'transcript.method' },
             transcriptLanguage: { path: 'transcript.language' },
             includeTimestamps: { path: 'transcript.includeTimestamps' },
@@ -32,18 +24,18 @@ export class TranscriptSettings {
             transcriptShowOriginal: { path: 'transcript.showOriginal' },
             transcriptHighlightKeywords: { path: 'transcript.highlightKeywords' },
             transcriptAutoClose: { path: 'transcript.autoClose' },
-            transcriptAutoCloseDelay: { path: 'transcript.autoCloseDelay', transform: (v) => parseInt(v) },
+            transcriptAutoCloseDelay: { path: 'transcript.autoCloseDelay', transform: v => parseInt(v) },
             transcriptAutoCloseOnCached: { path: 'transcript.autoCloseOnCached' }
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 
-    setChecked(id, checked) {
+    chk(id, v) {
         const el = document.getElementById(id);
-        if (el) el.checked = checked;
+        if (el) el.checked = v;
     }
 }

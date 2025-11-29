@@ -1,27 +1,18 @@
 export class ExternalAPIs {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const api = this.s.get().externalApis || {};
+        this.set('tmdbApiKey', api.tmdb || '');
+        this.set('twitchClientId', api.twitchClientId || '');
+        this.set('twitchAccessToken', api.twitchAccessToken || '');
+        this.set('newsDataApiKey', api.newsData || '');
+        this.set('googleFactCheckApiKey', api.googleFactCheck || '');
 
-    loadSettings() {
-        const config = this.settings.get();
-        const apis = config.externalApis || {};
-
-        this.setValue('tmdbApiKey', apis.tmdb || '');
-        this.setValue('twitchClientId', apis.twitchClientId || '');
-        this.setValue('twitchAccessToken', apis.twitchAccessToken || '');
-        this.setValue('newsDataApiKey', apis.newsData || '');
-        this.setValue('googleFactCheckApiKey', apis.googleFactCheck || '');
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             tmdbApiKey: { path: 'externalApis.tmdb' },
             twitchClientId: { path: 'externalApis.twitchClientId' },
             twitchAccessToken: { path: 'externalApis.twitchAccessToken' },
@@ -30,8 +21,8 @@ export class ExternalAPIs {
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 }

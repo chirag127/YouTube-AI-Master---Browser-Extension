@@ -1,7 +1,7 @@
 export class PerformanceSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.settings = s;
+        this.autoSave = a;
     }
 
     init() {
@@ -10,38 +10,37 @@ export class PerformanceSettings {
     }
 
     loadSettings() {
-        const config = this.settings.get();
-        const perf = config.performance || {};
+        const c = this.settings.get();
+        const p = c.performance || {};
 
-        this.setValue('maxConcurrentRequests', perf.maxConcurrentRequests || 3);
-        this.setValue('rateLimitDelay', perf.rateLimitDelay || 1000);
-        this.setValue('retryAttempts', perf.retryAttempts || 3);
-        this.setValue('retryDelay', perf.retryDelay || 2000);
+        this.set('maxConcurrentRequests', p.maxConcurrentRequests || 3);
+        this.set('rateLimitDelay', p.rateLimitDelay || 1000);
+        this.set('retryAttempts', p.retryAttempts || 3);
+        this.set('retryDelay', p.retryDelay || 2000);
+        this.setChecked('enableCompression', p.enableCompression ?? true);
+        this.setChecked('lazyLoad', p.lazyLoad ?? true);
+        this.setChecked('prefetchData', p.prefetchData ?? true);
     }
 
     attachListeners() {
         this.autoSave.attachToAll({
-            maxConcurrentRequests: {
-                path: 'performance.maxConcurrentRequests',
-                transform: (v) => parseInt(v)
-            },
-            rateLimitDelay: {
-                path: 'performance.rateLimitDelay',
-                transform: (v) => parseInt(v)
-            },
-            retryAttempts: {
-                path: 'performance.retryAttempts',
-                transform: (v) => parseInt(v)
-            },
-            retryDelay: {
-                path: 'performance.retryDelay',
-                transform: (v) => parseInt(v)
-            }
+            maxConcurrentRequests: { path: 'performance.maxConcurrentRequests', transform: v => parseInt(v) },
+            rateLimitDelay: { path: 'performance.rateLimitDelay', transform: v => parseInt(v) },
+            retryAttempts: { path: 'performance.retryAttempts', transform: v => parseInt(v) },
+            retryDelay: { path: 'performance.retryDelay', transform: v => parseInt(v) },
+            enableCompression: { path: 'performance.enableCompression' },
+            lazyLoad: { path: 'performance.lazyLoad' },
+            prefetchData: { path: 'performance.prefetchData' }
         });
     }
 
-    setValue(id, value) {
+    set(id, val) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = val;
+    }
+
+    setChecked(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.checked = val;
     }
 }

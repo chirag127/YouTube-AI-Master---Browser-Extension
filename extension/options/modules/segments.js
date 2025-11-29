@@ -1,124 +1,85 @@
-import {
-    SEGMENT_CATEGORIES,
-    DEFAULT_SEGMENT_CONFIG,
-} from "./settings-manager.js";
+import { SEGMENT_CATEGORIES, DEFAULT_SEGMENT_CONFIG } from "./settings-manager.js";
 
 export class SegmentsConfig {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
+        const c = this.s.get();
+        const en = document.getElementById("enableSegments");
+        const grid = document.getElementById("segmentsGrid");
+
+        if (en) en.checked = c.segments?.enabled ?? true;
+        if (grid) this.render(grid);
+
+        en?.addEventListener("change", e => this.a.save('segments.enabled', e.target.checked));
+        document.getElementById("skipAllBtn")?.addEventListener("click", () => this.setAll("skip"));
+        document.getElementById("speedAllBtn")?.addEventListener("click", () => this.setAll("speed"));
+        document.getElementById("resetAllBtn")?.addEventListener("click", () => this.setAll("ignore"));
     }
 
-    loadSettings() {
-        const config = this.settings.get();
-        const enableSegments = document.getElementById("enableSegments");
-        const segmentsGrid = document.getElementById("segmentsGrid");
-
-        if (enableSegments) {
-            enableSegments.checked = config.segments?.enabled ?? true;
-        }
-
-        if (segmentsGrid) {
-            this.renderGrid(segmentsGrid);
-        }
-    }
-
-    attachListeners() {
-        const enableSegments = document.getElementById("enableSegments");
-        const skipAllBtn = document.getElementById("skipAllBtn");
-        const speedAllBtn = document.getElementById("speedAllBtn");
-        const resetAllBtn = document.getElementById("resetAllBtn");
-
-        if (enableSegments) {
-            enableSegments.addEventListener("change", (e) => {
-                this.autoSave.save('segments.enabled', e.target.checked);
-            });
-        }
-
-        if (skipAllBtn) {
-            skipAllBtn.addEventListener("click", () => this.setAll("skip"));
-        }
-        if (speedAllBtn) {
-            speedAllBtn.addEventListener("click", () => this.setAll("speed"));
-        }
-        if (resetAllBtn) {
-            resetAllBtn.addEventListener("click", () => this.setAll("ignore"));
-        }
-    }
-
-    renderGrid(grid) {
-        const template = document.getElementById("segmentItemTemplate");
+    render(grid) {
+        const tmpl = document.getElementById("segmentItemTemplate");
         grid.innerHTML = "";
-        const config = this.settings.get();
-        const categories = config.segments?.categories || {};
+        const cats = this.s.get().segments?.categories || {};
 
-        SEGMENT_CATEGORIES.forEach((cat) => {
-            const clone = template.content.cloneNode(true);
+        SEGMENT_CATEGORIES.forEach(cat => {
+            const clone = tmpl.content.cloneNode(true);
             const item = clone.querySelector(".segment-item");
             const color = clone.querySelector(".segment-color");
             const name = clone.querySelector(".segment-name");
             const action = clone.querySelector(".segment-action");
-            const speedControl = clone.querySelector(".speed-control");
+            const speedCtrl = clone.querySelector(".speed-control");
             const speedSlider = clone.querySelector(".speed-slider");
-            const speedValue = clone.querySelector(".speed-value");
+            const speedVal = clone.querySelector(".speed-value");
 
             item.dataset.category = cat.id;
             color.style.backgroundColor = cat.color;
             name.textContent = cat.label;
 
-            const catConfig = categories[cat.id] || { ...DEFAULT_SEGMENT_CONFIG };
-            action.value = catConfig.action;
-            speedSlider.value = catConfig.speed;
-            speedValue.textContent = `${catConfig.speed}x`;
+            const cfg = cats[cat.id] || { ...DEFAULT_SEGMENT_CONFIG };
+            action.value = cfg.action;
+            speedSlider.value = cfg.speed;
+            speedVal.textContent = `${cfg.speed}x`;
 
-            if (catConfig.action === "speed") {
-                speedControl.classList.remove("hidden");
-            }
+            if (cfg.action === "speed") speedCtrl.classList.remove("hidden");
 
             action.addEventListener("change", () => {
-                const val = action.value;
-                if (val === "speed") {
-                    speedControl.classList.remove("hidden");
-                } else {
-                    speedControl.classList.add("hidden");
-                }
-                speedValue.textContent = `${val}x`;
-                this.updateConfig(cat.id, { speed: parseFloat(val) });
+                const v = action.value;
+                if (v === "speed") speedCtrl.classList.remove("hidden");
+                else speedCtrl.classList.add("hidden");
+                this.update(cat.id, { action: v });
+            });
+
+            speedSlider.addEventListener("input", () => {
+                const v = speedSlider.value;
+                speedVal.textContent = `${v}x`;
+                this.update(cat.id, { speed: parseFloat(v) });
             });
 
             grid.appendChild(clone);
         });
     }
 
-    updateConfig(catId, updates) {
-        const s = this.settings.get();
-        const segments = { ...s.segments };
-
-        if (!segments[catId]) segments[catId] = { ...DEFAULT_SEGMENT_CONFIG };
-        segments[catId] = { ...segments[catId], ...updates };
-
-        this.settings.save({ segments });
+    async update(id, upd) {
+        const c = this.s.get();
+        const cats = { ...(c.segments?.categories || {}) };
+        if (!cats[id]) cats[id] = { ...DEFAULT_SEGMENT_CONFIG };
+        cats[id] = { ...cats[id], ...upd };
+        await this.a.save('segments.categories', cats);
     }
 
-    setAll(action) {
-        const s = this.settings.get();
-        const segments = { ...s.segments };
-
-        SEGMENT_CATEGORIES.forEach((cat) => {
-            if (!segments[cat.id])
-                segments[cat.id] = { ...DEFAULT_SEGMENT_CONFIG };
-            segments[cat.id] = { ...segments[cat.id], action };
+    async setAll(action) {
+        const c = this.s.get();
+        const cats = { ...(c.segments?.categories || {}) };
+        SEGMENT_CATEGORIES.forEach(cat => {
+            if (!cats[cat.id]) cats[cat.id] = { ...DEFAULT_SEGMENT_CONFIG };
+            cats[cat.id] = { ...cats[cat.id], action };
         });
-
-        this.settings.save({ segments });
-
-        // Re-render to update UI
+        await this.a.save('segments.categories', cats);
         const grid = document.getElementById("segmentsGrid");
-        if (grid) this.renderGrid(grid);
+        if (grid) this.render(grid);
     }
 }

@@ -1,40 +1,33 @@
 export class ScrollSettings {
-    constructor(settingsManager, autoSave) {
-        this.settings = settingsManager;
-        this.autoSave = autoSave;
+    constructor(s, a) {
+        this.s = s;
+        this.a = a;
     }
 
     init() {
-        this.loadSettings();
-        this.attachListeners();
-    }
+        const c = this.s.get();
+        const sc = c.scroll || {};
+        const ui = c.ui || {};
 
-    loadSettings() {
-        const config = this.settings.get();
+        this.chk('autoScrollToComments', sc.autoScrollToComments ?? false);
+        this.chk('scrollBackAfterComments', sc.scrollBackAfterComments ?? true);
+        this.chk('showScrollNotification', sc.showScrollNotification ?? true);
+        this.chk('smoothScroll', sc.smoothScroll ?? true);
+        this.set('scrollSpeed', sc.scrollSpeed || 'medium');
+        this.set('autoScrollDelay', sc.autoScrollDelay || 500);
+        this.set('uiTheme', ui.theme || 'dark');
+        this.set('uiFontSize', ui.fontSize || 'medium');
+        this.chk('uiAnimationsEnabled', ui.animationsEnabled ?? true);
+        this.chk('uiShowTooltips', ui.showTooltips ?? true);
+        this.chk('uiCompactMode', ui.compactMode ?? false);
 
-        this.setChecked('autoScrollToComments', config.scroll?.autoScrollToComments ?? false);
-        this.setChecked('scrollBackAfterComments', config.scroll?.scrollBackAfterComments ?? true);
-        this.setChecked('showScrollNotification', config.scroll?.showScrollNotification ?? true);
-        this.setChecked('smoothScroll', config.scroll?.smoothScroll ?? true);
-        this.setValue('scrollSpeed', config.scroll?.scrollSpeed || 'medium');
-        this.setValue('autoScrollDelay', config.scroll?.autoScrollDelay || 500);
-
-        // UI settings
-        this.setValue('uiTheme', config.ui?.theme || 'dark');
-        this.setValue('uiFontSize', config.ui?.fontSize || 'medium');
-        this.setChecked('uiAnimationsEnabled', config.ui?.animationsEnabled ?? true);
-        this.setChecked('uiShowTooltips', config.ui?.showTooltips ?? true);
-        this.setChecked('uiCompactMode', config.ui?.compactMode ?? false);
-    }
-
-    attachListeners() {
-        this.autoSave.attachToAll({
+        this.a.attachToAll({
             autoScrollToComments: { path: 'scroll.autoScrollToComments' },
             scrollBackAfterComments: { path: 'scroll.scrollBackAfterComments' },
             showScrollNotification: { path: 'scroll.showScrollNotification' },
             smoothScroll: { path: 'scroll.smoothScroll' },
             scrollSpeed: { path: 'scroll.scrollSpeed' },
-            autoScrollDelay: { path: 'scroll.autoScrollDelay', transform: (v) => parseInt(v) },
+            autoScrollDelay: { path: 'scroll.autoScrollDelay', transform: v => parseInt(v) },
             uiTheme: { path: 'ui.theme' },
             uiFontSize: { path: 'ui.fontSize' },
             uiAnimationsEnabled: { path: 'ui.animationsEnabled' },
@@ -43,13 +36,13 @@ export class ScrollSettings {
         });
     }
 
-    setValue(id, value) {
+    set(id, v) {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el) el.value = v;
     }
 
-    setChecked(id, checked) {
+    chk(id, v) {
         const el = document.getElementById(id);
-        if (el) el.checked = checked;
+        if (el) el.checked = v;
     }
 }
