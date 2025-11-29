@@ -1,7 +1,7 @@
 import { GeminiClient } from "./gemini-client.js";
 import { ModelManager } from "./models.js";
 import { prompts } from "./prompts/index.js";
-import { cl, cw, ce } from "../utils/shortcuts.js";
+import { cl, cw, ce, jp, js, sbs } from "../utils/shortcuts.js";
 
 // Re-export ModelManager for use in options page
 export { ModelManager };
@@ -70,53 +70,63 @@ export class GeminiService {
             const response = await this.generateContent(prompt);
 
             cl("[GeminiService] Raw segment response length:", response.length);
-            cl("[GeminiService] First 1000 chars:", response.substring(0, 1000));
+            cl("[GeminiService] First 1000 chars:", sbs(response, 0, 1000));
 
             // Remove markdown code blocks if present
             let cleanedResponse = response.trim();
-            cleanedResponse = cleanedResponse.replace(/```json\s*/g, '');
-            cleanedResponse = cleanedResponse.replace(/```\s*/g, '');
+            cleanedResponse = cleanedResponse.replace(/```json\s*/g, "");
+            cleanedResponse = cleanedResponse.replace(/```\s*/g, "");
             cleanedResponse = cleanedResponse.trim();
 
             // Try to find JSON object
             let jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
 
             if (!jsonMatch) {
-                ce("[GeminiService] No JSON found in response. Full response:", response);
+                ce(
+                    "[GeminiService] No JSON found in response. Full response:",
+                    response
+                );
                 return { segments: [], fullVideoLabel: null };
             }
 
             const jsonStr = jsonMatch[0];
             cl("[GeminiService] Extracted JSON string length:", jsonStr.length);
 
-            const parsed = JSON.parse(jsonStr);
+            const parsed = jp(jsonStr);
 
             if (!parsed.segments || !Array.isArray(parsed.segments)) {
                 ce("[GeminiService] Invalid segments structure:", parsed);
                 return { segments: [], fullVideoLabel: null };
             }
 
-            cl("[GeminiService] Successfully parsed segments:", parsed.segments.length);
+            cl(
+                "[GeminiService] Successfully parsed segments:",
+                parsed.segments.length
+            );
             cl("[GeminiService] Full video label:", parsed.fullVideoLabel);
 
             // Transform short keys to long keys for compatibility
-            const transformedSegments = parsed.segments.map(seg => ({
+            const transformedSegments = parsed.segments.map((seg) => ({
                 start: seg.s,
                 end: seg.e,
                 label: this._expandLabel(seg.l),
                 title: seg.t,
                 description: seg.d,
-                text: seg.d // For backward compatibility
+                text: seg.d, // For backward compatibility
             }));
 
             // Log first few segments for debugging
             if (transformedSegments.length > 0) {
-                cl("[GeminiService] First transformed segment:", JSON.stringify(transformedSegments[0]));
+                cl(
+                    "[GeminiService] First transformed segment:",
+                    js(transformedSegments[0])
+                );
             }
 
             return {
                 segments: transformedSegments,
-                fullVideoLabel: this._expandLabel(parsed.fullVideoLabel) || null
+                fullVideoLabel:
+                    this._expandLabel(parsed.fullVideoLabel) || null,
             };
         } catch (error) {
             ce("[GeminiService] Segment extraction failed:", error.message);
@@ -150,7 +160,7 @@ export class GeminiService {
             G: "Hook/Greetings",
             T: "Tangents/Jokes",
             NM: "Music: Non-Music Section",
-            C: "Content"
+            C: "Content",
         };
 
         return labelMap[shortCode] || shortCode;
@@ -195,7 +205,8 @@ export class GeminiService {
             const modelName = modelList[i];
             try {
                 cl(
-                    `[GeminiService] Attempting model: ${modelName} (${i + 1}/${modelList.length
+                    `[GeminiService] Attempting model: ${modelName} (${i + 1}/${
+                        modelList.length
                     })`
                 );
 
@@ -227,8 +238,9 @@ export class GeminiService {
             }
         }
 
-        const errorMsg = `All ${modelList.length} Gemini models failed. ${errors[0]?.error || "Unknown error"
-            }`;
+        const errorMsg = `All ${modelList.length} Gemini models failed. ${
+            errors[0]?.error || "Unknown error"
+        }`;
         ce("[GeminiService]", errorMsg);
         throw new Error(errorMsg);
     }
