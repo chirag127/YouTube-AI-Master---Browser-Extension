@@ -1,1 +1,9 @@
-export const ru = chrome.runtime.getURL; export const ri = chrome.runtime.id; export const msg = chrome.runtime.sendMessage; export const rom = chrome.runtime.onMessage; export const rco = chrome.runtime.connect; export const rrl = chrome.runtime.reload; export const rg = chrome.runtime.getManifest; export const url = ru; export const rt = chrome.runtime;
+export const ru = chrome.runtime.getURL;
+export const ri = chrome.runtime.id;
+export const msg = chrome.runtime.sendMessage;
+export const rom = chrome.runtime.onMessage;
+export const rco = chrome.runtime.connect;
+export const rrl = chrome.runtime.reload;
+export const rg = chrome.runtime.getManifest;
+export const url = ru;
+export const rt = chrome.runtime;

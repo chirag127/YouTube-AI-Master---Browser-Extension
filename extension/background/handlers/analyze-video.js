@@ -1,1 +1,139 @@
-import { initializeServices as is, getServices as gs } from '../services.js'; import { getApiKey as gk } from '../utils/api-key.js'; import gl from '../../api/genius-lyrics.js'; import sb from '../../api/sponsorblock.js'; import { ContextManager as CM } from '../../services/context-manager.js'; import { l, w, e, si, ci, cr, sg, ok, E, css, ic, lc } from '../../utils/shortcuts/index.js'; let ka = null; const ska = () => { if (!ka) ka = si(() => cr.getPlatformInfo(() => { }), 2e4) }; const stka = () => { if (ka) { ci(ka); ka = null } }; export async function handleAnalyzeVideo(q, r) { const { transcript: t, metadata: m, comments: c = [], options: o = {}, useCache: uc = true } = q; const v = m?.videoId; ska(); try { const k = await gk(); if (!k) { r({ success: false, error: 'API Key NA' }); return } await is(k); const { gemini: g, segmentClassification: sc, storage: s } = gs(); if (uc && v) { const d = await s.getVideoData(v); if (d?.summary && d?.segments && d.segments.length > 0) { l('[AV]Cache'); r({ success: true, fromCache: true, data: { summary: d.summary, faq: d.faq, insights: d.insights, segments: d.segments, timestamps: d.timestamps } }); return } } let ly = null; const im = m?.category === 'Music' || ic(lc(m?.title || ''), 'official video') || ic(lc(m?.title || ''), 'lyrics'); if (im || !t?.length) { try { ly = await gl.getLyrics(m.title, m.author) } catch (x) { } } let sb2 = []; if (v) { try { sb2 = await sb.fetchSegments(v); l(`[AV]SB:${sb2.length}`) } catch (x) { w('[AV]SB:', x.message) } } let ec = {}; try { l('[AV]Ctx'); if (!css) throw new E('Sync NA'); const st = await sg(null); if (!st || !ok(st).length) w('[AV]No set'); if (!m) throw new E('No meta'); const cm = new CM(st); const fp = cm.fetchContext(m); const tp = new Promise((_, j) => setTimeout(() => j(new E('TO')), 1e4)); ec = await Promise.race([fp, tp]); l('[AV]Ctx ok') } catch (x) { e('[AV]Ctx:', x.message) } if ((!t || !t.length) && !ly) throw new E('No content'); const ac = { transcript: t || [], lyrics: ly, comments: c || [], metadata: m, sponsorBlockSegments: sb2, externalContext: ec }; const an = await g.generateComprehensiveAnalysis(ac, { model: 'gemini-2.5-flash-lite-preview-09-2025', language: o.language || 'English', length: o.length || 'Medium' }); let sg2 = [], fv = null; if (o.generateSegments !== false) { l('[AV]Seg'); const sr = await sc.classifyTranscript({ transcript: t || [], metadata: m, lyrics: ly, comments: c }); sg2 = sr.segments; fv = sr.fullVideoLabel; l(`[AV]Seg:${sg2.length}`) } if (v && s) { try { await s.saveVideoData(v, { metadata: m, transcript: t, summary: an.summary, faq: an.faq || '', insights: an.insights || '', segments: sg2, timestamps: an.timestamps }) } catch (x) { } } r({ success: true, fromCache: false, data: { summary: an.summary, faq: an.faq, insights: an.insights, segments: sg2, fullVideoLabel: fv, timestamps: an.timestamps } }) } catch (x) { r({ success: false, error: x.message }) } finally { stka() } }
+import { initializeServices as is, getServices as gs } from '../services.js';
+import { getApiKey as gk } from '../utils/api-key.js';
+import gl from '../../api/genius-lyrics.js';
+import sb from '../../api/sponsorblock.js';
+import { ContextManager as CM } from '../../services/context-manager.js';
+import { l, w, e, si, ci, cr, sg, ok, E, css, ic, lc } from '../../utils/shortcuts/index.js';
+let ka = null;
+const ska = () => {
+  if (!ka) ka = si(() => cr.getPlatformInfo(() => {}), 2e4);
+};
+const stka = () => {
+  if (ka) {
+    ci(ka);
+    ka = null;
+  }
+};
+export async function handleAnalyzeVideo(q, r) {
+  const { transcript: t, metadata: m, comments: c = [], options: o = {}, useCache: uc = true } = q;
+  const v = m?.videoId;
+  ska();
+  try {
+    const k = await gk();
+    if (!k) {
+      r({ success: false, error: 'API Key NA' });
+      return;
+    }
+    await is(k);
+    const { gemini: g, segmentClassification: sc, storage: s } = gs();
+    if (uc && v) {
+      const d = await s.getVideoData(v);
+      if (d?.summary && d?.segments && d.segments.length > 0) {
+        l('[AV]Cache');
+        r({
+          success: true,
+          fromCache: true,
+          data: {
+            summary: d.summary,
+            faq: d.faq,
+            insights: d.insights,
+            segments: d.segments,
+            timestamps: d.timestamps,
+          },
+        });
+        return;
+      }
+    }
+    let ly = null;
+    const im =
+      m?.category === 'Music' ||
+      ic(lc(m?.title || ''), 'official video') ||
+      ic(lc(m?.title || ''), 'lyrics');
+    if (im || !t?.length) {
+      try {
+        ly = await gl.getLyrics(m.title, m.author);
+      } catch (x) {}
+    }
+    let sb2 = [];
+    if (v) {
+      try {
+        sb2 = await sb.fetchSegments(v);
+        l(`[AV]SB:${sb2.length}`);
+      } catch (x) {
+        w('[AV]SB:', x.message);
+      }
+    }
+    let ec = {};
+    try {
+      l('[AV]Ctx');
+      if (!css) throw new E('Sync NA');
+      const st = await sg(null);
+      if (!st || !ok(st).length) w('[AV]No set');
+      if (!m) throw new E('No meta');
+      const cm = new CM(st);
+      const fp = cm.fetchContext(m);
+      const tp = new Promise((_, j) => setTimeout(() => j(new E('TO')), 1e4));
+      ec = await Promise.race([fp, tp]);
+      l('[AV]Ctx ok');
+    } catch (x) {
+      e('[AV]Ctx:', x.message);
+    }
+    if ((!t || !t.length) && !ly) throw new E('No content');
+    const ac = {
+      transcript: t || [],
+      lyrics: ly,
+      comments: c || [],
+      metadata: m,
+      sponsorBlockSegments: sb2,
+      externalContext: ec,
+    };
+    const an = await g.generateComprehensiveAnalysis(ac, {
+      model: 'gemini-2.5-flash-lite-preview-09-2025',
+      language: o.language || 'English',
+      length: o.length || 'Medium',
+    });
+    let sg2 = [],
+      fv = null;
+    if (o.generateSegments !== false) {
+      l('[AV]Seg');
+      const sr = await sc.classifyTranscript({
+        transcript: t || [],
+        metadata: m,
+        lyrics: ly,
+        comments: c,
+      });
+      sg2 = sr.segments;
+      fv = sr.fullVideoLabel;
+      l(`[AV]Seg:${sg2.length}`);
+    }
+    if (v && s) {
+      try {
+        await s.saveVideoData(v, {
+          metadata: m,
+          transcript: t,
+          summary: an.summary,
+          faq: an.faq || '',
+          insights: an.insights || '',
+          segments: sg2,
+          timestamps: an.timestamps,
+        });
+      } catch (x) {}
+    }
+    r({
+      success: true,
+      fromCache: false,
+      data: {
+        summary: an.summary,
+        faq: an.faq,
+        insights: an.insights,
+        segments: sg2,
+        fullVideoLabel: fv,
+        timestamps: an.timestamps,
+      },
+    });
+  } catch (x) {
+    r({ success: false, error: x.message });
+  } finally {
+    stka();
+  }
+}
