@@ -4,7 +4,7 @@ const { deArrowAPI } = await import(gu('api/dearrow.js'));
 const { l, e, w } = await import(gu('utils/shortcuts/log.js'));
 const { jp } = await import(gu('utils/shortcuts/core.js'));
 const { to } = await import(gu('utils/shortcuts/global.js'));
-const { ae, qs as $ } = await import(gu('utils/shortcuts/dom.js'));
+const { ae, qs: $ } = await import(gu('utils/shortcuts/dom.js'));
 class MetadataExtractor {
   constructor() {
     this.cache = new Map();

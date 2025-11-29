@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { qs as $, ce } = await import(gu('utils/shortcuts/dom.js'));
+const { qs: $, ce } = await import(gu('utils/shortcuts/dom.js'));
 const colors = {
   Sponsor: '#00d26a',
   'Self Promotion': '#ffff00',

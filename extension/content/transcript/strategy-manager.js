@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { log as l, warn as w, err as e, vals } = await import(gu('utils/shortcuts/core.js'));
+const { log: l, warn: w, err: e, vals } = await import(gu('utils/shortcuts/core.js'));
 const { getCfg } = await import(gu('utils/config.js'));
 const strategyMap = {
   'dom-automation': domAutomation,

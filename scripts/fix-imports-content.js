@@ -13,10 +13,6 @@ files.forEach(file => {
     return;
   }
 
-  // Skip if no imports from shortcuts
-  if (!content.includes('utils/shortcuts')) {
-    return;
-  }
 
   const imports = [];
   const lines = content.split('\n');
@@ -59,7 +55,8 @@ files.forEach(file => {
         importPath = resolved;
       }
 
-      convertedImports.push(`const { ${imports} } = await import(gu('${importPath}'));`);
+      const destructured = imports.replace(/\s+as\s+/g, ': ');
+      convertedImports.push(`const { ${destructured} } = await import(gu('${importPath}'));`);
     }
   });
 

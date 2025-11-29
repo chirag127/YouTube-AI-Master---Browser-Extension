@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { el as ce } = await import(gu('utils/shortcuts/dom.js'));
+const { el: ce } = await import(gu('utils/shortcuts/dom.js'));
 export function createTranscriptDisplay(s) {
   const c = ce('div', 'ytai-transcript-display');
   for (const seg of s) c.appendChild(createTranscriptLine(seg));

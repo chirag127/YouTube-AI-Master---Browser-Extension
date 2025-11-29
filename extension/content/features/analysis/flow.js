@@ -12,9 +12,9 @@ const { renderTimeline } = await import(gu('content/segments/timeline.js'));
 const { analyzeVideo } = await import(gu('content/features/analysis/service.js'));
 const { l } = await import(gu('utils/shortcuts/log.js'));
 const { cw } = await import(gu('utils/shortcuts/windows.js'));
-const { id as i, $ } = await import(gu('utils/shortcuts/dom.js'));
+const { id: i, $ } = await import(gu('utils/shortcuts/dom.js'));
 const { msg } = await import(gu('utils/shortcuts/runtime.js'));
-const { E as Er } = await import(gu('utils/shortcuts/core.js'));
+const { E: Er } = await import(gu('utils/shortcuts/core.js'));
 export async function startAnalysis() {
   if (state.isAnalyzing || !state.currentVideoId) return;
   state.isAnalyzing = true;

@@ -1,5 +1,6 @@
-import { showPlaceholder } from '../components/loading.js';
 const gu = p => chrome.runtime.getURL(p);
+
+const { showPlaceholder } = await import(gu('content/ui/components/loading.js'));
 
 const { seekVideo } = await import(gu('content/utils/dom.js'));
 const { formatTime } = await import(gu('content/utils/time.js'));

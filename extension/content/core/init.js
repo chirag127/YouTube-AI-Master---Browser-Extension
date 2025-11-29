@@ -1,7 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { log as l, err as e } = await import(gu('utils/shortcuts/core.js'));
-const { getUrl as gu } = await import(gu('utils/shortcuts/runtime.js'));
+const { log: l, err: e } = await import(gu('utils/shortcuts/core.js'));
 export async function initializeExtension() {
   l('YAM: Init');
   try {

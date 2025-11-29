@@ -1,9 +1,9 @@
 const gu = p => chrome.runtime.getURL(p);
 
 const { seekVideo } = await import(gu('content/utils/dom.js'));
-const { on, fc, ap, tx, tc, dc as doc, ce } = await import(gu('utils/shortcuts/dom.js'));
-const { pi as pI } = await import(gu('utils/shortcuts/global.js'));
-const { sb as sbs, rp } = await import(gu('utils/shortcuts/string.js'));
+const { on, fc, ap, tx, tc, dc: doc, ce } = await import(gu('utils/shortcuts/dom.js'));
+const { pi: pI } = await import(gu('utils/shortcuts/global.js'));
+const { sb: sbs, rp } = await import(gu('utils/shortcuts/string.js'));
 export function makeTimestampsClickable(c) {
   const p = /(\[|[(])?(\d{1,2}):(\d{2})(\]|[)])?/g,
     w = doc.createTreeWalker(c, NodeFilter.SHOW_TEXT),

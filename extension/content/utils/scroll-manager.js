@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { qs as $, qsa as $$ } = await import(gu('utils/shortcuts/dom.js'));
+const { qs: $, qsa: $$ } = await import(gu('utils/shortcuts/dom.js'));
 const { l, w, e } = await import(gu('utils/shortcuts/log.js'));
 const { to } = await import(gu('utils/shortcuts/global.js'));
 export class ScrollManager {

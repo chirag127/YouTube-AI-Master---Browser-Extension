@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { log as l, warn as w } = await import(gu('utils/shortcuts/core.js'));
+const { log: l, warn: w } = await import(gu('utils/shortcuts/core.js'));
 const { msg } = await import(gu('utils/shortcuts/runtime.js'));
 export const name = 'Speech to Text';
 export const priority = 30;

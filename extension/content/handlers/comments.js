@@ -2,8 +2,8 @@ const gu = p => chrome.runtime.getURL(p);
 
 const { l, w, e } = await import(gu('utils/shortcuts/log.js'));
 const { js } = await import(gu('utils/shortcuts/global.js'));
-const { ae, qs as $ } = await import(gu('utils/shortcuts/dom.js'));
-const { sg, slg as lg } = await import(gu('utils/shortcuts/storage.js'));
+const { ae, qs: $ } = await import(gu('utils/shortcuts/dom.js'));
+const { sg, slg: lg } = await import(gu('utils/shortcuts/storage.js'));
 const { ft } = await import(gu('utils/shortcuts/network.js'));
 const { mp, jn } = await import(gu('utils/shortcuts/array.js'));
 class CommentsExtractor {

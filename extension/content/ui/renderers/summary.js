@@ -1,7 +1,8 @@
-import { showPlaceholder } from '../components/loading.js';
-import { makeTimestampsClickable } from '../../utils/timestamps.js';
-import { parseMarkdown } from '../../../lib/marked-loader.js';
+const gu = p => chrome.runtime.getURL(p);
 
+const { showPlaceholder } = await import(gu('content/ui/components/loading.js'));
+const { makeTimestampsClickable } = await import(gu('content/utils/timestamps.js'));
+const { parseMarkdown } = await import(gu('lib/marked-loader.js'));
 function processHighlights(html) {
   return html.replace(/==(.*?)==/g, '<mark class="yt-ai-highlight">$1</mark>');
 }
