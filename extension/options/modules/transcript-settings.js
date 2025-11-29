@@ -1,9 +1,10 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class TranscriptSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const c = this.s.get().transcript || {};
     this.set('transcriptMethod', c.method || 'auto');
@@ -15,7 +16,6 @@ export class TranscriptSettings {
     this.chk('transcriptAutoClose', c.autoClose ?? true);
     this.set('transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
     this.chk('transcriptAutoCloseOnCached', c.autoCloseOnCached ?? false);
-
     this.a.attachToAll({
       transcriptMethod: { path: 'transcript.method' },
       transcriptLanguage: { path: 'transcript.language' },
@@ -28,14 +28,12 @@ export class TranscriptSettings {
       transcriptAutoCloseOnCached: { path: 'transcript.autoCloseOnCached' },
     });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

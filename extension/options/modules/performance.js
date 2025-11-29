@@ -1,29 +1,27 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class PerformanceSettings {
   constructor(s, a) {
-    this.settings = s;
-    this.autoSave = a;
+    this.s = s;
+    this.a = a;
   }
-
   init() {
     this.loadSettings();
     this.attachListeners();
   }
-
   loadSettings() {
-    const c = this.settings.get();
-    const p = c.performance || {};
-
+    const c = this.s.get(),
+      p = c.performance || {};
     this.set('maxConcurrentRequests', p.maxConcurrentRequests || 3);
     this.set('rateLimitDelay', p.rateLimitDelay || 1000);
     this.set('retryAttempts', p.retryAttempts || 3);
     this.set('retryDelay', p.retryDelay || 2000);
-    this.setChecked('enableCompression', p.enableCompression ?? true);
-    this.setChecked('lazyLoad', p.lazyLoad ?? true);
-    this.setChecked('prefetchData', p.prefetchData ?? true);
+    this.chk('enableCompression', p.enableCompression ?? true);
+    this.chk('lazyLoad', p.lazyLoad ?? true);
+    this.chk('prefetchData', p.prefetchData ?? true);
   }
-
   attachListeners() {
-    this.autoSave.attachToAll({
+    this.a.attachToAll({
       maxConcurrentRequests: {
         path: 'performance.maxConcurrentRequests',
         transform: v => parseInt(v),
@@ -36,14 +34,12 @@ export class PerformanceSettings {
       prefetchData: { path: 'performance.prefetchData' },
     });
   }
-
-  set(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.value = val;
+  set(id, v) {
+    const el = ge(id);
+    if (el) el.value = v;
   }
-
-  setChecked(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.checked = val;
+  chk(id, v) {
+    const el = ge(id);
+    if (el) el.checked = v;
   }
 }

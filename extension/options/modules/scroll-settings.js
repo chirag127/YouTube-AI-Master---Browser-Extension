@@ -1,14 +1,14 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class ScrollSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
-    const c = this.s.get();
-    const sc = c.scroll || {};
-    const ui = c.ui || {};
-
+    const c = this.s.get(),
+      sc = c.scroll || {},
+      ui = c.ui || {};
     this.chk('autoScrollToComments', sc.autoScrollToComments ?? false);
     this.chk('scrollBackAfterComments', sc.scrollBackAfterComments ?? true);
     this.chk('showScrollNotification', sc.showScrollNotification ?? true);
@@ -20,7 +20,6 @@ export class ScrollSettings {
     this.chk('uiAnimationsEnabled', ui.animationsEnabled ?? true);
     this.chk('uiShowTooltips', ui.showTooltips ?? true);
     this.chk('uiCompactMode', ui.compactMode ?? false);
-
     this.a.attachToAll({
       autoScrollToComments: { path: 'scroll.autoScrollToComments' },
       scrollBackAfterComments: { path: 'scroll.scrollBackAfterComments' },
@@ -35,14 +34,12 @@ export class ScrollSettings {
       uiCompactMode: { path: 'ui.compactMode' },
     });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

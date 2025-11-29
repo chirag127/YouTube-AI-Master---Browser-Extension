@@ -1,9 +1,10 @@
+import { ge, on, lcl } from '../../utils/shortcuts.js';
+
 export class CacheSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const c = this.s.get().cache || {};
     this.chk('cacheEnabled', c.enabled ?? true);
@@ -14,7 +15,6 @@ export class CacheSettings {
     this.chk('cacheMetadata', c.metadata ?? true);
     this.chk('cacheSegments', c.segments ?? true);
     this.chk('cacheSummaries', c.summaries ?? true);
-
     this.a.attachToAll({
       cacheEnabled: { path: 'cache.enabled' },
       cacheTTL: { path: 'cache.ttl', transform: v => parseInt(v) * 3600000 },
@@ -25,31 +25,31 @@ export class CacheSettings {
       cacheSegments: { path: 'cache.segments' },
       cacheSummaries: { path: 'cache.summaries' },
     });
-
-    document.getElementById('clearCache')?.addEventListener('click', async () => {
-      if (confirm('Clear all cached data? This cannot be undone.')) {
-        await chrome.storage.local.clear();
-        this.a.notifications?.success('Cache cleared');
-      }
-    });
-
-    document.getElementById('viewCacheStats')?.addEventListener('click', async () => {
-      const stats = await chrome.storage.local.getBytesInUse();
-      const div = document.getElementById('cacheStats');
-      if (div) {
-        div.className = 'status-indicator success';
-        div.textContent = `Cache: ${(stats / 1024 / 1024).toFixed(2)} MB`;
-      }
-    });
+    const cc = ge('clearCache');
+    if (cc)
+      on(cc, 'click', async () => {
+        if (confirm('Clear all cached data? This cannot be undone.')) {
+          await lcl();
+          this.a.notifications?.success('Cache cleared');
+        }
+      });
+    const vs = ge('viewCacheStats');
+    if (vs)
+      on(vs, 'click', async () => {
+        const s = await chrome.storage.local.getBytesInUse();
+        const d = ge('cacheStats');
+        if (d) {
+          d.className = 'status-indicator success';
+          d.textContent = `Cache: ${(s / 1024 / 1024).toFixed(2)} MB`;
+        }
+      });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

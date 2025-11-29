@@ -1,7 +1,7 @@
 import { showPlaceholder } from '../components/loading.js';
 import { seekVideo } from '../../utils/dom.js';
 import { formatTime } from '../../utils/time.js';
-import { ge, qsa, on } from '../../utils/shortcuts.js';
+import { ge, qsa, on, $$ } from '../../utils/shortcuts.js';
 
 const colors = {
   Sponsor: '#00d26a',
@@ -54,7 +54,7 @@ export function renderSegments(c, data) {
     })
     .join('');
   c.innerHTML = `<div class="yt-ai-segments-list">${h}</div>`;
-  qsa('.yt-ai-timestamp', c).forEach(e => {
+  $$('.yt-ai-timestamp', c).forEach(e => {
     e.style.cursor = 'pointer';
     e.style.textDecoration = 'underline';
     on(e, 'click', evt => {

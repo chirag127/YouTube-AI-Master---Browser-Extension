@@ -1,5 +1,5 @@
 import { fetchTranscript } from '../../services/transcript/fetcher.js';
-import { l, w, e, on, qsa, jp, st } from '../../utils/shortcuts.js';
+import { l, w, e, on, qsa, jp, st, $$ } from '../../utils/shortcuts.js';
 
 class TranscriptExtractor {
   constructor() {
@@ -101,7 +101,7 @@ class TranscriptExtractor {
 }
 
 function getPlayerResponse() {
-  for (const s of qsa('script')) {
+  for (const s of $$('script')) {
     const m = s.textContent?.match(/ytInitialPlayerResponse\s*=\s*({.+?});/);
     if (m) {
       try {

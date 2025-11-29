@@ -1,7 +1,9 @@
+import { mf } from '../../utils/shortcuts.js';
+
 export function formatTime(s) {
-  const h = Math.floor(s / 3600),
-    m = Math.floor((s % 3600) / 60),
-    sec = Math.floor(s % 60);
+  const h = mf(s / 3600),
+    m = mf((s % 3600) / 60),
+    sec = mf(s % 60);
   return h > 0
     ? `${h}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
     : `${m}:${sec.toString().padStart(2, '0')}`;

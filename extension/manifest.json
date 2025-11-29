@@ -8,37 +8,22 @@
     "48": "assets/icon48.png",
     "128": "assets/icon128.png"
   },
-  "permissions": [
-    "storage",
-    "cookies"
-  ],
-  "host_permissions": [
-    "*://*/*"
-  ],
+  "permissions": ["storage", "cookies"],
+  "host_permissions": ["*://*/*"],
   "background": {
     "service_worker": "background/sw.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*.youtube.com/*"
-      ],
-      "js": [
-        "content/inject.js"
-      ],
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content/inject.js"],
       "run_at": "document_start"
     },
     {
-      "matches": [
-        "*://*.youtube.com/*"
-      ],
-      "js": [
-        "content/main.js"
-      ],
-      "css": [
-        "content/content.css"
-      ],
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content/main.js"],
+      "css": ["content/content.css"],
       "run_at": "document_idle"
     }
   ],
@@ -70,9 +55,7 @@
         "utils/*.js",
         "utils/**/*.js"
       ],
-      "matches": [
-        "*://*.youtube.com/*"
-      ]
+      "matches": ["*://*.youtube.com/*"]
     }
   ]
 }

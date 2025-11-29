@@ -1,7 +1,7 @@
 import { showPlaceholder } from '../components/loading.js';
 import { seekVideo } from '../../utils/dom.js';
 import { formatTime } from '../../utils/time.js';
-import { qs, qsa, ge, on, l } from '../../utils/shortcuts.js';
+import { qs, qsa, ge, on, l, $, $$ } from '../../utils/shortcuts.js';
 
 let autoCloseEnabled = true;
 
@@ -18,10 +18,8 @@ export function renderTranscript(c, s) {
     .join('');
   const ab = `<div class="yt-ai-transcript-controls"><button id="yt-ai-transcript-autoclose-toggle" class="yt-ai-btn-small ${autoCloseEnabled ? 'active' : ''}">${autoCloseEnabled ? '✓' : '✗'} Auto-close after extraction</button></div>`;
   c.innerHTML = `${ab}<div class="yt-ai-transcript-list">${h}</div>`;
-  qsa('.yt-ai-segment', c).forEach(e =>
-    on(e, 'click', () => seekVideo(parseFloat(e.dataset.time)))
-  );
-  const tb = qs('#yt-ai-transcript-autoclose-toggle', c);
+  $$('.yt-ai-segment', c).forEach(e => on(e, 'click', () => seekVideo(parseFloat(e.dataset.time))));
+  const tb = $('#yt-ai-transcript-autoclose-toggle', c);
   if (tb) {
     on(tb, 'click', () => {
       autoCloseEnabled = !autoCloseEnabled;
@@ -41,7 +39,7 @@ export function collapseTranscriptWidget() {
   if (w && autoCloseEnabled) {
     l('[Transcript] Auto-closing widget after extraction');
     w.classList.add('yt-ai-collapsed');
-    const cb = qs('#yt-ai-close-btn', w);
+    const cb = $('#yt-ai-close-btn', w);
     if (cb) {
       cb.textContent = '⬇️';
       cb.title = 'Expand';

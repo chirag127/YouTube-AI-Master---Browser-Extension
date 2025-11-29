@@ -3,7 +3,8 @@ import { GeminiService } from '../api/gemini.js';
 import { SegmentClassificationService } from '../services/segments/index.js';
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
-import { ge, $$, on, lg, l, w, e, tq, tsm } from '../utils/shortcuts.js';
+import { ge, $$, on, lg, l, w, e, tq, tsm, ce, st, mf, pd } from '../utils/shortcuts.js';
+
 const ss = new StorageService(),
   cs = new ChunkingService();
 let gs = null,
@@ -11,7 +12,7 @@ let gs = null,
   ctx = '',
   segs = [];
 const ab = ge('analyze-btn'),
-  st = ge('status'),
+  stEl = ge('status'),
   aw = ge('auth-warning'),
   tbs = $$('.tab-btn'),
   tcs = $$('.tab-content'),
@@ -21,6 +22,7 @@ const ab = ge('analyze-btn'),
   ci = ge('chat-input'),
   csb = ge('chat-send-btn'),
   ch = ge('chat-history');
+
 on(document, 'DOMContentLoaded', async () => {
   const { geminiApiKey } = await lg('geminiApiKey');
   if (!geminiApiKey) {
@@ -32,7 +34,7 @@ on(document, 'DOMContentLoaded', async () => {
   scs = new SegmentClassificationService(gs, cs);
   try {
     await gs.fetchAvailableModels();
-  } catch (x) { }
+  } catch (x) {}
   for (const b of tbs) {
     on(b, 'click', () => {
       for (const x of tbs) x.classList.remove('active');
@@ -50,17 +52,18 @@ on(document, 'DOMContentLoaded', async () => {
   });
   on(document, 'click', e => {
     if (e.target.classList.contains('timestamp-btn')) {
-      const timeStr = e.target.getAttribute('data-time');
-      if (timeStr) {
-        const parts = timeStr.split(':').map(Number);
-        let seconds = 0;
-        if (parts.length === 3) seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-        else if (parts.length === 2) seconds = parts[0] * 60 + parts[1];
-        seekVideo(seconds);
+      const t = e.target.getAttribute('data-time');
+      if (t) {
+        const p = t.split(':').map(Number);
+        let s = 0;
+        if (p.length === 3) s = p[0] * 3600 + p[1] * 60 + p[2];
+        else if (p.length === 2) s = p[0] * 60 + p[1];
+        seekVideo(s);
       }
     }
   });
 });
+
 async function handleChat() {
   const q = ci.value.trim();
   if (!q) return;
@@ -78,8 +81,9 @@ async function handleChat() {
     await updateMsg(lid, `Error: ${x.message}`);
   }
 }
+
 function appendMsg(r, t) {
-  const d = document.createElement('div');
+  const d = ce('div');
   d.className = `chat-message ${r}`;
   d.id = `msg-${Date.now()}`;
   d.textContent = t;
@@ -87,6 +91,7 @@ function appendMsg(r, t) {
   ch.scrollTop = ch.scrollHeight;
   return d.id;
 }
+
 async function updateMsg(id, t) {
   const d = ge(id);
   if (d) {
@@ -94,9 +99,11 @@ async function updateMsg(id, t) {
     ch.scrollTop = ch.scrollHeight;
   }
 }
+
 on(ab, 'click', () => analyzeVideo());
-async function analyzeVideo(retryCount = 0) {
-  const maxRetries = 2;
+
+async function analyzeVideo(rc = 0) {
+  const mr = 2;
   try {
     setStatus('loading', 'Fetching video info...');
     ab.disabled = true;
@@ -110,19 +117,15 @@ async function analyzeVideo(retryCount = 0) {
     setStatus('loading', 'Fetching video metadata...');
     let md;
     try {
-      const mr = await sendMessageWithRetry(tab.id, { action: 'GET_METADATA', videoId: v }, 3);
-      if (mr.error) throw new Error(mr.error);
-      md = mr.metadata;
+      const r = await smr(tab.id, { action: 'GET_METADATA', videoId: v }, 3);
+      if (r.error) throw new Error(r.error);
+      md = r.metadata;
     } catch (x) {
       w('Metadata fetch failed, using fallback:', x);
-      md = {
-        title: 'Unknown Title',
-        author: 'Unknown Channel',
-        videoId: v,
-      };
+      md = { title: 'Unknown Title', author: 'Unknown Channel', videoId: v };
     }
     setStatus('loading', 'Fetching transcript...');
-    const tr = await sendMessageWithRetry(tab.id, { action: 'GET_TRANSCRIPT', videoId: v }, 2);
+    const tr = await smr(tab.id, { action: 'GET_TRANSCRIPT', videoId: v }, 2);
     if (tr.error) {
       if (tr.error.includes('does not have captions'))
         showError(
@@ -176,14 +179,11 @@ async function analyzeVideo(retryCount = 0) {
         e('Comment analysis failed:', x);
         ca = `Failed to analyze comments: ${x.message}`;
       }
-    } else {
-      w('[Sidepanel] No comments found to analyze');
-    }
-    const insightsHtml = await parseMarkdown(an.insights);
-    const commentsHtml = await parseMarkdown(ca);
-    const faqHtml = await parseMarkdown(an.faq);
-    const ih = `<h3>Key Insights</h3>${insightsHtml}<hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;"><h3>Comments Analysis</h3>${commentsHtml}<hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;"><h3>Frequently Asked Questions</h3>${faqHtml}`;
-    ic.innerHTML = ih;
+    } else w('[Sidepanel] No comments found to analyze');
+    const ih = await parseMarkdown(an.insights),
+      ch = await parseMarkdown(ca),
+      fh = await parseMarkdown(an.faq);
+    ic.innerHTML = `<h3>Key Insights</h3>${ih}<hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;"><h3>Comments Analysis</h3>${ch}<hr style="border:0;border-top:1px solid var(--border-color);margin:20px 0;"><h3>Frequently Asked Questions</h3>${fh}`;
     setStatus('success', '✓ Analysis complete!');
     try {
       await ss.saveTranscript(v, md, ts, an.summary);
@@ -192,31 +192,34 @@ async function analyzeVideo(retryCount = 0) {
     }
   } catch (x) {
     e('Analysis error:', x);
-    if (retryCount < maxRetries && (x.message.includes('fetch') || x.message.includes('network'))) {
-      l(`Retrying... (${retryCount + 1}/${maxRetries})`);
-      await new Promise(r => setTimeout(r, 1000 * (retryCount + 1)));
-      return analyzeVideo(retryCount + 1);
+    if (rc < mr && (x.message.includes('fetch') || x.message.includes('network'))) {
+      l(`Retrying... (${rc + 1}/${mr})`);
+      await new Promise(r => st(r, 1000 * (rc + 1)));
+      return analyzeVideo(rc + 1);
     }
     showError('Analysis Failed', x.message);
   } finally {
     ab.disabled = false;
   }
 }
-async function sendMessageWithRetry(tabId, message, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
+
+async function smr(tid, m, mr = 3) {
+  for (let i = 0; i < mr; i++) {
     try {
-      return await tsm(tabId, message);
+      return await tsm(tid, m);
     } catch (x) {
-      if (i === maxRetries - 1) throw x;
-      await new Promise(r => setTimeout(r, 500 * (i + 1)));
+      if (i === mr - 1) throw x;
+      await new Promise(r => st(r, 500 * (i + 1)));
     }
   }
 }
-function setStatus(type, text) {
-  st.className = type;
-  if (type === 'loading') st.innerHTML = `<span class="spinner"></span>${text}`;
-  else st.textContent = text;
+
+function setStatus(t, x) {
+  stEl.className = t;
+  if (t === 'loading') stEl.innerHTML = `<span class="spinner"></span>${x}`;
+  else stEl.textContent = x;
 }
+
 function showLoadingState() {
   sc.innerHTML =
     '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><p class="empty-state-title">Generating summary...</p></div>';
@@ -225,27 +228,29 @@ function showLoadingState() {
   tc.innerHTML =
     '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zM4 15h16v-2H4v2zM4 5v2h16V5H4z"/></svg><p class="empty-state-title">Loading transcript...</p></div>';
 }
-function showError(title, message) {
-  const errorHtml = `<div class="error-container"><svg class="error-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><h3 class="error-title">${title}</h3><p class="error-message">${message}</p><button class="retry-btn" onclick="document.getElementById('analyze-btn').click()">Try Again</button></div>`;
-  sc.innerHTML = errorHtml;
-  setStatus('error', `Error: ${title}`);
+
+function showError(t, m) {
+  sc.innerHTML = `<div class="error-container"><svg class="error-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><h3 class="error-title">${t}</h3><p class="error-message">${m}</p><button class="retry-btn" onclick="document.getElementById('analyze-btn').click()">Try Again</button></div>`;
+  setStatus('error', `Error: ${t}`);
 }
+
 async function renderMd(t, el) {
   el.innerHTML = await parseMarkdown(t);
 }
+
 function renderTranscript(sg) {
   tc.innerHTML = '';
   for (const s of sg) {
-    const d = document.createElement('div');
+    const d = ce('div');
     d.className = `transcript-segment ${getSgClass(s.label)}`;
-    const tm = document.createElement('span');
+    const tm = ce('span');
     tm.className = 'timestamp';
     tm.textContent = fmtTime(s.start);
-    const tx = document.createElement('span');
+    const tx = ce('span');
     tx.className = 'text';
     tx.textContent = s.text;
     if (s.label) {
-      const lb = document.createElement('span');
+      const lb = ce('span');
       lb.className = 'segment-label';
       lb.textContent = s.label;
       lb.title = getSgDesc(s.label);
@@ -257,6 +262,7 @@ function renderTranscript(sg) {
     tc.appendChild(d);
   }
 }
+
 function getSgClass(l) {
   const m = {
     Sponsor: 'segment-sponsor',
@@ -271,6 +277,7 @@ function getSgClass(l) {
   };
   return m[l] || 'segment-unknown';
 }
+
 function getSgDesc(l) {
   const d = {
     Sponsor: 'Paid advertisement or sponsorship',
@@ -285,14 +292,16 @@ function getSgDesc(l) {
   };
   return d[l] || 'Unknown segment type';
 }
-async function seekVideo(sec) {
+
+async function seekVideo(s) {
   try {
-    const [tab] = await tq({ active: true, currentWindow: true });
-    if (tab?.id) await tsm(tab.id, { action: 'SEEK_TO', timestamp: sec });
-  } catch (x) { }
+    const [t] = await tq({ active: true, currentWindow: true });
+    if (t?.id) await tsm(t.id, { action: 'SEEK_TO', timestamp: s });
+  } catch (x) {}
 }
+
 function fmtTime(s) {
-  const m = Math.floor(s / 60),
-    sec = Math.floor(s % 60);
-  return `${m}:${sec.toString().padStart(2, '0')}`;
+  const m = mf(s / 60),
+    sc = mf(s % 60);
+  return `${m}:${pd(sc.toString(), 2, '0')}`;
 }

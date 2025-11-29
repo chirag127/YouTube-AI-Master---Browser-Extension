@@ -1,9 +1,10 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class NotificationsSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const n = this.s.get().notifications || {};
     this.chk('notificationsEnabled', n.enabled ?? true);
@@ -15,7 +16,6 @@ export class NotificationsSettings {
     this.chk('notifyOnProgress', n.showProgress ?? true);
     this.chk('notifyOnComplete', n.showOnComplete ?? true);
     this.chk('notifyOnSegmentSkip', n.showOnSegmentSkip ?? true);
-
     this.a.attachToAll({
       notificationsEnabled: { path: 'notifications.enabled' },
       notificationPosition: { path: 'notifications.position' },
@@ -28,14 +28,12 @@ export class NotificationsSettings {
       notifyOnSegmentSkip: { path: 'notifications.showOnSegmentSkip' },
     });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

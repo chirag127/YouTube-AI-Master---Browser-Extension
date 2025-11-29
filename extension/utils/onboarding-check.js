@@ -1,4 +1,4 @@
-import { sg, ss, url, tab } from './shortcuts.js';
+import { sg, ss, url, tab, w } from './shortcuts.js';
 export class OnboardingChecker {
   static async isCompleted() {
     const r = await sg('obDone');
@@ -20,7 +20,7 @@ export class OnboardingChecker {
       return false;
     }
     if (!(await this.hasApiKey())) {
-      console.warn('API key not configured');
+      w('API key not configured');
       return false;
     }
     return true;

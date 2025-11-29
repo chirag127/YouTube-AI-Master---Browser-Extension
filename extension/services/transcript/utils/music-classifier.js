@@ -1,37 +1,18 @@
 import { GeminiClient } from '../../../api/gemini-client.js';
+import { sg, w, sw, rp, tr, lc } from '../../../utils/shortcuts.js';
 
-/**
- * Classify if a video is a music video using Gemini
- * @param {string} title - Video title
- * @param {string} channel - Channel name
- * @returns {Promise<boolean>}
- */
-export async function isMusicVideo(title, channel) {
+export async function isMusicVideo(t, c) {
   try {
-    const settings = await chrome.storage.sync.get(['apiKey', 'model']);
-    if (!settings.apiKey) return false;
-
-    const client = new GeminiClient(settings.apiKey);
-    let model = settings.model || 'gemini-2.5-flash-preview-09-2025';
-
-    // Strip models/ prefix if present
-    if (model.startsWith('models/')) {
-      model = model.replace('models/', '');
-    }
-
-    const prompt = `
-            Analyze this YouTube video metadata:
-            Title: "${title}"
-            Channel: "${channel}"
-
-            Is this a music video (official music video, lyric video, or audio track)?
-            Return ONLY "true" or "false".
-        `;
-
-    const result = await client.generateContent(prompt, model);
-    return result.trim().toLowerCase() === 'true';
+    const s = await sg(['apiKey', 'model']);
+    if (!s.apiKey) return false;
+    const cl = new GeminiClient(s.apiKey);
+    let m = s.model || 'gemini-2.5-flash-preview-09-2025';
+    if (sw(m, 'models/')) m = rp(m, 'models/', '');
+    const p = `Analyze this YouTube video metadata:\nTitle: "${t}"\nChannel: "${c}"\nIs this a music video (official music video, lyric video, or audio track)?\nReturn ONLY "true" or "false".`;
+    const r = await cl.generateContent(p, m);
+    return lc(tr(r)) === 'true';
   } catch (e) {
-    console.warn('[MusicClassifier] Failed to classify:', e);
+    w('[MusicClassifier] Failed to classify:', e);
     return false;
   }
 }

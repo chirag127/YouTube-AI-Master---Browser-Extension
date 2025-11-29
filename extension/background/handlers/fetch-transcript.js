@@ -52,7 +52,7 @@ async function fYT(vid, l = 'en') {
         const s = pXML(x);
         if (s.length) return { success: true, data: s };
       }
-    } catch (e) { }
+    } catch (e) {}
   }
   return { success: false, error: 'YouTube Direct API failed' };
 }
@@ -73,7 +73,7 @@ export async function handleFetchTranscript(req, rsp) {
         rsp(r);
         return;
       }
-    } catch (e) { }
+    } catch (e) {}
   }
   rsp({ success: false, error: 'All transcript fetch methods failed' });
 }

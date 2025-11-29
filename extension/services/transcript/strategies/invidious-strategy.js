@@ -1,23 +1,8 @@
-// Invidious API Strategy
-// Priority: 3 (Fallback - Uses background script to bypass CORS)
+import { msg } from '../../../utils/shortcuts.js';
 
-export async function fetchViaInvidious(videoId, lang = 'en') {
-  // Route through background script to bypass CORS
-  const response = await chrome.runtime.sendMessage({
-    action: 'FETCH_INVIDIOUS_TRANSCRIPT',
-    videoId,
-    lang,
-  });
-
-  if (!response.success || !response.data) {
-    throw new Error(response.error || 'Invidious API failed');
-  }
-
-  return response.data;
+export async function fetchViaInvidious(v, l = 'en') {
+  const r = await msg('FETCH_INVIDIOUS_TRANSCRIPT', { videoId: v, lang: l });
+  if (!r.success || !r.data) throw new Error(r.error || 'Invidious API failed');
+  return r.data;
 }
-
-export const strategy = {
-  name: 'Invidious API',
-  priority: 3,
-  fetch: fetchViaInvidious,
-};
+export const strategy = { name: 'Invidious API', priority: 3, fetch: fetchViaInvidious };

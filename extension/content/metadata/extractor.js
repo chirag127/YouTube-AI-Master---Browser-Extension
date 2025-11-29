@@ -1,5 +1,5 @@
 import deArrowAPI from '../../api/dearrow.js';
-import { l, w, e, qs, on, st, jp } from '../utils/shortcuts.js';
+import { l, w, e, $, on, st, jp } from '../utils/shortcuts.js';
 
 class MetadataExtractor {
   constructor() {
@@ -112,10 +112,10 @@ class MetadataExtractor {
 
   _extractTitle(pr) {
     const m = [
-      () => qs('h1.ytd-watch-metadata yt-formatted-string')?.textContent,
-      () => qs('h1.title yt-formatted-string')?.textContent,
-      () => qs('meta[name="title"]')?.content,
-      () => qs('meta[property="og:title"]')?.content,
+      () => $('h1.ytd-watch-metadata yt-formatted-string')?.textContent,
+      () => $('h1.title yt-formatted-string')?.textContent,
+      () => $('meta[name="title"]')?.content,
+      () => $('meta[property="og:title"]')?.content,
       () => document.title.replace(' - YouTube', ''),
       () => pr?.videoDetails?.title,
     ];
@@ -133,14 +133,14 @@ class MetadataExtractor {
   _extractDescription(pr) {
     const m = [
       () => {
-        const b = qs('tp-yt-paper-button#expand');
+        const b = $('tp-yt-paper-button#expand');
         if (b && !b.hasAttribute('hidden')) b.click();
-        return qs('ytd-text-inline-expander#description-inline-expander yt-attributed-string')
+        return $('ytd-text-inline-expander#description-inline-expander yt-attributed-string')
           ?.textContent;
       },
-      () => qs('#description yt-formatted-string')?.textContent,
-      () => qs('meta[name="description"]')?.content,
-      () => qs('meta[property="og:description"]')?.content,
+      () => $('#description yt-formatted-string')?.textContent,
+      () => $('meta[name="description"]')?.content,
+      () => $('meta[property="og:description"]')?.content,
       () => pr?.videoDetails?.shortDescription,
     ];
     for (const f of m) {
@@ -156,9 +156,9 @@ class MetadataExtractor {
 
   _extractAuthor(pr) {
     const m = [
-      () => qs('ytd-channel-name#channel-name yt-formatted-string a')?.textContent,
-      () => qs('#owner-name a')?.textContent,
-      () => qs('link[itemprop="name"]')?.content,
+      () => $('ytd-channel-name#channel-name yt-formatted-string a')?.textContent,
+      () => $('#owner-name a')?.textContent,
+      () => $('link[itemprop="name"]')?.content,
       () => pr?.videoDetails?.author,
     ];
     for (const f of m) {
@@ -174,8 +174,8 @@ class MetadataExtractor {
 
   _extractViewCount(pr) {
     const m = [
-      () => this._parseViewCount(qs('ytd-video-view-count-renderer span.view-count')?.textContent),
-      () => this._parseViewCount(qs('#info-container #count')?.textContent),
+      () => this._parseViewCount($('ytd-video-view-count-renderer span.view-count')?.textContent),
+      () => this._parseViewCount($('#info-container #count')?.textContent),
       () => pr?.videoDetails?.viewCount,
     ];
     for (const f of m) {
@@ -197,8 +197,8 @@ class MetadataExtractor {
 
   _extractPublishDate(pr) {
     const m = [
-      () => qs('meta[itemprop="uploadDate"]')?.content,
-      () => qs('#info-strings yt-formatted-string')?.textContent,
+      () => $('meta[itemprop="uploadDate"]')?.content,
+      () => $('#info-strings yt-formatted-string')?.textContent,
       () => pr?.microformat?.playerMicroformatRenderer?.publishDate,
     ];
     for (const f of m) {
@@ -214,9 +214,9 @@ class MetadataExtractor {
 
   _extractDuration(pr) {
     const m = [
-      () => qs('meta[itemprop="duration"]')?.content,
+      () => $('meta[itemprop="duration"]')?.content,
       () => {
-        const v = qs('video');
+        const v = $('video');
         return v?.duration ? Math.floor(v.duration) : null;
       },
       () => pr?.videoDetails?.lengthSeconds,
@@ -235,7 +235,7 @@ class MetadataExtractor {
   _extractKeywords(pr) {
     const m = [
       () =>
-        qs('meta[name="keywords"]')
+        $('meta[name="keywords"]')
           ?.content?.split(',')
           .map(k => k.trim()),
       () => pr?.videoDetails?.keywords,
@@ -261,7 +261,7 @@ class MetadataExtractor {
 
   _extractJsonLd() {
     try {
-      const s = qs('script[type="application/ld+json"]');
+      const s = $('script[type="application/ld+json"]');
       if (s && s.textContent) return jp(s.textContent);
     } catch (e) {
       return null;

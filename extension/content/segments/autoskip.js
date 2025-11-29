@@ -1,6 +1,6 @@
 import { state } from '../core/state.js';
 import { getVideoElement } from '../utils/dom.js';
-import { sg, ge, ce, on, off, st } from '../../utils/shortcuts.js';
+import { sg, ge, on, off, st, ce } from '../../utils/shortcuts.js';
 
 let as = [];
 let en = false;

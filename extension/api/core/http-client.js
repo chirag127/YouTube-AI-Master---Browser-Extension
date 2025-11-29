@@ -42,7 +42,7 @@ export class HttpClient {
         }
 
         lastError = await this._createError(response);
-        cl(`[HttpClient] Attempt ${attempt + 1}/${this.maxRetries + 1} failed: ${response.status}`);
+        l(`[HttpClient] Attempt ${attempt + 1}/${this.maxRetries + 1} failed: ${response.status}`);
       } catch (error) {
         if (error.name === 'AbortError') {
           lastError = new Error(`Request timeout after ${this.timeout}ms`);
@@ -53,7 +53,7 @@ export class HttpClient {
           throw error; // Non-retryable error
         }
 
-        cl(`[HttpClient] Attempt ${attempt + 1}/${this.maxRetries + 1} failed: ${error.message}`);
+        l(`[HttpClient] Attempt ${attempt + 1}/${this.maxRetries + 1} failed: ${error.message}`);
       }
 
       // Don't delay after last attempt
@@ -71,7 +71,7 @@ export class HttpClient {
     try {
       const data = await response.json();
       message = data.error?.message || data.message || message;
-    } catch { }
+    } catch {}
 
     const error = new Error(message);
     error.status = response.status;

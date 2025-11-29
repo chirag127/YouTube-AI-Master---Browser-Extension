@@ -1,4 +1,4 @@
-import { ge, sg, lg, l, w, tq, tsm, url, rt, tab } from '../utils/shortcuts.js';
+import { ge, sg, lg, l, w, tq, tsm, url, rt, tab, st } from '../utils/shortcuts.js';
 const a = ge('api-status'),
   p = ge('page-status'),
   b = ge('analyze-btn'),
@@ -9,7 +9,7 @@ const a = ge('api-status'),
 function showMsg(t, y = 'info') {
   m.textContent = t;
   m.className = `show ${y}`;
-  setTimeout(() => m.classList.remove('show'), 3000);
+  st(() => m.classList.remove('show'), 3000);
 }
 async function checkApi() {
   try {

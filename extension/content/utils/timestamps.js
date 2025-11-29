@@ -1,27 +1,29 @@
 import { seekVideo } from './dom.js';
+import { on, cr, pI, fc, tc, sbs, rp, ap, doc, ctx } from '../../utils/shortcuts.js';
+
 export function makeTimestampsClickable(c) {
   const p = /(\[|\()?(\d{1,2}):(\d{2})(\]|\))?/g,
-    w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT),
+    w = doc.createTreeWalker(c, NodeFilter.SHOW_TEXT),
     n = [];
   let node;
-  while ((node = w.nextNode())) if (p.test(node.textContent)) n.push(node);
-  n.forEach(t => {
-    const txt = t.textContent,
-      f = document.createDocumentFragment();
+  while ((node = w.nextNode())) if (p.test(tc(node))) n.push(node);
+  fc(n, t => {
+    const txt = tc(t),
+      f = doc.createDocumentFragment();
     let l = 0;
-    txt.replace(p, (m, p1, mins, secs, p4, o) => {
-      if (o > l) f.appendChild(document.createTextNode(txt.substring(l, o)));
-      const s = parseInt(mins) * 60 + parseInt(secs),
-        lnk = document.createElement('span');
-      lnk.textContent = m;
+    rp(txt, p, (m, p1, mins, secs, p4, o) => {
+      if (o > l) ap(f, ctx(sbs(txt, l, o)));
+      const s = pI(mins) * 60 + pI(secs),
+        lnk = cr('span');
+      tc(lnk, m);
       lnk.className = 'yt-ai-clickable-timestamp';
       lnk.style.cssText =
         'color:var(--yt-ai-accent);cursor:pointer;font-weight:600;text-decoration:underline;';
-      lnk.addEventListener('click', () => seekVideo(s));
-      f.appendChild(lnk);
+      on(lnk, 'click', () => seekVideo(s));
+      ap(f, lnk);
       l = o + m.length;
     });
-    if (l < txt.length) f.appendChild(document.createTextNode(txt.substring(l)));
+    if (l < txt.length) ap(f, ctx(sbs(txt, l)));
     t.parentNode.replaceChild(f, t);
   });
 }

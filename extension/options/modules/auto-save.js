@@ -1,59 +1,42 @@
-// Auto-Save Utility with Debouncing
+import { st, cst, l, e, on, ge, oe } from '../../utils/shortcuts.js';
+
 export class AutoSave {
-  constructor(settingsManager, delay = 500, notificationManager = null) {
-    this.settings = settingsManager;
-    this.delay = delay;
-    this.timeout = null;
-    this.notifications = notificationManager;
-    this.saveCount = 0;
+  constructor(sm, d = 500, nm = null) {
+    this.s = sm;
+    this.d = d;
+    this.t = null;
+    this.n = nm;
+    this.c = 0;
   }
-
-  async save(path, value) {
-    clearTimeout(this.timeout);
-
-    if (this.notifications) {
-      this.notifications.saving('Saving...');
-    }
-
-    this.timeout = setTimeout(async () => {
+  async save(p, v) {
+    cst(this.t);
+    if (this.n) this.n.saving('Saving...');
+    this.t = st(async () => {
       try {
-        console.log(`[AutoSave] Saving ${path} =`, value);
-        await this.settings.update(path, value);
-        this.saveCount++;
-
-        if (this.notifications) {
-          this.notifications.success(`Setting saved: ${path.split('.').pop()}`);
-        }
-
-        console.log(`[AutoSave] ✓ Saved successfully (count: ${this.saveCount})`);
-      } catch (e) {
-        console.error('[AutoSave] Failed:', e);
-
-        if (this.notifications) {
-          this.notifications.error(`Failed to save: ${e.message}`);
-        }
+        l(`[AutoSave] Saving ${p} =`, v);
+        await this.s.update(p, v);
+        this.c++;
+        if (this.n) this.n.success(`Setting saved: ${p.split('.').pop()}`);
+        l(`[AutoSave] ✓ Saved successfully (count: ${this.c})`);
+      } catch (x) {
+        e('[AutoSave] Failed:', x);
+        if (this.n) this.n.error(`Failed to save: ${x.message}`);
       }
-    }, this.delay);
+    }, this.d);
   }
-
-  attachToInput(element, path, transform = v => v) {
-    if (!element) return;
-
-    const handler = e => {
-      const value = element.type === 'checkbox' ? element.checked : element.value;
-      this.save(path, transform(value));
+  attachToInput(el, p, tr = v => v) {
+    if (!el) return;
+    const h = e => {
+      const v = el.type === 'checkbox' ? el.checked : el.value;
+      this.save(p, tr(v));
     };
-
-    element.addEventListener('change', handler);
-    element.addEventListener('input', handler);
+    on(el, 'change', h);
+    on(el, 'input', h);
   }
-
-  attachToAll(mappings) {
-    Object.entries(mappings).forEach(([id, config]) => {
-      const el = document.getElementById(id);
-      if (el) {
-        this.attachToInput(el, config.path, config.transform);
-      }
+  attachToAll(m) {
+    oe(m).forEach(([id, c]) => {
+      const el = ge(id);
+      if (el) this.attachToInput(el, c.path, c.transform);
     });
   }
 }

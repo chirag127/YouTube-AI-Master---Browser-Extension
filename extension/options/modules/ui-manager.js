@@ -1,47 +1,36 @@
+import { ft, ge, st, qsa, on, e } from '../../utils/shortcuts.js';
+
 export class UIManager {
   constructor() {
     this.elements = {};
   }
-
   async loadSection(id) {
     try {
-      const response = await fetch(`sections/${id}.html`);
-      const html = await response.text();
-      return html;
-    } catch (e) {
-      console.error(`Failed to load section ${id}:`, e);
+      const r = await ft(`sections/${id}.html`);
+      return await r.text();
+    } catch (x) {
+      e(`Failed to load section ${id}:`, x);
       return `<div class="error">Failed to load section: ${id}</div>`;
     }
   }
-
-  showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    if (!t) return;
-    t.textContent = msg;
-    t.className = `toast show ${type}`;
-    setTimeout(() => t.classList.remove('show'), 3000);
+  showToast(m, t = 'success') {
+    const el = ge('toast');
+    if (!el) return;
+    el.textContent = m;
+    el.className = `toast show ${t}`;
+    st(() => el.classList.remove('show'), 3000);
   }
-
-  setupTabs(onTabChange) {
-    const tabs = document.querySelectorAll('.nav-item');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const target = tab.dataset.tab;
-
-        // Update Active State
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-
-        // Hide all sections
-        document.querySelectorAll('.tab-content').forEach(c => {
-          c.classList.remove('active');
-        });
-
-        // Show target section
-        const section = document.getElementById(target);
-        if (section) section.classList.add('active');
-
-        if (onTabChange) onTabChange(target);
+  setupTabs(cb) {
+    const tabs = qsa('.nav-item');
+    tabs.forEach(t => {
+      on(t, 'click', () => {
+        const tgt = t.dataset.tab;
+        tabs.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        qsa('.tab-content').forEach(c => c.classList.remove('active'));
+        const s = ge(tgt);
+        if (s) s.classList.add('active');
+        if (cb) cb(tgt);
       });
     });
   }

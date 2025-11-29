@@ -1,54 +1,20 @@
-// Cache transcript data to avoid repeated fetches
+import { sw } from '../../utils/shortcuts.js';
 
-const cache = new Map();
-
-/**
- * Generate cache key for video
- * @param {string} videoId - YouTube video ID
- * @param {string} languageCode - Language code
- * @returns {string} Cache key
- */
-function getCacheKey(videoId, languageCode) {
-  return `${videoId}_${languageCode}`;
+const c = new Map();
+function k(v, l) {
+  return `${v}_${l}`;
 }
-
-/**
- * Get cached transcript
- * @param {string} videoId - YouTube video ID
- * @param {string} languageCode - Language code
- * @returns {Array|null} Cached transcript or null
- */
-export function getCached(videoId, languageCode) {
-  const key = getCacheKey(videoId, languageCode);
-  return cache.get(key) || null;
+export function getCached(v, l) {
+  return c.get(k(v, l)) || null;
 }
-
-/**
- * Set cached transcript
- * @param {string} videoId - YouTube video ID
- * @param {string} languageCode - Language code
- * @param {Array} transcript - Transcript segments
- */
-export function setCached(videoId, languageCode, transcript) {
-  const key = getCacheKey(videoId, languageCode);
-  cache.set(key, transcript);
+export function setCached(v, l, t) {
+  c.set(k(v, l), t);
 }
-
-/**
- * Clear cache for video
- * @param {string} videoId - YouTube video ID
- */
-export function clearVideo(videoId) {
-  for (const key of cache.keys()) {
-    if (key.startsWith(videoId)) {
-      cache.delete(key);
-    }
+export function clearVideo(v) {
+  for (const k of c.keys()) {
+    if (sw(k, v)) c.delete(k);
   }
 }
-
-/**
- * Clear all cache
- */
 export function clearAll() {
-  cache.clear();
+  c.clear();
 }

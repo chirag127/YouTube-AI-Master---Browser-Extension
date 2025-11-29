@@ -94,7 +94,7 @@ export async function handleFetchInvidiousMetadata(req) {
           },
         };
       }
-    } catch (e) { }
+    } catch (e) {}
   }
   return { success: false, error: 'Failed to fetch metadata from Invidious' };
 }

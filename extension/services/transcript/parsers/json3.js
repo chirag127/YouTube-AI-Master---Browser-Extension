@@ -1,13 +1,20 @@
-// YouTube JSON3 Format Parser
-export const parse = data => {
-  if (typeof data === 'string') data = JSON.parse(data);
-  if (!data.events) return [];
-  return data.events
-    .filter(e => e.segs)
-    .map(e => ({
-      start: e.tStartMs / 1000,
-      duration: (e.dDurationMs || 0) / 1000,
-      text: e.segs.map(s => s.utf8).join(''),
-    }))
-    .filter(s => s.text.trim());
+import { jp, fl, mp, jn, tr, isS } from '../../../utils/shortcuts.js';
+
+export const parse = d => {
+  if (isS(d)) d = jp(d);
+  if (!d.events) return [];
+  return fl(
+    mp(
+      fl(d.events, e => e.segs),
+      e => ({
+        start: e.tStartMs / 1000,
+        duration: (e.dDurationMs || 0) / 1000,
+        text: jn(
+          mp(e.segs, s => s.utf8),
+          ''
+        ),
+      })
+    ),
+    s => tr(s.text)
+  );
 };

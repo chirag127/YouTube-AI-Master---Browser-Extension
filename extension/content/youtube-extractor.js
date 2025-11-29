@@ -1,16 +1,17 @@
+import { e, $, $$, jp, inc, mt, tc, tr, uc, fc, ps, st, doc, win } from '../utils/shortcuts.js';
 class YTE {
   constructor() {
-    this.of = window.fetch.bind(window);
+    this.of = win.fetch.bind(win);
     this.ls = new Map();
     this.iu = new Set();
     this.ii();
     this.inl();
-    window.addEventListener('message', e => {
-      if (e.source !== window) return;
+    win.addEventListener('message', e => {
+      if (e.source !== win) return;
       if (e.data.type === 'YT_GET_DATA') this.e('data_response', this.gid());
     });
-    window._ytExtractor = this;
-    console.log('[YTE] Init');
+    win._ytExtractor = this;
+    l('[YTE] Init');
   }
 
   ii() {

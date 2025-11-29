@@ -1,4 +1,4 @@
-import { qs, qsa, ft } from '../../../utils/shortcuts.js';
+import { qs, qsa, ft, $, $$ } from '../../../utils/shortcuts.js';
 
 export const name = 'DOM Parser';
 export const priority = 5;
@@ -15,7 +15,7 @@ export const extract = async (vid, lang = 'en') => {
       }
     }
   }
-  const p = qs('#segments-container');
+  const p = $('#segments-container');
   if (p) {
     const s = parseTranscriptPanel(p);
     if (s.length > 0) return s;
@@ -64,9 +64,9 @@ const parseTime = t => {
 
 const parseTranscriptPanel = p => {
   const s = [];
-  qsa('ytd-transcript-segment-renderer', p).forEach(i => {
-    const te = qs('[class*="time"]', i),
-      xe = qs('[class*="segment-text"]', i);
+  $$('ytd-transcript-segment-renderer', p).forEach(i => {
+    const te = $('[class*="time"]', i),
+      xe = $('[class*="segment-text"]', i);
     if (te && xe)
       s.push({ start: parseTimeString(te.textContent), duration: 0, text: xe.textContent.trim() });
   });

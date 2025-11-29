@@ -1,4 +1,4 @@
-import { qs, ge, ce } from '../../utils/shortcuts.js';
+import { qs, ge, ce, $ } from '../../utils/shortcuts.js';
 
 const colors = {
   Sponsor: '#00d26a',
@@ -15,7 +15,7 @@ const colors = {
 };
 
 export const renderTimeline = (segs, dur) => {
-  const bar = qs('.ytp-progress-bar-container');
+  const bar = $('.ytp-progress-bar-container');
   if (!bar) return;
   const ex = ge('yt-ai-timeline-markers');
   if (ex) ex.remove();
@@ -30,7 +30,7 @@ export const renderTimeline = (segs, dur) => {
     m.style.cssText = `position:absolute;left:${l}%;width:${w}%;height:100%;background:${colors[s.label] || '#fff'};opacity:0.6;pointer-events:auto;cursor:pointer`;
     m.title = `${s.label}: ${s.description}`;
     m.onclick = () => {
-      const v = qs('video');
+      const v = $('video');
       if (v) v.currentTime = s.start;
     };
     c.appendChild(m);

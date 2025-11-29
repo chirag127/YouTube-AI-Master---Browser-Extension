@@ -1,53 +1,17 @@
-// Select appropriate caption track
-
 import { CAPTION_KIND, DEFAULT_LANGUAGE } from './constants.js';
+import { fn } from '../../utils/shortcuts.js';
 
-/**
- * Find caption track by language
- * @param {Array} tracks - Available caption tracks
- * @param {string} languageCode - Desired language code
- * @returns {Object|null} Caption track or null
- */
-export function findTrackByLanguage(tracks, languageCode) {
-  return tracks.find(track => track.languageCode === languageCode) || null;
+export function findTrackByLanguage(t, l) {
+  return fn(t, x => x.languageCode === l) || null;
 }
-
-/**
- * Get manual caption track (preferred over auto-generated)
- * @param {Array} tracks - Available caption tracks
- * @param {string} languageCode - Desired language code
- * @returns {Object|null} Manual caption track or null
- */
-export function getManualTrack(tracks, languageCode) {
-  return (
-    tracks.find(track => track.languageCode === languageCode && track.kind !== CAPTION_KIND.ASR) ||
-    null
-  );
+export function getManualTrack(t, l) {
+  return fn(t, x => x.languageCode === l && x.kind !== CAPTION_KIND.ASR) || null;
 }
-
-/**
- * Select best available caption track
- * @param {Array} tracks - Available caption tracks
- * @param {string} [preferredLanguage] - Preferred language code
- * @returns {Object|null} Best caption track or null
- */
-export function selectBestTrack(tracks, preferredLanguage = DEFAULT_LANGUAGE) {
-  if (!tracks || tracks.length === 0) {
-    return null;
-  }
-
-  // Try manual track in preferred language
-  const manualTrack = getManualTrack(tracks, preferredLanguage);
-  if (manualTrack) {
-    return manualTrack;
-  }
-
-  // Try any track in preferred language
-  const preferredTrack = findTrackByLanguage(tracks, preferredLanguage);
-  if (preferredTrack) {
-    return preferredTrack;
-  }
-
-  // Fallback to first available track
-  return tracks[0];
+export function selectBestTrack(t, l = DEFAULT_LANGUAGE) {
+  if (!t || t.length === 0) return null;
+  const m = getManualTrack(t, l);
+  if (m) return m;
+  const p = findTrackByLanguage(t, l);
+  if (p) return p;
+  return t[0];
 }

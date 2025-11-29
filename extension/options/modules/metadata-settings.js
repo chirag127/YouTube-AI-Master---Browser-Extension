@@ -1,9 +1,10 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class MetadataSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const m = this.s.get().metadata || {};
     [
@@ -18,7 +19,6 @@ export class MetadataSettings {
       'UploadDate',
       'Chapters',
     ].forEach(k => this.chk(`include${k}`, m[`include${k}`] ?? true));
-
     this.a.attachToAll({
       includeTitle: { path: 'metadata.includeTitle' },
       includeAuthor: { path: 'metadata.includeAuthor' },
@@ -32,9 +32,8 @@ export class MetadataSettings {
       includeChapters: { path: 'metadata.includeChapters' },
     });
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

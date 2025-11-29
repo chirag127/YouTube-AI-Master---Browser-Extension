@@ -1,53 +1,21 @@
-// Transcript utility functions
+import { rp, tr, fn } from '../../utils/shortcuts.js';
 
-/**
- * Clean transcript text
- * @param {string} text - Raw transcript text
- * @returns {string} Cleaned text
- */
-export function cleanText(text) {
-  return text
-    .replace(/\s+/g, ' ')
-    .replace(/\[.*?\]/g, '')
-    .trim();
+export function cleanText(t) {
+  return tr(rp(rp(t, /\s+/g, ' '), /\[.*?\]/g, ''));
 }
-
-/**
- * Split transcript into chunks
- * @param {Array} segments - Transcript segments
- * @param {number} maxChunkSize - Max characters per chunk
- * @returns {Array} Text chunks
- */
-export function splitIntoChunks(segments, maxChunkSize = 2000) {
-  const chunks = [];
-  let currentChunk = '';
-
-  for (const segment of segments) {
-    const text = segment.text + ' ';
-
-    if (currentChunk.length + text.length > maxChunkSize) {
-      if (currentChunk) {
-        chunks.push(currentChunk.trim());
-      }
-      currentChunk = text;
-    } else {
-      currentChunk += text;
-    }
+export function splitIntoChunks(s, m = 2000) {
+  const c = [];
+  let cur = '';
+  for (const seg of s) {
+    const t = seg.text + ' ';
+    if (cur.length + t.length > m) {
+      if (cur) c.push(tr(cur));
+      cur = t;
+    } else cur += t;
   }
-
-  if (currentChunk) {
-    chunks.push(currentChunk.trim());
-  }
-
-  return chunks;
+  if (cur) c.push(tr(cur));
+  return c;
 }
-
-/**
- * Find segment at specific time
- * @param {Array} segments - Transcript segments
- * @param {number} time - Time in seconds
- * @returns {Object|null} Segment at time or null
- */
-export function findSegmentAtTime(segments, time) {
-  return segments.find(seg => time >= seg.start && time < seg.start + seg.duration) || null;
+export function findSegmentAtTime(s, t) {
+  return fn(s, x => t >= x.start && t < x.start + x.duration) || null;
 }

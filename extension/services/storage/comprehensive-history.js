@@ -1,140 +1,95 @@
-// Comprehensive History Storage
-// Stores ALL analysis data: transcripts, comments, segments, metadata, summaries
-
+import { l, e, ls, lg, js, jp, lc, inc, fl, fn, nt, sl, us, slc } from '../utils/shortcuts.js';
 export class ComprehensiveHistory {
   constructor() {
-    this.storageKey = 'comprehensive_history';
-    this.maxItems = 100;
+    this.k = 'comprehensive_history';
+    this.m = 100;
   }
-
-  async save(videoId, data) {
-    const entry = {
-      videoId,
-      timestamp: Date.now(),
-      url: `https://www.youtube.com/watch?v=${videoId}`,
-
-      // Metadata
-      metadata: data.metadata || {},
-
-      // Transcript
-      transcript: data.transcript || [],
-
-      // Comments
-      comments: {
-        raw: data.comments || [],
-        analysis: data.commentAnalysis || null,
-      },
-
-      // Segments
-      segments: {
-        detected: data.segments || [],
-        actions: data.segmentActions || {},
-      },
-
-      // AI Analysis
+  async save(v, d) {
+    const n = {
+      videoId: v,
+      timestamp: nt(),
+      url: `https://www.youtube.com/watch?v=${v}`,
+      metadata: d.metadata || {},
+      transcript: d.transcript || [],
+      comments: { raw: d.comments || [], analysis: d.commentAnalysis || null },
+      segments: { detected: d.segments || [], actions: d.segmentActions || {} },
       analysis: {
-        summary: data.summary || null,
-        comprehensive: data.comprehensiveReview || null,
-        faq: data.faq || null,
-        keyPoints: data.keyPoints || [],
+        summary: d.summary || null,
+        comprehensive: d.comprehensiveReview || null,
+        faq: d.faq || null,
+        keyPoints: d.keyPoints || [],
       },
-
-      // Chat History
-      chatHistory: data.chatHistory || [],
-
-      // User Actions
+      chatHistory: d.chatHistory || [],
       userActions: {
-        liked: data.liked || false,
-        watched: data.watchPercentage || 0,
-        skippedSegments: data.skippedSegments || [],
+        liked: d.liked || false,
+        watched: d.watchPercentage || 0,
+        skippedSegments: d.skippedSegments || [],
       },
     };
-
-    const history = await this.getAll();
-
-    // Remove existing entry for same video
-    const filtered = history.filter(h => h.videoId !== videoId);
-
-    // Add new entry at beginning
-    filtered.unshift(entry);
-
-    // Limit to maxItems
-    const trimmed = filtered.slice(0, this.maxItems);
-
-    await chrome.storage.local.set({ [this.storageKey]: trimmed });
-
-    console.log(`[History] Saved comprehensive data for ${videoId}`);
-    return entry;
+    const h = await this.getAll(),
+      f = fl(h, x => x.videoId !== v);
+    us(f, n);
+    const t = slc(f, 0, this.m);
+    await sl({ [this.k]: t });
+    l(`[History] Saved comprehensive data for ${v}`);
+    return n;
   }
-
-  async get(videoId) {
-    const history = await this.getAll();
-    return history.find(h => h.videoId === videoId);
+  async get(v) {
+    const h = await this.getAll();
+    return fn(h, x => x.videoId === v);
   }
-
   async getAll() {
-    const result = await chrome.storage.local.get(this.storageKey);
-    return result[this.storageKey] || [];
+    const r = await sl(this.k);
+    return r[this.k] || [];
   }
-
-  async delete(videoId) {
-    const history = await this.getAll();
-    const filtered = history.filter(h => h.videoId !== videoId);
-    await chrome.storage.local.set({ [this.storageKey]: filtered });
+  async delete(v) {
+    const h = await this.getAll(),
+      f = fl(h, x => x.videoId !== v);
+    await sl({ [this.k]: f });
   }
-
   async clear() {
-    await chrome.storage.local.remove(this.storageKey);
+    await sl(this.k, null);
   }
-
-  async search(query) {
-    const history = await this.getAll();
-    const lowerQuery = query.toLowerCase();
-
-    return history.filter(entry => {
-      return (
-        entry.metadata?.title?.toLowerCase().includes(lowerQuery) ||
-        entry.metadata?.author?.toLowerCase().includes(lowerQuery) ||
-        entry.videoId.includes(lowerQuery)
-      );
-    });
+  async search(q) {
+    const h = await this.getAll(),
+      lq = lc(q);
+    return fl(
+      h,
+      e =>
+        (e.metadata?.title && inc(lc(e.metadata.title), lq)) ||
+        (e.metadata?.author && inc(lc(e.metadata.author), lq)) ||
+        inc(e.videoId, lq)
+    );
   }
-
   async getStats() {
-    const history = await this.getAll();
-
+    const h = await this.getAll();
     return {
-      totalVideos: history.length,
-      totalTranscripts: history.filter(h => h.transcript?.length > 0).length,
-      totalComments: history.filter(h => h.comments?.raw?.length > 0).length,
-      totalSegments: history.filter(h => h.segments?.detected?.length > 0).length,
-      totalAnalyses: history.filter(h => h.analysis?.summary).length,
-      storageSize: JSON.stringify(history).length,
+      totalVideos: h.length,
+      totalTranscripts: fl(h, x => x.transcript?.length > 0).length,
+      totalComments: fl(h, x => x.comments?.raw?.length > 0).length,
+      totalSegments: fl(h, x => x.segments?.detected?.length > 0).length,
+      totalAnalyses: fl(h, x => x.analysis?.summary).length,
+      storageSize: js(h).length,
     };
   }
-
   async export() {
-    const history = await this.getAll();
-    return JSON.stringify(history, null, 2);
+    const h = await this.getAll();
+    return js(h, null, 2);
   }
-
-  async import(jsonString) {
+  async import(j) {
     try {
-      const imported = JSON.parse(jsonString);
-      if (!Array.isArray(imported)) throw new Error('Invalid format');
-
-      await chrome.storage.local.set({ [this.storageKey]: imported });
+      const i = jp(j);
+      if (!Array.isArray(i)) throw new Error('Invalid format');
+      await sl({ [this.k]: i });
       return true;
-    } catch (e) {
-      console.error('[History] Import failed:', e);
+    } catch (x) {
+      e('[History] Import failed:', x);
       return false;
     }
   }
 }
-
-// Singleton
-let instance = null;
+let i = null;
 export function getHistory() {
-  if (!instance) instance = new ComprehensiveHistory();
-  return instance;
+  if (!i) i = new ComprehensiveHistory();
+  return i;
 }

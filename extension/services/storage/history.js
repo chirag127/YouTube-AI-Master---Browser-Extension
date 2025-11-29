@@ -1,20 +1,22 @@
+import { sl, lc, inc } from '../../utils/shortcuts.js';
+
 export async function getHistory() {
-  const r = await chrome.storage.local.get('history_index');
+  const r = await sl('history_index');
   return r.history_index || [];
 }
 export async function updateHistory(v, m) {
   const i = await getHistory(),
     n = i.filter(x => x.videoId !== v);
   n.unshift({ videoId: v, title: m.title, author: m.author, timestamp: Date.now() });
-  await chrome.storage.local.set({ history_index: n });
+  await sl({ history_index: n });
 }
 export async function deleteFromHistory(v) {
   const i = await getHistory();
-  await chrome.storage.local.set({ history_index: i.filter(x => x.videoId !== v) });
+  await sl({ history_index: i.filter(x => x.videoId !== v) });
 }
 export async function searchHistory(q) {
   if (!q) return getHistory();
   const i = await getHistory(),
-    l = q.toLowerCase();
-  return i.filter(x => x.title?.toLowerCase().includes(l) || x.author?.toLowerCase().includes(l));
+    l = lc(q);
+  return i.filter(x => (x.title && inc(lc(x.title), l)) || (x.author && inc(lc(x.author), l)));
 }

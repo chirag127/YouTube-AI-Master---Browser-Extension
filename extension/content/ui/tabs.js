@@ -4,20 +4,20 @@ import { renderTranscript } from './renderers/transcript.js';
 import { renderSegments } from './renderers/segments.js';
 import { renderChat } from './renderers/chat.js';
 import { renderComments } from './renderers/comments.js';
-import { qs, qsa, ge, on, e } from '../../utils/shortcuts.js';
+import { $, $$, ge, on, e } from '../../utils/shortcuts.js';
 
 export function initTabs(c) {
-  qsa('.yt-ai-tab', c).forEach(t => on(t, 'click', () => switchTab(t.dataset.tab, c)));
+  $$('.yt-ai-tab', c).forEach(t => on(t, 'click', () => switchTab(t.dataset.tab, c)));
 }
 
 export function switchTab(n, container) {
   const c = container || ge('yt-ai-master-widget');
   if (!c) return;
-  qsa('.yt-ai-tab', c).forEach(t => t.classList.remove('active'));
-  qs(`[data-tab="${n}"]`, c)?.classList.add('active');
-  const i = qs('#yt-ai-chat-input-area', c);
+  $$('.yt-ai-tab', c).forEach(t => t.classList.remove('active'));
+  $(`[data-tab="${n}"]`, c)?.classList.add('active');
+  const i = $('#yt-ai-chat-input-area', c);
   if (i) i.style.display = n === 'chat' ? 'flex' : 'none';
-  const a = qs('#yt-ai-content-area', c);
+  const a = $('#yt-ai-content-area', c);
   if (!a) return;
   try {
     switch (n) {

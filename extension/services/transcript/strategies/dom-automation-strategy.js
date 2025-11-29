@@ -1,108 +1,101 @@
-import { $, $$, l, w, e as er, d, sl, nt } from '../../../utils/shortcuts.js';
+import { $, $$, l, w, e as er, d, sl, nt, spt, mp, tr } from '../../../utils/shortcuts.js';
 class DOMAutomationStrategy {
   constructor() {
     this.name = 'DOM Automation';
     this.priority = 1;
     this.logger = this._createLogger('DOM-Automation');
   }
-  _createLogger(prefix) {
+  _createLogger(p) {
     return {
-      info: (msg, ...args) => l(`[${prefix}]ℹ️${msg}`, ...args),
-      success: (msg, ...args) => l(`[${prefix}]✅${msg}`, ...args),
-      warn: (msg, ...args) => w(`[${prefix}]⚠️${msg}`, ...args),
-      error: (msg, ...args) => er(`[${prefix}]❌${msg}`, ...args),
-      debug: (msg, ...args) => d(`[${prefix}]🔍${msg}`, ...args),
+      info: (m, ...a) => l(`[${p}]ℹ️${m}`, ...a),
+      success: (m, ...a) => l(`[${p}]✅${m}`, ...a),
+      warn: (m, ...a) => w(`[${p}]⚠️${m}`, ...a),
+      error: (m, ...a) => er(`[${p}]❌${m}`, ...a),
+      debug: (m, ...a) => d(`[${p}]🔍${m}`, ...a),
     };
   }
-  async fetch(videoId, lang = 'en') {
-    this.logger.info(`Starting DOM automation for ${videoId}...`);
+  async fetch(v, lg = 'en') {
+    this.logger.info(`Starting DOM automation for ${v}...`);
     try {
-      let transcriptContainer = $(
+      let tc = $(
         'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-searchable-transcript"]'
       );
-      if (!this._isTranscriptVisible(transcriptContainer)) {
+      if (!this._isTranscriptVisible(tc)) {
         this.logger.debug('Transcript panel not visible, attempting to open...');
         await this._openTranscriptPanel();
-      } else {
-        this.logger.debug('Transcript panel already visible');
-      }
+      } else this.logger.debug('Transcript panel already visible');
       await this._waitForSegments();
-      const segments = this._scrapeSegments();
-      if (!segments || segments.length === 0) throw new Error('No segments found after automation');
-      this.logger.success(`Successfully scraped ${segments.length} segments`);
-      return segments;
-    } catch (error) {
-      this.logger.error('Automation failed:', error.message);
-      throw error;
+      const s = this._scrapeSegments();
+      if (!s || s.length === 0) throw new Error('No segments found after automation');
+      this.logger.success(`Successfully scraped ${s.length} segments`);
+      return s;
+    } catch (x) {
+      this.logger.error('Automation failed:', x.message);
+      throw x;
     }
   }
-  _isTranscriptVisible(container) {
-    return container && container.visibility !== 'hidden' && container.offsetParent !== null;
+  _isTranscriptVisible(c) {
+    return c && c.visibility !== 'hidden' && c.offsetParent !== null;
   }
   async _openTranscriptPanel() {
-    const expandButton = $('#expand');
-    if (expandButton && expandButton.offsetParent !== null) {
+    const eb = $('#expand');
+    if (eb && eb.offsetParent !== null) {
       this.logger.debug('Clicking description expand button...');
-      expandButton.click();
+      eb.click();
       await this._wait(500);
     }
-    const selectors = [
+    const sels = [
       'button[aria-label="Show transcript"]',
       'ytd-button-renderer[aria-label="Show transcript"]',
       '#primary-button button[aria-label="Show transcript"]',
     ];
-    let showTranscriptBtn = null;
-    for (const selector of selectors) {
-      showTranscriptBtn = $(selector);
-      if (showTranscriptBtn) break;
+    let stb = null;
+    for (const s of sels) {
+      stb = $(s);
+      if (stb) break;
     }
-    if (!showTranscriptBtn) {
-      const buttons = Array.from($$('button, ytd-button-renderer'));
-      showTranscriptBtn = buttons.find(b => b.textContent.includes('Show transcript'));
+    if (!stb) {
+      const btns = $$('button, ytd-button-renderer');
+      stb = btns.find(b => b.textContent.includes('Show transcript'));
     }
-    if (showTranscriptBtn) {
+    if (stb) {
       this.logger.debug('Clicking "Show transcript" button...');
-      showTranscriptBtn.click();
+      stb.click();
       await this._wait(1000);
-    } else {
-      throw new Error('"Show transcript" button not found');
-    }
+    } else throw new Error('"Show transcript" button not found');
   }
-  async _waitForSegments(timeout = 5000) {
-    const startTime = nt();
-    while (nt() - startTime < timeout) {
-      const segments = $$('ytd-transcript-segment-renderer');
-      if (segments.length > 0) return;
+  async _waitForSegments(to = 5000) {
+    const st = nt();
+    while (nt() - st < to) {
+      const s = $$('ytd-transcript-segment-renderer');
+      if (s.length > 0) return;
       await this._wait(500);
     }
     throw new Error('Timeout waiting for transcript segments');
   }
   _scrapeSegments() {
-    const segmentElements = $$('ytd-transcript-segment-renderer');
-    const segments = [];
-    segmentElements.forEach(el => {
-      const timestampEl = el.querySelector('.segment-timestamp');
-      const textEl = el.querySelector('.segment-text');
-      if (timestampEl && textEl) {
-        const timestampStr = timestampEl.textContent.trim();
-        const text = textEl.textContent.trim();
-        const start = this._parseTimestamp(timestampStr);
-        segments.push({ start, text, duration: 0 });
+    const ses = $$('ytd-transcript-segment-renderer'),
+      s = [];
+    ses.forEach(el => {
+      const tse = $('.segment-timestamp', el),
+        te = $('.segment-text', el);
+      if (tse && te) {
+        const ts = tr(tse.textContent),
+          t = tr(te.textContent),
+          st = this._parseTimestamp(ts);
+        s.push({ start: st, text: t, duration: 0 });
       }
     });
-    for (let i = 0; i < segments.length; i++) {
-      if (i < segments.length - 1) {
-        segments[i].duration = segments[i + 1].start - segments[i].start;
-      } else {
-        segments[i].duration = 5;
-      }
+    for (let i = 0; i < s.length; i++) {
+      if (i < s.length - 1) s[i].duration = s[i + 1].start - s[i].start;
+      else s[i].duration = 5;
     }
-    return segments;
+    return s;
   }
-  _parseTimestamp(str) {
-    const parts = str.split(':').map(Number);
-    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    else if (parts.length === 2) return parts[0] * 60 + parts[1];
+  _parseTimestamp(s) {
+    const p = mp(spt(s, ':'), Number);
+    if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+    else if (p.length === 2) return p[0] * 60 + p[1];
     return 0;
   }
   _wait(ms) {

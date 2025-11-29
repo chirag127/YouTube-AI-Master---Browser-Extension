@@ -1,4 +1,5 @@
-// Segment Categories Configuration
+import { sg, ss, l, e, js, jp, nt } from '../../utils/shortcuts.js';
+
 export const SEGMENT_CATEGORIES = [
   { id: 'sponsor', label: 'Sponsor', color: '#00d400' },
   { id: 'selfpromo', label: 'Self Promotion', color: '#ffff00' },
@@ -11,125 +12,91 @@ export const SEGMENT_CATEGORIES = [
   { id: 'filler', label: 'Filler/Tangent', color: '#7300ff' },
   { id: 'exclusive_access', label: 'Exclusive Access', color: '#008a5c' },
 ];
-
-export const DEFAULT_SEGMENT_CONFIG = {
-  action: 'skip',
-  speed: 2,
-};
+export const DEFAULT_SEGMENT_CONFIG = { action: 'skip', speed: 2 };
 
 export class SettingsManager {
   constructor() {
     this.settings = {};
     this.listeners = [];
   }
-
   async load() {
     try {
-      const result = await chrome.storage.sync.get('config');
-      console.log('[SettingsManager] Loaded from storage:', result);
-
-      if (result.config && Object.keys(result.config).length > 0) {
-        // Merge with defaults to ensure all keys exist
-        this.settings = this.mergeWithDefaults(result.config);
-      } else {
-        console.log('[SettingsManager] No config found, using defaults');
+      const r = await sg('config');
+      l('[SettingsManager] Loaded from storage:', r);
+      if (r.config && Object.keys(r.config).length > 0)
+        this.settings = this.mergeWithDefaults(r.config);
+      else {
+        l('[SettingsManager] No config found, using defaults');
         this.settings = this.getDefaults();
       }
-
-      console.log('[SettingsManager] Final settings:', this.settings);
+      l('[SettingsManager] Final settings:', this.settings);
       return this.settings;
-    } catch (error) {
-      console.error('[SettingsManager] Load error:', error);
+    } catch (x) {
+      e('[SettingsManager] Load error:', x);
       this.settings = this.getDefaults();
       return this.settings;
     }
   }
-
   async save() {
     try {
       this.settings._meta = this.settings._meta || {};
-      this.settings._meta.lastUpdated = Date.now();
-
-      console.log('[SettingsManager] Saving to storage:', this.settings);
-      await chrome.storage.sync.set({ config: this.settings });
-
-      // Verify save
-      const verify = await chrome.storage.sync.get('config');
-      console.log('[SettingsManager] Verified save:', verify);
-
+      this.settings._meta.lastUpdated = nt();
+      l('[SettingsManager] Saving to storage:', this.settings);
+      await ss({ config: this.settings });
+      const v = await sg('config');
+      l('[SettingsManager] Verified save:', v);
       this.notify();
       return true;
-    } catch (error) {
-      console.error('[SettingsManager] Save error:', error);
-      throw error;
+    } catch (x) {
+      e('[SettingsManager] Save error:', x);
+      throw x;
     }
   }
-
-  mergeWithDefaults(loaded) {
-    const defaults = this.getDefaults();
-    const merged = JSON.parse(JSON.stringify(defaults));
-
-    // Deep merge loaded settings into defaults
-    const deepMerge = (target, source) => {
-      for (const key in source) {
-        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-          target[key] = target[key] || {};
-          deepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
-        }
+  mergeWithDefaults(l) {
+    const d = this.getDefaults(),
+      m = jp(js(d));
+    const dm = (t, s) => {
+      for (const k in s) {
+        if (s[k] && typeof s[k] === 'object' && !Array.isArray(s[k])) {
+          t[k] = t[k] || {};
+          dm(t[k], s[k]);
+        } else t[k] = s[k];
       }
-      return target;
+      return t;
     };
-
-    return deepMerge(merged, loaded);
+    return dm(m, l);
   }
-
-  get(path) {
-    if (!path) return this.settings;
-    return path.split('.').reduce((obj, key) => obj?.[key], this.settings);
+  get(p) {
+    if (!p) return this.settings;
+    return p.split('.').reduce((o, k) => o?.[k], this.settings);
   }
-
-  set(path, value) {
-    const keys = path.split('.');
-    const last = keys.pop();
-
-    // Ensure settings object exists
-    if (!this.settings || typeof this.settings !== 'object') {
-      this.settings = this.getDefaults();
-    }
-
-    const target = keys.reduce((obj, key) => {
-      if (!obj[key] || typeof obj[key] !== 'object') {
-        obj[key] = {};
-      }
-      return obj[key];
+  set(p, v) {
+    const k = p.split('.'),
+      l = k.pop();
+    if (!this.settings || typeof this.settings !== 'object') this.settings = this.getDefaults();
+    const t = k.reduce((o, key) => {
+      if (!o[key] || typeof o[key] !== 'object') o[key] = {};
+      return o[key];
     }, this.settings);
-
-    target[last] = value;
-    console.log(`[Settings] Set ${path} =`, value);
+    t[l] = v;
+    l(`[Settings] Set ${p} =`, v);
   }
-
-  async update(path, value) {
-    console.log(`[Settings] Update ${path} =`, value);
-    this.set(path, value);
+  async update(p, v) {
+    l(`[Settings] Update ${p} =`, v);
+    this.set(p, v);
     await this.save();
-    console.log('[Settings] Saved to storage');
+    l('[Settings] Saved to storage');
   }
-
   async reset() {
     this.settings = this.getDefaults();
     await this.save();
   }
-
-  subscribe(callback) {
-    this.listeners.push(callback);
+  subscribe(cb) {
+    this.listeners.push(cb);
   }
-
   notify() {
     this.listeners.forEach(cb => cb(this.settings));
   }
-
   getDefaults() {
     return {
       cache: {
@@ -140,7 +107,7 @@ export class SettingsManager {
         metadata: true,
         segments: true,
         summaries: true,
-        maxSize: 50, // MB
+        maxSize: 50,
       },
       scroll: {
         autoScrollToComments: false,
@@ -211,12 +178,7 @@ export class SettingsManager {
         autoDetectLanguage: true,
         autoLoadTranscript: true,
       },
-      segments: {
-        enabled: true,
-        categories: {},
-        autoSkip: true,
-        showNotifications: true,
-      },
+      segments: { enabled: true, categories: {}, autoSkip: true, showNotifications: true },
       externalApis: {
         tmdb: '',
         newsData: '',
@@ -251,26 +213,20 @@ export class SettingsManager {
         showOnError: true,
         showProgress: true,
       },
-      _meta: {
-        version: '1.0.0',
-        lastUpdated: Date.now(),
-        onboardingCompleted: false,
-      },
+      _meta: { version: '1.0.0', lastUpdated: nt(), onboardingCompleted: false },
     };
   }
-
   export() {
-    return JSON.stringify(this.settings, null, 2);
+    return js(this.settings, null, 2);
   }
-
-  async import(jsonString) {
+  async import(j) {
     try {
-      const imported = JSON.parse(jsonString);
-      this.settings = imported;
+      const i = jp(j);
+      this.settings = i;
       await this.save();
       return true;
-    } catch (e) {
-      console.error('[Settings] Import failed:', e);
+    } catch (x) {
+      e('[Settings] Import failed:', x);
       return false;
     }
   }

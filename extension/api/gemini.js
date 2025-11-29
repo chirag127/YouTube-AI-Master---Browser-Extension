@@ -1,7 +1,8 @@
+```javascript
 import { GeminiClient } from './gemini-client.js';
 import { ModelManager } from './models.js';
 import { prompts } from './prompts/index.js';
-import { l, w, e, jp, js, sbs, mp, tr, rp } from '../utils/shortcuts.js';
+import { l, w, e, jp, js, sbs, mp, tr, rp, cr as ce } from '../utils/shortcuts.js';
 
 export { ModelManager };
 

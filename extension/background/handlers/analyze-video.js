@@ -8,7 +8,7 @@ import { l, w, e, si, csi, rt, sg, mfl, pd, js, ks } from '../../utils/shortcuts
 let ka = null;
 function ska() {
   if (ka) return;
-  ka = si(() => rt.getPlatformInfo(() => { }), 2e4);
+  ka = si(() => rt.getPlatformInfo(() => {}), 2e4);
 }
 function stka() {
   if (ka) {
@@ -63,7 +63,7 @@ export async function handleAnalyzeVideo(req, rsp) {
     if (im || !t?.length) {
       try {
         lyr = await gl.getLyrics(m.title, m.author);
-      } catch (e) { }
+      } catch (e) {}
     }
 
     let sbs = [];
@@ -134,7 +134,7 @@ export async function handleAnalyzeVideo(req, rsp) {
           segments: seg,
           timestamps: an.timestamps,
         });
-      } catch (e) { }
+      } catch (e) {}
     }
 
     rsp({

@@ -1,9 +1,10 @@
+import { ge } from '../../utils/shortcuts.js';
+
 export class CommentsSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const c = this.s.get().comments || {};
     this.chk('commentsEnabled', c.enabled ?? true);
@@ -14,7 +15,6 @@ export class CommentsSettings {
     this.chk('filterSpam', c.filterSpam ?? true);
     this.chk('showAuthorBadges', c.showAuthorBadges ?? true);
     this.chk('highlightPinned', c.highlightPinned ?? true);
-
     this.a.attachToAll({
       commentsEnabled: { path: 'comments.enabled' },
       commentsLimit: { path: 'comments.limit', transform: v => parseInt(v) },
@@ -26,14 +26,12 @@ export class CommentsSettings {
       highlightPinned: { path: 'comments.highlightPinned' },
     });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }

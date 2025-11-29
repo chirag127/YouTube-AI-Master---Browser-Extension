@@ -130,7 +130,7 @@ function pcd(d) {
   try {
     const j = jp(d);
     if (j.events) return pj3(j);
-  } catch (e) { }
+  } catch (e) {}
   log.warn('Unknown fmt, generic parse');
   return pg(d);
 }
@@ -203,7 +203,7 @@ function pts(ts) {
 }
 
 function dh(t) {
-  const ta = _cr('textarea');
+  const ta = cr('textarea');
   ta.innerHTML = t;
   return ta.value;
 }

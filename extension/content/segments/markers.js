@@ -1,9 +1,9 @@
 import { getVideoElement } from '../utils/dom.js';
-import { qs, ge, ce } from '../../utils/shortcuts.js';
+import { qs, ge, ce, $ } from '../../utils/shortcuts.js';
 
 export function injectSegmentMarkers(s) {
   if (!s?.length) return;
-  const p = qs('.ytp-progress-bar');
+  const p = $('.ytp-progress-bar');
   if (!p) return;
   const e = ge('yt-ai-markers');
   if (e) e.remove();

@@ -1,83 +1,69 @@
-// Centralized Video Data Service
-// Single entry point for fetching video data (metadata, transcript, comments)
-
-import videoCache from '../cache/video-cache.js';
+import vc from '../cache/video-cache.js';
+import { sm, l } from '../../utils/shortcuts.js';
 
 class VideoDataService {
   constructor() {
-    this.pendingRequests = new Map();
+    this.p = new Map();
   }
-
-  async getMetadata(videoId, options = {}) {
-    return this._fetchWithCache(videoId, 'metadata', async () => {
-      const response = await chrome.runtime.sendMessage({
+  async getMetadata(id, o = {}) {
+    return this._f(id, 'metadata', async () => {
+      const r = await sm({
         action: 'GET_VIDEO_DATA',
-        videoId,
+        videoId: id,
         dataType: 'metadata',
-        options,
+        options: o,
       });
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      if (!r.success) throw new Error(r.error);
+      return r.data;
     });
   }
-
-  async getTranscript(videoId, lang = 'en') {
-    return this._fetchWithCache(videoId, 'transcript', async () => {
-      const response = await chrome.runtime.sendMessage({
+  async getTranscript(id, lg = 'en') {
+    return this._f(id, 'transcript', async () => {
+      const r = await sm({
         action: 'GET_VIDEO_DATA',
-        videoId,
+        videoId: id,
         dataType: 'transcript',
-        options: { lang },
+        options: { lang: lg },
       });
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      if (!r.success) throw new Error(r.error);
+      return r.data;
     });
   }
-
-  async getComments(videoId, limit = 20) {
-    return this._fetchWithCache(videoId, 'comments', async () => {
-      const response = await chrome.runtime.sendMessage({
+  async getComments(id, lm = 20) {
+    return this._f(id, 'comments', async () => {
+      const r = await sm({
         action: 'GET_VIDEO_DATA',
-        videoId,
+        videoId: id,
         dataType: 'comments',
-        options: { limit },
+        options: { limit: lm },
       });
-      if (!response.success) throw new Error(response.error);
-      return response.data;
+      if (!r.success) throw new Error(r.error);
+      return r.data;
     });
   }
-
-  async _fetchWithCache(videoId, dataType, fetchFn) {
-    // Check cache first
-    const cached = await videoCache.get(videoId, dataType);
-    if (cached) return cached;
-
-    // Prevent duplicate requests
-    const key = `${videoId}:${dataType}`;
-    if (this.pendingRequests.has(key)) {
-      console.log(`[VideoDataService] Waiting for pending: ${key}`);
-      return this.pendingRequests.get(key);
+  async _f(id, t, fn) {
+    const c = await vc.get(id, t);
+    if (c) return c;
+    const k = `${id}:${t}`;
+    if (this.p.has(k)) {
+      l(`[VideoDataService] Waiting for pending: ${k}`);
+      return this.p.get(k);
     }
-
-    // Fetch and cache
-    const promise = fetchFn()
-      .then(async data => {
-        await videoCache.set(videoId, dataType, data);
-        this.pendingRequests.delete(key);
-        return data;
+    const p = fn()
+      .then(async d => {
+        await vc.set(id, t, d);
+        this.p.delete(k);
+        return d;
       })
-      .catch(error => {
-        this.pendingRequests.delete(key);
-        throw error;
+      .catch(e => {
+        this.p.delete(k);
+        throw e;
       });
-
-    this.pendingRequests.set(key, promise);
-    return promise;
+    this.p.set(k, p);
+    return p;
   }
-
-  clearCache(videoId) {
-    return videoCache.clear(videoId);
+  clearCache(id) {
+    return vc.clear(id);
   }
 }
-
 export default new VideoDataService();

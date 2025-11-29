@@ -1,4 +1,4 @@
-import { l, w, e, d, ce, jp, js } from '../../utils/shortcuts.js';
+import { l, w, e, d, jp, js, cr } from '../../utils/shortcuts.js';
 
 class TranscriptInterceptor {
   constructor() {
@@ -168,7 +168,7 @@ class TranscriptInterceptor {
   }
 
   _decodeHTML(t) {
-    const ta = ce('textarea');
+    const ta = cr('textarea');
     ta.innerHTML = t;
     return ta.value;
   }

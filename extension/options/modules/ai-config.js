@@ -1,4 +1,24 @@
 import { ModelManager } from '../../api/gemini.js';
+import {
+  ge,
+  on,
+  ft,
+  js,
+  e,
+  cr,
+  sw,
+  inc,
+  mt,
+  fc,
+  ap,
+  tc,
+  ih,
+  rc,
+  val,
+  isS,
+  rp,
+  tr,
+} from '../../utils/shortcuts.js';
 
 export class AIConfig {
   constructor(s, a) {
@@ -6,158 +26,129 @@ export class AIConfig {
     this.a = a;
     this.mm = null;
   }
-
   async init() {
     const c = this.s.get().ai || {};
-
-    if (ModelManager && c.apiKey) {
+    if (ModelManager && c.apiKey)
       this.mm = new ModelManager(c.apiKey, 'https://generativelanguage.googleapis.com/v1beta');
-    }
-
     this.set('apiKey', c.apiKey || '');
     this.set('customPrompt', c.customPrompt || '');
     if (c.model) this.set('modelSelect', c.model);
-
     const els = {
-      apiKey: document.getElementById('apiKey'),
-      toggleApiKey: document.getElementById('toggleApiKey'),
-      modelSelect: document.getElementById('modelSelect'),
-      refreshModels: document.getElementById('refreshModels'),
-      testConnection: document.getElementById('testConnection'),
-      customPrompt: document.getElementById('customPrompt'),
+      ak: ge('apiKey'),
+      tak: ge('toggleApiKey'),
+      ms: ge('modelSelect'),
+      rm: ge('refreshModels'),
+      tc: ge('testConnection'),
+      cp: ge('customPrompt'),
     };
-
-    els.apiKey?.addEventListener('change', async e => {
-      const key = e.target.value.trim();
-      await this.a.save('ai.apiKey', key);
-      this.mm = new ModelManager(key, 'https://generativelanguage.googleapis.com/v1beta');
-      if (key) await this.loadModels(els.modelSelect);
-    });
-
-    els.toggleApiKey?.addEventListener('click', () => {
-      els.apiKey.type = els.apiKey.type === 'password' ? 'text' : 'password';
-    });
-
-    if (els.customPrompt) {
-      this.a.attachToInput(els.customPrompt, 'ai.customPrompt');
-    }
-
-    els.modelSelect?.addEventListener('change', e => {
-      let m = e.target.value;
-      if (m.startsWith('models/')) m = m.replace('models/', '');
-      this.a.save('ai.model', m);
-    });
-
-    els.refreshModels?.addEventListener('click', () => this.loadModels(els.modelSelect));
-    els.testConnection?.addEventListener('click', () => this.test());
-
-    if (c.apiKey) await this.loadModels(els.modelSelect);
+    if (els.ak)
+      on(els.ak, 'change', async e => {
+        const k = tr(val(e.target));
+        await this.a.save('ai.apiKey', k);
+        this.mm = new ModelManager(k, 'https://generativelanguage.googleapis.com/v1beta');
+        if (k) await this.loadModels(els.ms);
+      });
+    if (els.tak)
+      on(els.tak, 'click', () => {
+        els.ak.type = els.ak.type === 'password' ? 'text' : 'password';
+      });
+    if (els.cp) this.a.attachToInput(els.cp, 'ai.customPrompt');
+    if (els.ms)
+      on(els.ms, 'change', e => {
+        let m = val(e.target);
+        if (sw(m, 'models/')) m = rp(m, 'models/', '');
+        this.a.save('ai.model', m);
+      });
+    if (els.rm) on(els.rm, 'click', () => this.loadModels(els.ms));
+    if (els.tc) on(els.tc, 'click', () => this.test());
+    if (c.apiKey) await this.loadModels(els.ms);
   }
-
   async loadModels(sel) {
     if (!sel) return;
-    sel.innerHTML = '<option value="" disabled>Loading...</option>';
+    ih(sel, '<option value="" disabled>Loading...</option>');
     sel.disabled = true;
-
     try {
       if (!this.mm) throw new Error('Set API key first');
-
-      const models = await this.mm.fetch();
-      sel.innerHTML = '';
-
-      if (models.length === 0) {
-        sel.innerHTML = '<option value="" disabled>No models found</option>';
+      const m = await this.mm.fetch();
+      ih(sel, '');
+      if (m.length === 0) {
+        ih(sel, '<option value="" disabled>No models found</option>');
         return;
       }
-
-      models.forEach(m => {
-        const name =
-          typeof m === 'string' ? m.replace('models/', '') : m.name?.replace('models/', '') || m;
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        sel.appendChild(opt);
+      fc(m, x => {
+        const n = isS(x) ? rp(x, 'models/', '') : rp(x.name, 'models/', '') || x;
+        const o = cr('option');
+        o.value = n;
+        tc(o, n);
+        ap(sel, o);
       });
-
       const c = this.s.get().ai || {};
-      let saved = c.model;
-
-      if (saved && saved.startsWith('models/')) {
-        saved = saved.replace('models/', '');
-        await this.a.save('ai.model', saved);
+      let s = c.model;
+      if (s && sw(s, 'models/')) {
+        s = rp(s, 'models/', '');
+        await this.a.save('ai.model', s);
       }
-
-      if (saved && models.includes(saved)) {
-        sel.value = saved;
-      } else if (models.length > 0) {
-        sel.value = models[0];
-        await this.a.save('ai.model', models[0]);
+      if (s && inc(m, s)) sel.value = s;
+      else if (m.length > 0) {
+        sel.value = m[0];
+        await this.a.save('ai.model', m[0]);
       }
-    } catch (e) {
-      console.error('Failed to fetch models:', e);
-      sel.innerHTML = '<option value="" disabled>Failed to load</option>';
-      this.a.notifications?.error(`Failed: ${e.message}`);
+    } catch (x) {
+      e('Failed to fetch models:', x);
+      ih(sel, '<option value="" disabled>Failed to load</option>');
+      this.a.notifications?.error(`Failed: ${x.message}`);
     } finally {
       sel.disabled = false;
     }
   }
-
   async test() {
-    const btn = document.getElementById('testConnection');
-    const status = document.getElementById('apiStatus');
-    const modelSelect = document.getElementById('modelSelect');
-    const c = this.s.get().ai || {};
-
+    const btn = ge('testConnection'),
+      st = ge('apiStatus'),
+      ms = ge('modelSelect'),
+      c = this.s.get().ai || {};
     btn.disabled = true;
-    btn.textContent = 'Testing...';
-    status.className = 'status-indicator hidden';
-
+    tc(btn, 'Testing...');
+    st.className = 'status-indicator hidden';
     try {
       if (!c.apiKey) throw new Error('API Key missing');
-
-      let m = modelSelect?.value || c.model || 'gemini-2.0-flash-exp';
-      if (m.startsWith('models/')) m = m.replace('models/', '');
+      let m = val(ms) || c.model || 'gemini-2.0-flash-exp';
+      if (sw(m, 'models/')) m = rp(m, 'models/', '');
       if (
-        !m.includes('-latest') &&
-        !m.match(/-\d{3}$/) &&
-        !m.match(/-\d{2}-\d{4}$/) &&
-        !m.includes('preview') &&
-        !m.includes('exp')
-      ) {
-        m = m + '-latest';
-      }
-
-      const res = await fetch(
+        !inc(m, '-latest') &&
+        !mt(m, /-\d{3}$/) &&
+        !mt(m, /-\d{2}-\d{4}$/) &&
+        !inc(m, 'preview') &&
+        !inc(m, 'exp')
+      )
+        m += '-latest';
+      const r = await ft(
         `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${c.apiKey}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: 'Ping' }] }] }),
+          body: js({ contents: [{ parts: [{ text: 'Ping' }] }] }),
         }
       );
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error?.message || res.statusText);
+      if (!r.ok) {
+        const err = jp(await r.text());
+        throw new Error(err.error?.message || r.statusText);
       }
-
-      status.textContent = '✓ Connection Successful!';
-      status.className = 'status-indicator success';
-      status.classList.remove('hidden');
+      tc(st, '✓ Connection Successful!');
+      st.className = 'status-indicator success';
+      rc(st, 'hidden');
       this.a.notifications?.success('API verified');
-    } catch (e) {
-      status.textContent = `✗ Failed: ${e.message}`;
-      status.className = 'status-indicator error';
-      status.classList.remove('hidden');
-      this.a.notifications?.error(`Failed: ${e.message}`);
+    } catch (x) {
+      tc(st, `✗ Failed: ${x.message}`);
+      st.className = 'status-indicator error';
+      rc(st, 'hidden');
+      this.a.notifications?.error(`Failed: ${x.message}`);
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Test Connection';
+      tc(btn, 'Test Connection');
     }
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
 }

@@ -1,8 +1,8 @@
 import { parseMarkdown } from '../../../lib/marked-loader.js';
-import { qs, ge, ce } from '../../utils/shortcuts.js';
+import { qs, ge, ce, $ } from '../../utils/shortcuts.js';
 
 export function renderChat(c) {
-  if (!qs('.yt-ai-chat-messages', c)) {
+  if (!$('.yt-ai-chat-messages', c)) {
     c.innerHTML = `<div class="yt-ai-chat-messages" id="yt-ai-chat-messages"><div class="yt-ai-chat-msg ai">👋 Hi! Ask me anything about this video.</div></div>`;
   }
 }

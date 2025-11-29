@@ -1,80 +1,55 @@
-// Centralized Video Data Cache
-// Single source of truth for video metadata, transcripts, and comments
+import { sl, l } from '../../utils/shortcuts.js';
 
-const CACHE_VERSION = 1;
-const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-
+const V = 1,
+  E = 86400000;
 class VideoCache {
   constructor() {
-    this.memoryCache = new Map();
+    this.m = new Map();
   }
-
-  async get(videoId, dataType) {
-    // Check memory cache first
-    const memKey = `${videoId}:${dataType}`;
-    if (this.memoryCache.has(memKey)) {
-      const cached = this.memoryCache.get(memKey);
-      if (Date.now() - cached.timestamp < CACHE_EXPIRY) {
-        console.log(`[VideoCache] Memory hit: ${memKey}`);
-        return cached.data;
+  async get(id, t) {
+    const k = `${id}:${t}`;
+    if (this.m.has(k)) {
+      const c = this.m.get(k);
+      if (Date.now() - c.ts < E) {
+        l(`[VideoCache] Memory hit: ${k}`);
+        return c.d;
       }
-      this.memoryCache.delete(memKey);
+      this.m.delete(k);
     }
-
-    // Check storage
-    const storageKey = `video_${videoId}_${dataType}`;
-    const result = await chrome.storage.local.get(storageKey);
-
-    if (result[storageKey]) {
-      const cached = result[storageKey];
-      if (cached.version === CACHE_VERSION && Date.now() - cached.timestamp < CACHE_EXPIRY) {
-        console.log(`[VideoCache] Storage hit: ${storageKey}`);
-        this.memoryCache.set(memKey, { data: cached.data, timestamp: cached.timestamp });
-        return cached.data;
+    const sk = `video_${id}_${t}`,
+      r = await sl(sk);
+    if (r[sk]) {
+      const c = r[sk];
+      if (c.v === V && Date.now() - c.ts < E) {
+        l(`[VideoCache] Storage hit: ${sk}`);
+        this.m.set(k, { d: c.d, ts: c.ts });
+        return c.d;
       }
-      // Expired, remove
-      await chrome.storage.local.remove(storageKey);
+      await sl(sk, null);
     }
-
     return null;
   }
-
-  async set(videoId, dataType, data) {
-    const memKey = `${videoId}:${dataType}`;
-    const storageKey = `video_${videoId}_${dataType}`;
-    const timestamp = Date.now();
-
-    // Set in memory
-    this.memoryCache.set(memKey, { data, timestamp });
-
-    // Set in storage
-    await chrome.storage.local.set({
-      [storageKey]: {
-        version: CACHE_VERSION,
-        timestamp,
-        data,
-      },
-    });
-
-    console.log(`[VideoCache] Cached: ${storageKey}`);
+  async set(id, t, d) {
+    const k = `${id}:${t}`,
+      sk = `video_${id}_${t}`,
+      ts = Date.now();
+    this.m.set(k, { d, ts });
+    await sl({ [sk]: { v: V, ts, d } });
+    l(`[VideoCache] Cached: ${sk}`);
   }
-
-  async clear(videoId) {
-    if (videoId) {
-      // Clear specific video
-      const keys = ['metadata', 'transcript', 'comments'];
-      for (const type of keys) {
-        this.memoryCache.delete(`${videoId}:${type}`);
-        await chrome.storage.local.remove(`video_${videoId}_${type}`);
+  async clear(id) {
+    if (id) {
+      const ks = ['metadata', 'transcript', 'comments'];
+      for (const t of ks) {
+        this.m.delete(`${id}:${t}`);
+        await sl(`video_${id}_${t}`, null);
       }
     } else {
-      // Clear all
-      this.memoryCache.clear();
-      const all = await chrome.storage.local.get(null);
-      const videoKeys = Object.keys(all).filter(k => k.startsWith('video_'));
-      await chrome.storage.local.remove(videoKeys);
+      this.m.clear();
+      const a = await sl(null),
+        vk = Object.keys(a).filter(k => k.startsWith('video_'));
+      await sl(vk, null);
     }
   }
 }
-
 export default new VideoCache();

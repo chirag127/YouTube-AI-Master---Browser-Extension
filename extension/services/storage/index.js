@@ -1,13 +1,12 @@
 import { saveTranscript, getTranscript, deleteTranscript } from './transcript.js';
 import { getHistory, updateHistory, deleteFromHistory, searchHistory } from './history.js';
 import * as cache from './video-cache.js';
+import { sl } from '../../utils/shortcuts.js';
 
 export class StorageService {
   constructor() {
-    this.storage = chrome.storage.local;
+    this.storage = sl;
   }
-
-  // Legacy methods
   async saveTranscript(v, m, t, s) {
     const d = await saveTranscript(v, m, t, s);
     await updateHistory(v, m);
@@ -27,8 +26,6 @@ export class StorageService {
     await deleteFromHistory(v);
     await cache.deleteVideoData(v);
   }
-
-  // New comprehensive cache methods
   async saveVideoData(v, d) {
     await updateHistory(v, d.metadata || {});
     return cache.saveVideoData(v, d);
@@ -39,8 +36,6 @@ export class StorageService {
   async hasVideoData(v) {
     return cache.hasVideoData(v);
   }
-
-  // Specific data getters
   async getCachedTranscript(v) {
     return cache.getCachedTranscript(v);
   }
@@ -56,8 +51,6 @@ export class StorageService {
   async getCachedChat(v) {
     return cache.getCachedChat(v);
   }
-
-  // Specific data savers
   async saveTranscriptCache(v, t) {
     return cache.saveTranscriptCache(v, t);
   }

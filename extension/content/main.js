@@ -93,7 +93,7 @@ async function hGT(req, rsp) {
         );
         setTimeout(() => cTW(), 1e3);
         console.log('[Tr] Auto-close');
-      } catch (e) { }
+      } catch (e) {}
     }
     rsp({ success: true, transcript: t });
   } catch (x) {

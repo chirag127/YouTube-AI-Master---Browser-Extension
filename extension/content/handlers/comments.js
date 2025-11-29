@@ -170,13 +170,13 @@ class CommentsExtractor {
     return new Promise(r =>
       setTimeout(() => {
         const c = [];
-        const el = qsa('ytd-comment-thread-renderer');
+        const el = $$('ytd-comment-thread-renderer');
         l(`[CommentsExtractor] 📊 DOM Query Results:`, {
           selector: 'ytd-comment-thread-renderer',
           elementsFound: el.length,
           documentReady: document.readyState,
-          commentsSection: !!qs('ytd-comments'),
-          commentsExpanded: !!qs('ytd-comments[expanded]'),
+          commentsSection: !!$('ytd-comments'),
+          commentsExpanded: !!$('ytd-comments[expanded]'),
         });
         if (el.length === 0)
           w('[CommentsExtractor] ⚠️ No comment elements found. Possible reasons:', {

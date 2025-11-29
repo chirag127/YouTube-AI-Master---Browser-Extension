@@ -1,9 +1,10 @@
+import { ge, on, lr } from '../../utils/shortcuts.js';
+
 export class GeneralSettings {
   constructor(s, a) {
     this.s = s;
     this.a = a;
   }
-
   init() {
     const c = this.s.get();
     this.set('outputLanguage', c.ai?.outputLanguage || 'en');
@@ -13,7 +14,6 @@ export class GeneralSettings {
     this.chk('autoDetectLanguage', c.automation?.autoDetectLanguage ?? true);
     this.chk('autoLoadTranscript', c.automation?.autoLoadTranscript ?? true);
     this.chk('saveHistory', c.advanced?.saveHistory ?? true);
-
     this.a.attachToAll({
       outputLanguage: { path: 'ai.outputLanguage' },
       autoAnalyze: { path: 'automation.autoAnalyze' },
@@ -23,22 +23,21 @@ export class GeneralSettings {
       autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
       saveHistory: { path: 'advanced.saveHistory' },
     });
-
-    document.getElementById('clearHistory')?.addEventListener('click', async () => {
-      if (confirm('Clear all history? This cannot be undone.')) {
-        await chrome.storage.local.remove('comprehensive_history');
-        this.a.notifications?.success('History cleared');
-      }
-    });
+    const ch = ge('clearHistory');
+    if (ch)
+      on(ch, 'click', async () => {
+        if (confirm('Clear all history? This cannot be undone.')) {
+          await lr('comprehensive_history');
+          this.a.notifications?.success('History cleared');
+        }
+      });
   }
-
   set(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.value = v;
   }
-
   chk(id, v) {
-    const el = document.getElementById(id);
+    const el = ge(id);
     if (el) el.checked = v;
   }
 }
