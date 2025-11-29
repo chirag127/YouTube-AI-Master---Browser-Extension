@@ -91,7 +91,7 @@
           to(() => cTW(), 1e3);
           l('[Tr] Auto-close');
         } catch {
-          // intentional
+          
         }
       }
       p({ success: true, transcript: t });

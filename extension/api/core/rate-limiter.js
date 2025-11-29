@@ -1,7 +1,4 @@
-/**
- * Token bucket rate limiter
- * Prevents exceeding API rate limits
- */
+
 
 import { l } from '../../utils/shortcuts/logging.js';
 import { to } from '../../utils/shortcuts/global.js';
@@ -10,8 +7,8 @@ import { mc } from '../../utils/shortcuts/math.js';
 
 export class RateLimiter {
   constructor(config = {}) {
-    this.maxRequests = config.maxRequests ?? 15; // Gemini free tier: 15 RPM
-    this.windowMs = config.windowMs ?? 60000; // 1 minute
+    this.maxRequests = config.maxRequests ?? 15; 
+    this.windowMs = config.windowMs ?? 60000; 
     this.queue = [];
     this.timestamps = [];
   }
@@ -28,7 +25,7 @@ export class RateLimiter {
 
     const now = nw();
 
-    // Remove timestamps outside the window
+    
     this.timestamps = this.timestamps.filter(ts => now - ts < this.windowMs);
 
     if (this.timestamps.length < this.maxRequests) {
@@ -36,12 +33,12 @@ export class RateLimiter {
       const resolve = this.queue.shift();
       resolve();
 
-      // Process next in queue
+      
       if (this.queue.length > 0) {
         to(() => this._processQueue(), 0);
       }
     } else {
-      // Calculate wait time
+      
       const oldestTimestamp = this.timestamps[0];
       const waitTime = this.windowMs - (now - oldestTimestamp) + 100;
 

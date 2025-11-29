@@ -55,7 +55,7 @@ class OnboardingFlow {
     if (tak) on(tak, 'click', this.toggleApiKeyVisibility.bind(this));
     if (tst) on(tst, 'click', this.testApiKey.bind(this));
     if (aki) on(aki, 'input', this.onApiKeyInput.bind(this));
-    if (oak) on(oak, 'click', () => ctab({ url: 'https://aistudio.google.com/app/apikey' }));
+    if (oak) on(oak, 'click', () => ctab({ url: 'https:
     if (ol) on(ol, 'change', e => this.saveSettings('ui.outputLanguage', e.target.value));
     if (aa) on(aa, 'change', e => this.saveSettings('automation.autoAnalyze', e.target.checked));
     if (es) on(es, 'change', e => this.saveSettings('segments.enabled', e.target.checked));
@@ -92,7 +92,7 @@ class OnboardingFlow {
     try {
       const m = 'gemini-2.5-pro';
       const r = await ft(
-        `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,
+        `https:
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

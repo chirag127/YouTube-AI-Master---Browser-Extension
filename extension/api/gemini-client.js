@@ -1,6 +1,4 @@
-/**
- * Enhanced Gemini API client with retry, timeout, and rate limiting
- */
+
 
 import { HttpClient } from './core/http-client.js';
 import { ErrorHandler } from './core/error-handler.js';
@@ -10,7 +8,7 @@ import { l, e, js } from '../utils/shortcuts/index.js';
 export class GeminiClient {
   constructor(apiKey, config = {}) {
     this.apiKey = apiKey;
-    this.baseUrl = config.baseUrl || 'https://generativelanguage.googleapis.com/v1beta';
+    this.baseUrl = config.baseUrl || 'https:
     this.httpClient = new HttpClient({
       maxRetries: config.maxRetries ?? 2,
       initialDelay: config.initialDelay ?? 1000,

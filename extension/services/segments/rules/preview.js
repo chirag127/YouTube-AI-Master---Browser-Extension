@@ -1,4 +1,4 @@
-// Preview/Recap Classification Rule
+
 export const type = 'preview';
 export const description = 'Clips showing what is coming up or what happened';
 

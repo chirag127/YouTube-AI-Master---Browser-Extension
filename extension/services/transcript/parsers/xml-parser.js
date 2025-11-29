@@ -1,5 +1,5 @@
-// XML Transcript Parser (YouTube timedtext format)
-// Shared parser for XML format transcripts
+
+
 
 export function parseXML(xmlText) {
   const segments = [];

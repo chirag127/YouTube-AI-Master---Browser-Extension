@@ -2,12 +2,9 @@ import { showPlaceholder } from '../components/loading.js';
 import { makeTimestampsClickable } from '../../utils/timestamps.js';
 import { parseMarkdown } from '../../../lib/marked-loader.js';
 
-/**
- * Process markdown to convert ==highlight== syntax to <mark> tags
- * This ensures highlighting works even if marked.js doesn't support it
- */
+
 function processHighlights(html) {
-  // Convert ==text== to <mark class="yt-ai-highlight">text</mark>
+  
   return html.replace(/==(.*?)==/g, '<mark class="yt-ai-highlight">$1</mark>');
 }
 
@@ -21,7 +18,7 @@ export async function renderSummary(c, d) {
   let insightsHtml = await parseMarkdown(d.insights || 'No insights available.');
   let faqHtml = await parseMarkdown(d.faq || 'No FAQ available.');
 
-  // Process highlights in case marked.js didn't handle them
+  
   summaryHtml = processHighlights(summaryHtml);
   insightsHtml = processHighlights(insightsHtml);
   faqHtml = processHighlights(faqHtml);

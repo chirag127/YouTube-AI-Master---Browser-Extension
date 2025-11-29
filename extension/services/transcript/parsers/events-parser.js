@@ -1,5 +1,5 @@
-// Events Transcript Parser (ytInitialPlayerResponse format)
-// Used when parsing from DOM player response
+
+
 
 export function parseEvents(data) {
   if (!data?.events) return [];

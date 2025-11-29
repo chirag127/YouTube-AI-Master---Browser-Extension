@@ -1,4 +1,4 @@
-// WebVTT Format Parser
+
 export const parse = vtt => {
   const segments = [];
   const lines = vtt.split('\n');

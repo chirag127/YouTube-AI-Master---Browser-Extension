@@ -7,3 +7,5 @@ export const sls = (k, v) => chrome.storage.local.set(typeof k === 'string' ? { 
 export const slr = k => chrome.storage.local.remove(k);
 export const slc = () => chrome.storage.local.clear();
 export const sl = (k, v) => chrome.storage.local.set({ [k]: v });
+export const sync = chrome.storage.sync;
+export const local = chrome.storage.local;

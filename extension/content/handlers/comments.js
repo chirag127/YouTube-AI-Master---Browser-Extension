@@ -1,5 +1,5 @@
 import { l, w, e } from '../../utils/shortcuts/logging.js';
-import { on, $$, $ } from '../../utils/shortcuts/dom.js';
+import { on, $ } from '../../utils/shortcuts/dom.js';
 import { sg, slg as lg } from '../../utils/shortcuts/storage.js';
 import { ft } from '../../utils/shortcuts/network.js';
 import { js } from '../../utils/shortcuts/core.js';
@@ -201,7 +201,7 @@ class CommentsExtractor {
 
   async fetchCommentsActive(k, t, c) {
     try {
-      const r = await ft(`https://www.youtube.com/youtubei/v1/next?key=${k}`, {
+      const r = await ft(`https:
         method: 'POST',
         body: js({ context: c, continuation: t }),
       });

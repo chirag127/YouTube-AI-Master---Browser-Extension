@@ -1,4 +1,4 @@
-// Transcript service constants
+
 
 export const CAPTION_KIND = {
   ASR: 'asr',

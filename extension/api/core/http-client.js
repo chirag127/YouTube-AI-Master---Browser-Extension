@@ -1,7 +1,4 @@
-/**
- * Enhanced HTTP client with retry, timeout, and error handling
- * Implements exponential backoff for transient failures
- */
+
 
 import { l } from '../../utils/shortcuts/logging.js';
 import { to, co } from '../../utils/shortcuts/global.js';
@@ -39,7 +36,7 @@ export class HttpClient {
           return response;
         }
 
-        // Check if error is retryable
+        
         if (!RETRYABLE_STATUS.has(response.status)) {
           throw await this._createError(response);
         }
@@ -53,13 +50,13 @@ export class HttpClient {
         } else if (RETRYABLE_ERRORS.has(error.code)) {
           lastError = error;
         } else {
-          throw error; // Non-retryable error
+          throw error; 
         }
 
         l(`[HttpClient] Attempt ${attempt + 1}/${this.maxRetries + 1} failed: ${error.message}`);
       }
 
-      // Don't delay after last attempt
+      
       if (attempt < this.maxRetries) {
         await this._sleep(delay);
         delay = mn(delay * 2, this.maxDelay);
@@ -75,7 +72,7 @@ export class HttpClient {
       const data = await response.json();
       message = data.error?.message || data.message || message;
     } catch {
-      // intentional empty block
+      
     }
 
     const error = new Error(message);

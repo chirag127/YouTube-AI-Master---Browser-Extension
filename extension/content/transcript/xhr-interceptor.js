@@ -39,7 +39,7 @@ class TranscriptInterceptor {
             if (x.responseType === '' || x.responseType === 'text') rb = x.responseText;
             else if (x.responseType === 'json') rb = js(x.response);
           } catch (e) {
-            // intentional
+            
           }
           if (rb) s._pr(x._iu, rb, x.responseURL);
         }

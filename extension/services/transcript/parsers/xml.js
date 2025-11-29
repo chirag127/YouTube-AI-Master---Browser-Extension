@@ -1,4 +1,4 @@
-// XML/SRV3 Format Parser
+
 export const parse = xml => {
   const segments = [];
   const regex = /<text start="([\d.]+)"(?:\s+dur="([\d.]+)")?[^>]*>([^<]*)<\/text>/g;

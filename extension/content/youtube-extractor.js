@@ -37,13 +37,13 @@ class YTE {
       try {
         this.e('metadata', await r.clone().json());
       } catch (e) {
-        // intentional
+        
       }
     } else if (u.includes('/youtubei/v1/next')) {
       try {
         this.e('comments', await r.clone().json());
       } catch (e) {
-        // intentional
+        
       }
     } else if (u.includes('/api/timedtext') || u.includes('/youtubei/v1/get_transcript')) {
       this.htu(u);
@@ -51,13 +51,13 @@ class YTE {
       try {
         this.e('live_chat', await r.clone().json());
       } catch (e) {
-        // intentional
+        
       }
     } else if (u.includes('/youtubei/v1/reel/')) {
       try {
         this.e('shorts_data', await r.clone().json());
       } catch (e) {
-        // intentional
+        
       }
     }
   }
@@ -98,7 +98,7 @@ class YTE {
         const a = $('ytd-app');
         pr = a?.data?.playerResponse || a?.__data?.playerResponse;
       } catch (e) {
-        // intentional
+        
       }
     }
     if (!pr) {
@@ -111,14 +111,14 @@ class YTE {
           }
         }
       } catch (e) {
-        // intentional
+        
       }
     }
     if (!pr && w.ytplayer?.config?.args?.player_response) {
       try {
         pr = jp(w.ytplayer.config.args.player_response);
       } catch (e) {
-        // intentional
+        
       }
     }
     return {

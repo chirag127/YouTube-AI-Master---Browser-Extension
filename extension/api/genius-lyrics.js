@@ -1,7 +1,4 @@
-/**
- * Genius Lyrics API / Scraper
- * Fetches lyrics from Genius.com for music videos
- */
+
 import { l, w } from '../utils/shortcuts/logging.js';
 import { en as enc } from '../utils/shortcuts/global.js';
 import { tf as ftx, jf as fj } from '../utils/shortcuts/network.js';
@@ -10,8 +7,8 @@ import { mp, jn } from '../utils/shortcuts/array.js';
 
 export class GeniusLyricsAPI {
   constructor() {
-    this.baseUrl = 'https://genius.com';
-    this.searchUrl = 'https://genius.com/api/search/multi';
+    this.baseUrl = 'https:
+    this.searchUrl = 'https:
   }
 
   async getLyrics(title, artist) {

@@ -1,4 +1,4 @@
-// Transcript service error classes
+
 
 export class TranscriptError extends Error {
   constructor(message) {

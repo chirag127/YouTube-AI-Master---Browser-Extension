@@ -3,10 +3,10 @@ import { getApiKey as gk } from '../utils/api-key.js';
 import gl from '../../api/genius-lyrics.js';
 import sb from '../../api/sponsorblock.js';
 import { ContextManager as CM } from '../../services/context-manager.js';
-import { l, w, e } from '../../utils/shortcuts/logging.js';
-import { si, ci, to } from '../../utils/shortcuts/global.js';
-import { cr, css } from '../../utils/shortcuts/chrome.js';
-import { sg } from '../../utils/shortcuts/storage.js';
+import { l, w, e } from '../../utils/shortcuts/log.js';
+import { interval as si, clearInterval as ci, delay as to } from '../../utils/shortcuts/time.js';
+import { rt as cr } from '../../utils/shortcuts/runtime.js';
+import { sync as css, sg } from '../../utils/shortcuts/storage.js';
 import { ok, E } from '../../utils/shortcuts/core.js';
 import { ic, lc } from '../../utils/shortcuts/string.js';
 import { np, pc } from '../../utils/shortcuts/async.js';
@@ -59,7 +59,7 @@ export async function handleAnalyzeVideo(q, r) {
       try {
         ly = await gl.getLyrics(m.title, m.author);
       } catch (x) {
-        // intentional
+
       }
     }
     let sb2 = [];
@@ -126,7 +126,7 @@ export async function handleAnalyzeVideo(q, r) {
           timestamps: an.timestamps,
         });
       } catch (x) {
-        // intentional
+        w('[AV]Lyrics:', x.message);
       }
     }
     r({

@@ -1,6 +1,4 @@
-/**
- * Error classification and user-friendly messaging
- */
+
 
 export class ErrorHandler {
   static classify(error) {

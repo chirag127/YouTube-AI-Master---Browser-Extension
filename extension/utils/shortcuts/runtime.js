@@ -1,9 +1,25 @@
-export const ru = chrome.runtime.getURL;
-export const ri = chrome.runtime.id;
-export const msg = chrome.runtime.sendMessage;
-export const rom = chrome.runtime.onMessage;
-export const rco = chrome.runtime.connect;
-export const rrl = chrome.runtime.reload;
-export const rg = chrome.runtime.getManifest;
-export const url = ru;
+/**
+ * Shortcut for chrome.runtime.sendMessage
+ * @param {any} m - Message
+ * @param {function} [c] - Callback
+ * @returns {Promise<any>}
+ */
+export const msg = (m, c) => chrome.runtime.sendMessage(m, c);
+
+/**
+ * Shortcut for chrome.runtime.onMessage.addListener
+ * @param {function} l - Listener
+ */
+export const listen = (l) => chrome.runtime.onMessage.addListener(l);
+
+/**
+ * Shortcut for chrome.runtime.getURL
+ * @param {string} p - Path
+ * @returns {string}
+ */
+export const url = (p) => chrome.runtime.getURL(p);
+
+/**
+ * Shortcut for chrome.runtime
+ */
 export const rt = chrome.runtime;

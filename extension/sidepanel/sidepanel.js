@@ -41,7 +41,7 @@ on(document, 'DOMContentLoaded', async () => {
   try {
     await gs.fetchAvailableModels();
   } catch (x) {
-    // intentional
+    
   }
   for (const b of tbs) {
     on(b, 'click', () => {
@@ -101,7 +101,7 @@ function appendMsg(r, t) {
 }
 
 async function updateMsg(id, t) {
-  const d = document.getElementById(id); // Use document.getElementById directly or id()
+  const d = document.getElementById(id); 
   if (d) {
     d.innerHTML = await parseMarkdown(t);
     ch.scrollTop = ch.scrollHeight;
@@ -306,7 +306,7 @@ async function seekVideo(s) {
     const [t] = await ct.query({ active: true, currentWindow: true });
     if (t?.id) await ct.sendMessage(t.id, { action: 'SEEK_TO', timestamp: s });
   } catch (x) {
-    // intentional
+    
   }
 }
 

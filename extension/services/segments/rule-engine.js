@@ -21,7 +21,7 @@ export function annotateTranscript(transcriptSegments, metadata) {
             hints.push(rule.type);
           }
         } catch (e) {
-          // Ignore rule errors
+          
         }
       }
 

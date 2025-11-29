@@ -2,7 +2,7 @@ import { l } from '../utils/shortcuts/logging.js';
 import { en as enc } from '../utils/shortcuts/global.js';
 import { sf as safeFetch } from '../utils/shortcuts/network.js';
 
-const BASE_URL = 'https://factchecktools.googleapis.com/v1alpha1';
+const BASE_URL = 'https:
 
 export class GoogleFactCheckAPI {
   constructor(apiKey) {

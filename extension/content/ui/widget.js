@@ -106,7 +106,7 @@ export async function injectWidget() {
       );
       if (sc) break;
     } catch (e) {
-      // intentional
+      
     }
     att++;
     await new Promise(r => st(r, 200));

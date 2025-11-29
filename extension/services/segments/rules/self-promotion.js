@@ -1,4 +1,4 @@
-// Self Promotion Classification Rule
+
 export const type = 'selfpromo';
 export const description = 'Promoting own merchandise or monetized platforms';
 
