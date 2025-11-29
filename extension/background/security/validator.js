@@ -1,4 +1,4 @@
-import { js, rp } from '../../utils/shortcuts-sw.js';
+import { js, rep } from '../../utils/shortcuts/index.js';
 
 // Input validation & sanitization for MV3 security
 const ALLOWED = new Set([
@@ -46,7 +46,7 @@ export const sanitizeVideoId = id => {
 
 export const sanitizeString = (s, max = MAX_SL) => {
   if (!s || typeof s !== 'string') return '';
-  return rp(s.slice(0, max), /[<>]/g, '');
+  return rep(s.slice(0, max), /[<>]/g, '');
 };
 
 export const validateTranscript = t => {

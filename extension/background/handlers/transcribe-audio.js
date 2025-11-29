@@ -1,14 +1,14 @@
 import { GeminiClient } from '../../api/gemini-client.js';
-import { l, cw, e, js, jp, rp, tr, sg, ft, E } from '../../utils/shortcuts.js';
+import { l, w, e, js, jp, rep, tr, ssg, ft, E } from '../../utils/shortcuts/index.js';
 
 export async function handleTranscribeAudio(req, rsp) {
   try {
     const { audioUrl, lang } = req;
     if (!audioUrl) throw new E('No audio URL provided');
-    const s = await sg(['apiKey', 'model']);
+    const s = await ssg(['apiKey', 'model']);
     if (!s.apiKey) throw new E('Gemini API key not found');
     let m = s.model || 'gemini-2.5-flash-preview-09-2025';
-    if (m.startsWith('models/')) m = rp(m, 'models/', '');
+    if (m.startsWith('models/')) m = rep(m, 'models/', '');
     const c = new GeminiClient(s.apiKey);
     l('[TranscribeAudio] Fetching audio...', audioUrl);
     const ar = await ft(audioUrl);
@@ -22,10 +22,10 @@ export async function handleTranscribeAudio(req, rsp) {
     const txt = await c.generateContent(parts, m);
     let seg = [];
     try {
-      const cln = tr(rp(rp(txt, /```json/g, ''), /```/g, ''));
+      const cln = tr(rep(rep(txt, /```json/g, ''), /```/g, ''));
       seg = jp(cln);
     } catch (x) {
-      cw('[TranscribeAudio] JSON parse failed, trying to extract array', x);
+      w('[TranscribeAudio] JSON parse failed, trying to extract array', x);
       const m = txt.match(/\[.*\]/s);
       if (m) seg = jp(m[0]);
       else throw new E('Failed to parse transcription response');

@@ -1,7 +1,7 @@
 import { GeminiClient } from './gemini-client.js';
 import { ModelManager } from './models.js';
 import { prompts } from './prompts/index.js';
-import { l, cw, e, jp, js, sbs, mp, tr, rp } from '../utils/shortcuts.js';
+import { l, w, e, jp, js, sub, mp, tr, rep } from '../utils/shortcuts/index.js';
 
 export { ModelManager };
 
@@ -19,7 +19,7 @@ export class GeminiService {
   async analyzeCommentSentiment(c, m = null) {
     l('[GS] ACS:', c?.length);
     if (!c || !c.length) {
-      cw('[GS] No comms');
+      w('[GS] No comms');
       return 'No comments available to analyze.';
     }
     l(`[GS] Gen anal for ${c.length}`);
@@ -47,10 +47,10 @@ export class GeminiService {
       l('[GS] Ext segs');
       const r = await this.generateContent(prompts.segments(ctx));
       l('[GS] Raw len:', r.length);
-      l('[GS] 1st 1k:', sbs(r, 0, 1000));
+      l('[GS] 1st 1k:', sub(r, 0, 1000));
       let cr = tr(r);
-      cr = rp(cr, /```json\s*/g, '');
-      cr = rp(cr, /```\s*/g, '');
+      cr = rep(cr, /```json\s*/g, '');
+      cr = rep(cr, /```\s*/g, '');
       cr = tr(cr);
       let jm = cr.match(/\{[\s\S]*\}/);
       if (!jm) {
@@ -126,7 +126,7 @@ export class GeminiService {
         try {
           await this.models.fetch();
         } catch (x) {
-          cw('Mod fetch fail:', x.message);
+          w('Mod fetch fail:', x.message);
           ml = fm;
         }
       }
@@ -143,7 +143,7 @@ export class GeminiService {
         return res;
       } catch (x) {
         errs.push({ model: mn, error: x.message });
-        cw(`[GS] ${mn} fail:`, x.message);
+        w(`[GS] ${mn} fail:`, x.message);
         if (x.retryable === false) throw x;
         if (i < ml.length - 1) l('[GS] Next...');
       }

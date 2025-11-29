@@ -1,4 +1,4 @@
-import { ft, ftx, fj, mp, fl, jn, tr, rp, mfl } from '../../utils/shortcuts.js';
+import { ft, tf, jf, mp, fl, jn, tr, rep, mf, pF } from '../../utils/shortcuts/index.js';
 
 async function getInvidiousInstances() {
   return [
@@ -24,12 +24,12 @@ function parseVTT(t) {
       m = 0,
       s = 0;
     if (p.length === 3) {
-      h = parseFloat(p[0]);
-      m = parseFloat(p[1]);
-      s = parseFloat(p[2]);
+      h = pF(p[0]);
+      m = pF(p[1]);
+      s = pF(p[2]);
     } else {
-      m = parseFloat(p[0]);
-      s = parseFloat(p[1]);
+      m = pF(p[0]);
+      s = pF(p[1]);
     }
     return h * 3600 + m * 60 + s;
   };

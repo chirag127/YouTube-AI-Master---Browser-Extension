@@ -1,6 +1,8 @@
+import { ssg, slg } from '../../utils/shortcuts/index.js';
+
 export async function getApiKey() {
-  const s = await chrome.storage.sync.get('apiKey');
+  const s = await ssg('apiKey');
   if (s.apiKey) return s.apiKey;
-  const l = await chrome.storage.local.get('geminiApiKey');
+  const l = await slg('geminiApiKey');
   return l.geminiApiKey || null;
 }

@@ -8,6 +8,7 @@ export * from './logging.js';
 export * from './math.js';
 export * from './network.js';
 export * from './runtime.js';
+export * from './storage.js';
 export * from './string.js';
-export * from './sw.js';
+export * from './tabs.js';
 export * from './url.js';

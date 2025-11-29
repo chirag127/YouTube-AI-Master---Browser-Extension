@@ -5,7 +5,7 @@
 import { HttpClient } from './core/http-client.js';
 import { ErrorHandler } from './core/error-handler.js';
 import { RateLimiter } from './core/rate-limiter.js';
-import { l, e, js } from '../utils/shortcuts.js';
+import { l, e, js } from '../utils/shortcuts/index.js';
 
 export class GeminiClient {
   constructor(apiKey, config = {}) {

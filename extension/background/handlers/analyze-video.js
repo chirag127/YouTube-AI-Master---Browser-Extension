@@ -3,12 +3,12 @@ import { getApiKey } from '../utils/api-key.js';
 import gl from '../../api/genius-lyrics.js';
 import sb from '../../api/sponsorblock.js';
 import { ContextManager } from '../../services/context-manager.js';
-import { l, cw, e, si, ci, rt, sg, js, ks, E } from '../../utils/shortcuts.js';
+import { l, w, e, si, ci, cr, ssg, js, ok, E, css, inc, lc } from '../../utils/shortcuts/index.js';
 
 let ka = null;
 function ska() {
   if (ka) return;
-  ka = si(() => rt.getPlatformInfo(() => {}), 2e4);
+  ka = si(() => cr.getPlatformInfo(() => {}), 2e4);
 }
 function stka() {
   if (ka) {
@@ -58,8 +58,8 @@ export async function handleAnalyzeVideo(req, rsp) {
     let lyr = null;
     const im =
       m?.category === 'Music' ||
-      m?.title?.toLowerCase().includes('official video') ||
-      m?.title?.toLowerCase().includes('lyrics');
+      inc(lc(m?.title || ''), 'official video') ||
+      inc(lc(m?.title || ''), 'lyrics');
     if (im || !t?.length) {
       try {
         lyr = await gl.getLyrics(m.title, m.author);
@@ -79,9 +79,9 @@ export async function handleAnalyzeVideo(req, rsp) {
     let ec = {};
     try {
       l('[AV] Ctx fetch');
-      if (!chrome.storage?.sync) throw new E('Sync NA');
-      const st = await sg(null);
-      if (!st || !ks(st).length) cw('[AV] No settings');
+      if (!css) throw new E('Sync NA');
+      const st = await ssg(null);
+      if (!st || !ok(st).length) w('[AV] No settings');
       if (!m) throw new E('No meta');
       const cm = new ContextManager(st);
       const fp = cm.fetchContext(m);

@@ -1,27 +1,27 @@
 import { handleGetTranscript, handleGetVideoInfo, handleGetComments } from './innertube.js';
 import { getHistory } from '../../services/storage/comprehensive-history.js';
-import { lg, ls, lr, l, e, nt } from '../../utils/shortcuts.js';
+import { slg, sls, slr, l, e, now } from '../../utils/shortcuts/index.js';
 
 const CV = 1;
 const CE = 24 * 60 * 60 * 1000;
 
 async function getCached(vid, type) {
   const k = `video_${vid}_${type}`;
-  const r = await lg(k);
+  const r = await slg(k);
   if (r[k]) {
     const c = r[k];
-    if (c.version === CV && nt() - c.timestamp < CE) {
+    if (c.version === CV && now() - c.timestamp < CE) {
       l(`[VideoData] Cache hit: ${k}`);
       return c.data;
     }
-    await lr(k);
+    await slr(k);
   }
   return null;
 }
 
 async function setCache(vid, type, data) {
   const k = `video_${vid}_${type}`;
-  await ls({ [k]: { version: CV, timestamp: nt(), data } });
+  await sls({ [k]: { version: CV, timestamp: now(), data } });
   l(`[VideoData] Cached: ${k}`);
 }
 

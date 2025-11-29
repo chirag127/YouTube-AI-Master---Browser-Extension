@@ -1,5 +1,5 @@
 import { handleFetchInvidiousTranscript } from './invidious.js';
-import { rp, tr, pF, jp, fl, mp, jn, ft, ftx } from '../../utils/shortcuts.js';
+import { rep, tr, pF, jp, fl, mp, jn, tf } from '../../utils/shortcuts/index.js';
 
 function dec(t) {
   const e = {
@@ -10,7 +10,7 @@ function dec(t) {
     '&#39;': "'",
     '&nbsp;': ' ',
   };
-  return rp(t, /&[^;]+;/g, m => e[m] || m);
+  return rep(t, /&[^;]+;/g, m => e[m] || m);
 }
 
 function pXML(x) {
@@ -30,7 +30,7 @@ async function fYT(vid, l = 'en') {
     try {
       const u = `https://www.youtube.com/api/timedtext?v=${vid}&lang=${l}&fmt=${f}`;
       if (f === 'json3') {
-        const t = await ftx(u);
+        const t = await tf(u);
         if (!t) continue;
         const d = jp(t);
         if (d.events) {
@@ -48,7 +48,7 @@ async function fYT(vid, l = 'en') {
           if (s.length) return { success: true, data: s };
         }
       } else {
-        const x = await ftx(u);
+        const x = await tf(u);
         const s = pXML(x);
         if (s.length) return { success: true, data: s };
       }

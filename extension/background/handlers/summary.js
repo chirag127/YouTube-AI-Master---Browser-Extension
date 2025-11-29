@@ -1,6 +1,6 @@
 import { initializeServices, getServices } from '../services.js';
 import { getApiKey } from '../utils/api-key.js';
-import { mfl, mp, jn } from '../../utils/shortcuts.js';
+import { mf, mp, jn } from '../../utils/shortcuts/index.js';
 
 export async function handleGenerateSummary(req, rsp) {
   const { transcript, settings, metadata } = req;
@@ -12,8 +12,8 @@ export async function handleGenerateSummary(req, rsp) {
   await initializeServices(k);
   const { gemini } = getServices();
   const ft = s => {
-    const m = mfl(s / 60);
-    const sec = mfl(s % 60);
+    const m = mf(s / 60);
+    const sec = mf(s % 60);
     return `${m}:${sec.toString().padStart(2, '0')}`;
   };
   const ts = Array.isArray(transcript)
