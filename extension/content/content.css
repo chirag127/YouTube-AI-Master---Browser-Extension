@@ -763,3 +763,37 @@ html {
 #yt-ai-scroll-notification {
   pointer-events: none;
 }
+
+/* Width Resize Handle - Left side vertical bar */
+.yt-ai-resize-handle-width {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(90deg, var(--yt-ai-border) 0%, transparent 100%);
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--yt-ai-text-secondary);
+  font-size: 10px;
+  writing-mode: vertical-lr;
+  user-select: none;
+  transition: all 0.2s ease;
+  z-index: 10;
+  opacity: 0.3;
+}
+
+.yt-ai-resize-handle-width:hover {
+  background: linear-gradient(90deg, var(--yt-ai-accent) 0%, transparent 100%);
+  color: var(--yt-ai-accent);
+  opacity: 1;
+  width: 12px;
+}
+
+.yt-ai-resize-handle-width:active {
+  background: var(--yt-ai-accent);
+  color: white;
+  opacity: 1;
+}

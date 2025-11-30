@@ -232,8 +232,15 @@ function applyWidgetConfig() {
     if (!widgetContainer || !widgetConfig) return;
     const ca = $('#yt-ai-content-area', widgetContainer);
     if (ca) ca.style.height = `${widgetConfig.height}px`;
+    if (widgetConfig.width && widgetConfig.resizableWidth) {
+      widgetContainer.style.width = `${widgetConfig.width}px`;
+      widgetContainer.style.maxWidth = `${widgetConfig.maxWidth}px`;
+      widgetContainer.style.minWidth = `${widgetConfig.minWidth}px`;
+    }
     const rh = $('#yt-ai-resize-handle', widgetContainer);
     if (rh) rh.style.display = widgetConfig.resizable ? 'block' : 'none';
+    const rwh = $('#yt-ai-resize-handle-width', widgetContainer);
+    if (rwh) rwh.style.display = widgetConfig.resizableWidth ? 'block' : 'none';
   } catch (err) {
     e('Err:applyWidgetConfig', err);
   }
@@ -286,6 +293,54 @@ function setupResizeHandle(c) {
   }
 }
 
+let isResizingWidth = false;
+let startX = 0;
+let startWidth = 0;
+
+function setupWidthResizeHandle(c) {
+  try {
+    const rwh = $('#yt-ai-resize-handle-width', c);
+    if (!rwh || !widgetConfig?.resizableWidth) return;
+    on(rwh, 'mousedown', ev => {
+      ev.preventDefault();
+      isResizingWidth = true;
+      startX = ev.clientX;
+      startWidth = c.offsetWidth;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+    });
+    on(document, 'mousemove', ev => {
+      if (!isResizingWidth) return;
+      ev.preventDefault();
+      const dx = widgetConfig.position === 'right' ? startX - ev.clientX : ev.clientX - startX;
+      let nw = startWidth + dx;
+      nw = Math.max(widgetConfig.minWidth, Math.min(widgetConfig.maxWidth, nw));
+      c.style.width = `${nw}px`;
+    });
+    on(document, 'mouseup', async () => {
+      if (!isResizingWidth) return;
+      isResizingWidth = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      await saveWidgetWidth(c.offsetWidth);
+    });
+  } catch (err) {
+    e('Err:setupWidthResizeHandle', err);
+  }
+}
+
+async function saveWidgetWidth(w) {
+  try {
+    const r = await sg('config');
+    const cfg = r.config || {};
+    cfg.widget = cfg.widget || {};
+    cfg.widget.width = w;
+    await ss({ config: cfg });
+  } catch (err) {
+    e('Err:saveWidgetWidth', err);
+  }
+}
+
 function setupWidgetLogic(c) {
   try {
     const cb = $('#yt-ai-close-btn', c);
@@ -306,6 +361,7 @@ function setupWidgetLogic(c) {
       });
     }
     setupResizeHandle(c);
+    setupWidthResizeHandle(c);
     initTabs(c);
     attachEventListeners(c);
   } catch (err) {

@@ -28,17 +28,19 @@ const SEGMENT_FILTER_MAP = {
 async function getSegmentFilters() {
   try {
     const r = await sg('config');
-    return r.config?.widget?.segmentFilters || {
-      sponsor: true,
-      selfpromo: true,
-      interaction: true,
-      intro: true,
-      outro: true,
-      preview: true,
-      filler: true,
-      highlight: true,
-      exclusive: true,
-    };
+    return (
+      r.config?.widget?.segmentFilters || {
+        sponsor: true,
+        selfpromo: true,
+        interaction: true,
+        intro: true,
+        outro: true,
+        preview: true,
+        filler: true,
+        highlight: true,
+        exclusive: true,
+      }
+    );
   } catch {
     return {
       sponsor: true,

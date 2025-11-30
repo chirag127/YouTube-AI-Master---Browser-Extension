@@ -15,6 +15,7 @@ export class GeneralSettings {
     this.chk('autoExtractKeyPoints', c.automation?.autoExtractKeyPoints ?? true);
     this.chk('autoDetectLanguage', c.automation?.autoDetectLanguage ?? true);
     this.chk('autoLoadTranscript', c.automation?.autoLoadTranscript ?? true);
+    this.chk('autoLoadTranscript', c.automation?.autoLoadTranscript ?? true);
     this.chk('saveHistory', c.advanced?.saveHistory ?? true);
     this.renderStrategies(
       c.transcript?.strategyOrder || ['dom-automation', 'genius', 'speech-to-text']
@@ -25,6 +26,7 @@ export class GeneralSettings {
       autoSummarize: { path: 'automation.autoSummarize' },
       autoExtractKeyPoints: { path: 'automation.autoExtractKeyPoints' },
       autoDetectLanguage: { path: 'automation.autoDetectLanguage' },
+      autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
       autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
       saveHistory: { path: 'advanced.saveHistory' },
     });

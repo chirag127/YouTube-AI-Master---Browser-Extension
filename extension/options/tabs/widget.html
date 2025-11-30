@@ -1,153 +1,80 @@
-<div class="settings-section">
-  <h2>Widget Configuration</h2>
-  <p class="section-description">Customize widget appearance, size, and visible tabs</p>
-
-  <div class="setting-group">
-    <label class="setting-label">
-      <span>Widget Height (px)</span>
-      <input
-        type="number"
-        id="widget-height"
-        min="200"
-        max="1200"
-        step="50"
-        class="setting-input"
-      />
-    </label>
-    <p class="setting-hint">Default content area height (200-1200px)</p>
-  </div>
-
-  <div class="setting-group">
-    <label class="setting-label">
-      <span>Minimum Height (px)</span>
-      <input
-        type="number"
-        id="widget-min-height"
-        min="100"
-        max="600"
-        step="50"
-        class="setting-input"
-      />
-    </label>
-    <p class="setting-hint">Minimum resizable height</p>
-  </div>
-
-  <div class="setting-group">
-    <label class="setting-label">
-      <span>Maximum Height (px)</span>
-      <input
-        type="number"
-        id="widget-max-height"
-        min="400"
-        max="2000"
-        step="100"
-        class="setting-input"
-      />
-    </label>
-    <p class="setting-hint">Maximum resizable height</p>
-  </div>
-
-  <div class="setting-group">
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-resizable" />
-      <span>Enable Resizable Widget</span>
-    </label>
-    <p class="setting-hint">Allow dragging resize handle to adjust height</p>
-  </div>
-
-  <div class="setting-group">
-    <h3>Visible Tabs</h3>
-    <p class="setting-hint">Select which tabs to display in the widget</p>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-tab-summary" />
-      <span>Summary Tab</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-tab-segments" />
-      <span>Segments Tab</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-tab-chat" />
-      <span>Chat Tab</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-tab-comments" />
-      <span>Comments Tab</span>
-    </label>
-  </div>
-
-  <div class="setting-group">
-    <h3>Widget Behavior</h3>
-    <p class="setting-hint">Configure default widget behavior</p>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-default-collapsed" />
-      <span>Start Collapsed by Default</span>
-    </label>
-    <p class="setting-hint">Widget will be minimized when first loaded on a video</p>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-remember-state" />
-      <span>Remember Collapsed State</span>
-    </label>
-    <p class="setting-hint">Widget remembers if you collapsed/expanded it</p>
-  </div>
-
-  <div class="setting-group">
-    <h3>Segment Filtering</h3>
-    <p class="setting-hint">Choose which segment types to display in the Segments tab</p>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-sponsor" checked />
-      <span>Show Sponsor Segments</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-selfpromo" checked />
-      <span>Show Self Promotion</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-interaction" checked />
-      <span>Show Interaction Reminders</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-intro" checked />
-      <span>Show Intro/Intermission</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-outro" checked />
-      <span>Show Outro/Endcards</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-preview" checked />
-      <span>Show Preview/Recap</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-filler" checked />
-      <span>Show Filler/Tangents</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-highlight" checked />
-      <span>Show Highlights</span>
-    </label>
-
-    <label class="setting-checkbox">
-      <input type="checkbox" id="widget-show-exclusive" checked />
-      <span>Show Exclusive Access</span>
-    </label>
-  </div>
-
-  <div class="setting-actions">
-    <button id="widget-reset" class="btn-secondary">Reset to Defaults</button>
-  </div>
-</div>
+\u003cdiv class="settings-section"\u003e \u003ch2\u003eWidget Configuration\u003c/h2\u003e \u003cp
+class="section-description"\u003eCustomize widget appearance, size, position, and visible
+tabs\u003c/p\u003e \u003ch3\u003eHeight Configuration\u003c/h3\u003e \u003cdiv
+class="setting-group"\u003e \u003clabel class="setting-label"\u003e \u003cspan\u003eWidget Height
+(px)\u003c/span\u003e \u003cinput type="number" id="widget-height" min="200" max="1200" step="50"
+class="setting-input" /\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eDefault content
+area height (200-1200px)\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e
+\u003clabel class="setting-label"\u003e \u003cspan\u003eMinimum Height (px)\u003c/span\u003e
+\u003cinput type="number" id="widget-min-height" min="100" max="600" step="50" class="setting-input"
+/\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eMinimum resizable height\u003c/p\u003e
+\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-label"\u003e
+\u003cspan\u003eMaximum Height (px)\u003c/span\u003e \u003cinput type="number"
+id="widget-max-height" min="400" max="2000" step="100" class="setting-input" /\u003e
+\u003c/label\u003e \u003cp class="setting-hint"\u003eMaximum resizable height\u003c/p\u003e
+\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-resizable" /\u003e \u003cspan\u003eEnable Height
+Resizing\u003c/span\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eAllow dragging bottom
+resize handle to adjust height\u003c/p\u003e \u003c/div\u003e \u003chr/\u003e \u003ch3\u003eWidth
+Configuration\u003c/h3\u003e \u003cdiv class="setting-group"\u003e \u003clabel
+class="setting-label"\u003e \u003cspan\u003eWidget Width (px)\u003c/span\u003e \u003cinput
+type="number" id="widget-width" min="300" max="800" step="50" class="setting-input" /\u003e
+\u003c/label\u003e \u003cp class="setting-hint"\u003eDefault widget width (only applies when width
+resizing is enabled)\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e
+\u003clabel class="setting-label"\u003e \u003cspan\u003eMinimum Width (px)\u003c/span\u003e
+\u003cinput type="number" id="widget-min-width" min="200" max="500" step="50" class="setting-input"
+/\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eMinimum resizable width\u003c/p\u003e
+\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-label"\u003e
+\u003cspan\u003eMaximum Width (px)\u003c/span\u003e \u003cinput type="number" id="widget-max-width"
+min="400" max="1200" step="100" class="setting-input" /\u003e \u003c/label\u003e \u003cp
+class="setting-hint"\u003eMaximum resizable width\ u003c/p\u003e \u003c/div\u003e \u003cdiv
+class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput type="checkbox"
+id="widget-resizable-width" /\u003e \u003cspan\u003eEnable Width Resizing\u003c/span\u003e
+\u003c/label\u003e \u003cp class="setting-hint"\u003eAllow dragging left edge to adjust
+width\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel
+class="setting-label"\u003e \u003cspan\u003eWidget Position\u003c/span\u003e \u003cselect
+id="widget-position" class="setting-input"\u003e \u003coption value="right"\u003eRight Side
+(Default)\u003c/option\u003e \u003coption value="left"\u003eLeft Side\u003c/option\u003e
+\u003c/select\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003ePosition of the widget on
+YouTube pages (requires page reload)\u003c/p\u003e \u003c/div\u003e \u003chr/\u003e
+\u003ch3\u003eVisible Tabs\u003c/h3\u003e \u003cp class="setting-hint"\u003eSelect which tabs to
+display in the widget\u003c/p\u003e \u003cdiv class="setting-group"\u003e \u003clabel
+class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-summary" /\u003e
+\u003cspan\u003eSummary Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
+class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-segments" /\u003e
+\u003cspan\u003eSegments Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
+class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-chat" /\u003e
+\u003cspan\u003eChat Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
+class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-comments" /\u003e
+\u003cspan\u003eComments Tab\u003c/span\u003e \u003c/label\u003e \u003c/div\u003e \u003chr/\u003e
+\u003ch3\u003eWidget Behavior\u003c/h3\u003e \u003cp class="setting-hint"\u003eConfigure default
+widget behavior\u003c/p\u003e \u003cdiv class="setting-group"\u003e \u003clabel
+class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-default-collapsed" /\u003e
+\u003cspan\u003eStart Collapsed by Default\u003c/span\u003e \u003c/label\u003e \u003cp
+class="setting-hint"\u003eWidget will be minimized when first loaded on a video\u003c/p\u003e
+\u003clabel class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-remember-state"
+/\u003e \u003cspan\u003eRemember Collapsed State\u003c/span\u003e \u003c/label\u003e \u003cp
+class="setting-hint"\u003eWidget remembers if you collapsed/expanded it\u003c/p\u003e
+\u003c/div\u003e \u003chr/\u003e \u003ch3\u003eSegment Filtering\u003c/h3\u003e \u003cp
+class="setting-hint"\u003eChoose which segment types to display in the Segments tab\u003c/p\u003e
+\u003cdiv class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
+type="checkbox" id="widget-show-sponsor" checked /\u003e \u003cspan\u003eShow Sponsor
+Segments\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
+type="checkbox" id="widget-show-selfpromo" checked /\u003e \u003cspan\u003eShow Self
+Promotion\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
+type="checkbox" id="widget-show-interaction" checked /\u003e \u003cspan\u003eShow Interaction
+Reminders\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
+type="checkbox" id="widget-show-intro" checked /\u003e \u003cspan\u003eShow
+Intro/Intermission\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-show-outro" checked /\u003e \u003cspan\u003eShow
+Outro/Endcards\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-show-preview" checked /\u003e \u003cspan\u003eShow
+Preview/Recap\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-show-filler" checked /\u003e \u003cspan\u003eShow
+Filler/Tangents\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-show-highlight" checked /\u003e \u003cspan\u003eShow
+Highlights\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
+\u003cinput type="checkbox" id="widget-show-exclusive" checked /\u003e \u003cspan\u003eShow
+Exclusive Access\u003c/span\u003e \u003c/label\u003e \u003c/div\u003e \u003cdiv
+class="setting-actions"\u003e \u003cbutton id="widget-reset" class="btn-secondary"\u003eReset to
+Defaults\u003c/button\u003e \u003c/div\u003e \u003c/div\u003e

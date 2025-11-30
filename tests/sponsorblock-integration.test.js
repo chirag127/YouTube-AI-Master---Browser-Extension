@@ -63,13 +63,15 @@ describe('SponsorBlock Integration Tests', () => {
 
   describe('API Fetching', () => {
     it('should fetch segments successfully', async () => {
-      const mockResponse = [{
-        videoID: 'test123',
-        segments: [
-          { segment: [10, 20], category: 'sponsor', UUID: 'uuid1', votes: 5, locked: false },
-          { segment: [30, 40], category: 'content', UUID: 'uuid2', votes: 2, locked: false },
-        ],
-      }];
+      const mockResponse = [
+        {
+          videoID: 'test123',
+          segments: [
+            { segment: [10, 20], category: 'sponsor', UUID: 'uuid1', votes: 5, locked: false },
+            { segment: [30, 40], category: 'content', UUID: 'uuid2', votes: 2, locked: false },
+          ],
+        },
+      ];
       global.fetch.mockResolvedValue({
         ok: true,
         status: 200,

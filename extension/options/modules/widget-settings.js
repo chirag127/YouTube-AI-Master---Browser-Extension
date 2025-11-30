@@ -20,7 +20,12 @@ export class WidgetSettings {
       const h = id('widget-height');
       const mh = id('widget-min-height');
       const xh = id('widget-max-height');
+      const w = id('widget-width');
+      const mw = id('widget-min-width');
+      const xw = id('widget-max-width');
       const r = id('widget-resizable');
+      const rw = id('widget-resizable-width');
+      const pos = id('widget-position');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -42,7 +47,12 @@ export class WidgetSettings {
       if (h) h.value = cfg.height || 500;
       if (mh) mh.value = cfg.minHeight || 200;
       if (xh) xh.value = cfg.maxHeight || 1200;
+      if (w) w.value = cfg.width || 400;
+      if (mw) mw.value = cfg.minWidth || 300;
+      if (xw) xw.value = cfg.maxWidth || 800;
       if (r) r.checked = cfg.resizable !== false;
+      if (rw) rw.checked = cfg.resizableWidth === true;
+      if (pos) pos.value = cfg.position || 'right';
       if (ts) ts.checked = cfg.tabs?.summary !== false;
       if (tg) tg.checked = cfg.tabs?.segments !== false;
       if (tc) tc.checked = cfg.tabs?.chat !== false;
@@ -70,7 +80,12 @@ export class WidgetSettings {
       const h = id('widget-height');
       const mh = id('widget-min-height');
       const xh = id('widget-max-height');
+      const w = id('widget-width');
+      const mw = id('widget-min-width');
+      const xw = id('widget-max-width');
       const r = id('widget-resizable');
+      const rw = id('widget-resizable-width');
+      const pos = id('widget-position');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -80,12 +95,27 @@ export class WidgetSettings {
       const rb = id('widget-reset');
 
       // Segment filters
-      const filters = ['sponsor', 'selfpromo', 'interaction', 'intro', 'outro', 'preview', 'filler', 'highlight', 'exclusive'];
+      const filters = [
+        'sponsor',
+        'selfpromo',
+        'interaction',
+        'intro',
+        'outro',
+        'preview',
+        'filler',
+        'highlight',
+        'exclusive',
+      ];
 
       if (h) on(h, 'change', () => this.save());
       if (mh) on(mh, 'change', () => this.save());
       if (xh) on(xh, 'change', () => this.save());
+      if (w) on(w, 'change', () => this.save());
+      if (mw) on(mw, 'change', () => this.save());
+      if (xw) on(xw, 'change', () => this.save());
       if (r) on(r, 'change', () => this.save());
+      if (rw) on(rw, 'change', () => this.save());
+      if (pos) on(pos, 'change', () => this.save());
       if (ts) on(ts, 'change', () => this.save());
       if (tg) on(tg, 'change', () => this.save());
       if (tc) on(tc, 'change', () => this.save());
@@ -109,7 +139,12 @@ export class WidgetSettings {
       const h = id('widget-height');
       const mh = id('widget-min-height');
       const xh = id('widget-max-height');
+      const w = id('widget-width');
+      const mw = id('widget-min-width');
+      const xw = id('widget-max-width');
       const r = id('widget-resizable');
+      const rw = id('widget-resizable-width');
+      const pos = id('widget-position');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -120,7 +155,12 @@ export class WidgetSettings {
       this.sm.set('widget.height', parseInt(h?.value || 500));
       this.sm.set('widget.minHeight', parseInt(mh?.value || 200));
       this.sm.set('widget.maxHeight', parseInt(xh?.value || 1200));
+      this.sm.set('widget.width', parseInt(w?.value || 400));
+      this.sm.set('widget.minWidth', parseInt(mw?.value || 300));
+      this.sm.set('widget.maxWidth', parseInt(xw?.value || 800));
       this.sm.set('widget.resizable', r?.checked !== false);
+      this.sm.set('widget.resizableWidth', rw?.checked === true);
+      this.sm.set('widget.position', pos?.value || 'right');
       this.sm.set('widget.tabs.summary', ts?.checked !== false);
       this.sm.set('widget.tabs.segments', tg?.checked !== false);
       this.sm.set('widget.tabs.chat', tc?.checked !== false);
@@ -155,7 +195,12 @@ export class WidgetSettings {
         height: 500,
         minHeight: 200,
         maxHeight: 1200,
+        width: 400,
+        minWidth: 300,
+        maxWidth: 800,
         resizable: true,
+        resizableWidth: false,
+        position: 'right',
         tabs: { summary: true, segments: true, chat: true, comments: true },
         defaultCollapsed: false,
         rememberState: true,
