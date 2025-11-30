@@ -150,12 +150,16 @@ extension/
 
 ```js
 import { l, w } from './utils/shortcuts/log.js';
-import { $ } from './utils/shortcuts/dom.js';
+import { qs } from './utils/shortcuts/dom.js';
 import { sg, ss } from './utils/shortcuts/storage.js';
+import { lk, ln, lgc } from './utils/shortcuts/segments.js';
 
 l('Log message'); // console.log
 const el = qs('.selector'); // document.querySelector
 const cfg = await sg('cfg'); // chrome.storage.sync.get
+const key = lk('S'); // 'sponsor' - label code to category key
+const name = ln('S'); // 'Sponsor' - label code to full name
+const color = lgc('S'); // '#00d26a' - label code to color
 ```
 
 ## License

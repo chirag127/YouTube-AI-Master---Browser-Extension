@@ -119,7 +119,8 @@ Instructions:
       const ts = mp(p.segments, s => ({
         start: s.s,
         end: s.e,
-        label: this._expandLabel(s.l),
+        label: s.l,
+        labelFull: this._expandLabel(s.l),
         title: s.t,
         description: s.d,
         text: s.d,
@@ -146,8 +147,9 @@ Instructions:
     const lm = {
       S: 'Sponsor',
       SP: 'Self Promotion',
+      UP: 'Unpaid/Self Promotion',
       EA: 'Exclusive Access',
-      IR: 'Interaction Reminder (Subscribe)',
+      IR: 'Interaction Reminder',
       H: 'Highlight',
       I: 'Intermission/Intro Animation',
       EC: 'Endcards/Credits',

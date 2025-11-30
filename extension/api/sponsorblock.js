@@ -5,16 +5,30 @@ import { ce } from '../utils/shortcuts/dom.js';
 
 const API_BASE = 'https://sponsor.ajay.app/api';
 const CM = {
-  sponsor: 'Sponsor',
-  selfpromo: 'Unpaid/Self Promotion',
-  interaction: 'Interaction Reminder',
-  intro: 'Intermission/Intro',
-  outro: 'Endcards/Credits',
-  preview: 'Preview/Recap',
-  music_offtopic: 'Off-Topic',
-  poi_highlight: 'Highlight',
-  filler: 'Filler/Tangent',
-  exclusive_access: 'Exclusive Access',
+  sponsor: 'S',
+  selfpromo: 'SP',
+  interaction: 'IR',
+  intro: 'I',
+  outro: 'EC',
+  preview: 'P',
+  music_offtopic: 'NM',
+  poi_highlight: 'H',
+  filler: 'T',
+  exclusive_access: 'EA',
+};
+const LM = {
+  S: 'Sponsor',
+  SP: 'Self Promotion',
+  IR: 'Interaction Reminder',
+  I: 'Intermission/Intro Animation',
+  EC: 'Endcards/Credits',
+  P: 'Preview/Recap',
+  NM: 'Music: Non-Music Section',
+  H: 'Highlight',
+  T: 'Tangents/Jokes',
+  EA: 'Exclusive Access',
+  G: 'Hook/Greetings',
+  C: 'Content',
 };
 
 async function _gh(vid) {
@@ -59,17 +73,21 @@ export async function fetchSegments(vid) {
     if (!vd || !vd.segments) {
       return [];
     }
-    const s = am(vd.segments, sg => ({
-      start: sg.segment[0],
-      end: sg.segment[1],
-      category: _mc(sg.category),
-      categoryCode: sg.category,
-      UUID: sg.UUID,
-      votes: sg.votes,
-      locked: sg.locked,
-      actionType: sg.actionType || 'skip',
-      description: sg.description || '',
-    }));
+    const s = am(vd.segments, sg => {
+      const code = _mc(sg.category);
+      return {
+        start: sg.segment[0],
+        end: sg.segment[1],
+        label: code,
+        labelFull: LM[code] || code,
+        category: sg.category,
+        UUID: sg.UUID,
+        votes: sg.votes,
+        locked: sg.locked,
+        actionType: sg.actionType || 'skip',
+        description: sg.description || '',
+      };
+    });
 
     return s;
   } catch (x) {

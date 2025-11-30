@@ -3,7 +3,7 @@ const gu = p => chrome.runtime.getURL(p);
 const { e } = await import(gu('utils/shortcuts/log.js'));
 const { getVideoElement } = await import(gu('content/utils/dom.js'));
 const { qs: $, ce } = await import(gu('utils/shortcuts/dom.js'));
-export function injectSegmentMarkers(s) {
+export async function injectSegmentMarkers(s) {
   try {
     if (!s?.length) return;
     const p = $('.ytp-progress-bar');
@@ -17,38 +17,43 @@ export function injectSegmentMarkers(s) {
     const v = getVideoElement(),
       d = v?.duration || 0;
     if (!d) return;
-    s.forEach(x => {
-      if (x.label === 'Content') return;
+    for (const x of s) {
+      if (x.label === 'C' || x.label === 'Content') continue;
       const st = (x.start / d) * 100,
         w = ((x.end - x.start) / d) * 100,
         m = ce('div');
-      m.style.cssText = `position:absolute;left:${st}%;width:${w}%;height:100%;background:${getSegmentColor(x.label)};opacity:0.6;`;
-      m.title = x.label;
+      const color = await getSegmentColor(x.label);
+      m.style.cssText = `position:absolute;left:${st}%;width:${w}%;height:100%;background:${color};opacity:0.6;`;
+      m.title = x.labelFull || x.label;
       c.appendChild(m);
-    });
+    }
     p.appendChild(c);
   } catch (err) {
     e('Err:injectSegmentMarkers', err);
   }
 }
-function getSegmentColor(lb) {
+async function getSegmentColor(lb) {
   try {
-    const c = {
+    const { lgc, CM } = await import(gu('utils/shortcuts/segments.js'));
+    if (CM[lb]) return CM[lb];
+    const fallback = {
       Sponsor: '#00d26a',
       'Self Promotion': '#ffff00',
       'Unpaid/Self Promotion': '#ffff00',
       'Exclusive Access': '#008b45',
-      'Interaction Reminder (Subscribe)': '#a020f0',
+      'Interaction Reminder': '#a020f0',
       Highlight: '#ff0055',
-      'Intermission/Intro Animation': '#00ffff',
+      'Intermission/Intro': '#00ffff',
       'Endcards/Credits': '#0000ff',
       'Preview/Recap': '#00bfff',
       'Hook/Greetings': '#4169e1',
       'Tangents/Jokes': '#9400d3',
+      'Filler/Tangent': '#9400d3',
+      'Off-Topic': '#ff9900',
+      'Music: Non-Music Section': '#ff9900',
+      Content: '#999999',
     };
-    const result = c[lb] || '#999999';
-
-    return result;
+    return fallback[lb] || lgc(lb);
   } catch (err) {
     e('Err:getSegmentColor', err);
     return '#999999';
