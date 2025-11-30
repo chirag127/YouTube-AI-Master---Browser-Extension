@@ -27,7 +27,11 @@ export class GeneralSettings {
       autoExtractKeyPoints: { path: 'automation.autoExtractKeyPoints' },
       autoDetectLanguage: { path: 'automation.autoDetectLanguage' },
       autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
-      autoLoadTranscript: { path: 'automation.autoLoadTranscript' },
+      autoExpandDescription: true,
+      showTimestamp: true,
+      smoothScroll: true,
+      keyboardShortcuts: true,
+      theme: 'dark',
       saveHistory: { path: 'advanced.saveHistory' },
     });
     const ch = i('#clearHistory');

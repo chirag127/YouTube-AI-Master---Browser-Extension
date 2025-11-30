@@ -29,6 +29,24 @@ npm test  # Run headless test suite (Vitest + JSDOM)
 ```
 
 Load `extension/` folder in Chrome as unpacked extension.
+## 🎨 Customization
+
+The extension offers extensive customization options to tailor the experience to your preferences:
+
+### Widget Appearance
+- **Glassmorphism UI:** Modern, semi-transparent design with backdrop blur.
+- **Opacity & Blur:** Adjust the transparency and blur strength of the widget background.
+- **UI Scale:** Resize the entire widget interface to fit your screen or preference.
+- **Positioning:** Choose between Left or Right sidebar placement.
+- **Resizability:** Fully resizable width and height with drag handles.
+
+### Widget Behavior
+- **Tab Visibility:** Toggle Summary, Segments, Chat, and Comments tabs.
+- **Default State:** Choose whether the widget starts expanded or collapsed.
+- **Memory:** Remembers your last used state (collapsed/expanded).
+
+### Segment Filtering
+- **Granular Control:** Toggle visibility for specific segment types (Sponsors, Self-promo, Intros, etc.).
 
 ## Configuration
 

@@ -24,10 +24,41 @@ let widgetContainer = null,
 function updateWidgetHeight() {
   try {
     if (!widgetContainer) return;
+
+    // Dynamic viewport constraint
+    const viewportHeight = window.innerHeight;
+    const maxAllowedHeight = viewportHeight - 40; // 20px padding top/bottom
+
+    // Apply constraint
+    widgetContainer.style.maxHeight = `${maxAllowedHeight}px`;
+
     const p = $('#movie_player') || $('.html5-video-player');
     if (p) {
-      const h = p.offsetHeight;
-      if (h > 0) widgetContainer.style.maxHeight = `${h}px`;
+      // Also respect player height if needed, but viewport is king for preventing clip
+      // We don't strictly bind to player height anymore to allow independent sizing
+      // but we ensure we don't overflow the window
+    }
+
+    // Ensure content area fits
+    const header = $('.yt-ai-header', widgetContainer);
+    const tabs = $('.yt-ai-tabs', widgetContainer);
+    const chatInput = $('.yt-ai-chat-input', widgetContainer);
+    const resizeHandle = $('#yt-ai-resize-handle', widgetContainer);
+
+    if (header && tabs && chatInput) {
+      const occupied = header.offsetHeight + tabs.offsetHeight + chatInput.offsetHeight + (resizeHandle?.offsetHeight || 0);
+      const contentArea = $('#yt-ai-content-area', widgetContainer);
+      if (contentArea) {
+        // Calculate available space for content
+        // If widget height is set fixed, we might need to adjust it if it exceeds viewport
+        const currentWidgetHeight = widgetContainer.offsetHeight;
+        if (currentWidgetHeight > maxAllowedHeight) {
+           widgetContainer.style.height = `${maxAllowedHeight}px`;
+        }
+
+        // Adjust content area max-height to ensure scrolling works within the container
+        contentArea.style.maxHeight = `${maxAllowedHeight - occupied}px`;
+      }
     }
   } catch (err) {
     e('Err:updateWidgetHeight', err);
@@ -237,6 +268,25 @@ function applyWidgetConfig() {
       widgetContainer.style.maxWidth = `${widgetConfig.maxWidth}px`;
       widgetContainer.style.minWidth = `${widgetConfig.minWidth}px`;
     }
+
+    // Apply Appearance Settings
+    if (widgetConfig.opacity !== undefined) {
+      const opacity = widgetConfig.opacity / 100;
+      widgetContainer.style.setProperty('--yt-ai-bg-glass', `rgba(15, 15, 15, ${opacity})`);
+    }
+
+    if (widgetConfig.blur !== undefined) {
+      widgetContainer.style.setProperty('--yt-ai-backdrop', `blur(${widgetConfig.blur}px)`);
+      widgetContainer.style.backdropFilter = `blur(${widgetConfig.blur}px)`;
+      widgetContainer.style.webkitBackdropFilter = `blur(${widgetConfig.blur}px)`;
+    }
+
+    if (widgetConfig.scale !== undefined) {
+      const scale = widgetConfig.scale / 100;
+      widgetContainer.style.fontSize = `${14 * scale}px`;
+      // Scale other elements if needed, but font-size usually cascades
+    }
+
     const rh = $('#yt-ai-resize-handle', widgetContainer);
     if (rh) rh.style.display = widgetConfig.resizable ? 'block' : 'none';
     const rwh = $('#yt-ai-resize-handle-width', widgetContainer);
@@ -428,6 +478,9 @@ function setupObservers(c) {
       resizeObserver = new ResizeObserver(() => updateWidgetHeight());
       resizeObserver.observe(p);
     }
+    // Also observe window resize for DevTools open/close
+    window.addEventListener('resize', updateWidgetHeight);
+
     if (containerObserver) containerObserver.disconnect();
     containerObserver = mo(m => {
       for (const mu of m) {

@@ -26,6 +26,9 @@ export class WidgetSettings {
       const r = id('widget-resizable');
       const rw = id('widget-resizable-width');
       const pos = id('widget-position');
+      const op = id('widget-opacity');
+      const bl = id('widget-blur');
+      const sc = id('widget-scale');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -53,6 +56,9 @@ export class WidgetSettings {
       if (r) r.checked = cfg.resizable !== false;
       if (rw) rw.checked = cfg.resizableWidth === true;
       if (pos) pos.value = cfg.position || 'right';
+      if (op) op.value = cfg.opacity || 95;
+      if (bl) bl.value = cfg.blur || 12;
+      if (sc) sc.value = cfg.scale || 100;
       if (ts) ts.checked = cfg.tabs?.summary !== false;
       if (tg) tg.checked = cfg.tabs?.segments !== false;
       if (tc) tc.checked = cfg.tabs?.chat !== false;
@@ -86,6 +92,9 @@ export class WidgetSettings {
       const r = id('widget-resizable');
       const rw = id('widget-resizable-width');
       const pos = id('widget-position');
+      const op = id('widget-opacity');
+      const bl = id('widget-blur');
+      const sc = id('widget-scale');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -116,6 +125,9 @@ export class WidgetSettings {
       if (r) on(r, 'change', () => this.save());
       if (rw) on(rw, 'change', () => this.save());
       if (pos) on(pos, 'change', () => this.save());
+      if (op) on(op, 'change', () => this.save());
+      if (bl) on(bl, 'change', () => this.save());
+      if (sc) on(sc, 'change', () => this.save());
       if (ts) on(ts, 'change', () => this.save());
       if (tg) on(tg, 'change', () => this.save());
       if (tc) on(tc, 'change', () => this.save());
@@ -145,6 +157,9 @@ export class WidgetSettings {
       const r = id('widget-resizable');
       const rw = id('widget-resizable-width');
       const pos = id('widget-position');
+      const op = id('widget-opacity');
+      const bl = id('widget-blur');
+      const sc = id('widget-scale');
       const ts = id('widget-tab-summary');
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
@@ -161,6 +176,9 @@ export class WidgetSettings {
       this.sm.set('widget.resizable', r?.checked !== false);
       this.sm.set('widget.resizableWidth', rw?.checked === true);
       this.sm.set('widget.position', pos?.value || 'right');
+      this.sm.set('widget.opacity', parseInt(op?.value || 95));
+      this.sm.set('widget.blur', parseInt(bl?.value || 12));
+      this.sm.set('widget.scale', parseInt(sc?.value || 100));
       this.sm.set('widget.tabs.summary', ts?.checked !== false);
       this.sm.set('widget.tabs.segments', tg?.checked !== false);
       this.sm.set('widget.tabs.chat', tc?.checked !== false);
@@ -201,6 +219,9 @@ export class WidgetSettings {
         resizable: true,
         resizableWidth: false,
         position: 'right',
+        opacity: 95,
+        blur: 12,
+        scale: 100,
         tabs: { summary: true, segments: true, chat: true, comments: true },
         defaultCollapsed: false,
         rememberState: true,
