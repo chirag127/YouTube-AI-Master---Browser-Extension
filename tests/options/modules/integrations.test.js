@@ -7,10 +7,9 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
   id: vi.fn(),
   ce: vi.fn(),
-  on: vi.fn(),
 }));
 
-import { qs, id, ce, on } from '../../../extension/utils/shortcuts/dom.js';
+import { qs, id, ce } from '../../../extension/utils/shortcuts/dom.js';
 
 describe('IntegrationsSettings', () => {
   let settingsManager;

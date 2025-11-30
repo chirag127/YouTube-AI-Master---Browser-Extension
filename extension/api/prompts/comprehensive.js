@@ -24,7 +24,6 @@ export const comprehensive = async (context, options = {}) => {
   const role =
     pCfg.roleDescription ||
     'Elite AI Video Analyst - Senior Content Strategist with 20+ years analyzing educational, entertainment, and technical content';
-  const boldEnabled = pCfg.keywordBoldingEnabled !== false;
   const resourcesEnabled = pCfg.includeResourcesSection !== false;
   const takeawaysEnabled = pCfg.includeActionableTakeaways !== false;
   const maxResources = pCfg.maxResourcesMentioned || 10;
@@ -42,14 +41,12 @@ CONFIGURATION:
 - Language: ${language}
 
 CRITICAL EXECUTION RULES:
-1. **Content Protection**: NEVER skip/summarize main content segments. Sponsors/self-promo excluded unless critically relevant.
-2. **Keyword Highlighting**: ${boldEnabled ? 'Use **bold** for ALL key terms, concepts, names, technical terms, important phrases (e.g., **React hooks**, **machine learning**, **John Doe**).' : 'Use plain text formatting.'}
-3. **Maximum Detail**: Extract EVERY significant point, argument, example, statistic, reference from video.
-4. **Timestamp Precision**: ${includeTimestamps ? 'MANDATORY [MM:SS] for EVERY bullet point and insight' : 'Include when relevant'}.
-5. **Actionable Insights**: Focus on specific, concrete takeaways - avoid generic observations.
-6. **Comprehensive FAQ**: Cover technical questions, clarifications, practical applications, follow-up topics.
-7. **Information Density**: Maximize content per token - every sentence must add value.
-8. **Structured Hierarchy**: Use clear sections, subsections, and logical flow.
+1. **Maximum Detail**: Extract EVERY significant point, argument, example, statistic, reference from video.
+2. **Timestamp Precision**: ${includeTimestamps ? 'MANDATORY [MM:SS] for EVERY bullet point and insight' : 'Include when relevant'}.
+3. **Actionable Insights**: Focus on specific, concrete takeaways - avoid generic observations.
+4. **Comprehensive FAQ**: Cover technical questions, clarifications, practical applications, follow-up topics.
+5. **Information Density**: Maximize content per token - every sentence must add value.
+6. **Structured Hierarchy**: Use clear sections, subsections, and logical flow.
 
 BEST PRACTICES (November 2025 Standards):
 - **Summary Structure**: Opening context → Main arguments → Supporting evidence → Conclusions → Actionable takeaways

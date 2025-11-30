@@ -24,13 +24,12 @@ vi.mock('../../../extension/utils/shortcuts/array.js', () => ({
 import { SettingsManager } from '../../../extension/options/modules/settings-manager.js';
 
 describe('SettingsManager', () => {
-  let mockSg, mockSs, mockE, mockNow, mockKeys, mockJp, mockJs, mockIsa, manager;
+  let mockSg, mockSs, mockNow, mockKeys, mockJp, mockJs, mockIsa, manager;
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockSg = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').sg);
     mockSs = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').ss);
-    mockE = vi.mocked(require('../../../extension/utils/shortcuts/log.js').e);
     mockNow = vi.mocked(require('../../../extension/utils/shortcuts/core.js').now);
     mockKeys = vi.mocked(require('../../../extension/utils/shortcuts/core.js').keys);
     mockJp = vi.mocked(require('../../../extension/utils/shortcuts/core.js').jp);
@@ -121,7 +120,7 @@ describe('SettingsManager', () => {
   it('should export settings', () => {
     manager.settings = { test: 'data' };
 
-    const result = manager.export();
+    manager.export();
 
     expect(mockJs).toHaveBeenCalledWith({ test: 'data' }, null, 2);
   });

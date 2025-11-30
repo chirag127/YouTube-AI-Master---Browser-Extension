@@ -11,12 +11,12 @@ const a = i('#api-status'),
   o = i('#options-btn'),
   m = i('#message'),
   g = i('#setup-guide-btn');
-function showMsg(t, y = 'info') {
+export function showMsg(t, y = 'info') {
   m.textContent = t;
   m.className = `show ${y}`;
   to(() => rc(m, 'show'), 3000);
 }
-async function checkApi() {
+export async function checkApi() {
   try {
     const s = await sg('config'),
       lc = await sl('GAK'),
@@ -36,7 +36,7 @@ async function checkApi() {
     return false;
   }
 }
-async function checkPage() {
+export async function checkPage() {
   try {
     const [t] = await tq({ active: true, currentWindow: true });
     if (t && t.url && t.url.includes('youtube.com/watch')) {

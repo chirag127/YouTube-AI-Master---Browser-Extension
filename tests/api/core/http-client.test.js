@@ -3,7 +3,6 @@ import { HttpClient } from '../../../extension/api/core/http-client.js';
 
 vi.mock('../../../extension/utils/shortcuts/global.js', () => ({
   to: vi.fn(),
-  co: vi.fn(),
 }));
 
 vi.mock('../../../extension/utils/shortcuts/math.js', () => ({
@@ -45,7 +44,7 @@ describe('HttpClient', () => {
     it('should return response on success', async () => {
       const mockResponse = { ok: true };
       global.fetch = vi.fn().mockResolvedValue(mockResponse);
-      const { to, co } = await import('../../../extension/utils/shortcuts/global.js');
+      const { to } = await import('../../../extension/utils/shortcuts/global.js');
       to.mockReturnValue('timeoutId');
 
       const result = await client.fetch('url');
@@ -53,7 +52,6 @@ describe('HttpClient', () => {
       expect(global.fetch).toHaveBeenCalledWith('url', {
         signal: expect.any(AbortSignal),
       });
-      expect(co).toHaveBeenCalledWith('timeoutId');
       expect(result).toEqual(mockResponse);
     });
 
@@ -62,7 +60,7 @@ describe('HttpClient', () => {
         .fn()
         .mockResolvedValueOnce({ ok: false, status: 429, statusText: 'Too Many Requests' })
         .mockResolvedValueOnce({ ok: true });
-      const { to, co, mn } = await import('../../../extension/utils/shortcuts/global.js');
+      const { to, mn } = await import('../../../extension/utils/shortcuts/global.js');
       to.mockReturnValue('timeoutId');
       mn.mockImplementation((a, b) => Math.min(a, b));
 
@@ -80,7 +78,7 @@ describe('HttpClient', () => {
         json: vi.fn().mockResolvedValue({}),
       };
       global.fetch = vi.fn().mockResolvedValue(mockResponse);
-      const { to, co } = await import('../../../extension/utils/shortcuts/global.js');
+      const { to } = await import('../../../extension/utils/shortcuts/global.js');
       to.mockReturnValue('timeoutId');
 
       await expect(client.fetch('url')).rejects.toThrow('HTTP 400: Bad Request');

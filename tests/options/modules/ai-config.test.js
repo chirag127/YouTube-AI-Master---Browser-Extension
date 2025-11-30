@@ -17,7 +17,7 @@ vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   sls: vi.fn(),
 }));
 
-import { qs, id, on, ce } from '../../../extension/utils/shortcuts/dom.js';
+import { qs, id } from '../../../extension/utils/shortcuts/dom.js';
 
 describe('AIConfig', () => {
   let settingsManager;

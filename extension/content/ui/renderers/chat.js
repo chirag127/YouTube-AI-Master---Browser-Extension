@@ -13,7 +13,10 @@ function parseTime(t) {
 
 export function renderChat(c) {
   try {
+    // Clear existing content first
     if (!$('.yt-ai-chat-messages', c)) {
+      c.innerHTML = '';
+
       // Create chat container with glass styling
       const chatContainer = ce('div');
       chatContainer.className = 'yt-ai-chat-messages';

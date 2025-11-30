@@ -16,7 +16,7 @@ vi.mock('../extension/utils/shortcuts/runtime.js', () => ({
   },
 }));
 vi.mock('../extension/utils/shortcuts/global.js', () => ({
-  to: (cb, ms) => {
+  to: cb => {
     if (typeof cb === 'function') cb();
     return Promise.resolve();
   },
@@ -57,7 +57,6 @@ global.chrome = {
   },
 };
 
-let ScrollManager;
 let getScrollManager;
 
 describe('ScrollManager', () => {
@@ -70,7 +69,6 @@ describe('ScrollManager', () => {
 
     // Re-import to ensure fresh state if possible, or just get the exported members
     const module = await import('../extension/content/utils/scroll-manager.js');
-    ScrollManager = module.ScrollManager;
     getScrollManager = module.getScrollManager;
   });
 

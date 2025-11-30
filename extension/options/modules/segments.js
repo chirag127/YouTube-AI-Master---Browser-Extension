@@ -135,7 +135,7 @@ export class SegmentsConfig {
         // For now, keeping existing logic but ensuring class is added
         item.classList.add('content-segment');
         const desc = cl.querySelector('.segment-description');
-        if (desc) stc(desc, 'Main video content - can adjust speed but NEVER skipped');
+        if (desc) stc(desc, 'Main video content');
       }
 
       if (cfg.action === 'speed' && sc) sc.classList.remove('hidden');

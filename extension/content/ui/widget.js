@@ -37,6 +37,7 @@ function updateWidgetHeight() {
     }
     const p = $('#movie_player') || $('.html5-video-player');
     if (p) {
+      p.setAttribute('data-widget-initialized', 'true');
     }
     const header = $('.yt-ai-header', widgetContainer);
     const tabs = $('.yt-ai-tabs', widgetContainer);

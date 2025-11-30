@@ -38,6 +38,7 @@ global.window = {
 global.document = {
   ...global.document,
   head: global.document.createElement('head'),
+  body: global.document.createElement('body'),
   documentElement: global.document.createElement('html'),
   createElement: global.document.createElement.bind(global.document),
   querySelector: vi.fn(),

@@ -8,7 +8,6 @@ vi.mock('../../../extension/services/storage/comprehensive-history.js', () => ({
 vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   slg: vi.fn(),
   sls: vi.fn(),
-  slr: vi.fn(),
 }));
 
 vi.mock('../../../extension/utils/shortcuts/log.js', () => ({
@@ -62,7 +61,6 @@ describe('handleSaveHistory', () => {
 describe('handleGetVideoData', () => {
   let mockSlg,
     mockSls,
-    mockSlr,
     mockE,
     mockNw,
     mockHandleGetVideoInfo,
@@ -73,7 +71,6 @@ describe('handleGetVideoData', () => {
     vi.clearAllMocks();
     mockSlg = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').slg);
     mockSls = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').sls);
-    mockSlr = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').slr);
     mockE = vi.mocked(require('../../../extension/utils/shortcuts/log.js').e);
     mockNw = vi.mocked(require('../../../extension/utils/shortcuts/core.js').nw);
     mockHandleGetVideoInfo = vi.mocked(

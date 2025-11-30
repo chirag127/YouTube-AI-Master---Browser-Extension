@@ -49,7 +49,7 @@ import { OnboardingFlow } from '../../extension/onboarding/onboarding.js';
 
 describe('OnboardingFlow', () => {
   let instance;
-  let mockGe, mockOn, mockSg, mockSs, mockSls, mockFt, mockCtab, mockRt, mockSt, mockWin, mockE;
+  let mockGe, mockSg, mockSs, mockSls, mockFt, mockSt, mockWin, mockE;
 
   beforeEach(() => {
     // Reset mocks
@@ -57,13 +57,10 @@ describe('OnboardingFlow', () => {
 
     // Get mock functions
     mockGe = vi.mocked(require('../../extension/utils/shortcuts/dom.js').ge);
-    mockOn = vi.mocked(require('../../extension/utils/shortcuts/dom.js').on);
     mockSg = vi.mocked(require('../../extension/utils/shortcuts/storage.js').sg);
     mockSs = vi.mocked(require('../../extension/utils/shortcuts/storage.js').ss);
     mockSls = vi.mocked(require('../../extension/utils/shortcuts/storage.js').sls);
     mockFt = vi.mocked(require('../../extension/utils/shortcuts/network.js').ft);
-    mockCtab = vi.mocked(require('../../extension/utils/shortcuts/chrome.js').cht);
-    mockRt = require('../../extension/utils/shortcuts/runtime.js').rt;
     mockSt = vi.mocked(require('../../extension/utils/shortcuts/global.js').to);
     mockWin = require('../../extension/utils/shortcuts/global.js').wn;
     mockE = vi.mocked(require('../../extension/utils/shortcuts/log.js').e);

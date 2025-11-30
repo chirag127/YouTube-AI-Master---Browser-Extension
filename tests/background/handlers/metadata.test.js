@@ -9,11 +9,10 @@ vi.mock('../../../extension/utils/shortcuts/log.js', () => ({
 import { handleGetMetadata } from '../../../extension/background/handlers/metadata.js';
 
 describe('handleGetMetadata', () => {
-  let mockE, mockW, mockRsp;
+  let mockW, mockRsp;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockE = vi.mocked(require('../../../extension/utils/shortcuts/log.js').e);
     mockW = vi.mocked(require('../../../extension/utils/shortcuts/log.js').w);
     mockRsp = vi.fn();
   });

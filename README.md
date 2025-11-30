@@ -17,7 +17,6 @@ AI-powered YouTube analysis extension. Transcripts, insights, segments, comments
 - **Smart Transcripts**: Multi-strategy fetching (DOM Automation, Genius, Speech-to-Text) - auto-closes YouTube panel, scrolls to top
 - **Segment Classification**: Auto-detect sponsors, intros, off-topic sections with skip/speed actions (13 SponsorBlock categories: sponsor, selfpromo, interaction, intro, outro, preview, hook, music_offtopic, poi_highlight, filler, exclusive_access, chapter, content)
   - **DISABLED BY DEFAULT**: Segment detection and auto-skip are OFF by default to protect video content
-  - **Content Protection**: "Content" segments are NEVER skipped or modified
   - **Conservative Defaults**: Only sponsor/selfpromo default to "skip"; all others default to "ignore"
   - **Explicit Opt-In**: Users must enable segment features in settings
   - **Granular Control**: Configure each segment type individually (ignore/skip/speed) with adjustable speed (1-16x)
@@ -117,7 +116,6 @@ The extension implements **maximum user configurability** - every feature, rule,
    - Toggle "Enable Segment Detection" ON
    - Toggle "Enable Auto-Skip" ON (if desired)
    - Configure segment actions (default settings):
-     - **Always Ignored**: Content, Main Content (NEVER skipped)
      - **Skipped by Default**: Sponsor, Self Promotion
      - **Ignored by Default**: Interaction, Intro, Outro, Preview, Off-Topic, Filler, Highlight, Exclusive Access
 5. Configure transcript methods, UI preferences
@@ -148,7 +146,7 @@ The extension implements **maximum user configurability** - every feature, rule,
   - `comprehensive-settings.test.js` - Tests all 12 segment categories, defaults, persistence, export/import
   - `segments-ui.test.js` - Tests UI module bulk operations (setAll) and individual updates
   - `autoskip-integration.test.js` - Integration tests for segment action filtering
-  - `content-protection.test.js` - Ensures Content segments are NEVER skipped, validates disabled-by-default behavior
+  - `content-protection.test.js` - Validates disabled-by-default behavior
   - `sponsorblock-integration.test.js` - SponsorBlock API integration, label mapping (13 categories)
   - `api-detector.test.js` - API availability detection tests (SponsorBlock, DeArrow, Gemini, TMDB, NewsData, GoogleFactCheck)
   - `segment-label-mapping.test.js` - Label-to-category mapping for all 13 segment types
@@ -188,19 +186,19 @@ The extension implements **maximum user configurability** - every feature, rule,
 
 ## Segment Categories & Default Actions
 
-| Category           | Label                | Default Action    | Description                  |
-| ------------------ | -------------------- | ----------------- | ---------------------------- |
-| `sponsor`          | Sponsor              | Skip              | Paid sponsorships            |
-| `selfpromo`        | Self Promotion       | Skip              | Self-promotion (paid/unpaid) |
-| `interaction`      | Interaction Reminder | **Ignore**        | Like/subscribe reminders     |
-| `intro`            | Intermission/Intro   | **Ignore**        | Intro animations             |
-| `outro`            | Endcards/Credits     | **Ignore**        | End credits                  |
-| `preview`          | Preview/Recap        | **Ignore**        | Episode recaps               |
-| `music_offtopic`   | Off-Topic            | **Ignore**        | Off-topic content            |
-| `filler`           | Filler/Tangent       | **Ignore**        | Tangential discussions       |
-| `poi_highlight`    | Highlight            | **Ignore**        | Important moments            |
-| `exclusive_access` | Exclusive Access     | **Ignore**        | Premium content              |
-| `content`          | Content              | **NEVER SKIPPED** | Main video content           |
+| Category           | Label                | Default Action | Description                  |
+| ------------------ | -------------------- | -------------- | ---------------------------- |
+| `sponsor`          | Sponsor              | Skip           | Paid sponsorships            |
+| `selfpromo`        | Self Promotion       | Skip           | Self-promotion (paid/unpaid) |
+| `interaction`      | Interaction Reminder | **Ignore**     | Like/subscribe reminders     |
+| `intro`            | Intermission/Intro   | **Ignore**     | Intro animations             |
+| `outro`            | Endcards/Credits     | **Ignore**     | End credits                  |
+| `preview`          | Preview/Recap        | **Ignore**     | Episode recaps               |
+| `music_offtopic`   | Off-Topic            | **Ignore**     | Off-topic content            |
+| `filler`           | Filler/Tangent       | **Ignore**     | Tangential discussions       |
+| `poi_highlight`    | Highlight            | **Ignore**     | Important moments            |
+| `exclusive_access` | Exclusive Access     | **Ignore**     | Premium content              |
+| `content`          | Content              | **Ignore**     | Main video content           |
 
 **Global Defaults**: Segment detection **DISABLED**, Auto-skip **DISABLED**
 

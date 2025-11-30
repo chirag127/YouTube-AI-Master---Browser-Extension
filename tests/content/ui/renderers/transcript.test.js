@@ -47,10 +47,7 @@ vi.mock('../../../../extension/utils/shortcuts/storage.js', () => ({
 }));
 
 // Import module under test
-import {
-  renderTranscript,
-  shouldAutoClose,
-} from '../../../../extension/content/ui/renderers/transcript.js';
+import { renderTranscript } from '../../../../extension/content/ui/renderers/transcript.js';
 
 describe('Transcript Renderer', () => {
   let container;

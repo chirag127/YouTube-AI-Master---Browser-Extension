@@ -88,6 +88,7 @@ vi.mocked(require('../../extension/utils/shortcuts/dom.js').qs).mockImplementati
 
 // Import after mocks
 import '../../extension/popup/popup.js';
+import { checkApi, checkPage, showMsg } from '../../extension/popup/popup.js';
 
 describe('Popup', () => {
   let mockSl, mockSg, mockW, mockTo, mockTq, mockTm, mockTc, mockRu, mockRo;

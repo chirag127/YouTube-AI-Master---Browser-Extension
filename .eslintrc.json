@@ -20,7 +20,7 @@
   "globals": {
     "chrome": "readonly"
   },
-  "ignorePatterns": ["extension/dist/**", "node_modules/**"],
+  "ignorePatterns": ["extension/dist/**", "node_modules/**", "*.json"],
   "overrides": [
     {
       "files": ["tests/**/*.js", "**/*.test.js"],

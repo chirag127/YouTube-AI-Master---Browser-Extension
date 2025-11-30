@@ -8,7 +8,7 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   id: vi.fn(),
 }));
 
-import { qs, on, id } from '../../../extension/utils/shortcuts/dom.js';
+import { qs, id } from '../../../extension/utils/shortcuts/dom.js';
 
 describe('UIAppearance', () => {
   let settingsManager;

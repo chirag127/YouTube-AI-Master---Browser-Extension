@@ -15,14 +15,13 @@ import { VideoCache } from '../../../extension/services/cache/video-cache.js';
 
 describe('VideoCache', () => {
   let cache;
-  let mockSl, mockNw, mockOk;
+  let mockSl, mockOk;
 
   beforeEach(() => {
     vi.clearAllMocks();
     cache = new VideoCache();
 
     mockSl = vi.mocked(require('../../../extension/utils/shortcuts/storage.js').sl);
-    mockNw = vi.mocked(require('../../../extension/utils/shortcuts/core.js').nw);
     mockOk = vi.mocked(require('../../../extension/utils/shortcuts/core.js').ok);
   });
 

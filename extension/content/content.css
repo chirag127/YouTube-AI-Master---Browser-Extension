@@ -213,7 +213,7 @@
 .yt-ai-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 24px 24px 24px;
+  padding: 16px 24px 24px 24px;
   min-height: 250px;
   font-size: 15px;
   line-height: 1.7;

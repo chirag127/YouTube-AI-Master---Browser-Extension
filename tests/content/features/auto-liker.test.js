@@ -24,7 +24,7 @@ vi.mock('../../../extension/utils/shortcuts/log.js', () => ({
   e: vi.fn(),
 }));
 
-import { AutoLiker, autoLiker } from '../../../extension/content/features/auto-liker.js';
+import { AutoLiker } from '../../../extension/content/features/auto-liker.js';
 
 describe('AutoLiker', () => {
   let liker;

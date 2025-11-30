@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { GeminiService, ModelManager } from '../../extension/api/gemini.js';
+import { GeminiService } from '../../extension/api/gemini.js';
 
 vi.mock('../../extension/api/gemini-client.js', () => ({
   GeminiClient: function () {

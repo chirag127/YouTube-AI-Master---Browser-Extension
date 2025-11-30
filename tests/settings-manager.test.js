@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   SettingsManager,
   SEGMENT_CATEGORIES,
-  DEFAULT_SEGMENT_CONFIG,
 } from '../extension/options/modules/settings-manager.js';
 
 vi.mock('../extension/utils/shortcuts/storage.js', () => ({

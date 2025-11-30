@@ -65,7 +65,7 @@ exclusive_access: Full label only. Free/subsidized access showcase. If affiliate
 
 chapter: Navigation markers. NOT for skipping.
 
-content: Primary content. NEVER skipped. Break into ${minSegs}+ topic segments. NO giant segments.
+content: Primary content. Break into ${minSegs}+ topic segments. NO giant segments.
 
 STRATEGY:
 1. Identify special categories first (sponsor, selfpromo, interaction, intro, outro, preview, hook, filler)

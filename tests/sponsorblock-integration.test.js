@@ -34,9 +34,6 @@ describe('SponsorBlock Integration Tests', () => {
     });
 
     it('should have all 13 categories', async () => {
-      const sb = await import('../extension/api/sponsorblock.js');
-      // Access the CATEGORIES constant from the module namespace
-      const categoriesModule = await import('../extension/api/sponsorblock.js?t=' + Date.now());
       expect(SEGMENT_CATEGORIES.length).toBe(13);
       const expected = [
         'sponsor',
