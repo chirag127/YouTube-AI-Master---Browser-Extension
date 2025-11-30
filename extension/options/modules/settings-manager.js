@@ -220,6 +220,9 @@ export class SettingsManager {
           maxQuestions: 5,
           includeCreatorOpportunities: true,
         },
+        chat: {
+          enablePatternHints: true,
+        },
       },
       automation: {
         autoAnalyze: true,

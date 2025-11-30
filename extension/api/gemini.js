@@ -25,37 +25,8 @@ export class GeminiService {
       lyrics: null,
       sponsorBlockSegments: md?.sponsorBlockSegments || [],
     };
-    const p = `
-Role: AI assistant for YouTube video.
-
-${this._buildCtx(ctx)}
-
-User Question: ${q}
-
-Instructions:
-- Answer ONLY from video context.
-- Reference timestamps [MM:SS] when relevant.
-- SponsorBlock segments = VERIFIED GROUND TRUTH.
-- If answer not in video, state clearly.
-`;
-    return this.generateContent(p, m);
-  }
-  _buildCtx(ctx) {
-    let s = `Video: ${ctx.metadata?.title || 'Unknown'}\n`;
-    s += `Channel: ${ctx.metadata?.author || 'Unknown'}\n`;
-    if (ctx.metadata?.description)
-      s += `Description: ${ctx.metadata.description.substring(0, 500)}...\n`;
-    if (ctx.sponsorBlockSegments?.length) {
-      s += '\nSponsorBlock Segments (VERIFIED):\n';
-      ctx.sponsorBlockSegments.forEach(seg => {
-        const st = Math.floor(seg.start / 60);
-        const ss = Math.floor(seg.start % 60);
-        const et = Math.floor(seg.end / 60);
-        const es = Math.floor(seg.end % 60);
-        s += `- [${seg.category}] ${st}:${('00' + ss).slice(-2)} - ${et}:${('00' + es).slice(-2)}\n`;
-      });
-    }
-    return s;
+    const prompt = await prompts.chat(q, ctx);
+    return this.generateContent(prompt, m);
   }
   async analyzeCommentSentiment(c, m = null) {
     if (!c || !c.length) {

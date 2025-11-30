@@ -104,6 +104,8 @@ The extension offers extensive customization options to tailor the experience to
   - `api-detector.test.js` - API availability detection tests (SponsorBlock, DeArrow, Gemini, TMDB, NewsData, GoogleFactCheck)
   - `segment-label-mapping.test.js` - Label-to-category mapping for all 13 segment types
   - `api-performance.test.js` - API metrics tracking, auto-detection logic
+  - `prompts.test.js` - Verifies prompt settings and configuration
+  - `comments.test.js` (patterns) - Tests sentiment analysis and spam detection patterns
 
 ### Storage Keys (Compressed)
 
