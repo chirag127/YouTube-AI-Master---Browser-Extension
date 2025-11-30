@@ -1,8 +1,8 @@
 import { gu } from '../../utils/shortcuts/runtime.js';
 
-const { e, w } = await import(gu('utils/shortcuts/log.js'));
+const { e } = await import(gu('utils/shortcuts/log.js'));
 const { js, to } = await import(gu('utils/shortcuts/global.js'));
-const { ae, qsa: $$ } = await import(gu('utils/shortcuts/dom.js'));
+const { ae, qsa: $ } = await import(gu('utils/shortcuts/dom.js'));
 const { sg, slg: lg } = await import(gu('utils/shortcuts/storage.js'));
 const { ft } = await import(gu('utils/shortcuts/network.js'));
 const { mp, jn } = await import(gu('utils/shortcuts/array.js'));
@@ -33,11 +33,7 @@ class CommentsExtractor {
             nc.push({
               id: c.commentId,
               author: c.authorText?.simpleText || 'Unknown',
-              text:
-                jn(
-                  mp(c.contentText?.runs || [], r => r.text),
-                  ''
-                ) || '',
+              text: jn(mp(c.contentText?.runs || [], r => r.text), '') || '',
               likes: c.voteCount?.simpleText || '0',
               publishedTime: c.publishedTimeText?.runs?.[0]?.text || '',
             });
@@ -55,16 +51,12 @@ class CommentsExtractor {
   async getComments() {
     const vid = this.getCurrentVideoId();
     const cfg = await this.getConfig();
-    if (!cfg.comments?.enabled) {
-      return [];
-    }
+    if (!cfg.comments?.enabled) return [];
     try {
       const initialData = await this.getInitialDataFromMainWorld();
       if (initialData) {
         const initialComments = this.extractCommentsFromInitialData(initialData);
-        if (initialComments.length > 0) {
-          return initialComments;
-        }
+        if (initialComments.length > 0) return initialComments;
       }
     } catch (err) {
       e('Err:extracting initial comments', err);
@@ -72,19 +64,13 @@ class CommentsExtractor {
     if (cfg.cache?.enabled && cfg.cache?.comments) {
       try {
         const c = await this.checkCache(vid);
-        if (c && c.length > 0) {
-          return c;
-        }
+        if (c && c.length > 0) return c;
       } catch (x) {
-        // cache fail, continue
+        e('Err:cache', x);
       }
     }
-    if (this.hasIntercepted && this.comments.length > 0) {
-      return this.comments;
-    }
-    if (cfg.scroll?.autoScrollToComments) {
-      await this.scrollToComments();
-    }
+    if (this.hasIntercepted && this.comments.length > 0) return this.comments;
+    if (cfg.scroll?.autoScrollToComments) await this.scrollToComments();
     const result = await this.fetchCommentsFromDOM();
     return result;
   }
@@ -103,9 +89,7 @@ class CommentsExtractor {
       if (r[k]) {
         const c = r[k];
         const age = Date.now() - c.timestamp;
-        if (age < 86400000 && c.data?.length > 0) {
-          return c.data;
-        }
+        if (age < 86400000 && c.data?.length > 0) return c.data;
       }
       return null;
     } catch (err) {
@@ -158,9 +142,7 @@ class CommentsExtractor {
     try {
       const contents = data?.contents?.twoColumnWatchNextResults?.results?.results?.contents;
       if (!contents) return [];
-      const commentsSection = contents.find(
-        c => c.itemSectionRenderer?.contents?.[0]?.commentsEntryPointHeaderRenderer
-      );
+      const commentsSection = contents.find(c => c.itemSectionRenderer?.contents?.[0]?.commentsEntryPointHeaderRenderer);
       if (!commentsSection) return [];
       const commentThreads = contents.filter(c => c.commentThreadRenderer);
       const comments = [];
@@ -170,11 +152,7 @@ class CommentsExtractor {
           comments.push({
             id: c.commentId,
             author: c.authorText?.simpleText || 'Unknown',
-            text:
-              jn(
-                mp(c.contentText?.runs || [], r => r.text),
-                ''
-              ) || '',
+            text: jn(mp(c.contentText?.runs || [], r => r.text), '') || '',
             likes: c.voteCount?.simpleText || '0',
             publishedTime: c.publishedTimeText?.runs?.[0]?.text || '',
           });
@@ -187,28 +165,20 @@ class CommentsExtractor {
     }
   }
   async fetchCommentsFromDOM() {
-    const maxRetries = 5;
-    const baseDelay = 2000;
+    const maxRetries = 3;
+    const baseDelay = 1500;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      const delay = baseDelay * attempt;
-      await new Promise(r => to(r, delay));
+      if (attempt > 1) await new Promise(r => to(r, baseDelay));
       try {
         const c = [];
-        const selectors = [
-          'ytd-comment-thread-renderer',
-          'ytd-comment-renderer',
-          'ytd-comment-view-model',
-        ];
+        const selectors = ['ytd-comment-thread-renderer', 'ytd-comment-renderer', 'ytd-comment-view-model'];
         let el = [];
         for (const sel of selectors) {
-          el = $$(sel);
-          if (el.length > 0) {
-            e(`[CE] Found ${el.length} comments using selector: ${sel}`);
-            break;
-          }
+          el = $(sel);
+          if (el.length > 0) break;
         }
         if (el.length === 0) {
-          e(`[CE] No comments found in DOM (Attempt ${attempt}/${maxRetries})`);
+          e(`[CE] No comments in DOM (${attempt}/${maxRetries})`);
           continue;
         }
         const getText = (elm, sels) => {
@@ -222,52 +192,16 @@ class CommentsExtractor {
           if (c.length >= 20) break;
           const elm = el[i];
           try {
-            const a = getText(elm, [
-              '#author-text',
-              '#author-text yt-formatted-string',
-              '[author]',
-              '.ytd-channel-name',
-              '#author-text span',
-            ]);
-            const t = getText(elm, [
-              '#content-text',
-              '#content-text yt-formatted-string',
-              '[content]',
-              '.yt-core-attributed-string',
-            ]);
-            const lk =
-              getText(elm, [
-                '#vote-count-middle',
-                '#vote-count-left',
-                '#vote-count',
-                '[aria-label*="likes"]',
-              ]) || '0';
-            const pt = getText(elm, [
-              '#published-time-text',
-              '#published-time',
-              '.ytd-comment-view-model > div > span',
-            ]);
-            if (a && t) {
-              c.push({
-                id: elm.id || `dom_${i}`,
-                author: a,
-                text: t,
-                likes: lk,
-                publishedTime: pt,
-              });
-            } else {
-              // e(`Failed to extract comment ${i + 1}: missing author or text`);
-            }
+            const a = getText(elm, ['#author-text', '#author-text yt-formatted-string', '[author]', '.ytd-channel-name', '#author-text span']);
+            const t = getText(elm, ['#content-text', '#content-text yt-formatted-string', '[content]', '.yt-core-attributed-string']);
+            const lk = getText(elm, ['#vote-count-middle', '#vote-count-left', '#vote-count', '[aria-label*="likes"]']) || '0';
+            const pt = getText(elm, ['#published-time-text', '#published-time', '.ytd-comment-view-model > div > span']);
+            if (a && t) c.push({ id: elm.id || `dom_${i}`, author: a, text: t, likes: lk, publishedTime: pt });
           } catch (x) {
             e(`[CE] Err ${i + 1}:`, x);
           }
         }
-        if (c.length > 0) {
-          e(`[CE] Successfully extracted ${c.length} comments from DOM`);
-          return c;
-        } else {
-          w('No comments available in DOM after parsing');
-        }
+        if (c.length > 0) return c;
       } catch (x) {
         e(`[CE] Attempt ${attempt} failed:`, x);
       }
@@ -276,10 +210,7 @@ class CommentsExtractor {
   }
   async fetchCommentsActive(k, t, c) {
     try {
-      const r = await ft(`https://www.youtube.com/youtubei/v1/next?key=${k}`, {
-        method: 'POST',
-        body: js({ context: c, continuation: t }),
-      });
+      const r = await ft(`https://www.youtube.com/youtubei/v1/next?key=${k}`, { method: 'POST', body: js({ context: c, continuation: t }) });
       const d = await r.json();
       const result = this.parseComments(d);
       return result;
@@ -306,11 +237,7 @@ class CommentsExtractor {
             c.push({
               id: cm.commentId,
               author: cm.authorText?.simpleText || 'Unknown',
-              text:
-                jn(
-                  mp(cm.contentText?.runs || [], r => r.text),
-                  ''
-                ) || '',
+              text: jn(mp(cm.contentText?.runs || [], r => r.text), '') || '',
               likes: cm.voteCount?.simpleText || '0',
               publishedTime: cm.publishedTimeText?.runs?.[0]?.text || '',
             });

@@ -43,28 +43,15 @@ export class ScrollManager {
     }
   }
   async scrollToComments() {
-    if (this.isScrolling) {
-      return false;
-    }
+    if (this.isScrolling) return false;
     this.isScrolling = true;
     try {
       this.savePosition();
-
-      // Smart Scroll: Scroll to bottom to trigger lazy loading
       window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
-
-      // Wait for network requests to initiate
-      await this.waitForScroll(2000);
-
-      // Restore original position
+      await this.waitForScroll(3000);
       this.restorePosition();
-
-      // Wait for scroll back
-      await this.waitForScroll(1000);
-
-      // Wait for comments to actually populate in DOM
+      await this.waitForScroll(2000);
       const loaded = await this.waitForCommentsToLoad();
-
       this.isScrolling = false;
       return loaded;
     } catch (x) {
@@ -74,8 +61,8 @@ export class ScrollManager {
     }
   }
   async waitForCommentsToLoad() {
-    const max = 5000,
-      int = 200;
+    const max = 8000,
+      int = 300;
     let el = 0;
     while (el < max) {
       const ce = $$('ytd-comment-thread-renderer');
@@ -95,15 +82,13 @@ export class ScrollManager {
       await this.waitForScroll(int);
       el += int;
     }
-    w('[SM] Timeout waiting for comments to load');
+    w('[SM] Timeout waiting for comments');
     return false;
   }
   async scrollToElement(sel, opt = {}) {
     try {
       const el = $(sel);
-      if (!el) {
-        return false;
-      }
+      if (!el) return false;
       el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest', ...opt });
       await this.waitForScroll(1000);
       return true;
@@ -123,12 +108,7 @@ export class ScrollManager {
   isInViewport(el) {
     try {
       const r = el.getBoundingClientRect();
-      return (
-        r.top >= 0 &&
-        r.left >= 0 &&
-        r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        r.right <= (window.innerWidth || document.documentElement.clientWidth)
-      );
+      return r.top >= 0 && r.left >= 0 && r.bottom <= (window.innerHeight || document.documentElement.clientHeight) && r.right <= (window.innerWidth || document.documentElement.clientWidth);
     } catch (err) {
       e('Err:isInViewport', err);
       return false;
