@@ -1,10 +1,10 @@
 import { gu } from '../../../utils/shortcuts/runtime.js';
 
-const { qs: $, qsa: $$ } = await import(gu('utils/shortcuts/dom.js'));
+const { $, $$ } = await import(gu('utils/shortcuts/dom.js'));
 const { l, e } = await import(gu('utils/shortcuts/logging.js'));
 const { stt: to } = await import(gu('utils/shortcuts/time.js'));
 const { now: nw } = await import(gu('utils/shortcuts/core.js'));
-const { tr } = await import(gu('utils/shortcuts/string.js'));
+const { trm } = await import(gu('utils/shortcuts/string.js'));
 export const name = 'DOM Automation';
 export const priority = 10;
 
@@ -104,8 +104,8 @@ const scrape = () => {
       const tse = el.querySelector('.segment-timestamp');
       const te = el.querySelector('.segment-text');
       if (tse && te) {
-        const ts = tr(tse.textContent);
-        const t = tr(te.textContent);
+        const ts = trm(tse.textContent);
+        const t = trm(te.textContent);
         const st = parseTs(ts);
         s.push({ start: st, text: t, duration: 0 });
       }
