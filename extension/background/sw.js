@@ -1,4 +1,4 @@
-import { e, w } from '../utils/shortcuts/log.js';
+import { l, e, w } from '../utils/shortcuts/log.js';
 import { rt as cr, url, rgm as rg, oop } from '../utils/shortcuts/runtime.js';
 import { tbc as tc } from '../utils/shortcuts/tabs.js';
 import { verifySender as vs } from './security/sender-check.js';
