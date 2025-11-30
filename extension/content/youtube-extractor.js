@@ -10,7 +10,6 @@ const w = window,
   const uc = s => s.toUpperCase();
   class YTE {
     constructor() {
-      l('[YTE] Init');
       try {
         this.of = w.fetch.bind(w);
         this.ls = new Map();
@@ -22,13 +21,11 @@ const w = window,
           if (ev.data.type === 'YT_GET_DATA') this.e('data_response', this.gid());
         });
         w._ytExtractor = this;
-        l('[YTE] End');
       } catch (err) {
         e('Err:YTE', err);
       }
     }
     ii() {
-      l('ii:Start');
       try {
         w.fetch = async (...a) => {
           const [r, c] = a;
@@ -38,13 +35,11 @@ const w = window,
           this.pr(u, res).catch(err => e('Err:ii:pr', err));
           return res;
         };
-        l('ii:End');
       } catch (err) {
         e('Err:ii', err);
       }
     }
     async pr(u, r) {
-      l('pr:Start');
       try {
         if (u.includes('/youtubei/v1/player')) {
           try {
@@ -73,13 +68,11 @@ const w = window,
             e('Err:pr:shorts', err);
           }
         }
-        l('pr:End');
       } catch (err) {
         e('Err:pr', err);
       }
     }
     async htu(u) {
-      l('htu:Start');
       if (this.iu.has(u)) return;
       l('[YTE] Cap tr:', u);
       this.iu.add(u);
@@ -93,7 +86,6 @@ const w = window,
         const d = await r.json();
         l('[YTE] Got tr');
         this.e('transcript', d);
-        l('htu:End');
         st(() => this.iu.delete(u), 1e4);
       } catch (err) {
         e('Err:htu', err);
@@ -101,20 +93,17 @@ const w = window,
       }
     }
     inl() {
-      l('inl:Start');
       try {
         on(d, 'yt-navigate-finish', ev => {
           const vid = ev.detail?.response?.playerResponse?.videoDetails?.videoId;
           l('[YTE] Nav:', vid);
           this.e('navigation', { videoId: vid, detail: ev.detail });
         });
-        l('inl:End');
       } catch (err) {
         e('Err:inl', err);
       }
     }
     gid() {
-      l('gid:Start');
       try {
         let pr = w.ytInitialPlayerResponse;
         if (!pr) {
@@ -145,7 +134,6 @@ const w = window,
             e('Err:gid:ytplayer', err);
           }
         }
-        l('gid:End');
         return {
           playerResponse: pr,
           initialData: w.ytInitialData,
@@ -157,33 +145,27 @@ const w = window,
       }
     }
     on(e, c) {
-      l('on:Start');
       try {
         if (!this.ls.has(e)) this.ls.set(e, []);
         this.ls.get(e)?.push(c);
-        l('on:End');
       } catch (err) {
         e('Err:on', err);
       }
     }
     e(ev, d) {
-      l('e:Start');
       try {
         this.ls.get(ev)?.forEach(c => c(d));
         w.postMessage({ type: `YT_${uc(ev)}`, payload: d }, '*');
-        l('e:End');
       } catch (err) {
         e('Err:e', err);
       }
     }
     em() {
-      l('em:Start');
       try {
         const pr = w.ytInitialPlayerResponse;
         if (!pr) return null;
         const d = pr.videoDetails,
           m = pr.microformat?.playerMicroformatRenderer;
-        l('em:End');
         return {
           title: d?.title,
           videoId: d?.videoId,
@@ -202,13 +184,11 @@ const w = window,
       }
     }
     esm() {
-      l('esm:Start');
       try {
         const as = $('ytd-reel-video-renderer[is-active]');
         if (!as) return null;
         const t = as.querySelector('.ytd-reel-player-header-renderer-title')?.textContent;
         const c = as.querySelector('.ytd-channel-name')?.textContent;
-        l('esm:End');
         return { title: t?.trim(), channel: c?.trim() };
       } catch (err) {
         e('Err:esm', err);

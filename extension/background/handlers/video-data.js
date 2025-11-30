@@ -1,6 +1,6 @@
 import { getHistory } from '../../services/storage/comprehensive-history.js';
 import { slg, sls, slr } from '../../utils/shortcuts/storage.js';
-import { l, e } from '../../utils/shortcuts/log.js';
+import { e } from '../../utils/shortcuts/log.js';
 import { nw } from '../../utils/shortcuts/core.js';
 import { handleGetVideoInfo } from './video-info.js';
 import { handleFetchTranscript as handleGetTranscript } from './fetch-transcript.js';
@@ -13,7 +13,6 @@ const getCached = async (vid, type) => {
   if (r[k]) {
     const c = r[k];
     if (c.version === CV && nw() - c.timestamp < CE) {
-      l(`[VideoData] Cache hit: ${k}`);
       return c.data;
     }
     await slr(k);
@@ -23,7 +22,6 @@ const getCached = async (vid, type) => {
 const setCache = async (vid, type, data) => {
   const k = `video_${vid}_${type}`;
   await sls({ [k]: { version: CV, timestamp: nw(), data } });
-  l(`[VideoData] Cached: ${k}`);
 };
 export const handleSaveHistory = async req => {
   const { data } = req;

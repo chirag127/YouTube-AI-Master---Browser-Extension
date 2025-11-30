@@ -4,18 +4,15 @@ const { l, e } = await import(gu('utils/shortcuts/log.js'));
 const { parseMarkdown } = await import(gu('lib/marked-loader.js'));
 const { ce, qs: $ } = await import(gu('utils/shortcuts/dom.js'));
 export function renderChat(c) {
-  l('renderChat:Start');
   try {
     if (!$('.yt-ai-chat-messages', c)) {
       c.innerHTML = `<div class="yt-ai-chat-messages" id="yt-ai-chat-messages"><div class="yt-ai-chat-msg ai">👋 Hi! Ask me anything about this video.</div></div>`;
     }
-    l('renderChat:End');
   } catch (err) {
     e('Err:renderChat', err);
   }
 }
 export async function addChatMessage(r, t) {
-  l('addChatMessage:Start');
   try {
     const m = $('#yt-ai-chat-messages');
     if (!m) return;
@@ -24,7 +21,6 @@ export async function addChatMessage(r, t) {
     d.innerHTML = r === 'ai' ? await parseMarkdown(t) : t;
     m.appendChild(d);
     m.scrollTop = m.scrollHeight;
-    l('addChatMessage:End');
     return d;
   } catch (err) {
     e('Err:addChatMessage', err);

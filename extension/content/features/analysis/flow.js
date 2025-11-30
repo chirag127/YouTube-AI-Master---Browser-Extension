@@ -15,7 +15,6 @@ const { id: i, $ } = await import(gu('utils/shortcuts/dom.js'));
 const { msg } = await import(gu('utils/shortcuts/runtime.js'));
 const { E: Er } = await import(gu('utils/shortcuts/core.js'));
 export async function startAnalysis() {
-  l('startAnalysis:Start');
   if (state.isAnalyzing || !state.currentVideoId) return;
   state.isAnalyzing = true;
   const ca = i('yt-ai-content-area');
@@ -28,7 +27,7 @@ export async function startAnalysis() {
       const result = await extractTranscript(state.currentVideoId);
       ts = result.success ? result.data : [];
     } catch (err) {
-      l('[Flow] Transcript extraction failed:', err);
+      // Transcript extraction failed
     }
     state.currentTranscript = ts || [];
     showLoading(ca, 'Extracting comments...');
@@ -36,7 +35,7 @@ export async function startAnalysis() {
     try {
       cm = await getComments();
     } catch (err) {
-      l('[Flow] Comments extraction failed:', err);
+      // Comments extraction failed
     }
     showLoading(ca, `Analyzing content with AI...`);
     l('[Flow] Starting AI analysis...', {
@@ -68,10 +67,9 @@ export async function startAnalysis() {
         chatHistory: state.chatHistory || [],
       });
     } catch (err) {
-      l('[Flow] History save failed:', err);
+      // History save failed
     }
     switchTab('summary');
-    l('startAnalysis:End');
   } catch (err) {
     showError(ca, err.message);
     e('Err:startAnalysis', err);
@@ -81,10 +79,8 @@ export async function startAnalysis() {
 }
 
 async function saveToHistory(d) {
-  l('saveToHistory:Start');
   try {
     await msg({ action: 'SAVE_HISTORY', data: d });
-    l('saveToHistory:End');
   } catch (err) {
     e('Err:saveToHistory', err);
   }

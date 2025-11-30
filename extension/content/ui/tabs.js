@@ -10,17 +10,14 @@ const { qs: $, qsa: $$, id: ge, on } = await import(gu('utils/shortcuts/dom.js')
 const { l, e } = await import(gu('utils/shortcuts/log.js'));
 
 export function initTabs(c) {
-  l('initTabs:Start');
   try {
     $$('.yt-ai-tab', c).forEach(t => on(t, 'click', () => switchTab(t.dataset.tab, c)));
-    l('initTabs:End');
   } catch (err) {
     e('Err:initTabs', err);
   }
 }
 
 export function switchTab(n, container) {
-  l('switchTab:Start');
   try {
     const c = container || ge('yt-ai-master-widget');
     if (!c) return;
@@ -48,7 +45,6 @@ export function switchTab(n, container) {
           renderComments(a);
           break;
       }
-      l('switchTab:End');
     } catch (x) {
       e('Err:switchTab', x);
       a.innerHTML = `<div class="yt-ai-error">Error loading tab content</div>`;

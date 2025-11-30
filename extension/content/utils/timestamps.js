@@ -6,7 +6,6 @@ const { on, fc, ap, tx, txt, dc: doc, ce, tc } = await import(gu('utils/shortcut
 const { pi: pI } = await import(gu('utils/shortcuts/global.js'));
 const { sb: sbs, rp } = await import(gu('utils/shortcuts/string.js'));
 export function makeTimestampsClickable(c) {
-  l('makeTimestampsClickable:Start');
   try {
     const p = /(\[|[(])?(\d{1,2}):(\d{2})(\]|[)])?/g,
       w = doc.createTreeWalker(c, NodeFilter.SHOW_TEXT),
@@ -32,7 +31,6 @@ export function makeTimestampsClickable(c) {
       if (last < text.length) ap(f, tx(sbs(text, last)));
       t.parentNode.replaceChild(f, t);
     });
-    l('makeTimestampsClickable:End');
   } catch (err) {
     e('Err:makeTimestampsClickable', err);
   }

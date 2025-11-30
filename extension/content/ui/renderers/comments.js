@@ -11,12 +11,10 @@ const { l, e } = await import(gu('utils/shortcuts/log.js'));
 const { mp, jn, slc } = await import(gu('utils/shortcuts/array.js'));
 const { ce, ap, ih, dc: doc, txt } = await import(gu('utils/shortcuts/dom.js'));
 export async function renderComments(c) {
-  l('renderComments:Start');
   try {
     if (state.analysisData?.commentAnalysis) {
       const html = await parseMarkdown(state.analysisData.commentAnalysis);
       ih(c, `<div class="yt-ai-markdown">${html}</div>`);
-      l('renderComments:End');
       return;
     }
     showLoading(c, 'Fetching comments...');
@@ -24,11 +22,9 @@ export async function renderComments(c) {
       const cm = await getComments();
       if (!cm.length) {
         showPlaceholder(c, 'No comments found.');
-        l('renderComments:End');
         return;
       }
       showLoading(c, 'Analyzing...');
-      l('[CR] Sending comments');
       const r = await rs({ action: 'ANALYZE_COMMENTS', comments: cm });
       if (r.success) {
         const cfg = await getConfig();
@@ -49,7 +45,6 @@ export async function renderComments(c) {
           )}</div>`
         );
       }
-      l('renderComments:End');
     } catch (x) {
       ih(c, `<div class="yt-ai-error-msg">Failed: ${x.message}</div>`);
       e('Err:renderComments', x);
@@ -59,20 +54,15 @@ export async function renderComments(c) {
   }
 }
 async function getConfig() {
-  l('getConfig:Start');
   try {
     const r = await sg('config');
-    l('getConfig:End');
     return r.config || {};
   } catch (err) {
-    l('getConfig:End');
     return {};
   }
 }
 function scrollBackToTop(sn = true) {
-  l('scrollBackToTop:Start');
   try {
-    l('[CR] Scroll top');
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -80,32 +70,26 @@ function scrollBackToTop(sn = true) {
     if (typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => {
         if (window.scrollY > 0) {
-          l('[CR] Scroll fail, retry');
           window.scrollTo(0, 0);
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
         }
-        l('[CR] Final scroll:', window.scrollY);
       });
     } else {
       to(() => {
         if (window.scrollY > 0) {
-          l('[CR] Scroll fail, retry');
           window.scrollTo(0, 0);
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
         }
-        l('[CR] Final scroll:', window.scrollY);
       }, 16);
     }
     if (sn) showScrollNotification();
-    l('scrollBackToTop:End');
   } catch (err) {
     e('Err:scrollBackToTop', err);
   }
 }
 function showScrollNotification() {
-  l('showScrollNotification:Start');
   try {
     const n = ce('div');
     n.id = 'yt-ai-scroll-notification';
@@ -117,7 +101,6 @@ function showScrollNotification() {
       n.style.animation = 'slideOut 0.3s ease-in';
       to(() => n.remove(), 300);
     }, 2000);
-    l('showScrollNotification:End');
   } catch (err) {
     e('Err:showScrollNotification', err);
   }

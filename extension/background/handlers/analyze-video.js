@@ -3,7 +3,7 @@ import { getApiKey as gk } from '../utils/api-key.js';
 import { geniusLyricsAPI as gl } from '../../api/genius-lyrics.js';
 import { sponsorBlockAPI as sb } from '../../api/sponsorblock.js';
 import { ContextManager as CM } from '../../services/context-manager.js';
-import { l, w, e } from '../../utils/shortcuts/log.js';
+import { w, e } from '../../utils/shortcuts/log.js';
 import { si, ci, to as to } from '../../utils/shortcuts/global.js';
 import { r as cr } from '../../utils/shortcuts/runtime.js';
 import { sg, ss } from '../../utils/shortcuts/storage.js';
@@ -24,7 +24,6 @@ export async function handleAnalyzeVideo(q, r) {
   const { transcript: t, metadata: m, comments: c = [], options: o = {}, useCache: uc = true } = q;
   const v = m?.videoId;
   ska();
-  l('AV:Start');
   try {
     const k = await gk();
     if (!k) {
@@ -36,7 +35,6 @@ export async function handleAnalyzeVideo(q, r) {
     if (uc && v) {
       const d = await s.getVideoData(v);
       if (d?.summary && d?.segments && d.segments.length > 0) {
-        l('[AV]Cache');
         r({
           success: true,
           fromCache: true,
@@ -67,14 +65,12 @@ export async function handleAnalyzeVideo(q, r) {
     if (v) {
       try {
         sb2 = await sb.fetchSegments(v);
-        l(`[AV]SB:${sb2.length}`);
       } catch (x) {
         w('[AV]SB:', x.message);
       }
     }
     let ec = {};
     try {
-      l('[AV]Ctx');
       if (!ss) throw new Error('Sync NA');
       const st = await sg(null);
       if (!st || !ok(st).length) w('[AV]No set');
@@ -83,7 +79,6 @@ export async function handleAnalyzeVideo(q, r) {
       const fp = cm.fetchContext(m);
       const tp = np((_, j) => to(() => j(new Error('TO')), 1e4));
       ec = await pc([fp, tp]);
-      l('[AV]Ctx ok');
     } catch (x) {
       e('[AV]Ctx:', x.message);
     }
@@ -104,7 +99,6 @@ export async function handleAnalyzeVideo(q, r) {
     let sg2 = [],
       fv = null;
     if (o.generateSegments !== false) {
-      l('[AV]Seg');
       const sr = await sc.classifyTranscript({
         transcript: t || [],
         metadata: m,
@@ -113,7 +107,6 @@ export async function handleAnalyzeVideo(q, r) {
       });
       sg2 = sr.segments;
       fv = sr.fullVideoLabel;
-      l(`[AV]Seg:${sg2.length}`);
     }
     if (v && s) {
       try {
@@ -146,7 +139,6 @@ export async function handleAnalyzeVideo(q, r) {
     e('Err:AV', x);
     r({ success: false, error: x.message });
   } finally {
-    l('AV:Done');
     stka();
   }
 }

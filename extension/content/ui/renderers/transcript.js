@@ -7,11 +7,9 @@ const { id: ge, on, qs: $, qsa: $$ } = await import(gu('utils/shortcuts/dom.js')
 const { l, e } = await import(gu('utils/shortcuts/log.js'));
 let autoCloseEnabled = true;
 export function renderTranscript(c, s) {
-  l('renderTranscript:Start');
   try {
     if (!s?.length) {
       showPlaceholder(c, 'No transcript available.');
-      l('renderTranscript:End');
       return;
     }
     const h = s
@@ -34,15 +32,12 @@ export function renderTranscript(c, s) {
         l(`[Transcript] Auto-close ${autoCloseEnabled ? 'enabled' : 'disabled'}`);
       });
     }
-    l('renderTranscript:End');
   } catch (err) {
     e('Err:renderTranscript', err);
   }
 }
 export function shouldAutoClose() {
-  l('shouldAutoClose:Start');
   try {
-    l('shouldAutoClose:End');
     return autoCloseEnabled;
   } catch (err) {
     e('Err:shouldAutoClose', err);
@@ -50,7 +45,6 @@ export function shouldAutoClose() {
   }
 }
 export function collapseTranscriptWidget() {
-  l('collapseTranscriptWidget:Start');
   try {
     const w = ge('yt-ai-master-widget');
     if (w && autoCloseEnabled) {
@@ -62,7 +56,6 @@ export function collapseTranscriptWidget() {
         cb.title = 'Expand';
       }
     }
-    l('collapseTranscriptWidget:End');
   } catch (err) {
     e('Err:collapseTranscriptWidget', err);
   }

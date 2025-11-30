@@ -1,5 +1,5 @@
 import { sg, ss } from '../../utils/shortcuts/storage.js';
-import { log as l, err as e, now as nt, keys as ok, jp, js } from '../../utils/shortcuts/core.js';
+import { err as e, now as nt, keys as ok, jp, js } from '../../utils/shortcuts/core.js';
 import { isa } from '../../utils/shortcuts/array.js';
 
 export const SEGMENT_CATEGORIES = [
@@ -24,13 +24,10 @@ export class SettingsManager {
   async load() {
     try {
       const r = await sg('config');
-      l('[SettingsManager] Loaded from storage:', r);
       if (r.config && ok(r.config).length > 0) this.settings = this.mergeWithDefaults(r.config);
       else {
-        l('[SettingsManager] No config found, using defaults');
         this.settings = this.getDefaults();
       }
-      l('[SettingsManager] Final settings:', this.settings);
       return this.settings;
     } catch (x) {
       e('[SettingsManager] Load error:', x);
@@ -42,10 +39,7 @@ export class SettingsManager {
     try {
       this.settings._meta = this.settings._meta || {};
       this.settings._meta.lastUpdated = nt();
-      l('[SettingsManager] Saving to storage:', this.settings);
       await ss({ config: this.settings });
-      const v = await sg('config');
-      l('[SettingsManager] Verified save:', v);
       this.notify();
       return true;
     } catch (x) {
@@ -80,13 +74,10 @@ export class SettingsManager {
       return o[key];
     }, this.settings);
     t[propKey] = v;
-    l(`[Settings] Set ${p} =`, v);
   }
   async update(p, v) {
-    l(`[Settings] Update ${p} =`, v);
     this.set(p, v);
     await this.save();
-    l('[Settings] Saved to storage');
   }
   async reset() {
     this.settings = this.getDefaults();

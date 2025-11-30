@@ -21,7 +21,6 @@ const colors = {
   'Tangents/Jokes': '#9400d3',
 };
 export function renderSegments(c, data) {
-  l('renderSegments:Start');
   try {
     const s = isa(data) ? data : data?.segments || [];
     const fl = !isa(data) ? data?.fullVideoLabel : null;
@@ -40,7 +39,6 @@ export function renderSegments(c, data) {
     }
     if (!s?.length) {
       showPlaceholder(c, 'No segments detected.');
-      l('renderSegments:End');
       return;
     }
     const h = s
@@ -68,7 +66,6 @@ export function renderSegments(c, data) {
         seekVideo(parseFloat(e.dataset.time));
       });
     });
-    l('renderSegments:End');
   } catch (err) {
     e('Err:renderSegments', err);
   }

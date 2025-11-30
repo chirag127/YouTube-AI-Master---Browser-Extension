@@ -1,4 +1,4 @@
-import { l, e, w } from '../utils/shortcuts/log.js';
+import { e, w } from '../utils/shortcuts/log.js';
 import { rt as cr, url, rgm as rg, oop } from '../utils/shortcuts/runtime.js';
 import { tbc as tc } from '../utils/shortcuts/tabs.js';
 import { verifySender as vs } from './security/sender-check.js';
@@ -18,7 +18,6 @@ import { handleTranscribeAudio } from './handlers/transcribe-audio.js';
 import { handleGetLyrics } from './handlers/get-lyrics.js';
 
 cr.onInstalled.addListener(async d => {
-  l('OnInstalled:Start');
   if (d.reason === 'install') {
     l('YAM installed');
     try {
@@ -27,11 +26,9 @@ cr.onInstalled.addListener(async d => {
       e('Onboard:', x);
     }
   } else if (d.reason === 'update') l('YAM updated:', rg().version);
-  l('OnInstalled:Done');
 });
 cr.onMessage.addListener((q, s, r) => {
   const a = q.action || q.type;
-  l('BG:', a);
   (async () => {
     try {
       if (!vs(s)) {
@@ -107,7 +104,6 @@ cr.onMessage.addListener((q, s, r) => {
 });
 
 self.addEventListener('fetch', event => {
-  l('Fetch:Start');
   if (event.request.mode === 'navigate') {
     event.respondWith(
       (async () => {

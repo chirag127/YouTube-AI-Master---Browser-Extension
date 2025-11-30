@@ -5,11 +5,8 @@ const { showPlaceholder } = await import(gu('content/ui/components/loading.js'))
 const { makeTimestampsClickable } = await import(gu('content/utils/timestamps.js'));
 const { parseMarkdown } = await import(gu('lib/marked-loader.js'));
 function processHighlights(html) {
-  l('processHighlights:Start');
   try {
-    const result = html.replace(/==(.*?)==/g, '<mark class="yt-ai-highlight">$1</mark>');
-    l('processHighlights:End');
-    return result;
+    return html.replace(/==(.*?)==/g, '<mark class="yt-ai-highlight">$1</mark>');
   } catch (err) {
     e('Err:processHighlights', err);
     return html;
@@ -17,11 +14,9 @@ function processHighlights(html) {
 }
 
 export async function renderSummary(c, d) {
-  l('renderSummary:Start');
   try {
     if (!d) {
       showPlaceholder(c, 'Analysis not started yet.');
-      l('renderSummary:End');
       return;
     }
 
@@ -45,7 +40,6 @@ export async function renderSummary(c, d) {
     </div>`;
 
     makeTimestampsClickable(c);
-    l('renderSummary:End');
   } catch (err) {
     e('Err:renderSummary', err);
   }

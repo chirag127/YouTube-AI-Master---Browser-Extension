@@ -1,6 +1,6 @@
 import { url } from '../../utils/shortcuts/runtime.js';
 import { $ } from '../../utils/shortcuts/dom.js';
-import { l, e as ce2 } from '../../utils/shortcuts/log.js';
+import { e as ce2 } from '../../utils/shortcuts/log.js';
 import { pa } from '../../utils/shortcuts/async.js';
 import { ok } from '../../utils/shortcuts/core.js';
 import { ft } from '../../utils/shortcuts/network.js';
@@ -28,7 +28,6 @@ export class TabLoader {
       const c = $('.content-area');
       c.insertAdjacentHTML('beforeend', h);
       this.loaded.add(id);
-      l(`[TabLoader] Loaded ${id}`);
       return true;
     } catch (x) {
       ce2(`[TabLoader] Failed to load ${id}:`, x);

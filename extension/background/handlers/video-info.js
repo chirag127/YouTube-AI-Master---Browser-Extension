@@ -1,5 +1,5 @@
 import { ft } from '../../utils/shortcuts/network.js';
-import { l, e } from '../../utils/shortcuts/log.js';
+import { e } from '../../utils/shortcuts/log.js';
 
 export async function handleGetVideoInfo({ videoId }) {
   try {
@@ -7,7 +7,6 @@ export async function handleGetVideoInfo({ videoId }) {
     const r = await ft(u);
     if (!r.ok) throw new Error('Failed to fetch oEmbed');
     const d = await r.json();
-    l('[VideoInfo] Fetched oEmbed:', d.title);
     return {
       success: true,
       metadata: {

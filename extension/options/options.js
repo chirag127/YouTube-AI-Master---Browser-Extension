@@ -16,21 +16,17 @@ import { CommentsSettings } from './modules/comments-settings.js';
 import { MetadataSettings } from './modules/metadata-settings.js';
 import { ScrollSettings } from './modules/scroll-settings.js';
 import { on, id as i } from '../utils/shortcuts/dom.js';
-import { log as l, err as e, vl as vs } from '../utils/shortcuts/core.js';
+import { err as e, vl as vs } from '../utils/shortcuts/core.js';
 import { url } from '../utils/shortcuts/runtime.js';
 import { tbc as tc } from '../utils/shortcuts/tabs.js';
 on(document, 'DOMContentLoaded', async () => {
-  l('[Options] Initializing...');
   const settingsManager = new SettingsManager();
   const notificationManager = new NotificationManager();
   const autoSave = new AutoSave(settingsManager, 300, notificationManager);
   const uiManager = new UIManager();
   const tabLoader = new TabLoader();
-  l('[Options] Loading settings...');
   await settingsManager.load();
-  l('[Options] Settings loaded:', settingsManager.get());
   notificationManager.info('Settings loaded successfully');
-  l('[Options] Loading dynamic tabs...');
   await tabLoader.loadAll();
   const settings = settingsManager.get();
   const welcomeBanner = i('#welcome-banner');
@@ -48,7 +44,6 @@ on(document, 'DOMContentLoaded', async () => {
       if (welcomeBanner) welcomeBanner.style.display = 'none';
     });
   uiManager.setupTabs();
-  l('[Options] Initializing modules...');
   const modules = {
     general: new GeneralSettings(settingsManager, autoSave),
     aiConfig: new AIConfig(settingsManager, autoSave),
@@ -66,10 +61,8 @@ on(document, 'DOMContentLoaded', async () => {
   vs(modules).forEach(m => {
     try {
       m.init();
-      l(`[Options] Initialized ${m.constructor.name}`);
     } catch (x) {
       e(`[Options] Failed to init ${m.constructor.name}:`, x);
     }
   });
-  l('[Options] ✓ Fully initialized with auto-save');
 });

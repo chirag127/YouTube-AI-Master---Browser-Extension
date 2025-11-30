@@ -1,4 +1,4 @@
-import { l, e } from '../../utils/shortcuts/log.js';
+import { e } from '../../utils/shortcuts/log.js';
 import { to, clt } from '../../utils/shortcuts/global.js';
 import { on, qs as i } from '../../utils/shortcuts/dom.js';
 import { oe } from '../../utils/shortcuts/core.js';
@@ -15,11 +15,9 @@ export class AutoSave {
     if (this.n) this.n.saving('Saving...');
     this.t = to(async () => {
       try {
-        l(`[AutoSave] Saving ${p} =`, v);
         await this.s.update(p, v);
         this.c++;
         if (this.n) this.n.success(`Setting saved: ${p.split('.').pop()}`);
-        l(`[AutoSave] ✓ Saved successfully (count: ${this.c})`);
       } catch (x) {
         e(`[AutoSave] Failed to save ${p}:`, x);
         if (this.n) this.n.error(`Failed to save: ${x.message}`);
@@ -43,7 +41,6 @@ export class AutoSave {
     oe(m).forEach(([id, c]) => {
       const el = i(`#${id}`);
       if (el) {
-        l(`[AutoSave] Attaching to #${id}`);
         this.attachToInput(el, c.path, c.transform);
       } else {
         e(`[AutoSave] Element #${id} not found, skipping auto-save`);
@@ -51,7 +48,3 @@ export class AutoSave {
     });
   }
 }
-
-
-
-

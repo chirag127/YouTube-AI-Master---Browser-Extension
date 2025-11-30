@@ -6,7 +6,7 @@ const { initTabs } = await import(gu('content/ui/tabs.js'));
 const { attachEventListeners } = await import(gu('content/handlers/events.js'));
 const { createWidgetHTML } = await import(gu('content/ui/components/widget/structure.js'));
 const { qs: $, id: ge, on, el: ce, wfe, mo } = await import(gu('utils/shortcuts/dom.js'));
-const { l, e } = await import(gu('utils/shortcuts/log.js'));
+const { e } = await import(gu('utils/shortcuts/log.js'));
 const { si, ci, to } = await import(gu('utils/shortcuts/global.js'));
 const { log } = await import(gu('utils/shortcuts/core.js'));
 
@@ -17,7 +17,6 @@ let widgetContainer = null,
   lastKnownContainer = null;
 
 function updateWidgetHeight() {
-  l('updateWidgetHeight:Start');
   try {
     if (!widgetContainer) return;
     const p = $('#movie_player') || $('.html5-video-player');
@@ -25,50 +24,40 @@ function updateWidgetHeight() {
       const h = p.offsetHeight;
       if (h > 0) widgetContainer.style.maxHeight = `${h}px`;
     }
-    l('updateWidgetHeight:End');
   } catch (err) {
     e('Err:updateWidgetHeight', err);
   }
 }
 
 function ensureWidgetAtTop(c) {
-  l('ensureWidgetAtTop:Start');
   try {
     if (!widgetContainer) return;
     if (!c) {
       c = widgetContainer.parentElement;
       if (!c) {
-        l('Widget has no parent, attempting re-injection...');
         reattachWidget();
-        l('ensureWidgetAtTop:End');
         return;
       }
     }
     lastKnownContainer = c;
     if (c.firstChild !== widgetContainer) {
-      l('Widget displaced, moving to top...');
       c.insertBefore(widgetContainer, c.firstChild);
     }
     if (!widgetContainer.style.order || widgetContainer.style.order !== '-9999')
       widgetContainer.style.order = '-9999';
-    l('ensureWidgetAtTop:End');
   } catch (err) {
     e('Err:ensureWidgetAtTop', err);
   }
 }
 
 function reattachWidget() {
-  l('reattachWidget:Start');
   try {
     if (!widgetContainer) return;
-    l('Attempting to reattach widget...');
     const sc = findSecondaryColumn();
     if (sc) {
       sc.insertBefore(widgetContainer, sc.firstChild);
       lastKnownContainer = sc;
       setupObservers(sc);
-      l('Widget reattached successfully');
-      l('reattachWidget:End');
     } else e('Err:reattachWidget', 'Cannot reattach widget: secondary column not found');
   } catch (err) {
     e('Err:reattachWidget', err);
@@ -76,7 +65,6 @@ function reattachWidget() {
 }
 
 function startPositionMonitoring() {
-  l('startPositionMonitoring:Start');
   try {
     if (positionCheckInterval) ci(positionCheckInterval);
     positionCheckInterval = si(() => {
@@ -85,23 +73,19 @@ function startPositionMonitoring() {
         return;
       }
       if (!document.contains(widgetContainer)) {
-        l('Widget removed from DOM, attempting reattachment...');
         reattachWidget();
         return;
       }
       const p = widgetContainer.parentElement;
       if (p && p.firstChild !== widgetContainer) ensureWidgetAtTop(p);
     }, 500);
-    l('startPositionMonitoring:End');
   } catch (err) {
     e('Err:startPositionMonitoring', err);
   }
 }
 
 export async function injectWidget() {
-  l('injectWidget:Start');
   try {
-    l('Attempting to inject widget...');
     const ex = ge('yt-ai-master-widget');
     if (ex) {
       if (isWidgetProperlyVisible(ex)) {
@@ -128,7 +112,6 @@ export async function injectWidget() {
     let sc = findSecondaryColumn(),
       att = 0;
     while (!sc && att < 20) {
-      if (att % 5 === 0) log(`Waiting for secondary column... (${att}/20)`);
       try {
         sc = await wfe(
           '#secondary-inner, #secondary, #related, ytd-watch-next-secondary-results-renderer, ytd-watch-flexy #secondary',
@@ -149,38 +132,31 @@ export async function injectWidget() {
       }
       log('Using fallback #columns container');
     }
-    log('Creating widget element...');
     widgetContainer = ce('div');
     widgetContainer.id = 'yt-ai-master-widget';
     widgetContainer.style.order = '-9999';
     widgetContainer.innerHTML = createWidgetHTML();
-    log('Inserting widget into DOM...');
     sc.insertBefore(widgetContainer, sc.firstChild);
     lastKnownContainer = sc;
     setupWidgetLogic(widgetContainer);
     setupObservers(sc);
     startPositionMonitoring();
-    l('Widget injection complete ✓');
-    l('injectWidget:End');
   } catch (err) {
     e('Err:injectWidget', err);
   }
 }
 
 function setupWidgetLogic(c) {
-  l('setupWidgetLogic:Start');
   try {
     const cb = $('#yt-ai-close-btn', c);
     if (cb) {
       on(cb, 'click', () => {
         const ic = c.classList.contains('yt-ai-collapsed');
         if (ic) {
-          l('Expanding widget...');
           c.classList.remove('yt-ai-collapsed');
           cb.textContent = '❌';
           cb.title = 'Collapse';
         } else {
-          l('Collapsing widget...');
           c.classList.add('yt-ai-collapsed');
           cb.textContent = '⬇️';
           cb.title = 'Expand';
@@ -189,14 +165,12 @@ function setupWidgetLogic(c) {
     }
     initTabs(c);
     attachEventListeners(c);
-    l('setupWidgetLogic:End');
   } catch (err) {
     e('Err:setupWidgetLogic', err);
   }
 }
 
 function setupObservers(c) {
-  l('setupObservers:Start');
   try {
     updateWidgetHeight();
     const p = $('#movie_player') || $('.html5-video-player');
@@ -210,7 +184,6 @@ function setupObservers(c) {
       for (const mu of m) {
         if (mu.type === 'childList') {
           if (af(mu.removedNodes).includes(widgetContainer)) {
-            l('Widget was removed, reattaching...');
             to(() => reattachWidget(), 100);
             return;
           }
@@ -222,10 +195,8 @@ function setupObservers(c) {
     containerObserver.observe(c, { childList: true, subtree: false });
     const bo = mo(() => {
       if (!document.contains(widgetContainer)) {
-        l('Widget lost from DOM tree, reattaching...');
         reattachWidget();
       } else if (widgetContainer.parentElement !== lastKnownContainer) {
-        l('Widget parent changed, updating observers...');
         const np = widgetContainer.parentElement;
         if (np) {
           lastKnownContainer = np;
@@ -234,16 +205,13 @@ function setupObservers(c) {
       }
     });
     bo.observe(document.body, { childList: true, subtree: true });
-    l('setupObservers:End');
   } catch (err) {
     e('Err:setupObservers', err);
   }
 }
 
 export function getWidget() {
-  l('getWidget:Start');
   try {
-    l('getWidget:End');
     return widgetContainer;
   } catch (err) {
     e('Err:getWidget', err);
