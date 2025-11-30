@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SemanticScholarAPI } from '../../extension/api/semanticscholar.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

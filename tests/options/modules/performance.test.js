@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PerformanceSettings } from '../../../extension/options/modules/performance.js';
 
 // Mock dependencies

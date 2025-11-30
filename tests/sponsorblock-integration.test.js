@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchSegments } from '../extension/api/sponsorblock.js';
 import { SEGMENT_CATEGORIES } from '../extension/options/modules/settings-manager.js';
 

@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TmdbAPI } from '../../extension/api/tmdb.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

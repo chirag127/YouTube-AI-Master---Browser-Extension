@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OpenLibraryAPI } from '../../extension/api/openlibrary.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

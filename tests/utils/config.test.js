@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies
 vi.mock('../../extension/utils/shortcuts/storage.js', () => ({

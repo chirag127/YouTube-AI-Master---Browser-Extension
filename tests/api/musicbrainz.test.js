@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MusicBrainzAPI } from '../../extension/api/musicbrainz.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

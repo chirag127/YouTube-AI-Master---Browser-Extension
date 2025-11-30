@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { raf } from '../../extension/utils/shortcuts/async.js';
 
 describe('Async Utilities', () => {

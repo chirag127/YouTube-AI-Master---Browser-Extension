@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import { ContextManager } from '../extension/services/context-manager.js';
 
 describe('ContextManager', () => {

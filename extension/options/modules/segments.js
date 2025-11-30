@@ -164,7 +164,6 @@ export class SegmentsConfig {
       cats = { ...(c.segments?.categories || {}) };
 
     SEGMENT_CATEGORIES.forEach(cat => {
-      if (cat.id === 'content') return;
       if (!cats[cat.id]) cats[cat.id] = { ...DEFAULT_SEGMENT_CONFIG };
       cats[cat.id] = { ...cats[cat.id], action: a };
     });

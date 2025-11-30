@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NewsDataAPI } from '../../extension/api/newsdata.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

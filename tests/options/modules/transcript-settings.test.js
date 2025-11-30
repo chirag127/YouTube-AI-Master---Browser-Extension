@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TranscriptSettings } from '../../../extension/options/modules/transcript-settings.js';
 
 // Mock dependencies

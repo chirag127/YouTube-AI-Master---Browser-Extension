@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HttpClient } from '../../../extension/api/core/http-client.js';
 
 vi.mock('../../../extension/utils/shortcuts/global.js', () => ({

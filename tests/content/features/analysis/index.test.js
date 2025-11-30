@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('../../../extension/content/features/analysis/flow.js', () => ({
   startAnalysis: vi.fn(),

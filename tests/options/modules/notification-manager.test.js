@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock dependencies
 vi.mock('../../../extension/utils/shortcuts/global.js', () => ({
@@ -34,15 +33,6 @@ global.document = {
   },
 };
 
-vi.mocked(require('../../../extension/utils/shortcuts/dom.js').ce).mockImplementation(tag => {
-  if (tag === 'div') {
-    if (!mockContainer.id) {
-      return { ...mockContainer, id: 'notification-container' };
-    }
-    return { ...mockNotification };
-  }
-});
-
 // Import after mocks
 import { NotificationManager } from '../../../extension/options/modules/notification-manager.js';
 
@@ -56,6 +46,15 @@ describe('NotificationManager', () => {
     mockRaf = vi.mocked(require('../../../extension/utils/shortcuts/async.js').raf);
     mockCe = vi.mocked(require('../../../extension/utils/shortcuts/dom.js').ce);
     mockAp = vi.mocked(require('../../../extension/utils/shortcuts/dom.js').ap);
+
+    mockCe.mockImplementation(tag => {
+      if (tag === 'div') {
+        if (!mockContainer.id) {
+          return { ...mockContainer, id: 'notification-container' };
+        }
+        return { ...mockNotification };
+      }
+    });
 
     manager = new NotificationManager();
   });

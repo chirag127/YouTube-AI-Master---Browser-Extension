@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../../extension/utils/shortcuts/log.js', () => ({
   e: vi.fn(),

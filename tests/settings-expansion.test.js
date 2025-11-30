@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SettingsManager } from '../extension/options/modules/settings-manager.js';
 
 // Mock storage

@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { APIDetector } from '../extension/api/core/api-detector.js';
 
 global.fetch = vi.fn();

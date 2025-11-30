@@ -9,7 +9,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'chrome-extension://mock-id': resolve(__dirname, 'extension'),
+      '/extension': resolve(__dirname, 'extension'),
     },
   },
 });

@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../../extension/content/handlers/chat.js', () => ({
   sendChatMessage: vi.fn(),

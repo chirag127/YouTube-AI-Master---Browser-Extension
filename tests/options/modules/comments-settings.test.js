@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CommentsSettings } from '../../../extension/options/modules/comments-settings.js';
 
 // Mock dependencies

@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import { DC } from '../../extension/utils/config.js';
 
 describe('Config Defaults', () => {

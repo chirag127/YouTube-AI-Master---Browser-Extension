@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 
 global.chrome = {
   runtime: {
-    getURL: vi.fn(path => `chrome-extension://mock-id/${path}`),
+    getURL: vi.fn(path => `/extension/${path}`),
     onMessage: {
       addListener: vi.fn(),
       removeListener: vi.fn(),
@@ -35,16 +35,11 @@ global.window = {
   scrollTo: vi.fn(),
 };
 
-global.document = {
-  ...global.document,
-  head: global.document.createElement('head'),
-  body: global.document.createElement('body'),
-  documentElement: global.document.createElement('html'),
-  createElement: global.document.createElement.bind(global.document),
-  querySelector: vi.fn(),
-  querySelectorAll: vi.fn(),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-};
+const body = global.document.createElement('body');
+const head = global.document.createElement('head');
+
+global.document.body = body;
+global.document.documentElement.appendChild(head);
+global.document.documentElement.appendChild(body);
 
 console.log('Setup: document.body exists:', !!global.document.body);

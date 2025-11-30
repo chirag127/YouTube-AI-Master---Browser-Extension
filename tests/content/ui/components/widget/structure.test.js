@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import { createWidgetHTML } from '../../../../../extension/content/ui/components/widget/structure.js';
 
 describe('Widget Structure', () => {

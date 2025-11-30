@@ -1,4 +1,3 @@
-import { describe, expect, beforeEach, vi, test } from 'vitest';
 import { comments } from '../../../extension/api/prompts/comments.js';
 import { sg } from '../../../extension/utils/shortcuts/storage.js';
 import { detectSpam } from '../../../extension/utils/patterns/comments.js';

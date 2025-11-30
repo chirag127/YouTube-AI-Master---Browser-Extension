@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GeneralSettings } from '../../../extension/options/modules/general.js';
 
 // Mock dependencies

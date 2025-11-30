@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { APIDetector } from '../../../extension/api/core/api-detector.js';
 
 vi.mock('../../../extension/utils/shortcuts/log.js', () => ({

@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CacheSettings } from '../../../extension/options/modules/cache-settings.js';
 
 // Mock dependencies

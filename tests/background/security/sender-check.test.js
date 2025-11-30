@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from 'vitest';
 
 // Mocks
 vi.mock('../../../extension/utils/shortcuts/runtime.js', () => ({

@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IgdbAPI } from '../../extension/api/igdb.js';
 
 vi.mock('../../extension/utils/shortcuts/log.js', () => ({

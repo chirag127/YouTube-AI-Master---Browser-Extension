@@ -1,4 +1,3 @@
-import { describe, it, expect, vi } from 'vitest';
 import { DatamuseAPI } from '../../extension/api/datamuse.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

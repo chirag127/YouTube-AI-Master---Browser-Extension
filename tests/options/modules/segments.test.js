@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SegmentsConfig } from '../../../extension/options/modules/segments.js';
 
 // Mock dependencies

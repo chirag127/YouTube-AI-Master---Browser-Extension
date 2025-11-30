@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RateLimiter } from '../../../extension/api/core/rate-limiter.js';
 import { to } from '../../../extension/utils/shortcuts/global.js';
 import { nw } from '../../../extension/utils/shortcuts/core.js';

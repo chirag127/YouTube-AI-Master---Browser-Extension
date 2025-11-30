@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import { SettingsManager } from '../extension/options/modules/settings-manager.js';
 
 describe('Segment Configuration', () => {

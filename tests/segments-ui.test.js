@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SegmentsConfig } from '../extension/options/modules/segments.js';
 import {
   SettingsManager,
@@ -74,27 +73,19 @@ describe('Segments UI Module Tests', () => {
   });
 
   describe('Bulk Operations', () => {
-    it('should setAll to skip except content', async () => {
+    it('should setAll to skip for all categories including content', async () => {
       await sc.setAll('skip');
       const cats = sm.get('segments.categories');
       SEGMENT_CATEGORIES.forEach(cat => {
-        if (cat.id === 'content') {
-          expect(cats[cat.id].action).toBe('ignore');
-        } else {
-          expect(cats[cat.id].action).toBe('skip');
-        }
+        expect(cats[cat.id].action).toBe('skip');
       });
     });
 
-    it('should setAll to speed except content', async () => {
+    it('should setAll to speed for all categories including content', async () => {
       await sc.setAll('speed');
       const cats = sm.get('segments.categories');
       SEGMENT_CATEGORIES.forEach(cat => {
-        if (cat.id === 'content') {
-          expect(cats[cat.id].action).toBe('ignore');
-        } else {
-          expect(cats[cat.id].action).toBe('speed');
-        }
+        expect(cats[cat.id].action).toBe('speed');
       });
     });
 

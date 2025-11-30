@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { searchWikidata, WikidataAPI } from '../../extension/api/wikidata.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

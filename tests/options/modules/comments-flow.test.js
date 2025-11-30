@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SettingsManager } from '../../../extension/options/modules/settings-manager.js';
 import { CommentsSettings } from '../../../extension/options/modules/comments-settings.js';
 import { AutoSave } from '../../../extension/options/modules/auto-save.js';

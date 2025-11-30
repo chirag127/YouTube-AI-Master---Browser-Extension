@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UIAppearance } from '../../../../extension/options/modules/ui-appearance.js';
 
 describe('UIAppearance', () => {

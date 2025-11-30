@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AIConfig } from '../../../extension/options/modules/ai-config.js';
 
 // Mock dependencies

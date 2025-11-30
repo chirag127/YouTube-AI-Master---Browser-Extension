@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ScrollSettings } from '../../../extension/options/modules/scroll-settings.js';
 
 // Mock dependencies

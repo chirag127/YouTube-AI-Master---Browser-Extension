@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GeniusLyricsAPI, geniusLyricsAPI } from '../../extension/api/genius-lyrics.js';
 
 vi.mock('../../extension/utils/shortcuts/log.js', () => ({

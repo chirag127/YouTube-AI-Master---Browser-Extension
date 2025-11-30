@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { injectVideoLabel } from '../extension/content/ui/components/video-label.js';
 
 // Mock DOM

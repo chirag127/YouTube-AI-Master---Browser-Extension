@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchSegments, sponsorBlockAPI } from '../../extension/api/sponsorblock.js';
 
 vi.mock('../../extension/utils/shortcuts/chrome.js', () => ({

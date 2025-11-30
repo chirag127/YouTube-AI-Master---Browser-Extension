@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GeminiClient } from '../../extension/api/gemini-client.js';
 
 vi.mock('../../extension/api/core/http-client.js', () => ({

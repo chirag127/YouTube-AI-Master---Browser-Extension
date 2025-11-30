@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AdvancedSettings } from '../../../extension/options/modules/advanced.js';
 
 // Mock dependencies

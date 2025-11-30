@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ExternalAPIs } from '../../../extension/options/modules/external-apis.js';
 
 // Mock dependencies

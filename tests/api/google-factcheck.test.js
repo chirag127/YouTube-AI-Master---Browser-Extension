@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GoogleFactCheckAPI } from '../../extension/api/google-factcheck.js';
 
 vi.mock('../../extension/utils/shortcuts/global.js', () => ({

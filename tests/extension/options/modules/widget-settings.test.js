@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WidgetSettings } from '../../../../extension/options/modules/widget-settings.js';
 
 describe('WidgetSettings', () => {

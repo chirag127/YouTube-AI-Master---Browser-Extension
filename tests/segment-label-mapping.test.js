@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import { lk, ln, lgc, LM, CM } from '../extension/utils/shortcuts/segments.js';
 
 describe('Segment Label Mapping Tests', () => {

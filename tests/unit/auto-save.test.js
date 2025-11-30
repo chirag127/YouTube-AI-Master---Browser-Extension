@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AutoSave } from '../../extension/options/modules/auto-save.js';
 
 // Mock dependencies

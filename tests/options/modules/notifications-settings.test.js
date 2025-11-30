@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NotificationsSettings } from '../../../extension/options/modules/notifications-settings.js';
 
 // Mock dependencies

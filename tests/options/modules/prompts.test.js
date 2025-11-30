@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PromptsSettings } from '../../../extension/options/modules/prompts.js';
 
 // Mock dependencies

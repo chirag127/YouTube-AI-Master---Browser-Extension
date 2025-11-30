@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ModelManager } from '../../extension/api/models.js';
 
 vi.mock('../../extension/utils/shortcuts/log.js', () => ({

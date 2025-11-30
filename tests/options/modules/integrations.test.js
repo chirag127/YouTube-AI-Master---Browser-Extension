@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IntegrationsSettings } from '../../../extension/options/modules/integrations.js';
 
 // Mock dependencies

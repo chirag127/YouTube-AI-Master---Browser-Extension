@@ -1,4 +1,3 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock runtime first to control gu output
 vi.mock('../../../../extension/utils/shortcuts/runtime.js', () => ({
