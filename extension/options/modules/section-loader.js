@@ -5,25 +5,26 @@ import { pa } from '../../utils/shortcuts/async.js';
 import { ok } from '../../utils/shortcuts/core.js';
 import { ft } from '../../utils/shortcuts/network.js';
 
-export class TabLoader {
+export class SectionLoader {
   constructor() {
-    this.tabs = {
+    this.sections = {
       general: 'sections/general.html',
-      cache: 'tabs/cache.html',
-      transcript: 'tabs/transcript.html',
-      comments: 'tabs/comments.html',
-      metadata: 'tabs/metadata.html',
-      scroll: 'tabs/scroll.html',
-      performance: 'tabs/performance.html',
-      notifications: 'tabs/notifications.html',
+      cache: 'sections/cache.html',
+      transcript: 'sections/transcript.html',
+      comments: 'sections/comments.html',
+      metadata: 'sections/metadata.html',
+      scroll: 'sections/scroll.html',
+      performance: 'sections/performance.html',
+      notifications: 'sections/notifications.html',
       prompts: 'sections/prompts.html',
-      integrations: 'tabs/integrations.html',
+      integrations: 'sections/integrations.html',
+      widget: 'sections/widget.html',
     };
     this.loaded = new Set();
   }
   async load(id) {
     if (this.loaded.has(id)) return true;
-    const p = this.tabs[id];
+    const p = this.sections[id];
     if (!p) return false;
     try {
       const h = await ft(url(`options/${p}`)).then(r => r.text());
@@ -32,11 +33,11 @@ export class TabLoader {
       this.loaded.add(id);
       return true;
     } catch (x) {
-      ce2(`[TabLoader] Failed to load ${id}:`, x);
+      ce2(`[SectionLoader] Failed to load ${id}:`, x);
       return false;
     }
   }
   async loadAll() {
-    await pa(ok(this.tabs).map(id => this.load(id)));
+    await pa(ok(this.sections).map(id => this.load(id)));
   }
 }

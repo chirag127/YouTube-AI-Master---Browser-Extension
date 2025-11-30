@@ -2,7 +2,7 @@ import { SettingsManager } from './modules/settings-manager.js';
 import { UIAppearance } from './modules/ui-appearance.js';
 import { AutoSave } from './modules/auto-save.js';
 import { UIManager } from './modules/ui-manager.js';
-import { TabLoader } from './modules/tab-loader.js';
+import { SectionLoader } from './modules/section-loader.js';
 import { GeneralSettings } from './modules/general.js';
 import { AIConfig } from './modules/ai-config.js';
 import { SegmentsConfig } from './modules/segments.js';
@@ -29,10 +29,10 @@ on(document, 'DOMContentLoaded', async () => {
   const notificationManager = new NotificationManager();
   const autoSave = new AutoSave(settingsManager, 300, notificationManager);
   const uiManager = new UIManager();
-  const tabLoader = new TabLoader();
+  const sectionLoader = new SectionLoader();
   await settingsManager.load();
   notificationManager.info('Settings loaded successfully');
-  await tabLoader.loadAll();
+  await sectionLoader.loadAll();
   const settings = settingsManager.get();
   const welcomeBanner = i('#welcome-banner');
   const startSetupBtn = i('#start-setup-btn');
@@ -48,7 +48,7 @@ on(document, 'DOMContentLoaded', async () => {
     on(dismissBannerBtn, 'click', () => {
       if (welcomeBanner) welcomeBanner.style.display = 'none';
     });
-  uiManager.setupTabs();
+  uiManager.setupSections();
   const modules = {
     general: new GeneralSettings(settingsManager, autoSave),
     uiAppearance: new UIAppearance(settingsManager, autoSave),

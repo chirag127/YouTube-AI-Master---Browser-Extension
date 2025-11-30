@@ -20,43 +20,43 @@
           <h1>AI Master</h1>
         </div>
         <nav class="nav-menu">
-          <button class="nav-item active" data-tab="general">
+          <button class="nav-item active" data-section="general">
             <span class="icon">⚙️</span> General
           </button>
-          <button class="nav-item" data-tab="cache"><span class="icon">💾</span> Cache</button>
-          <button class="nav-item" data-tab="transcript">
+          <button class="nav-item" data-section="cache"><span class="icon">💾</span> Cache</button>
+          <button class="nav-item" data-section="transcript">
             <span class="icon">📝</span> Transcript
           </button>
-          <button class="nav-item" data-tab="comments">
+          <button class="nav-item" data-section="comments">
             <span class="icon">💬</span> Comments
           </button>
-          <button class="nav-item" data-tab="metadata">
+          <button class="nav-item" data-section="metadata">
             <span class="icon">📊</span> Metadata
           </button>
-          <button class="nav-item" data-tab="scroll">
+          <button class="nav-item" data-section="scroll">
             <span class="icon">📜</span> Scroll & UI
           </button>
-          <button class="nav-item" data-tab="widget"><span class="icon">🎨</span> Widget</button>
-          <button class="nav-item" data-tab="ai-config">
+          <button class="nav-item" data-section="widget"><span class="icon">🎨</span> Widget</button>
+          <button class="nav-item" data-section="ai-config">
             <span class="icon">🤖</span> AI Configuration
           </button>
-          <button class="nav-item" data-tab="segments">
+          <button class="nav-item" data-section="segments">
             <span class="icon">🎯</span> Segments
           </button>
-          <button class="nav-item" data-tab="performance">
+          <button class="nav-item" data-section="performance">
             <span class="icon">⚡</span> Performance
           </button>
-          <button class="nav-item" data-tab="external-apis">
+          <button class="nav-item" data-section="external-apis">
             <span class="icon">🌐</span> External APIs
           </button>
-          <button class="nav-item" data-tab="integrations">
+          <button class="nav-item" data-section="integrations">
             <span class="icon">🔗</span> Integrations
           </button>
-          <button class="nav-item" data-tab="prompts"><span class="icon">✍️</span> Prompts</button>
-          <button class="nav-item" data-tab="notifications">
+          <button class="nav-item" data-section="prompts"><span class="icon">✍️</span> Prompts</button>
+          <button class="nav-item" data-section="notifications">
             <span class="icon">🔔</span> Notifications
           </button>
-          <button class="nav-item" data-tab="advanced">
+          <button class="nav-item" data-section="advanced">
             <span class="icon">🔧</span> Advanced
           </button>
         </nav>
@@ -82,11 +82,11 @@
           </div>
         </div>
 
-        <!-- Tabs will be loaded dynamically here -->
+        <!-- Sections will be loaded dynamically here -->
 
-        <!-- Widget Tab -->
-        <div id="widget-tab-container">
-          <section id="widget" class="tab-content">
+        <!-- Widget Section -->
+        <div id="widget-section-container">
+          <section id="widget" class="section-content">
             <header class="section-header">
               <h2>Widget Customization</h2>
               <p>Customize the look and feel of the overlay widget</p>
@@ -156,17 +156,17 @@
 
 
 
-        <!-- Integrations Tab -->
-        <div id="integrations-tab-container"></div>
+        <!-- Integrations Section -->
+        <div id="integrations-section-container"></div>
 
-        <!-- Prompts Tab -->
-        <div id="prompts-tab-container"></div>
+        <!-- Prompts Section -->
+        <div id="prompts-section-container"></div>
 
-        <!-- Notifications Tab -->
-        <div id="notifications-tab-container"></div>
+        <!-- Notifications Section -->
+        <div id="notifications-section-container"></div>
 
         <!-- AI Configuration -->
-        <section id="ai-config" class="tab-content">
+        <section id="ai-config" class="section-content">
           <header class="section-header">
             <h2>AI Configuration</h2>
             <p>Manage your Gemini API connection and model settings</p>
@@ -321,7 +321,7 @@
         </section>
 
         <!-- Segments & Actions -->
-        <section id="segments" class="tab-content">
+        <section id="segments" class="section-content">
           <header class="section-header">
             <h2>Segments & Actions</h2>
             <p>Control how different video segments are handled</p>
@@ -359,7 +359,7 @@
         </section>
 
         <!-- External APIs -->
-        <section id="external-apis" class="tab-content">
+        <section id="external-apis" class="section-content">
           <header class="section-header">
             <h2>External APIs</h2>
             <p>Configure external data sources for enhanced context</p>
@@ -611,7 +611,7 @@
         </section>
 
         <!-- Advanced -->
-        <section id="advanced" class="tab-content">
+        <section id="advanced" class="section-content">
           <header class="section-header">
             <h2>Advanced</h2>
             <p>Performance, backup, restore, and debug</p>

@@ -22,14 +22,14 @@ export class UIManager {
     el.className = `toast show ${t}`;
     st(() => el.classList.remove('show'), 3000);
   }
-  setupTabs(cb) {
-    const tabs = $$('.nav-item');
-    tabs.forEach(t => {
+  setupSections(cb) {
+    const sections = $$('.nav-item');
+    sections.forEach(t => {
       on(t, 'click', () => {
-        const tgt = t.dataset.tab;
-        tabs.forEach(x => x.classList.remove('active'));
+        const tgt = t.dataset.section;
+        sections.forEach(x => x.classList.remove('active'));
         t.classList.add('active');
-        $$('.tab-content').forEach(c => c.classList.remove('active'));
+        $$('.section-content').forEach(c => c.classList.remove('active'));
         const s = i(tgt);
         if (s) s.classList.add('active');
         if (cb) cb(tgt);

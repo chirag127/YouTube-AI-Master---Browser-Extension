@@ -163,14 +163,14 @@ body {
   scroll-behavior: smooth;
 }
 
-.tab-content {
+.section-content {
   display: none;
   max-width: 900px;
   margin: 0 auto;
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tab-content.active {
+.section-content.active {
   display: block;
 }
 
