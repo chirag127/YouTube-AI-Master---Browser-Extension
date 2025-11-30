@@ -1,140 +1,248 @@
-\u003cdiv class="settings-section"\u003e \u003ch2\u003eWidget Configuration\u003c/h2\u003e \u003cp
-class="section-description"\u003eCustomize widget appearance, size, position, and visible
-tabs\u003c/p\u003e \u003ch3\u003eHeight Configuration\u003c/h3\u003e \u003cdiv
-class="setting-group"\u003e \u003clabel class="setting-label"\u003e \u003cspan\u003eWidget Height
-(px)\u003c/span\u003e \u003cinput type="number" id="widget-height" min="200" max="1200" step="50"
-class="setting-input" /\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eDefault content
-area height (200-1200px)\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e
-\u003clabel class="setting-label"\u003e \u003cspan\u003eMinimum Height (px)\u003c/span\u003e
-\u003cinput type="number" id="widget-min-height" min="100" max="600" step="50" class="setting-input"
-/\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eMinimum resizable height\u003c/p\u003e
-\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-label"\u003e
-\u003cspan\u003eMaximum Height (px)\u003c/span\u003e \u003cinput type="number"
-id="widget-max-height" min="400" max="2000" step="100" class="setting-input" /\u003e
-\u003c/label\u003e \u003cp class="setting-hint"\u003eMaximum resizable height\u003c/p\u003e
-\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-resizable" /\u003e \u003cspan\u003eEnable Height
-Resizing\u003c/span\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eAllow dragging bottom
-resize handle to adjust height\u003c/p\u003e \u003c/div\u003e \u003chr/\u003e \u003ch3\u003eWidth
-Configuration\u003c/h3\u003e \u003cdiv class="setting-group"\u003e \u003clabel
-class="setting-label"\u003e \u003cspan\u003eWidget Width (px)\u003c/span\u003e \u003cinput
-type="number" id="widget-width" min="300" max="800" step="50" class="setting-input" /\u003e
-\u003c/label\u003e \u003cp class="setting-hint"\u003eDefault widget width (only applies when width
-resizing is enabled)\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e
-\u003clabel class="setting-label"\u003e \u003cspan\u003eMinimum Width (px)\u003c/span\u003e
-\u003cinput type="number" id="widget-min-width" min="200" max="500" step="50" class="setting-input"
-/\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003eMinimum resizable width\u003c/p\u003e
-\u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel class="setting-label"\u003e
-\u003cspan\u003eMaximum Width (px)\u003c/span\u003e \u003cinput type="number" id="widget-max-width"
-min="400" max="1200" step="100" class="setting-input" /\u003e \u003c/label\u003e \u003cp
-class="setting-hint"\u003eMaximum resizable width\ u003c/p\u003e \u003c/div\u003e \u003cdiv
-class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput type="checkbox"
-id="widget-resizable-width" /\u003e \u003cspan\u003eEnable Width Resizing\u003c/span\u003e
-\u003c/label\u003e \u003cp class="setting-hint"\u003eAllow dragging left edge to adjust
-width\u003c/p\u003e \u003c/div\u003e \u003cdiv class="setting-group"\u003e \u003clabel
-class="setting-label"\u003e \u003cspan\u003eWidget Position\u003c/span\u003e \u003cselect
-id="widget-position" class="setting-input"\u003e \u003coption value="right"\u003eRight Side
-(Default)\u003c/option\u003e \u003coption value="left"\u003eLeft Side\u003c/option\u003e
-\u003c/select\u003e \u003c/label\u003e \u003cp class="setting-hint"\u003ePosition of the widget on
-YouTube pages (requires page reload)\u003c/p\u003e \u003c/div\u003e
+<div class="glass-card">
+  <h2>Widget Configuration</h2>
+  <p class="section-description">Customize widget appearance, size, position, and visible tabs</p>
 
-<hr />
-<h3>Appearance</h3>
-<p class="setting-hint">Customize the visual style of the widget</p>
+  <h3>Height Configuration</h3>
+  <div class="form-group">
+    <label for="widget-height">Widget Height (px)</label>
+    <input type="number" id="widget-height" min="200" max="1200" step="50" class="form-input" />
+    <p class="help-text">Default content area height (200-1200px)</p>
+  </div>
 
-<div class="setting-group">
-  <label class="setting-label">
-    <span>Background Opacity (%)</span>
-    <input type="range" id="widget-opacity" min="50" max="100" step="5" class="setting-range" />
-    <span class="range-value"></span>
-  </label>
-  <p class="setting-hint">Adjust transparency of the widget background</p>
+  <div class="form-group">
+    <label for="widget-min-height">Minimum Height (px)</label>
+    <input type="number" id="widget-min-height" min="100" max="600" step="50" class="form-input" />
+    <p class="help-text">Minimum resizable height</p>
+  </div>
+
+  <div class="form-group">
+    <label for="widget-max-height">Maximum Height (px)</label>
+    <input type="number" id="widget-max-height" min="400" max="2000" step="100" class="form-input" />
+    <p class="help-text">Maximum resizable height</p>
+  </div>
+
+  <div class="form-group checkbox-row">
+    <div class="checkbox-label">
+      <label for="widget-resizable">Enable Height Resizing</label>
+      <p class="help-text">Allow dragging bottom resize handle to adjust height</p>
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="widget-resizable" />
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;" />
+
+  <h3>Width Configuration</h3>
+  <div class="form-group">
+    <label for="widget-width">Widget Width (px)</label>
+    <input type="number" id="widget-width" min="300" max="800" step="50" class="form-input" />
+    <p class="help-text">Default widget width (only applies when width resizing is enabled)</p>
+  </div>
+
+  <div class="form-group">
+    <label for="widget-min-width">Minimum Width (px)</label>
+    <input type="number" id="widget-min-width" min="200" max="500" step="50" class="form-input" />
+    <p class="help-text">Minimum resizable width</p>
+  </div>
+
+  <div class="form-group">
+    <label for="widget-max-width">Maximum Width (px)</label>
+    <input type="number" id="widget-max-width" min="400" max="1200" step="100" class="form-input" />
+    <p class="help-text">Maximum resizable width</p>
+  </div>
+
+  <div class="form-group checkbox-row">
+    <div class="checkbox-label">
+      <label for="widget-resizable-width">Enable Width Resizing</label>
+      <p class="help-text">Allow dragging left edge to adjust width</p>
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="widget-resizable-width" />
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label for="widget-position">Widget Position</label>
+    <div class="select-wrapper">
+      <select id="widget-position" class="form-select">
+        <option value="right">Right Side (Default)</option>
+        <option value="left">Left Side</option>
+      </select>
+    </div>
+    <p class="help-text">Position of the widget on YouTube pages (requires page reload)</p>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;" />
+
+  <h3>Appearance</h3>
+  <p class="help-text">Customize the visual style of the widget</p>
+
+  <div class="form-group">
+    <div class="range-with-value">
+        <label for="widget-opacity" style="min-width: 150px;">Background Opacity</label>
+        <input type="range" id="widget-opacity" min="50" max="100" step="5" class="form-range" />
+        <span class="range-value"></span>
+    </div>
+    <p class="help-text">Adjust transparency of the widget background</p>
+  </div>
+
+  <div class="form-group">
+    <div class="range-with-value">
+        <label for="widget-blur" style="min-width: 150px;">Glass Blur (px)</label>
+        <input type="range" id="widget-blur" min="0" max="40" step="2" class="form-range" />
+        <span class="range-value"></span>
+    </div>
+    <p class="help-text">Strength of the background blur effect</p>
+  </div>
+
+  <div class="form-group">
+    <div class="range-with-value">
+        <label for="widget-scale" style="min-width: 150px;">UI Scale (%)</label>
+        <input type="range" id="widget-scale" min="80" max="120" step="5" class="form-range" />
+        <span class="range-value"></span>
+    </div>
+    <p class="help-text">Adjust the overall size of widget elements</p>
+  </div>
+
+  <div class="form-group checkbox-row">
+    <div class="checkbox-label">
+      <label for="widget-dynamic-height">Dynamic Viewport Height</label>
+      <p class="help-text">Automatically constrain height to fit within the screen (prevents clipping)</p>
+    </div>
+    <label class="switch">
+      <input type="checkbox" id="widget-dynamic-height" checked />
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label for="widget-viewport-margin">Viewport Bottom Margin (px)</label>
+    <input type="number" id="widget-viewport-margin" min="0" max="200" step="10" class="form-input" />
+    <p class="help-text">Space to leave at the bottom of the screen (useful for status bars/docked consoles)</p>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;" />
+
+  <h3>Visible Tabs</h3>
+  <p class="help-text">Select which tabs to display in the widget</p>
+
+  <div class="form-grid">
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label">
+            <label for="widget-tab-summary">Default Tab</label>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="widget-tab-summary" />
+            <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label">
+            <label for="widget-tab-segments">Segments Tab</label>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="widget-tab-segments" />
+            <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label">
+            <label for="widget-tab-chat">Chat Tab</label>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="widget-tab-chat" />
+            <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label">
+            <label for="widget-tab-comments">Comments Tab</label>
+        </div>
+        <label class="switch">
+            <input type="checkbox" id="widget-tab-comments" />
+            <span class="slider round"></span>
+        </label>
+      </div>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;" />
+
+  <h3>Widget Behavior</h3>
+  <p class="help-text">Configure default widget behavior</p>
+
+  <div class="form-group checkbox-row">
+    <div class="checkbox-label">
+        <label for="widget-default-collapsed">Start Collapsed by Default</label>
+        <p class="help-text">Widget will be minimized when first loaded on a video</p>
+    </div>
+    <label class="switch">
+        <input type="checkbox" id="widget-default-collapsed" />
+        <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div class="form-group checkbox-row">
+    <div class="checkbox-label">
+        <label for="widget-remember-state">Remember Collapsed State</label>
+        <p class="help-text">Widget remembers if you collapsed/expanded it</p>
+    </div>
+    <label class="switch">
+        <input type="checkbox" id="widget-remember-state" />
+        <span class="slider round"></span>
+    </label>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;" />
+
+  <h3>Segment Filtering</h3>
+  <p class="help-text">Choose which segment types to display in the Segments tab</p>
+
+  <div class="form-grid">
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-sponsor">Show Sponsor Segments</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-sponsor" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-selfpromo">Show Self Promotion</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-selfpromo" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-interaction">Show Interaction Reminders</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-interaction" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-intro">Show Intro/Intermission</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-intro" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-outro">Show Outro/Endcards</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-outro" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-preview">Show Preview/Recap</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-preview" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-filler">Show Filler/Tangents</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-filler" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-highlight">Show Highlights</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-highlight" checked /><span class="slider round"></span></label>
+      </div>
+      <div class="form-group checkbox-row">
+        <div class="checkbox-label"><label for="widget-show-exclusive">Show Exclusive Access</label></div>
+        <label class="switch"><input type="checkbox" id="widget-show-exclusive" checked /><span class="slider round"></span></label>
+      </div>
+  </div>
+
+  <div class="form-actions" style="margin-top: 32px;">
+    <button id="widget-reset" class="btn btn-secondary">Reset to Defaults</button>
+  </div>
 </div>
-
-<div class="setting-group">
-  <label class="setting-label">
-    <span>Glass Blur (px)</span>
-    <input type="range" id="widget-blur" min="0" max="40" step="2" class="setting-range" />
-    <span class="range-value"></span>
-  </label>
-  <p class="setting-hint">Strength of the background blur effect</p>
-</div>
-
-<div class="setting-group">
-  <label class="setting-label">
-    <span>UI Scale (%)</span>
-    <input type="range" id="widget-scale" min="80" max="120" step="5" class="setting-range" />
-    <span class="range-value"></span>
-  </label>
-  <p class="setting-hint">Adjust the overall size of widget elements</p>
-</div>
-
-<div class="setting-group">
-  <label class="setting-checkbox">
-    <input type="checkbox" id="widget-dynamic-height" checked />
-    <span>Dynamic Viewport Height</span>
-  </label>
-  <p class="setting-hint">
-    Automatically constrain height to fit within the screen (prevents clipping)
-  </p>
-</div>
-
-<div class="setting-group">
-  <label class="setting-label">
-    <span>Viewport Bottom Margin (px)</span>
-    <input
-      type="number"
-      id="widget-viewport-margin"
-      min="0"
-      max="200"
-      step="10"
-      class="setting-input"
-    />
-  </label>
-  <p class="setting-hint">
-    Space to leave at the bottom of the screen (useful for status bars/docked consoles)
-  </p>
-</div>
-
-<hr />
-\u003ch3\u003eVisible Tabs\u003c/h3\u003e \u003cp class="setting-hint"\u003eSelect which tabs to
-display in the widget\u003c/p\u003e \u003cdiv class="setting-group"\u003e \u003clabel
-class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-summary" /\u003e
-\u003cspan\u003eDefault Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
-class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-segments" /\u003e
-\u003cspan\u003eSegments Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
-class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-chat" /\u003e
-\u003cspan\u003eChat Tab\u003c/span\u003e \u003c/label\u003e \u003clabel
-class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-tab-comments" /\u003e
-\u003cspan\u003eComments Tab\u003c/span\u003e \u003c/label\u003e \u003c/div\u003e \u003chr/\u003e
-\u003ch3\u003eWidget Behavior\u003c/h3\u003e \u003cp class="setting-hint"\u003eConfigure default
-widget behavior\u003c/p\u003e \u003cdiv class="setting-group"\u003e \u003clabel
-class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-default-collapsed" /\u003e
-\u003cspan\u003eStart Collapsed by Default\u003c/span\u003e \u003c/label\u003e \u003cp
-class="setting-hint"\u003eWidget will be minimized when first loaded on a video\u003c/p\u003e
-\u003clabel class="setting-checkbox"\u003e \u003cinput type="checkbox" id="widget-remember-state"
-/\u003e \u003cspan\u003eRemember Collapsed State\u003c/span\u003e \u003c/label\u003e \u003cp
-class="setting-hint"\u003eWidget remembers if you collapsed/expanded it\u003c/p\u003e
-\u003c/div\u003e \u003chr/\u003e \u003ch3\u003eSegment Filtering\u003c/h3\u003e \u003cp
-class="setting-hint"\u003eChoose which segment types to display in the Segments tab\u003c/p\u003e
-\u003cdiv class="setting-group"\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
-type="checkbox" id="widget-show-sponsor" checked /\u003e \u003cspan\u003eShow Sponsor
-Segments\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
-type="checkbox" id="widget-show-selfpromo" checked /\u003e \u003cspan\u003eShow Self
-Promotion\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
-type="checkbox" id="widget-show-interaction" checked /\u003e \u003cspan\u003eShow Interaction
-Reminders\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e \u003cinput
-type="checkbox" id="widget-show-intro" checked /\u003e \u003cspan\u003eShow
-Intro/Intermission\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-show-outro" checked /\u003e \u003cspan\u003eShow
-Outro/Endcards\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-show-preview" checked /\u003e \u003cspan\u003eShow
-Preview/Recap\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-show-filler" checked /\u003e \u003cspan\u003eShow
-Filler/Tangents\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-show-highlight" checked /\u003e \u003cspan\u003eShow
-Highlights\u003c/span\u003e \u003c/label\u003e \u003clabel class="setting-checkbox"\u003e
-\u003cinput type="checkbox" id="widget-show-exclusive" checked /\u003e \u003cspan\u003eShow
-Exclusive Access\u003c/span\u003e \u003c/label\u003e \u003c/div\u003e \u003cdiv
-class="setting-actions"\u003e \u003cbutton id="widget-reset" class="btn-secondary"\u003eReset to
-Defaults\u003c/button\u003e \u003c/div\u003e \u003c/div\u003e
