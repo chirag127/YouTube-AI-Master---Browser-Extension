@@ -130,15 +130,24 @@ Load `extension/` folder in Chrome as unpacked extension.
 
 ## APIs Used
 
-| Service | Purpose                    | Key Required |
-| ------- | -------------------------- | ------------ |
-| Gemini  | AI analysis, transcription | ✅ Required  |
+| Service           | Purpose                    | Key Required | Settings Path                          |
+| ----------------- | -------------------------- | ------------ | -------------------------------------- |
+| Gemini            | AI analysis, transcription | ✅ Required  | `ai.apiKey`                            |
+| SponsorBlock      | Segment database           | ⚫ No key    | `externalApis.sponsorBlock.enabled`    |
+| DeArrow           | Clickbait-free titles      | ⚫ No key    | `externalApis.deArrow.enabled`         |
+| Genius Lyrics     | Music lyrics               | ⚫ No key    | `externalApis.geniusLyrics.enabled`    |
+| MusicBrainz       | Music metadata             | ⚫ No key    | `externalApis.musicBrainz.enabled`     |
+| Wikidata          | Knowledge base             | ⚫ No key    | `externalApis.wikidata.enabled`        |
+| Datamuse          | Word relations             | ⚫ No key    | `externalApis.datamuse.enabled`        |
+| Open-Meteo        | Weather data               | ⚫ No key    | `externalApis.openMeteo.enabled`       |
+| Open Library      | Book metadata              | ⚫ No key    | `externalApis.openLibrary.enabled`     |
+| Semantic Scholar  | Academic papers            | ⚫ No key    | `externalApis.semanticScholar.enabled` |
+| TMDB              | Movie/TV metadata          | ⚪ Optional  | `externalApis.tmdb.key`                |
+| IGDB              | Game metadata              | ⚪ Optional  | `externalApis.igdb.clientId`           |
+| NewsData          | News articles              | ⚪ Optional  | `externalApis.newsData.key`            |
+| Google Fact Check | Fact-checking              | ⚪ Optional  | `externalApis.googleFactCheck.key`     |
 
-| Genius | Lyrics for music videos | ⚫ No key |
-| SponsorBlock | Segment database | ⚫ No key |
-| DeArrow | Clickbait-free titles | ⚫ No key |
-| TMDB | Movie/TV metadata | ⚪ Optional |
-| NewsData | News context | ⚪ Optional |
+**All APIs**: Configurable enable/disable toggles in Options → External APIs
 
 ## Development
 
@@ -161,21 +170,25 @@ extension/
 The extension automatically detects API availability:
 
 **No API Keys Required**:
+
 - SponsorBlock: Always available (public API)
 - DeArrow: Always available (public API)
 
 **API Key Required**:
+
 - Gemini API: Set in Options → AI Configuration
 - TMDB API: Set in Options → External APIs
 - NewsData API: Set in Options → External APIs
 - GoogleFactCheck API: Set in Options → External APIs
 
 **Availability Checks**:
+
 - Performed on startup and when settings change
 - 3-5 second timeouts prevent blocking
 - Graceful degradation if APIs unavailable
 
 **Performance Monitoring**:
+
 - Tracks success rate and average duration per API
 - Auto-detects underperforming APIs (< 50% success or > 5s avg)
 - Metrics reset on extension reload

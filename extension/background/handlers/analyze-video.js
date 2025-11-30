@@ -12,7 +12,7 @@ import { inc as ic, lwc } from '../../utils/shortcuts/string.js';
 import { np, pc } from '../../utils/shortcuts/async.js';
 let ka = null;
 const ska = () => {
-  if (!ka) ka = si(() => cr.getPlatformInfo(() => {}), 2e4);
+  if (!ka) ka = si(() => cr.getPlatformInfo(() => { }), 2e4);
 };
 const stka = () => {
   if (ka) {
@@ -50,11 +50,13 @@ export async function handleAnalyzeVideo(q, r) {
       }
     }
     let ly = null;
+    const st4 = await sg('config');
+    const glEn = st4?.config?.externalApis?.geniusLyrics?.enabled ?? true;
     const im =
       m?.category === 'Music' ||
       ic(lwc(m?.title || ''), 'official video') ||
       ic(lwc(m?.title || ''), 'lyrics');
-    if (im || !t?.length) {
+    if (glEn && (im || !t?.length)) {
       try {
         ly = await gl.getLyrics(m.title, m.author);
       } catch (x) {
@@ -62,7 +64,9 @@ export async function handleAnalyzeVideo(q, r) {
       }
     }
     let sb2 = [];
-    if (v) {
+    const st3 = await sg('config');
+    const sbEn = st3?.config?.externalApis?.sponsorBlock?.enabled ?? true;
+    if (v && sbEn) {
       try {
         sb2 = await sb.fetchSegments(v);
       } catch (x) {
@@ -72,10 +76,10 @@ export async function handleAnalyzeVideo(q, r) {
     let ec = {};
     try {
       if (!ss) throw new Error('Sync NA');
-      const st = await sg(null);
-      if (!st || !ok(st).length) w('[AV]No set');
+      const st = await sg('config');
+      if (!st?.config) w('[AV]No cfg');
       if (!m) throw new Error('No meta');
-      const cm = new CM(st);
+      const cm = new CM(st.config?.externalApis || {});
       const fp = cm.fetchContext(m);
       const tp = np((_, j) => to(() => j(new Error('TO')), 1e4));
       ec = await pc([fp, tp]);

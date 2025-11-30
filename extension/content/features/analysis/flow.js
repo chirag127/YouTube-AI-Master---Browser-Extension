@@ -20,7 +20,12 @@ export async function startAnalysis() {
   const ca = i('yt-ai-content-area');
   try {
     showLoading(ca, 'Extracting video metadata...');
-    const md = await metadataExtractor.extract(state.currentVideoId);
+    const cfg = await msg({ action: 'GET_SETTINGS' });
+    const daOpt = {
+      useDeArrow: cfg?.externalApis?.deArrow?.enabled ?? true,
+      usePrivateDeArrow: cfg?.externalApis?.deArrow?.usePrivateAPI ?? true,
+    };
+    const md = await metadataExtractor.extract(state.currentVideoId, daOpt);
     showLoading(ca, 'Extracting transcript...');
     let ts = [];
     try {

@@ -16,21 +16,11 @@
     </div>
     <div class="form-group">
       <label for="twitchClientId">Twitch Client ID (Gaming)</label>
-      <input
-        type="text"
-        id="twitchClientId"
-        class="form-input"
-        placeholder="Enter Twitch Client ID"
-      />
+      <input type="text" id="twitchClientId" class="form-input" placeholder="Enter Twitch Client ID" />
     </div>
     <div class="form-group">
       <label for="twitchAccessToken">Twitch Access Token (Gaming)</label>
-      <input
-        type="password"
-        id="twitchAccessToken"
-        class="form-input"
-        placeholder="Enter Twitch Access Token"
-      />
+      <input type="password" id="twitchAccessToken" class="form-input" placeholder="Enter Twitch Access Token" />
       <p class="help-text">
         Required for IGDB. Get from
         <a href="https://dev.twitch.tv/console" target="_blank">Twitch Dev Console</a>.
@@ -42,12 +32,7 @@
     <h3>News & Facts</h3>
     <div class="form-group">
       <label for="newsDataApiKey">NewsData.io API Key</label>
-      <input
-        type="password"
-        id="newsDataApiKey"
-        class="form-input"
-        placeholder="Enter NewsData API Key"
-      />
+      <input type="password" id="newsDataApiKey" class="form-input" placeholder="Enter NewsData API Key" />
       <p class="help-text">
         Free tier available at
         <a href="https://newsdata.io/" target="_blank">NewsData.io</a>.
@@ -55,13 +40,99 @@
     </div>
     <div class="form-group">
       <label for="googleFactCheckApiKey">Google Fact Check API Key</label>
-      <input
-        type="password"
-        id="googleFactCheckApiKey"
-        class="form-input"
-        placeholder="Enter Google Cloud API Key"
-      />
+      <input type="password" id="googleFactCheckApiKey" class="form-input" placeholder="Enter Google Cloud API Key" />
+      <p class="help-text">Requires GCP project ed" />
+        <span>Enable NewsData.io</span>
+        </label>
+    </div>
+    <div class="form-group">
+      <label for="newsDataApiKey">NewsData.io API Key</label>
+      <input type="password" id="newsDataApiKey" class="form-input" placeholder="Enter NewsData API Key" />
+      <p class="help-text">
+        Free tier: <a href="https://newsdata.io/" target="_blank">NewsData.io</a>
+      </p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="googleFactCheckEnabled" />
+        <span>Enable Google Fact Check</span>
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="googleFactCheckApiKey">Google Fact Check API Key</label>
+      <input type="password" id="googleFactCheckApiKey" class="form-input" placeholder="Google Cloud API Key" />
       <p class="help-text">Requires GCP project with Fact Check Tools API enabled.</p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="semanticScholarEnabled" />
+        <span>Enable Semantic Scholar (Academic Papers)</span>
+      </label>
+      <p class="help-text">No API key required. Public research database.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Knowledge & Reference APIs</h3>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="wikidataEnabled" />
+        <span>Enable Wikidata</span>
+      </label>
+      <p class="help-text">No API key required. Structured knowledge base.</p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="openLibraryEnabled" />
+        <span>Enable Open Library (Books)</span>
+      </label>
+      <p class="help-text">No API key required. Public book database.</p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="datamuseEnabled" />
+        <span>Enable Datamuse (Word Relations)</span>
+      </label>
+      <p class="help-text">No API key required. Linguistic API.</p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="openMeteoEnabled" />
+        <span>Enable Open-Meteo (Weather)</span>
+      </label>
+      <p class="help-text">No API key required. Free weather API.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>YouTube Enhancement APIs</h3>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="sponsorBlockEnabled" />
+        <span>Enable SponsorBlock</span>
+      </label>
+      <p class="help-text">Community-sourced segment database. No API key required.</p>
+    </div>
+    <div class="form-group">
+      <label for="sponsorBlockTimeout">SponsorBlock Timeout (ms)</label>
+      <input type="number" id="sponsorBlockTimeout" class="form-input" min="1000" max="30000" step="1000" />
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="deArrowEnabled" />
+        <span>Enable DeArrow (Clickbait-Free Titles)</span>
+      </label>
+      <p class="help-text">Community-sourced title replacements. No API key required.</p>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="deArrowUsePrivateAPI" />
+        <span>Use DeArrow Private API (Better Performance)</span>
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="deArrowTimeout">DeArrow Timeout (ms)</label>
+      <input type="number" id="deArrowTimeout" class="form-input" min="1000" max="30000" step="1000" />
     </div>
   </div>
 </section>
