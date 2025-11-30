@@ -96,7 +96,11 @@ Load `extension/` folder in Chrome as unpacked extension.
 
 1. **Initial Data** - Extracts comments from ytInitialData before page load
 2. **API Interception** - Captures YouTube API responses for real-time comments
-3. **DOM Scraping** - Fallback to scraping rendered comment elements with dynamic selectors
+3. **DOM Scraping** - Forces scroll to comments section, waits for load, then extracts with retry logic (5 attempts, exponential backoff)
+   - Auto-scrolls to `ytd-comments#comments` section to trigger lazy loading
+   - Waits 1200ms + 600ms for comments to render
+   - Extracts up to 20 comments with multiple selector fallbacks
+   - Scrolls back to original position after extraction
 
 ## Segment Categories & Default Actions
 
