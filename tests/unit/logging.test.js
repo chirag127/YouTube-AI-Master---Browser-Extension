@@ -27,10 +27,10 @@ describe('Failure Logging', () => {
     // Given the constraints, let's verify the *intent* by testing a simplified version of the logic we added.
 
     const log = (lvl, msg) => {
-        const i = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' };
-        const f = lvl === 'error' ? mockConsoleError : console.log;
-        const p = lvl === 'error' ? '[Metadata:Fail] ' : '[ME] ';
-        f(`${p}${i[lvl]} ${msg}`);
+      const i = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' };
+      const f = lvl === 'error' ? mockConsoleError : console.log;
+      const p = lvl === 'error' ? '[Metadata:Fail] ' : '[ME] ';
+      f(`${p}${i[lvl]} ${msg}`);
     };
 
     log('error', 'Test error');
@@ -38,22 +38,31 @@ describe('Failure Logging', () => {
   });
 
   it('should log context errors with [Context:Fail] prefix', () => {
-      // Simulating flow.js error handling
-      const e = mockConsoleError;
-      e('[Context:Fail] Transcript extraction:', 'Error details');
-      expect(mockConsoleError).toHaveBeenCalledWith('[Context:Fail] Transcript extraction:', 'Error details');
+    // Simulating flow.js error handling
+    const e = mockConsoleError;
+    e('[Context:Fail] Transcript extraction:', 'Error details');
+    expect(mockConsoleError).toHaveBeenCalledWith(
+      '[Context:Fail] Transcript extraction:',
+      'Error details'
+    );
   });
 
   it('should log API errors with [API:Fail:Service] prefix', () => {
-      // Simulating API error handling
-      const e = mockConsoleError;
-      e('[API:Fail:Gemini] generateContent all failed:', 'Error details');
-      expect(mockConsoleError).toHaveBeenCalledWith('[API:Fail:Gemini] generateContent all failed:', 'Error details');
+    // Simulating API error handling
+    const e = mockConsoleError;
+    e('[API:Fail:Gemini] generateContent all failed:', 'Error details');
+    expect(mockConsoleError).toHaveBeenCalledWith(
+      '[API:Fail:Gemini] generateContent all failed:',
+      'Error details'
+    );
 
-      e('[API:Fail:SponsorBlock] Fail:', 'Error details');
-      expect(mockConsoleError).toHaveBeenCalledWith('[API:Fail:SponsorBlock] Fail:', 'Error details');
+    e('[API:Fail:SponsorBlock] Fail:', 'Error details');
+    expect(mockConsoleError).toHaveBeenCalledWith('[API:Fail:SponsorBlock] Fail:', 'Error details');
 
-      e('[API:Fail:DeArrow] fetchBranding fail:', 'Error details');
-      expect(mockConsoleError).toHaveBeenCalledWith('[API:Fail:DeArrow] fetchBranding fail:', 'Error details');
+    e('[API:Fail:DeArrow] fetchBranding fail:', 'Error details');
+    expect(mockConsoleError).toHaveBeenCalledWith(
+      '[API:Fail:DeArrow] fetchBranding fail:',
+      'Error details'
+    );
   });
 });

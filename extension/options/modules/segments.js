@@ -36,10 +36,22 @@ export class SegmentsConfig {
 
     // Use SettingsManager directly for immediate updates where appropriate,
     // or AutoSave if debouncing is desired. For toggles, immediate is usually better for settings pages.
-    if (en) on(en, 'change', async e => await this.updateSetting('segments.enabled', e.target.checked));
-    if (as) on(as, 'change', async e => await this.updateSetting('segments.autoSkip', e.target.checked));
-    if (sn) on(sn, 'change', async e => await this.updateSetting('segments.showNotifications', e.target.checked));
-    if (sm) on(sm, 'change', async e => await this.updateSetting('segments.showMarkers', e.target.checked));
+    if (en)
+      on(en, 'change', async e => await this.updateSetting('segments.enabled', e.target.checked));
+    if (as)
+      on(as, 'change', async e => await this.updateSetting('segments.autoSkip', e.target.checked));
+    if (sn)
+      on(
+        sn,
+        'change',
+        async e => await this.updateSetting('segments.showNotifications', e.target.checked)
+      );
+    if (sm)
+      on(
+        sm,
+        'change',
+        async e => await this.updateSetting('segments.showMarkers', e.target.checked)
+      );
 
     if (st)
       on(st, 'input', () => {

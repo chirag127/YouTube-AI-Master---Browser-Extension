@@ -48,6 +48,9 @@ export async function renderSummary(c, d) {
           <div class="yt-ai-card-content">${faqHtml}</div>
         </div>
 
+        <!-- Chat Messages Container -->
+        <div id="yt-ai-chat-messages" class="yt-ai-chat-messages"></div>
+
       </div>
     `;
 

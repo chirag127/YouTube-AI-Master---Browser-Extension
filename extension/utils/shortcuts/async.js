@@ -10,7 +10,9 @@ export const pt = (p, t) =>
 export const dly = t => new Promise(r => setTimeout(r, t));
 export const raf = cb => {
   if (cb) {
-    return typeof requestAnimationFrame === 'function' ? requestAnimationFrame(cb) : setTimeout(cb, 16);
+    return typeof requestAnimationFrame === 'function'
+      ? requestAnimationFrame(cb)
+      : setTimeout(cb, 16);
   }
   return new Promise(r =>
     typeof requestAnimationFrame === 'function' ? requestAnimationFrame(r) : setTimeout(r, 16)

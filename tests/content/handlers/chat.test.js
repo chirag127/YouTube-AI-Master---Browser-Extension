@@ -37,32 +37,43 @@ describe('sendChatMessage', () => {
   });
 
   it('should send message successfully', async () => {
-    const qs = (vi.mocked(await import('../../../extension/utils/shortcuts/dom.js'))).qs;
+    const qs = vi.mocked(await import('../../../extension/utils/shortcuts/dom.js')).qs;
     qs.mockReturnValue({ value: 'question' });
-    const addChatMessage = (vi.mocked(await import('../../../extension/content/ui/renderers/chat.js'))).addChatMessage;
+    const addChatMessage = vi.mocked(
+      await import('../../../extension/content/ui/renderers/chat.js')
+    ).addChatMessage;
     addChatMessage.mockResolvedValue();
     addChatMessage.mockResolvedValue({ innerHTML: '' });
-    const rs = (vi.mocked(await import('../../../extension/utils/shortcuts/runtime.js'))).rs;
+    const rs = vi.mocked(await import('../../../extension/utils/shortcuts/runtime.js')).rs;
     rs.mockResolvedValue({ success: true, answer: 'answer' });
-    const parseMarkdown = (vi.mocked(await import('../../../extension/lib/marked-loader.js'))).parseMarkdown;
+    const parseMarkdown = vi.mocked(
+      await import('../../../extension/lib/marked-loader.js')
+    ).parseMarkdown;
     parseMarkdown.mockResolvedValue('parsed');
 
     await sendChatMessage();
 
     expect(addChatMessage).toHaveBeenCalledWith('user', 'question');
-    expect(rs).toHaveBeenCalledWith({ action: 'CHAT_WITH_VIDEO', question: 'question', context: expect.any(String), metadata: null });
+    expect(rs).toHaveBeenCalledWith({
+      action: 'CHAT_WITH_VIDEO',
+      question: 'question',
+      context: expect.any(String),
+      metadata: null,
+    });
     expect(parseMarkdown).toHaveBeenCalledWith('answer');
   });
 
   it('should handle error', async () => {
-    const qs = (vi.mocked(await import('../../../extension/utils/shortcuts/dom.js'))).qs;
+    const qs = vi.mocked(await import('../../../extension/utils/shortcuts/dom.js')).qs;
     qs.mockReturnValue({ value: 'question' });
-    const addChatMessage = (vi.mocked(await import('../../../extension/content/ui/renderers/chat.js'))).addChatMessage;
+    const addChatMessage = vi.mocked(
+      await import('../../../extension/content/ui/renderers/chat.js')
+    ).addChatMessage;
     addChatMessage.mockResolvedValue();
     addChatMessage.mockResolvedValue({ textContent: '' });
-    const rs = (vi.mocked(await import('../../../extension/utils/shortcuts/runtime.js'))).rs;
+    const rs = vi.mocked(await import('../../../extension/utils/shortcuts/runtime.js')).rs;
     rs.mockRejectedValue(new Error('chat error'));
-    const e = (vi.mocked(await import('../../../extension/utils/shortcuts/log.js'))).e;
+    const e = vi.mocked(await import('../../../extension/utils/shortcuts/log.js')).e;
 
     await sendChatMessage();
 

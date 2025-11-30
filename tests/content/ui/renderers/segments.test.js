@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock runtime first to control gu output
 vi.mock('../../../../extension/utils/shortcuts/runtime.js', () => ({
-  gu: (path) => {
+  gu: path => {
     // Map abstract paths to relative paths from segments.js (extension/content/ui/renderers/segments.js)
     const mapping = {
       'utils/shortcuts/log.js': '../../../utils/shortcuts/log.js',
@@ -24,7 +24,9 @@ vi.mock('../../../../extension/utils/shortcuts/log.js', () => ({
 }));
 
 vi.mock('../../../../extension/content/ui/components/loading.js', () => ({
-  showPlaceholder: (c, msg) => { c.innerHTML = `<div class="placeholder">${msg}</div>`; },
+  showPlaceholder: (c, msg) => {
+    c.innerHTML = `<div class="placeholder">${msg}</div>`;
+  },
 }));
 
 vi.mock('../../../../extension/content/utils/dom.js', () => ({
@@ -32,11 +34,11 @@ vi.mock('../../../../extension/content/utils/dom.js', () => ({
 }));
 
 vi.mock('../../../../extension/content/utils/time.js', () => ({
-  formatTime: (t) => `${t}s`,
+  formatTime: t => `${t}s`,
 }));
 
 vi.mock('../../../../extension/utils/shortcuts/dom.js', () => ({
-  qs: (sel) => document.querySelector(sel),
+  qs: sel => document.querySelector(sel),
   ae: (el, evt, cb) => el.addEventListener(evt, cb),
   qsa: (sel, ctx) => (ctx || document).querySelectorAll(sel),
 }));
@@ -47,12 +49,14 @@ vi.mock('../../../../extension/utils/shortcuts/segments.js', () => ({
 }));
 
 vi.mock('../../../../extension/utils/shortcuts/storage.js', () => ({
-  sg: vi.fn().mockResolvedValue({ config: { widget: { segmentFilters: { sponsor: true, intro: false } } } }),
+  sg: vi
+    .fn()
+    .mockResolvedValue({ config: { widget: { segmentFilters: { sponsor: true, intro: false } } } }),
 }));
 
 // Mock static imports
 vi.mock('../../../../extension/utils/shortcuts/array.js', () => ({
-  isa: (arr) => Array.isArray(arr),
+  isa: arr => Array.isArray(arr),
 }));
 
 // Import the module under test AFTER mocking dependencies
@@ -69,9 +73,7 @@ describe('Segments Renderer', () => {
 
   it('should render segments correctly', async () => {
     const data = {
-      segments: [
-        { label: 'Sponsor', start: 0, end: 10, title: 'Ad', description: 'Buy this' },
-      ],
+      segments: [{ label: 'Sponsor', start: 0, end: 10, title: 'Ad', description: 'Buy this' }],
     };
 
     await renderSegments(container, data);
@@ -113,9 +115,7 @@ describe('Segments Renderer', () => {
     const { seekVideo } = await import('../../../../extension/content/utils/dom.js');
 
     const data = {
-      segments: [
-        { label: 'Sponsor', start: 5, end: 10 },
-      ],
+      segments: [{ label: 'Sponsor', start: 5, end: 10 }],
     };
 
     await renderSegments(container, data);

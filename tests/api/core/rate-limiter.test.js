@@ -9,88 +9,88 @@ vi.mock('../../../extension/utils/shortcuts/core.js');
 vi.mock('../../../extension/utils/shortcuts/async.js');
 
 describe('RateLimiter', () => {
-    let limiter;
+  let limiter;
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-        limiter = new RateLimiter({
-            maxRequests: 2,
-            windowMs: 1000,
-        });
+  beforeEach(() => {
+    vi.clearAllMocks();
+    limiter = new RateLimiter({
+      maxRequests: 2,
+      windowMs: 1000,
+    });
+  });
+
+  describe('constructor', () => {
+    it('should set default config', () => {
+      const defaultLimiter = new RateLimiter();
+
+      expect(defaultLimiter.maxRequests).toBe(15);
+      expect(defaultLimiter.windowMs).toBe(60000);
     });
 
-    describe('constructor', () => {
-        it('should set default config', () => {
-            const defaultLimiter = new RateLimiter();
+    it('should set custom config', () => {
+      expect(limiter.maxRequests).toBe(2);
+      expect(limiter.windowMs).toBe(1000);
+    });
+  });
 
-            expect(defaultLimiter.maxRequests).toBe(15);
-            expect(defaultLimiter.windowMs).toBe(60000);
-        });
+  describe('acquire', () => {
+    it('should resolve immediately when under limit', async () => {
+      vi.mocked(nw).mockReturnValue(1000);
 
-        it('should set custom config', () => {
-            expect(limiter.maxRequests).toBe(2);
-            expect(limiter.windowMs).toBe(1000);
-        });
+      await limiter.acquire();
+
+      expect(limiter.queue).toHaveLength(0);
+      expect(limiter.timestamps).toHaveLength(1);
     });
 
-    describe('acquire', () => {
-        it('should resolve immediately when under limit', async () => {
-            vi.mocked(nw).mockReturnValue(1000);
+    it('should queue when at limit', async () => {
+      vi.mocked(nw).mockReturnValue(1000);
+      vi.mocked(np).mockImplementation(fn => {
+        const promise = new Promise(fn);
+        return promise;
+      });
+      vi.mocked(to).mockImplementation(fn => fn());
 
-            await limiter.acquire();
+      // Fill the limit
+      await limiter.acquire();
+      await limiter.acquire();
 
-            expect(limiter.queue).toHaveLength(0);
-            expect(limiter.timestamps).toHaveLength(1);
-        });
+      // This should queue
+      const acquirePromise = limiter.acquire();
 
-        it('should queue when at limit', async () => {
-            vi.mocked(nw).mockReturnValue(1000);
-            vi.mocked(np).mockImplementation((fn) => {
-                const promise = new Promise(fn);
-                return promise;
-            });
-            vi.mocked(to).mockImplementation((fn) => fn());
+      expect(limiter.queue).toHaveLength(1);
 
-            // Fill the limit
-            await limiter.acquire();
-            await limiter.acquire();
+      // Simulate time passing
+      vi.mocked(nw).mockReturnValue(2000);
 
-            // This should queue
-            const acquirePromise = limiter.acquire();
+      await acquirePromise;
 
-            expect(limiter.queue).toHaveLength(1);
+      expect(limiter.queue).toHaveLength(0);
+    });
+  });
 
-            // Simulate time passing
-            vi.mocked(nw).mockReturnValue(2000);
+  describe('getStats', () => {
+    it('should return current stats', () => {
+      vi.mocked(nw).mockReturnValue(1000);
 
-            await acquirePromise;
+      limiter.acquire();
 
-            expect(limiter.queue).toHaveLength(0);
-        });
+      const stats = limiter.getStats();
+
+      expect(stats.activeRequests).toBe(1);
+      expect(stats.maxRequests).toBe(2);
+      expect(stats.queueLength).toBe(0);
+      expect(stats.available).toBe(1);
     });
 
-    describe('getStats', () => {
-        it('should return current stats', () => {
-            vi.mocked(nw).mockReturnValue(1000);
+    it('should filter old timestamps', () => {
+      vi.mocked(nw).mockReturnValue(1000);
+      limiter.acquire();
+      vi.mocked(nw).mockReturnValue(2000); // After window
 
-            limiter.acquire();
+      const stats = limiter.getStats();
 
-            const stats = limiter.getStats();
-
-            expect(stats.activeRequests).toBe(1);
-            expect(stats.maxRequests).toBe(2);
-            expect(stats.queueLength).toBe(0);
-            expect(stats.available).toBe(1);
-        });
-
-        it('should filter old timestamps', () => {
-            vi.mocked(nw).mockReturnValue(1000);
-            limiter.acquire();
-            vi.mocked(nw).mockReturnValue(2000); // After window
-
-            const stats = limiter.getStats();
-
-            expect(stats.activeRequests).toBe(0);
-        });
+      expect(stats.activeRequests).toBe(0);
     });
+  });
 });

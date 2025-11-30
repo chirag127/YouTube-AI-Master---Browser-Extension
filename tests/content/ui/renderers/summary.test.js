@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock runtime first to control gu output
 vi.mock('../../../../extension/utils/shortcuts/runtime.js', () => ({
-  gu: (path) => {
+  gu: path => {
     const mapping = {
       'utils/shortcuts/log.js': '../../../utils/shortcuts/log.js',
       'content/ui/components/loading.js': '../components/loading.js',
@@ -19,7 +19,9 @@ vi.mock('../../../../extension/utils/shortcuts/log.js', () => ({
 }));
 
 vi.mock('../../../../extension/content/ui/components/loading.js', () => ({
-  showPlaceholder: (c, msg) => { c.innerHTML = `<div class="placeholder">${msg}</div>`; },
+  showPlaceholder: (c, msg) => {
+    c.innerHTML = `<div class="placeholder">${msg}</div>`;
+  },
 }));
 
 vi.mock('../../../../extension/content/utils/timestamps.js', () => ({
@@ -27,7 +29,7 @@ vi.mock('../../../../extension/content/utils/timestamps.js', () => ({
 }));
 
 vi.mock('../../../../extension/lib/marked-loader.js', () => ({
-  parseMarkdown: vi.fn().mockImplementation((text) => Promise.resolve(`<p>${text}</p>`)),
+  parseMarkdown: vi.fn().mockImplementation(text => Promise.resolve(`<p>${text}</p>`)),
 }));
 
 // Import module under test

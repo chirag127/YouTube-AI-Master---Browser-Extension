@@ -46,7 +46,9 @@ export class HttpClient {
         }
 
         lastError = await this._createError(response);
-        w(`[HttpClient:Retry] Attempt ${attempt + 1} failed with status ${response.status}, will retry`);
+        w(
+          `[HttpClient:Retry] Attempt ${attempt + 1} failed with status ${response.status}, will retry`
+        );
       } catch (error) {
         if (error.name === 'AbortError') {
           lastError = new Error(`Request timeout after ${this.timeout}ms`);
@@ -70,7 +72,10 @@ export class HttpClient {
     }
 
     const totalTime = Date.now() - startTime;
-    e(`[HttpClient:Fail] All ${this.maxRetries + 1} attempts failed after ${totalTime}ms:`, lastError.message);
+    e(
+      `[HttpClient:Fail] All ${this.maxRetries + 1} attempts failed after ${totalTime}ms:`,
+      lastError.message
+    );
     throw lastError;
   }
 

@@ -1,4 +1,3 @@
-import { gu } from '../../utils/shortcuts/runtime.js';
 import { e } from '../../utils/shortcuts/log.js';
 import { to } from '../../utils/shortcuts/global.js';
 import { js } from '../../utils/shortcuts/core.js';

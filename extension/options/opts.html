@@ -1,115 +1,131 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube AI Navigator - Settings</title>
+    <link rel="stylesheet" href="options.css" />
+    <link rel="stylesheet" href="banner-styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YouTube AI Navigator - Settings</title>
-  <link rel="stylesheet" href="options.css" />
-  <link rel="stylesheet" href="banner-styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-</head>
+  <body>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo-icon">⚡</div>
+          <h1>AI Navigator</h1>
+        </div>
+        <nav class="nav-menu">
+          <button class="nav-item active" data-section="general">
+            <span class="icon">⚙️</span> General
+          </button>
+          <button class="nav-item" data-section="cache"><span class="icon">💾</span> Cache</button>
+          <button class="nav-item" data-section="transcript">
+            <span class="icon">📝</span> Transcript
+          </button>
+          <button class="nav-item" data-section="comments">
+            <span class="icon">💬</span> Comments
+          </button>
+          <button class="nav-item" data-section="metadata">
+            <span class="icon">📊</span> Metadata
+          </button>
+          <button class="nav-item" data-section="scroll">
+            <span class="icon">📜</span> Scroll & UI
+          </button>
+          <button class="nav-item" data-section="widget">
+            <span class="icon">🎨</span> Widget
+          </button>
+          <button class="nav-item" data-section="ai-config">
+            <span class="icon">🤖</span> AI Configuration
+          </button>
+          <button class="nav-item" data-section="segments">
+            <span class="icon">🎯</span> Segments
+          </button>
+          <button class="nav-item" data-section="performance">
+            <span class="icon">⚡</span> Performance
+          </button>
+          <button class="nav-item" data-section="external-apis">
+            <span class="icon">🌐</span> External APIs
+          </button>
+          <button class="nav-item" data-section="integrations">
+            <span class="icon">🔗</span> Integrations
+          </button>
+          <button class="nav-item" data-section="prompts">
+            <span class="icon">✍️</span> Prompts
+          </button>
+          <button class="nav-item" data-section="notifications">
+            <span class="icon">🔔</span> Notifications
+          </button>
+          <button class="nav-item" data-section="advanced">
+            <span class="icon">🔧</span> Advanced
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <p>v1.0.0</p>
+          <a href="https://github.com/chirag127/YouTube-AI-Navigator" target="_blank">GitHub</a>
+        </div>
+      </aside>
 
-<body>
-  <div class="app-container">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo-icon">⚡</div>
-        <h1>AI Navigator</h1>
-      </div>
-      <nav class="nav-menu">
-        <button class="nav-item active" data-section="general">
-          <span class="icon">⚙️</span> General
-        </button>
-        <button class="nav-item" data-section="cache"><span class="icon">💾</span> Cache</button>
-        <button class="nav-item" data-section="transcript">
-          <span class="icon">📝</span> Transcript
-        </button>
-        <button class="nav-item" data-section="comments">
-          <span class="icon">💬</span> Comments
-        </button>
-        <button class="nav-item" data-section="metadata">
-          <span class="icon">📊</span> Metadata
-        </button>
-        <button class="nav-item" data-section="scroll">
-          <span class="icon">📜</span> Scroll & UI
-        </button>
-        <button class="nav-item" data-section="widget"><span class="icon">🎨</span> Widget</button>
-        <button class="nav-item" data-section="ai-config">
-          <span class="icon">🤖</span> AI Configuration
-        </button>
-        <button class="nav-item" data-section="segments">
-          <span class="icon">🎯</span> Segments
-        </button>
-        <button class="nav-item" data-section="performance">
-          <span class="icon">⚡</span> Performance
-        </button>
-        <button class="nav-item" data-section="external-apis">
-          <span class="icon">🌐</span> External APIs
-        </button>
-        <button class="nav-item" data-section="integrations">
-          <span class="icon">🔗</span> Integrations
-        </button>
-        <button class="nav-item" data-section="prompts"><span class="icon">✍️</span> Prompts</button>
-        <button class="nav-item" data-section="notifications">
-          <span class="icon">🔔</span> Notifications
-        </button>
-        <button class="nav-item" data-section="advanced">
-          <span class="icon">🔧</span> Advanced
-        </button>
-      </nav>
-      <div class="sidebar-footer">
-        <p>v1.0.0</p>
-        <a href="https://github.com/chirag127/YouTube-AI-Navigator" target="_blank">GitHub</a>
-      </div>
-    </aside>
-
-    <main class="content-area">
-      <!-- Welcome Banner (shown for new users) -->
-      <div id="welcome-banner" class="welcome-banner" style="display: none">
-        <div class="banner-content">
-          <span class="banner-icon">👋</span>
-          <div class="banner-text">
-            <strong>Welcome to YouTube AI Navigator!</strong>
-            <p>Complete the setup guide to get started with AI-powered video analysis.</p>
-          </div>
-          <div class="banner-actions">
-            <button id="start-setup-btn" class="btn btn-primary">Start Setup</button>
-            <button id="dismiss-banner-btn" class="btn-icon">✕</button>
+      <main class="content-area">
+        <!-- Welcome Banner (shown for new users) -->
+        <div id="welcome-banner" class="welcome-banner" style="display: none">
+          <div class="banner-content">
+            <span class="banner-icon">👋</span>
+            <div class="banner-text">
+              <strong>Welcome to YouTube AI Navigator!</strong>
+              <p>Complete the setup guide to get started with AI-powered video analysis.</p>
+            </div>
+            <div class="banner-actions">
+              <button id="start-setup-btn" class="btn btn-primary">Start Setup</button>
+              <button id="dismiss-banner-btn" class="btn-icon">✕</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sections will be loaded dynamically here -->
+        <!-- Sections will be loaded dynamically here -->
+      </main>
 
-    </main>
-
-    <div id="toast" class="toast">Settings saved</div>
-  </div>
-
-  <!-- Template for Segment Item -->
-  <template id="segmentItemTemplate">
-    <div class="segment-item" data-category="">
-      <div class="segment-info">
-        <span class="segment-color"></span>
-        <span class="segment-name">Category Name</span>
-      </div>
-      <div class="segment-controls">
-        <select class="segment-action form-select-sm" name="segment-action" aria-label="Segment Action">
-          <option value="ignore">Ignore</option>
-          <option value="skip">Skip</option>
-          <option value="speed">Speed Up</option>
-        </select>
-        <div class="speed-control hidden">
-          <input type="range" class="speed-slider" name="speed-slider" min="1" max="16" step="0.5" value="2"
-            aria-label="Speed Multiplier" />
-          <span class="speed-value">2x</span>
-        </div>
-      </div>
+      <div id="toast" class="toast">Settings saved</div>
     </div>
-  </template>
 
-  <script src="options.js" type="module"></script>
-</body>
+    <!-- Template for Segment Item -->
+    <template id="segmentItemTemplate">
+      <div class="segment-item" data-category="">
+        <div class="segment-info">
+          <span class="segment-color"></span>
+          <span class="segment-name">Category Name</span>
+        </div>
+        <div class="segment-controls">
+          <select
+            class="segment-action form-select-sm"
+            name="segment-action"
+            aria-label="Segment Action"
+          >
+            <option value="ignore">Ignore</option>
+            <option value="skip">Skip</option>
+            <option value="speed">Speed Up</option>
+          </select>
+          <div class="speed-control hidden">
+            <input
+              type="range"
+              class="speed-slider"
+              name="speed-slider"
+              min="1"
+              max="16"
+              step="0.5"
+              value="2"
+              aria-label="Speed Multiplier"
+            />
+            <span class="speed-value">2x</span>
+          </div>
+        </div>
+      </div>
+    </template>
 
+    <script src="options.js" type="module"></script>
+  </body>
 </html>

@@ -5,8 +5,21 @@ const { seekVideo } = await import(gu('content/utils/dom.js'));
 const { formatTime } = await import(gu('content/utils/time.js'));
 const { id: ge, on, qs: $, qsa: $$ } = await import(gu('utils/shortcuts/dom.js'));
 const { e } = await import(gu('utils/shortcuts/log.js'));
+const { sg, ss } = await import(gu('utils/shortcuts/storage.js'));
 
 let autoCloseEnabled = true;
+
+// Load initial state from config
+(async () => {
+  try {
+    const r = await sg('config');
+    if (r.config?.transcript?.autoClose !== undefined) {
+      autoCloseEnabled = r.config.transcript.autoClose;
+    }
+  } catch (err) {
+    e('Err:loadAutoClose', err);
+  }
+})();
 
 export function renderTranscript(c, s) {
   try {
@@ -17,18 +30,16 @@ export function renderTranscript(c, s) {
 
     // Use ytai-transcript-line class from styles.css
     const h = s
-      .map(
-        (x, i) => {
-          // Stagger animation
-          const delay = Math.min(i * 0.02, 1.0); // Cap delay to avoid long waits
-          return `
+      .map((x, i) => {
+        // Stagger animation
+        const delay = Math.min(i * 0.02, 1.0); // Cap delay to avoid long waits
+        return `
             <div class="ytai-transcript-line" data-time="${x.start}" style="animation: slideUpFade 0.3s var(--ease-fluid) ${delay}s backwards">
               <span class="ytai-transcript-timestamp">${formatTime(x.start)}</span>
               <span class="ytai-transcript-text">${x.text}</span>
             </div>
           `;
-        }
-      )
+      })
       .join('');
 
     const ab = `
@@ -47,10 +58,21 @@ export function renderTranscript(c, s) {
 
     const tb = $('#yt-ai-transcript-autoclose-toggle', c);
     if (tb) {
-      on(tb, 'click', () => {
+      on(tb, 'click', async () => {
         autoCloseEnabled = !autoCloseEnabled;
         tb.classList.toggle('active', autoCloseEnabled);
         tb.textContent = `${autoCloseEnabled ? '✓' : '✗'} Auto-close after extraction`;
+
+        // Save to config
+        try {
+          const r = await sg('config');
+          const config = r.config || {};
+          config.transcript = config.transcript || {};
+          config.transcript.autoClose = autoCloseEnabled;
+          await ss({ config });
+        } catch (err) {
+          e('Err:saveAutoClose', err);
+        }
       });
     }
   } catch (err) {

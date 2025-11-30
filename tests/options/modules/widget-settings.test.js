@@ -138,9 +138,12 @@ describe('WidgetSettings', () => {
     expect(settingsManager.set).toHaveBeenCalledWith('widget.height', 700);
     expect(settingsManager.set).toHaveBeenCalledWith('widget.resizable', true);
     expect(settingsManager.set).toHaveBeenCalledWith('widget.tabs.summary', true);
-    expect(settingsManager.set).toHaveBeenCalledWith('widget.segmentFilters', expect.objectContaining({
+    expect(settingsManager.set).toHaveBeenCalledWith(
+      'widget.segmentFilters',
+      expect.objectContaining({
         sponsor: true,
-    }));
+      })
+    );
     expect(settingsManager.save).toHaveBeenCalled();
   });
 });

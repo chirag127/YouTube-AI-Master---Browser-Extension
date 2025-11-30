@@ -5,7 +5,7 @@ const mockMsg = vi.fn();
 global.chrome = {
   runtime: {
     sendMessage: mockMsg,
-    getURL: (path) => path,
+    getURL: path => path,
   },
 };
 
@@ -13,9 +13,7 @@ global.chrome = {
 async function sendMessageWithTimeout(message, timeout) {
   return Promise.race([
     mockMsg(message),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Timeout')), timeout)
-    ),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout)),
   ]);
 }
 
@@ -31,8 +29,8 @@ describe('Settings Fetch Timeout', () => {
   it('should throw timeout error when msg hangs', async () => {
     mockMsg.mockImplementation(() => new Promise(() => {})); // Never resolves
 
-    await expect(
-      sendMessageWithTimeout({ action: 'GET_SETTINGS' }, 100)
-    ).rejects.toThrow('Timeout');
+    await expect(sendMessageWithTimeout({ action: 'GET_SETTINGS' }, 100)).rejects.toThrow(
+      'Timeout'
+    );
   });
 });

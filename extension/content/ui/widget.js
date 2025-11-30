@@ -449,11 +449,19 @@ function setupDragHandler(c) {
     header.style.cursor = 'grab';
 
     let isDragging = false;
-    let startX, startY, initialTransformX = 0, initialTransformY = 0;
+    let startX,
+      startY,
+      initialTransformX = 0,
+      initialTransformY = 0;
 
     on(header, 'mousedown', e => {
       // Ignore if clicking buttons/inputs
-      if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.yt-ai-icon-btn')) return;
+      if (
+        e.target.closest('button') ||
+        e.target.closest('input') ||
+        e.target.closest('.yt-ai-icon-btn')
+      )
+        return;
 
       e.preventDefault();
       isDragging = true;
@@ -463,6 +471,7 @@ function setupDragHandler(c) {
 
       // Parse current transform
       const style = window.getComputedStyle(c);
+      // eslint-disable-next-line no-undef
       const matrix = new WebKitCSSMatrix(style.transform);
       initialTransformX = matrix.m41;
       initialTransformY = matrix.m42;

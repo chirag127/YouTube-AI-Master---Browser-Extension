@@ -20,7 +20,7 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
 const mockStorage = {};
 vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   sg: vi.fn(async () => ({ config: mockStorage })),
-  ss: vi.fn(async (data) => {
+  ss: vi.fn(async data => {
     Object.assign(mockStorage, data.config);
   }),
 }));

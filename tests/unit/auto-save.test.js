@@ -7,8 +7,8 @@ const mocks = vi.hoisted(() => ({
   on: vi.fn(),
   e: vi.fn(),
   to: vi.fn((cb, d) => setTimeout(cb, d)),
-  clt: vi.fn((t) => clearTimeout(t)),
-  oe: vi.fn((obj) => Object.entries(obj)),
+  clt: vi.fn(t => clearTimeout(t)),
+  oe: vi.fn(obj => Object.entries(obj)),
 }));
 
 vi.mock('../../extension/utils/shortcuts/log.js', () => ({

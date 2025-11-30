@@ -151,7 +151,6 @@ export async function renderSegments(c, data) {
         e.style.textShadow = 'none';
       });
     });
-
   } catch (err) {
     e('Err:renderSegments', err);
   }

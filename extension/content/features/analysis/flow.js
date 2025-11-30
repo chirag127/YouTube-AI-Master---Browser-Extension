@@ -32,7 +32,7 @@ export async function startAnalysis() {
         msg({ action: 'GET_SETTINGS' }),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Settings fetch timeout')), timeout)
-        )
+        ),
       ]);
     };
 
@@ -43,8 +43,8 @@ export async function startAnalysis() {
       // Fallback to default settings on timeout or error
       cfg = {
         externalApis: {
-          deArrow: { enabled: true, usePrivateAPI: true }
-        }
+          deArrow: { enabled: true, usePrivateAPI: true },
+        },
       };
       // Log warning but continue
       console.warn('[YAM] Settings fetch failed/timed out, using defaults:', err.message);

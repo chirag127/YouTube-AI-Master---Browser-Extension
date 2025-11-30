@@ -15,7 +15,7 @@ AI-powered YouTube analysis extension. Transcripts, insights, segments, comments
   - **Bulk Operations**: Set all segments to skip/speed/ignore with one click
 - **Comment Analysis**: Sentiment analysis, key themes
 - **Configurable Output**: Control summary length (short/medium/long), max insights (3-20), max FAQ (3-15), timestamps on/off
-- **Widget UI**: Responsive sidebar widget with 4 tabs (Summary, Segments, Chat, Comments) - 70vh scrollable content area
+- **Widget UI**: Responsive sidebar widget with 4 tabs (Summary, Segments, Chat, Comments) - 70vh scrollable content area with "Scrollytelling" animations
 - **DeArrow Integration**: Community-sourced clickbait-free titles
 - **SponsorBlock**: Skip/speed through segments (configurable per category)
 - **Comprehensive Options Page**: Full-featured settings UI for all configuration aspects
@@ -50,20 +50,22 @@ The extension implements **maximum user configurability** - every feature, rule,
 - **External APIs**: TMDB, NewsData, Google Fact Check, Twitch (client ID/access token), enable/disable toggles for all 14 APIs
 - **Advanced**: Debug mode, enable telemetry, max history (10-1000), export/import settings, reset defaults
 
-### Widget Appearance
+### Widget Appearance (2026 Futurist Standard)
 
-- **Futuristic/Cyber-Minimalist Aesthetic (2026 Standard):** Glassmorphism with backdrop-filter blur, neomorphic depth using subtle shadows, retina-ready SVG icons, fluid animations with cubic-bezier transitions.
-- **Glassmorphism UI:** Modern, semi-transparent design with backdrop blur.
-- **Neomorphic Depth:** Subtle shadows for 3D button effects and depth perception.
-- **SVG Icons:** Retina-ready vector graphics for crisp display at all resolutions.
-- **Fluid Animations:** All interactions use `transition: all 0.2s cubic-bezier(...)` for instant, smooth feedback.
-- **Micro-interactions:** Buttons glow on hover/focus, instant optimistic UI updates.
-- **Opacity & Blur:** Adjust the transparency and blur strength of the widget background.
-- **UI Scale:** Resize the entire widget interface to fit your screen or preference.
-- **Positioning:** Choose between Left or Right sidebar placement.
-- **Resizability:** Fully resizable width and height with drag handles.
-- **Dynamic Height:** Automatically constrains widget height to fit within the viewport (prevents clipping when console is open).
-- **Viewport Margin:** Configurable bottom safety margin.
+- **Hybrid Aesthetic:** "Liquid Glass" translucency meets "Neo-Brutalist" boldness.
+- **Liquid Glass:** High-saturation background blurs (`backdrop-filter: blur(40px)`), fluid gradients, and light reflection effects.
+- **Neo-Brutalism:** High-contrast borders, raw typography (JetBrains Mono + Outfit), and hard shadows for interactive elements.
+- **Scrollytelling:** Data elements (segments, insights, comments) animate in sequentially with staggered delays to guide the user's eye.
+- **Micro-interactions:** Every hover, click, and focus state triggers fluid feedback animations (`cubic-bezier` easing).
+- **Hyper-Configurability:**
+    - **Theme:** Toggle between Dark, Light, and System themes.
+    - **Opacity & Blur:** Fine-tune the glass effect intensity.
+    - **Accent Color:** Choose from a neon palette (Cyber Blue, Neon Pink, Acid Green).
+    - **Scale:** Adjust the UI size from 75% to 125%.
+- **Responsive Layout:**
+    - **Dynamic Height:** Automatically adapts to viewport height to prevent clipping.
+    - **Resizability:** Drag handles for both width and height.
+    - **Positioning:** Dock to Left or Right side.
 
 ### Widget Behavior
 

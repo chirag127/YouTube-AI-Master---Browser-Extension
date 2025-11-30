@@ -1,9 +1,83 @@
+ :root {
+  /*
+   * THEME ENGINE: 2026
+   * Default: Purple Liquid Glass (Deep Space)
+   */
+  --glass-surface: rgba(30, 20, 50, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+
+  --primary-neon: #00f3ff;
+  --primary-glow: rgba(0, 243, 255, 0.4);
+  --secondary-neon: #bc13fe;
+  --secondary-glow: rgba(188, 19, 254, 0.4);
+
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+
+  --backdrop-blur: blur(30px);
+  --transition-fluid: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* THEME: Neo-Brutalism */
+[data-theme='neo-brutalism'] {
+  --glass-surface: #000000;
+  --glass-border: #ffffff;
+  --glass-highlight: transparent;
+  --glass-shadow: 8px 8px 0px rgba(0, 243, 255, 1);
+
+  --primary-neon: #00f3ff;
+  --primary-glow: transparent;
+  --secondary-neon: #ff00ff;
+
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
+
+  --backdrop-blur: none;
+}
+
+/* THEME: Midnight Cyber */
+[data-theme='midnight-cyber'] {
+  --glass-surface: rgba(5, 5, 10, 0.95);
+  --glass-border: rgba(0, 243, 255, 0.3);
+  --glass-highlight: rgba(0, 243, 255, 0.1);
+  --glass-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+
+  --primary-neon: #00ff9d;
+  --primary-glow: rgba(0, 255, 157, 0.4);
+  --secondary-neon: #ff0055;
+
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 4px;
+
+  --backdrop-blur: blur(10px);
+}
+
+/*
+ * MASTER WIDGET CONTAINER
+ * The "Floating Prism"
+ */
+#yt-ai-master-widget {
+  background: var(--glass-surface);
+  backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
   border-top: 1px solid var(--glass-highlight);
   border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow),
-              0 0 0 1px rgba(255,255,255,0.05) inset; /* Inner rim light */
+  box-shadow:
+    var(--glass-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset; /* Inner rim light */
   margin-bottom: 24px;
   overflow: hidden;
   font-family: var(--font-display);
@@ -21,8 +95,9 @@
 }
 
 #yt-ai-master-widget:hover {
-  box-shadow: var(--glass-shadow),
-              0 0 20px rgba(0, 243, 255, 0.1); /* Subtle glow on hover */
+  box-shadow:
+    var(--glass-shadow),
+    0 0 30px rgba(188, 19, 254, 0.15); /* Purple glow on hover */
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -31,7 +106,7 @@
   max-height: 72px !important;
   min-height: 72px !important;
   cursor: pointer;
-  background: rgba(10, 10, 12, 0.8);
+  background: rgba(30, 20, 50, 0.95);
 }
 
 #yt-ai-master-widget.yt-ai-collapsed:hover {
@@ -56,8 +131,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .yt-ai-title {
@@ -66,11 +141,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #fff 0%, #b0b0b0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.03em;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .yt-ai-icon-btn {
@@ -78,7 +150,7 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   padding: 8px;
   border-radius: 50%;
   transition: all 0.2s var(--transition-smooth);
@@ -88,8 +160,8 @@
 }
 
 .yt-ai-icon-btn:hover {
-  background: rgba(255,255,255,0.1);
-  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff4d4d; /* Red for close */
   transform: rotate(90deg);
 }
 
@@ -100,7 +172,7 @@
 .yt-ai-tabs {
   display: flex;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 16px 24px 8px 24px;
   overflow-x: auto;
   scrollbar-width: none; /* Hide scrollbar */
 }
@@ -110,12 +182,12 @@
 }
 
 .yt-ai-tab {
-  padding: 8px 16px;
+  padding: 8px 20px;
   border-radius: 100px; /* Pill shape */
   font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.3s var(--transition-smooth);
@@ -123,15 +195,15 @@
 }
 
 .yt-ai-tab:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text-main);
 }
 
 .yt-ai-tab.active {
   background: rgba(0, 243, 255, 0.1);
   color: var(--primary-neon);
-  border-color: rgba(0, 243, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  border-color: var(--primary-neon);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
 }
 
 /*
@@ -170,18 +242,19 @@
  */
 .yt-ai-chat-input {
   padding: 20px 24px;
-  background: linear-gradient(0deg, rgba(0,0,0,0.2) 0%, transparent 100%);
+  background: linear-gradient(0deg, rgba(20, 10, 30, 0.4) 0%, transparent 100%);
   display: flex;
   gap: 12px;
   position: relative;
+  margin-top: auto; /* Push to bottom */
 }
 
 #yt-ai-chat-input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
+  border-radius: 100px; /* Full rounded */
+  padding: 14px 20px;
   color: var(--text-main);
   font-family: var(--font-display);
   font-size: 14px;
@@ -190,7 +263,7 @@
 }
 
 #yt-ai-chat-input:focus {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.4);
   border-color: var(--primary-neon);
   box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.1);
 }
@@ -199,8 +272,8 @@
   background: var(--primary-neon);
   color: #000;
   border: none;
-  border-radius: var(--radius-md);
-  padding: 0 20px;
+  border-radius: 100px;
+  padding: 0 24px;
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
@@ -211,7 +284,7 @@
 
 #yt-ai-chat-send:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--primary-glow);
+  box-shadow: 0 4px 15px var(--primary-glow);
 }
 
 /*
@@ -229,10 +302,6 @@
 
 .yt-ai-markdown h1 {
   font-size: 1.5em;
-  background: linear-gradient(90deg, #fff, #aaa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .yt-ai-markdown p {
@@ -316,7 +385,7 @@
   align-items: center;
   justify-content: center;
   cursor: ns-resize;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255, 255, 255, 0.2);
   font-size: 10px;
   letter-spacing: 2px;
   transition: color 0.2s;
@@ -341,7 +410,7 @@
 }
 
 .yt-ai-resize-handle-width:hover {
-  background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent);
+  background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), transparent);
   color: var(--primary-neon);
 }
 
@@ -351,17 +420,63 @@
 .yt-ai-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255,255,255,0.1);
+  border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--primary-neon);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+ * CARDS & PANELS
+ */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: all 0.3s var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.yt-ai-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--primary-neon);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.yt-ai-card-content {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
 
 /*
  * CHAT MESSAGES
  */
+.yt-ai-chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .yt-ai-chat-msg {
   padding: 12px 16px;
   border-radius: var(--radius-md);
@@ -385,4 +500,79 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   align-self: flex-start;
   border-bottom-left-radius: 4px;
+}
+
+/*
+ * SEGMENTS UI
+ * Glass Cards & Neon Accents
+ */
+.yt-ai-segments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.yt-ai-segment-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s var(--transition-smooth);
+  animation: slideIn 0.5s var(--transition-fluid) backwards;
+}
+
+.yt-ai-segment-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.yt-ai-segment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.yt-ai-segment-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.yt-ai-segment-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.yt-ai-segment-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.yt-ai-segment-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
