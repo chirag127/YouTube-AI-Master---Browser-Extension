@@ -1,4 +1,4 @@
-<section id="performance" class="tab-content">
+<section id="performance" class="section-content">
   <header class="section-header">
     <h2>Performance</h2>
     <p>Optimize speed and resource usage</p>
@@ -6,10 +6,10 @@
   <div class="glass-card">
     <h3>Request Management</h3>
     <div class="form-group">
-      <label for="maxConcurrentRequests">Max Concurrent Requests</label>
+      <label for="section-maxConcurrentRequests">Max Concurrent Requests</label>
       <input
         type="number"
-        id="maxConcurrentRequests" name="maxConcurrentRequests"
+        id="section-maxConcurrentRequests" name="section-maxConcurrentRequests"
         class="form-input"
         min="1"
         max="10"
@@ -18,10 +18,10 @@
       <p class="help-text">Parallel API requests (1-10)</p>
     </div>
     <div class="form-group">
-      <label for="rateLimitDelay">Rate Limit Delay (ms)</label>
+      <label for="section-rateLimitDelay">Rate Limit Delay (ms)</label>
       <input
         type="number"
-        id="rateLimitDelay" name="rateLimitDelay"
+        id="section-rateLimitDelay" name="section-rateLimitDelay"
         class="form-input"
         min="0"
         max="5000"
@@ -31,15 +31,15 @@
       <p class="help-text">Delay between requests (0-5000ms)</p>
     </div>
     <div class="form-group">
-      <label for="retryAttempts">Retry Attempts</label>
-      <input type="number" id="retryAttempts" name="retryAttempts" class="form-input" min="0" max="10" value="3" />
+      <label for="section-retryAttempts">Retry Attempts</label>
+      <input type="number" id="section-retryAttempts" name="section-retryAttempts" class="form-input" min="0" max="10" value="3" />
       <p class="help-text">Retries on failure (0-10)</p>
     </div>
     <div class="form-group">
-      <label for="retryDelay">Retry Delay (ms)</label>
+      <label for="section-retryDelay">Retry Delay (ms)</label>
       <input
         type="number"
-        id="retryDelay" name="retryDelay"
+        id="section-retryDelay" name="section-retryDelay"
         class="form-input"
         min="0"
         max="10000"
