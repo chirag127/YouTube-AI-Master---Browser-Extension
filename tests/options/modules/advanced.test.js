@@ -5,6 +5,7 @@ import { AdvancedSettings } from '../../../extension/options/modules/advanced.js
 vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
   id: vi.fn(),
+  on: vi.fn(),
 }));
 
 import { qs, id } from '../../../extension/utils/shortcuts/dom.js';

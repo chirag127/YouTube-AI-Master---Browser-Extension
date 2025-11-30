@@ -4,6 +4,7 @@ import { ExternalAPIs } from '../../../extension/options/modules/external-apis.j
 // Mock dependencies
 vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
+  on: vi.fn(),
 }));
 
 import { qs } from '../../../extension/utils/shortcuts/dom.js';

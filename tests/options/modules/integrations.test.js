@@ -62,6 +62,6 @@ describe('IntegrationsSettings', () => {
 
   it('should initialize with default values', () => {
     integrationsSettings.init();
-    expect(qs).toHaveBeenCalled();
+    expect(id).toHaveBeenCalled();
   });
 });

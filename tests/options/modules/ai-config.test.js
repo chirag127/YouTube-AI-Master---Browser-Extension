@@ -45,6 +45,7 @@ describe('AIConfig', () => {
 
     autoSave = {
       attachToAll: vi.fn(),
+      attachToInput: vi.fn(),
     };
 
     aiConfig = new AIConfig(settingsManager, autoSave);

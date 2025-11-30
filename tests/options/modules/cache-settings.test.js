@@ -5,6 +5,7 @@ import { CacheSettings } from '../../../extension/options/modules/cache-settings
 vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
   id: vi.fn(),
+  on: vi.fn(),
 }));
 
 import { qs, id } from '../../../extension/utils/shortcuts/dom.js';

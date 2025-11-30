@@ -61,7 +61,7 @@ describe('GeneralSettings', () => {
     generalSettings.init();
     expect(autoSave.attachToAll).toHaveBeenCalledWith(expect.objectContaining({
       theme: { path: 'ui.theme' },
-      language: { path: 'transcript.language' },
+      outputLanguage: { path: 'ai.outputLanguage' },
     }));
   });
 });

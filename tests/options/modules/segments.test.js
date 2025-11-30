@@ -77,6 +77,6 @@ describe('SegmentsConfig', () => {
 
   it('should initialize with default values', () => {
     segmentsConfig.init();
-    expect(autoSave.attachToAll).toHaveBeenCalled();
+    expect(on).toHaveBeenCalled();
   });
 });
