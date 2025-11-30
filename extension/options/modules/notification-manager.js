@@ -9,13 +9,21 @@ export class NotificationManager {
     this.init();
   }
   init() {
-    this.container = cr('div');
-    this.container.id = 'notification-container';
-    this.container.style.cssText =
-      'position:fixed;top:20px;right:20px;z-index:2147483647;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
-    ap(document.body, this.container);
+    if (document.body) {
+      this.container = cr('div');
+      this.container.id = 'notification-container';
+      this.container.style.cssText =
+        'position:fixed;top:20px;right:20px;z-index:2147483647;display:flex;flex-direction:column;gap:10px;pointer-events:none;';
+      ap(document.body, this.container);
+    } else {
+      setTimeout(() => this.init(), 100);
+    }
   }
   show(m, t = 'success', d = 3000) {
+    if (!this.container) {
+      console.error('[NotificationManager] Container not initialized');
+      return null;
+    }
     const n = cr('div');
     n.className = `notification notification-${t}`;
     const i = this.getIcon(t);
