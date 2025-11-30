@@ -50,7 +50,7 @@ export class AutoSave {
   }
   attachToAll(m) {
     oe(m).forEach(([id, c]) => {
-      const el = i(`#${id}`);
+      const el = i(c.selector || `#${id}`);
       if (el) {
         this.attachToInput(el, c.path, c.transform);
       } else {

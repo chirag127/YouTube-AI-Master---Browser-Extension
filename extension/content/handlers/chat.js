@@ -6,7 +6,7 @@ const { addChatMessage } = await import(gu('content/ui/renderers/chat.js'));
 const { parseMarkdown } = await import(gu('lib/marked-loader.js'));
 const { qs } = await import(gu('utils/shortcuts/dom.js'));
 const { rs } = await import(gu('utils/shortcuts/runtime.js'));
-const { mp, jn } = await import(gu('utils/shortcuts/array.js'));
+const { am, ajn } = await import(gu('utils/shortcuts/array.js'));
 export async function sendChatMessage() {
   try {
     const i = qs('#yt-ai-chat-input'),
@@ -16,8 +16,8 @@ export async function sendChatMessage() {
     i.value = '';
     const el = await addChatMessage('ai', 'Thinking...');
     try {
-      const ctx = jn(
-        mp(state.currentTranscript, t => t.text),
+      const ctx = ajn(
+        am(state.currentTranscript, t => t.text),
         ' '
       );
       const md = null;

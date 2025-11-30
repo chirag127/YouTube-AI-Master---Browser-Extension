@@ -3,7 +3,7 @@ import { sf as safeFetch } from '../utils/shortcuts/network.js';
 import { sg } from '../utils/shortcuts/storage.js';
 
 const BASE_URL = 'https://musicbrainz.org/ws/2';
-const UA = 'YouTubeAIMaster/1.0.0 ( contact@example.com )';
+const UA = 'YouTubeAINavigator/1.0.0 ( contact@example.com )';
 
 export class MusicBrainzAPI {
   async searchArtist(query) {

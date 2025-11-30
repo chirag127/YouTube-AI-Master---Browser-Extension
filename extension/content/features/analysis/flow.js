@@ -20,7 +20,31 @@ export async function startAnalysis() {
   const ca = i('yt-ai-content-area');
   try {
     showLoading(ca, 'Extracting video metadata...');
-    const cfg = await msg({ action: 'GET_SETTINGS' });
+
+    // Helper to fetch settings with timeout
+    const getSettingsWithTimeout = async (timeout = 2000) => {
+      return Promise.race([
+        msg({ action: 'GET_SETTINGS' }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Settings fetch timeout')), timeout)
+        )
+      ]);
+    };
+
+    let cfg;
+    try {
+      cfg = await getSettingsWithTimeout(2000);
+    } catch (err) {
+      // Fallback to default settings on timeout or error
+      cfg = {
+        externalApis: {
+          deArrow: { enabled: true, usePrivateAPI: true }
+        }
+      };
+      // Log warning but continue
+      console.warn('[YAM] Settings fetch failed/timed out, using defaults:', err.message);
+    }
+
     const daOpt = {
       useDeArrow: cfg?.externalApis?.deArrow?.enabled ?? true,
       usePrivateDeArrow: cfg?.externalApis?.deArrow?.usePrivateAPI ?? true,
