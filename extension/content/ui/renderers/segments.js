@@ -29,7 +29,7 @@ export function renderSegments(c, data) {
       if (fl) {
         b.textContent = fl;
         b.style.display = 'inline-block';
-        b.style.backgroundColor = colors[fl] || '#444';
+        b.style.backgroundColor = colors[fl] || '#999';
         b.style.color = '#000';
         b.style.marginLeft = '8px';
         b.style.fontSize = '0.8em';
@@ -43,7 +43,7 @@ export function renderSegments(c, data) {
     }
     const h = s
       .map(x => {
-        const cl = colors[x.label] || '#fff';
+        const cl = colors[x.label] || '#999';
         const ts = x.timestamps || [
           { type: 'start', time: x.start },
           { type: 'end', time: x.end },
@@ -54,7 +54,7 @@ export function renderSegments(c, data) {
               `<span class="yt-ai-timestamp" data-time="${t.time}" title="Click to seek to ${formatTime(t.time)}">${formatTime(t.time)}</span>`
           )
           .join(' - ');
-        return `<div class="yt-ai-segment-item" style="border-left:4px solid ${cl}"><div class="yt-ai-segment-label">${x.label}</div><div class="yt-ai-segment-time">${th}</div>${x.title ? `<div class="yt-ai-segment-title">${x.title}</div>` : ''}<div class="yt-ai-segment-desc">${x.description || x.text || ''}</div></div>`;
+        return `<div class="yt-ai-segment-item" style="border-left:4px solid ${cl}"><div class="yt-ai-segment-label">${LM[x.label] || x.label}</div><div class="yt-ai-segment-time">${th}</div>${x.title ? `<div class="yt-ai-segment-title">${x.title}</div>` : ''}<div class="yt-ai-segment-desc">${x.description || x.text || ''}</div></div>`;
       })
       .join('');
     c.innerHTML = `<div class="yt-ai-segments-list">${h}</div>`;

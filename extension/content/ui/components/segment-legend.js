@@ -4,26 +4,14 @@ const { e } = await import(gu('utils/shortcuts/log.js'));
 const { oe } = await import(gu('utils/shortcuts/core.js'));
 const { mp, jn } = await import(gu('utils/shortcuts/array.js'));
 const { qs, ce } = await import(gu('utils/shortcuts/dom.js'));
-const colors = {
-  Sponsor: '#00d26a',
-  'Self Promotion': '#ffff00',
-  'Unpaid/Self Promotion': '#ffff00',
-  'Exclusive Access': '#008b45',
-  'Interaction Reminder (Subscribe)': '#a020f0',
-  Highlight: '#ff0055',
-  'Intermission/Intro Animation': '#00ffff',
-  'Endcards/Credits': '#0000ff',
-  'Preview/Recap': '#00bfff',
-  'Hook/Greetings': '#4169e1',
-  'Tangents/Jokes': '#9400d3',
-};
+const { CM: colors, LM } = await import(gu('utils/shortcuts/segments.js'));
 export const renderLegend = () => {
   try {
     const h = jn(
       mp(
         oe(colors),
-        ([label, c]) =>
-          `<div class="seg-legend-item"><span class="seg-color" style="background:${c}"></span><span>${label}</span></div>`
+        ([apiLabel, c]) =>
+          `<div class="seg-legend-item"><span class="seg-color" style="background:${c}"></span><span>${LM[apiLabel] || apiLabel}</span></div>`
       ),
       ''
     );
