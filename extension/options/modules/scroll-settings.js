@@ -14,7 +14,7 @@ export class ScrollSettings {
     this.chk('showScrollNotification', sc.showScrollNotification ?? true);
     this.chk('smoothScroll', sc.smoothScroll ?? true);
     this.set('scrollSpeed', sc.scrollSpeed || 'medium');
-    this.set('autoScrollDelay', sc.autoScrollDelay || 500);
+    this.set('section-autoScrollDelay', sc.autoScrollDelay || 500);
     this.set('uiTheme', ui.theme || 'dark');
     this.set('uiFontSize', ui.fontSize || 'medium');
     this.chk('uiAnimationsEnabled', ui.animationsEnabled ?? true);
@@ -26,7 +26,7 @@ export class ScrollSettings {
       showScrollNotification: { path: 'scroll.showScrollNotification' },
       smoothScroll: { path: 'scroll.smoothScroll' },
       scrollSpeed: { path: 'scroll.scrollSpeed' },
-      autoScrollDelay: { path: 'scroll.autoScrollDelay', transform: v => pi(v) },
+      'section-autoScrollDelay': { path: 'scroll.autoScrollDelay', transform: v => pi(v) },
       uiTheme: { path: 'ui.theme' },
       uiFontSize: { path: 'ui.fontSize' },
       uiAnimationsEnabled: { path: 'ui.animationsEnabled' },

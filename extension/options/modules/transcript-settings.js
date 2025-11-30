@@ -14,7 +14,7 @@ export class TranscriptSettings {
     this.chk('transcriptShowOriginal', c.showOriginal ?? false);
     this.chk('transcriptHighlightKeywords', c.highlightKeywords ?? true);
     this.chk('transcriptAutoClose', c.autoClose ?? true);
-    this.set('transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
+    this.set('section-transcriptAutoCloseDelay', c.autoCloseDelay || 1000);
     this.chk('transcriptAutoCloseOnCached', c.autoCloseOnCached ?? false);
     this.chk('transcriptAutoScroll', c.autoScroll ?? true);
     this.a.attachToAll({
@@ -25,7 +25,7 @@ export class TranscriptSettings {
       transcriptShowOriginal: { path: 'transcript.showOriginal' },
       transcriptHighlightKeywords: { path: 'transcript.highlightKeywords' },
       transcriptAutoClose: { path: 'transcript.autoClose' },
-      transcriptAutoCloseDelay: { path: 'transcript.autoCloseDelay', transform: v => pi(v) },
+      'section-transcriptAutoCloseDelay': { path: 'transcript.autoCloseDelay', transform: v => pi(v) },
       transcriptAutoCloseOnCached: { path: 'transcript.autoCloseOnCached' },
       transcriptAutoScroll: { path: 'transcript.autoScroll' },
     });

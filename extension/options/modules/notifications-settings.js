@@ -7,20 +7,20 @@ export class NotificationsSettings {
   }
   init() {
     const n = this.s.get().notifications || {};
-    this.chk('notificationsEnabled', n.enabled ?? true);
-    this.set('notificationPosition', n.position || 'top-right');
-    this.set('notificationDuration', n.duration || 3000);
-    this.chk('notificationSound', n.sound ?? false);
+    this.chk('section-notificationsEnabled', n.enabled ?? true);
+    this.set('section-notificationPosition', n.position || 'top-right');
+    this.set('section-notificationDuration', n.duration || 3000);
+    this.chk('section-notificationSound', n.sound ?? false);
     this.chk('notifyOnSave', n.showOnSave ?? true);
     this.chk('notifyOnError', n.showOnError ?? true);
     this.chk('notifyOnProgress', n.showProgress ?? true);
     this.chk('notifyOnComplete', n.showOnComplete ?? true);
     this.chk('notifyOnSegmentSkip', n.showOnSegmentSkip ?? true);
     this.a.attachToAll({
-      notificationsEnabled: { path: 'notifications.enabled' },
-      notificationPosition: { path: 'notifications.position' },
-      notificationDuration: { path: 'notifications.duration', transform: v => pi(v) },
-      notificationSound: { path: 'notifications.sound' },
+      'section-notificationsEnabled': { path: 'notifications.enabled' },
+      'section-notificationPosition': { path: 'notifications.position' },
+      'section-notificationDuration': { path: 'notifications.duration', transform: v => pi(v) },
+      'section-notificationSound': { path: 'notifications.sound' },
       notifyOnSave: { path: 'notifications.showOnSave' },
       notifyOnError: { path: 'notifications.showOnError' },
       notifyOnProgress: { path: 'notifications.showProgress' },
