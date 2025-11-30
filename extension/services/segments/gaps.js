@@ -18,7 +18,7 @@ export function fillContentGaps(c, o) {
     for (const seg of s) {
       if (seg.start > t + 1)
         f.push({
-          label: 'C',
+          label: 'content',
           labelFull: 'Content',
           start: t,
           end: seg.start,
@@ -28,7 +28,7 @@ export function fillContentGaps(c, o) {
       t = Math.max(t, seg.end);
     }
     if (t < end - 1)
-      f.push({ label: 'C', labelFull: 'Content', start: t, end, text: 'Main Content' });
+      f.push({ label: 'content', labelFull: 'Content', start: t, end, text: 'Main Content' });
     return f;
   } catch (x) {
     e('error:fillContentGaps', x);

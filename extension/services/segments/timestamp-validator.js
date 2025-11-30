@@ -13,7 +13,7 @@ export const validateSegments = s => {
       let en = parseFloat(g.end);
       if (isNaN(en) || en === -1) en = st + (parseFloat(g.duration) || 0);
       const v = { ...g, start: st, end: en };
-      if (g.label === 'Highlight') {
+      if (g.label === 'poi_highlight' || g.label === 'Highlight') {
         v.timestamps = [{ type: 'start', time: st }];
         v.hasEndTimestamp = false;
       } else {

@@ -29,7 +29,7 @@ export async function setupAutoSkip(s) {
     const msd = cfg.segments?.minSegmentDuration || 1;
     const filtered = [];
     for (const x of s) {
-      if (x.label === 'C' || x.label === 'Content' || x.label === 'Main Content') continue;
+      if (x.label === 'content' || x.label === 'Content' || x.label === 'Main Content') continue;
       const lk = await getLabelKey(x.label);
       const c = cats[lk] || { action: 'ignore', speed: 2 };
       const dur = x.end - x.start;
@@ -91,7 +91,7 @@ export function handleAutoSkip() {
     const t = v.currentTime;
     let ins = false;
     for (const s of as) {
-      if (s.label === 'C' || s.label === 'Content' || s.label === 'Main Content') continue;
+      if (s.label === 'content' || s.label === 'Content' || s.label === 'Main Content') continue;
       const tol = s.tolerance || 0.5;
       if (t >= s.start - tol && t < s.end + tol) {
         if (s.config.action === 'skip') {

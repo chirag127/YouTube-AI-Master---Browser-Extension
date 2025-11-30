@@ -145,19 +145,19 @@ Instructions:
       return null;
     }
     const lm = {
-      S: 'Sponsor',
-      SP: 'Self Promotion/Unpaid Promotion',
-      UP: 'Self Promotion/Unpaid Promotion',
-      EA: 'Exclusive Access',
-      IR: 'Interaction Reminder',
-      H: 'Highlight',
-      I: 'Intermission/Intro Animation',
-      EC: 'Endcards/Credits',
-      P: 'Preview/Recap',
-      G: 'Hook/Greetings',
-      T: 'Tangents/Jokes',
-      NM: 'Music: Non-Music Section',
-      C: 'Content',
+      sponsor: 'Sponsor',
+      selfpromo: 'Self Promotion',
+      interaction: 'Interaction Reminder',
+      intro: 'Intro',
+      outro: 'Outro',
+      preview: 'Preview',
+      music_offtopic: 'Music: Off-Topic',
+      poi_highlight: 'Highlight',
+      filler: 'Filler',
+      exclusive_access: 'Exclusive Access',
+      hook: 'Hook',
+      chapter: 'Chapter',
+      content: 'Content',
     };
     return lm[sc] || sc;
   }

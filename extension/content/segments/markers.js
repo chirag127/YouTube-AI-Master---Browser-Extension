@@ -18,7 +18,7 @@ export async function injectSegmentMarkers(s) {
       d = v?.duration || 0;
     if (!d) return;
     for (const x of s) {
-      if (x.label === 'C' || x.label === 'Content') continue;
+      if (x.label === 'content' || x.label === 'Content') continue;
       const st = (x.start / d) * 100,
         w = ((x.end - x.start) / d) * 100,
         m = ce('div');

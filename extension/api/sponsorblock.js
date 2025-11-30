@@ -1,38 +1,22 @@
 import { cwr as cw } from '../utils/shortcuts/chrome.js';
-import { ok as ks } from '../utils/shortcuts/core.js';
 import { am, ajn, af } from '../utils/shortcuts/array.js';
 import { ce } from '../utils/shortcuts/dom.js';
 
 const API_BASE = 'https://sponsor.ajay.app/api';
-const CM = {
-  sponsor: 'S',
-  selfpromo: 'SP',
-  interaction: 'IR',
-  intro: 'I',
-  outro: 'EC',
-  preview: 'P',
-  music_offtopic: 'NM',
-  poi_highlight: 'H',
-  filler: 'T',
-  exclusive_access: 'EA',
-  hook: 'G',
-  chapter: 'CH',
-  content: 'C',
-};
 const LM = {
-  S: 'Sponsor',
-  SP: 'Self Promotion/Unpaid Promotion',
-  IR: 'Interaction Reminder',
-  I: 'Intermission/Intro Animation',
-  EC: 'Endcards/Credits',
-  P: 'Preview/Recap',
-  NM: 'Music: Non-Music Section',
-  H: 'Highlight',
-  T: 'Tangents/Jokes',
-  EA: 'Exclusive Access',
-  G: 'Hook/Greetings',
-  CH: 'Chapter',
-  C: 'Content',
+  sponsor: 'Sponsor',
+  selfpromo: 'Self Promotion',
+  interaction: 'Interaction Reminder',
+  intro: 'Intro',
+  outro: 'Outro',
+  preview: 'Preview',
+  music_offtopic: 'Music: Off-Topic',
+  poi_highlight: 'Highlight',
+  filler: 'Filler',
+  exclusive_access: 'Exclusive Access',
+  hook: 'Hook',
+  chapter: 'Chapter',
+  content: 'Content',
 };
 
 async function _gh(vid) {
@@ -44,9 +28,19 @@ async function _gh(vid) {
   return hh.substring(0, 4);
 }
 
-function _mc(c) {
-  return CM[c] || c;
-}
+const CATEGORIES = [
+  'sponsor',
+  'selfpromo',
+  'interaction',
+  'intro',
+  'outro',
+  'preview',
+  'hook',
+  'music_offtopic',
+  'poi_highlight',
+  'filler',
+  'exclusive_access',
+];
 
 export async function fetchSegments(vid) {
   if (!vid) {
@@ -55,9 +49,8 @@ export async function fetchSegments(vid) {
   }
   try {
     const hp = await _gh(vid);
-    const c = ks(CM);
     const cp = ajn(
-      am(c, x => `category=${x}`),
+      am(CATEGORIES, x => `category=${x}`),
       '&'
     );
     const u = `${API_BASE}/skipSegments/${hp}?service=YouTube&${cp}`;
@@ -78,12 +71,11 @@ export async function fetchSegments(vid) {
       return [];
     }
     const s = am(vd.segments, sg => {
-      const code = _mc(sg.category);
       return {
         start: sg.segment[0],
         end: sg.segment[1],
-        label: code,
-        labelFull: LM[code] || code,
+        label: sg.category,
+        labelFull: LM[sg.category] || sg.category,
         category: sg.category,
         UUID: sg.UUID,
         votes: sg.votes,
