@@ -12,7 +12,3 @@ export async function handleClassifySegments(req, rsp) {
   const s = await segmentClassification.classifyTranscript({ transcript, metadata: {} });
   rsp({ success: true, data: s });
 }
-
-
-
-

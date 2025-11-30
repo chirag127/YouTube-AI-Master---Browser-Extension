@@ -39,7 +39,3 @@ export async function handleTranscribeAudio(req, rsp) {
     rsp({ success: false, error: x.message });
   }
 }
-
-
-
-

@@ -89,7 +89,3 @@ async function saveToHistory(d) {
     e('Err:saveToHistory', err);
   }
 }
-
-
-
-

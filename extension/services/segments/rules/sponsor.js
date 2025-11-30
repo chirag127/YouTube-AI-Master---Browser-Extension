@@ -1,4 +1,3 @@
-import { l } from '../../../utils/shortcuts/log.js';
 export const type = 'sponsor';
 export const description = 'Paid promotion of product/service not directly related to creator';
 
@@ -17,7 +16,3 @@ export const validate = (segment, allSegments) => {
   }
   return true;
 };
-
-
-
-

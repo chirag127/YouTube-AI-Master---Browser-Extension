@@ -15,7 +15,3 @@ export class OpenLibraryAPI {
     return await safeFetch(`${BASE_URL}${key}.json`);
   }
 }
-
-
-
-

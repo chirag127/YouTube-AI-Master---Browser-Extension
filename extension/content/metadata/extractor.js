@@ -413,7 +413,3 @@ class MetadataExtractor {
 }
 export const metadataExtractor = new MetadataExtractor();
 export { MetadataExtractor };
-
-
-
-

@@ -16,7 +16,3 @@ export function getValidModelName(modelName) {
   const cleaned = cleanModelName(modelName);
   return cleaned || getDefaultModel();
 }
-
-
-
-

@@ -38,7 +38,3 @@ export const comprehensive = (context, options) => {
     ${transcript}
     `;
 };
-
-
-
-

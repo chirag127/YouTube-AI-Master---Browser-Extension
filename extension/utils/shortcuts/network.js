@@ -11,7 +11,3 @@ export const jf = async (...args) => {
   const r = await fetch(...args);
   return r.json();
 };
-
-
-
-

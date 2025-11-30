@@ -35,7 +35,3 @@ export class CommentsSettings {
     if (el) el.checked = v;
   }
 }
-
-
-
-

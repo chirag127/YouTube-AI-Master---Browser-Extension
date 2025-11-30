@@ -15,7 +15,3 @@ export function getCurrentVideoId() {
 export function isVideoPage() {
   return loc.pathname === '/watch';
 }
-
-
-
-

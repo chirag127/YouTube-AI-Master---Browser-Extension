@@ -53,7 +53,3 @@ export class CacheSettings {
     if (el) el.checked = v;
   }
 }
-
-
-
-

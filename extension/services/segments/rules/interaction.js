@@ -1,4 +1,3 @@
-import { l } from '../../../utils/shortcuts/log.js';
 export const type = 'interaction';
 export const description = 'Explicit reminders to like, subscribe, or interact';
 
@@ -13,7 +12,3 @@ export const detect = text => {
   const result = patterns.some(p => p.test(text));
   return result;
 };
-
-
-
-

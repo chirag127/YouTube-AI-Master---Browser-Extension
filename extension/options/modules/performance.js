@@ -43,7 +43,3 @@ export class PerformanceSettings {
     if (el) el.checked = v;
   }
 }
-
-
-
-

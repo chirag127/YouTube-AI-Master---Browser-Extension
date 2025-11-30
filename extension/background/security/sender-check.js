@@ -32,7 +32,3 @@ export const isFromExtensionPage = s => {
   l('IsFromExtensionPage:Done');
   return result;
 };
-
-
-
-

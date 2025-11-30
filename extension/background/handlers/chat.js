@@ -13,7 +13,3 @@ export async function handleChatWithVideo(req, rsp) {
   const ans = await gemini.chatWithVideo(question, ctx, null);
   rsp({ success: true, answer: ans });
 }
-
-
-
-

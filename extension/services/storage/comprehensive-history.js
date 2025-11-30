@@ -96,7 +96,3 @@ export function getHistory() {
   if (!i) i = new ComprehensiveHistory();
   return i;
 }
-
-
-
-

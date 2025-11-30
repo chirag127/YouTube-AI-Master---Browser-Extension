@@ -104,7 +104,3 @@ export const getCfg = () => {
   if (!inst) inst = new ConfigManager();
   return inst;
 };
-
-
-
-

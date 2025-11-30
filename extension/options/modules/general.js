@@ -106,7 +106,3 @@ export class GeneralSettings {
     await this.s.update('transcript.strategyOrder', order);
   }
 }
-
-
-
-

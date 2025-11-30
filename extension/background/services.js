@@ -41,7 +41,3 @@ export function getServices() {
   l('GetServices:Done');
   return services;
 }
-
-
-
-

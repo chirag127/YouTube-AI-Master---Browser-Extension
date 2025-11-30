@@ -25,7 +25,3 @@ export async function analyzeVideo(t, m, c = [], o = { length: 'Medium' }) {
     throw err;
   }
 }
-
-
-
-

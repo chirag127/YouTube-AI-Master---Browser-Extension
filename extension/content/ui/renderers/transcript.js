@@ -67,7 +67,3 @@ export function collapseTranscriptWidget() {
     e('Err:collapseTranscriptWidget', err);
   }
 }
-
-
-
-

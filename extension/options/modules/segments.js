@@ -74,7 +74,3 @@ export class SegmentsConfig {
     if (g) this.render(g);
   }
 }
-
-
-
-

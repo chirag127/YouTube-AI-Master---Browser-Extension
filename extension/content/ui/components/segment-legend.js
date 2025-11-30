@@ -48,7 +48,3 @@ export const injectLegendStyles = () => {
     e('Err:injectLegendStyles', err);
   }
 };
-
-
-
-

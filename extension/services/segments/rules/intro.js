@@ -1,4 +1,3 @@
-import { l } from '../../../utils/shortcuts/log.js';
 export const type = 'intro';
 export const description = 'Narrated trailers, intros, outros without info';
 
@@ -19,7 +18,3 @@ export const detect = (text, context) => {
   }
   return false;
 };
-
-
-
-

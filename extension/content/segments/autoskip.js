@@ -123,7 +123,3 @@ function showNotification(tx) {
     e('Err:showNotification', err);
   }
 }
-
-
-
-

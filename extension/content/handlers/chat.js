@@ -35,7 +35,3 @@ export async function sendChatMessage() {
     e('Err:sendChatMessage', err);
   }
 }
-
-
-
-

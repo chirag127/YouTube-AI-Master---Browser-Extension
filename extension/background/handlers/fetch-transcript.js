@@ -75,7 +75,3 @@ export async function handleFetchTranscript(req, rsp) {
   }
   rsp({ success: false, error: 'All transcript fetch methods failed' });
 }
-
-
-
-

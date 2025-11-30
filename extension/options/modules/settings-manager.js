@@ -232,7 +232,3 @@ export class SettingsManager {
     }
   }
 }
-
-
-
-

@@ -73,7 +73,3 @@ export function renderSegments(c, data) {
     e('Err:renderSegments', err);
   }
 }
-
-
-
-

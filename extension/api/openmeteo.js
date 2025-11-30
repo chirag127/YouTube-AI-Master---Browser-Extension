@@ -23,7 +23,3 @@ export class OpenMeteoAPI {
     return data?.results?.[0] || null;
   }
 }
-
-
-
-

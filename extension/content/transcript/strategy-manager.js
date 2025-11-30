@@ -57,7 +57,3 @@ export const getAvailableStrategies = () => {
     return [];
   }
 };
-
-
-
-

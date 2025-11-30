@@ -26,7 +26,3 @@ export const chat = (question, context, metadata) => {
     - SponsorBlock segments are VERIFIED GROUND TRUTH. Use them to answer questions about sponsors or skipped content accurately.
     `;
 };
-
-
-
-

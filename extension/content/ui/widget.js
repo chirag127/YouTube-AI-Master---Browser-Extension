@@ -250,7 +250,3 @@ export function getWidget() {
     return null;
   }
 }
-
-
-
-

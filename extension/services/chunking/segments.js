@@ -1,4 +1,3 @@
-import { l } from '../../utils/shortcuts/log.js';
 export function chunkSegments(s, sz = 20000) {
   if (!s || !s.length) {
     return [];
@@ -16,7 +15,3 @@ export function chunkSegments(s, sz = 20000) {
   if (cur.text.length > 0) c.push(cur);
   return c;
 }
-
-
-
-

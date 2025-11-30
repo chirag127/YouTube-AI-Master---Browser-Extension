@@ -1,4 +1,4 @@
-import { l, e, w } from '../utils/shortcuts/log.js';
+import { l, e } from '../utils/shortcuts/log.js';
 import { en as enc } from '../utils/shortcuts/global.js';
 import { tf as ftx, jf as fj } from '../utils/shortcuts/network.js';
 import { rp, trm } from '../utils/shortcuts/string.js';
@@ -27,8 +27,8 @@ export class GeniusLyricsAPI {
         title: hit.result.title,
         artist: hit.result.primary_artist.name,
       };
-    } catch (e) {
-      e('error:getLyrics fail:', e.message);
+    } catch (err) {
+      e('error:getLyrics fail:', err.message);
       return null;
     }
   }
@@ -97,7 +97,3 @@ export class GeniusLyricsAPI {
 }
 
 export const geniusLyricsAPI = new GeniusLyricsAPI();
-
-
-
-

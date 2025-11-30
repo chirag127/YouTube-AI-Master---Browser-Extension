@@ -23,7 +23,3 @@ export function attachEventListeners(w) {
     e('Err:attachEventListeners', err);
   }
 }
-
-
-
-

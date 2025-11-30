@@ -33,7 +33,7 @@ export function injectSegmentMarkers(s) {
     e('Err:injectSegmentMarkers', err);
   }
 }
-function getSegmentColor(l) {
+function getSegmentColor(lb) {
   l('getSegmentColor:Start');
   try {
     const c = {
@@ -49,7 +49,7 @@ function getSegmentColor(l) {
       'Hook/Greetings': '#4169e1',
       'Tangents/Jokes': '#9400d3',
     };
-    const result = c[l] || '#999999';
+    const result = c[lb] || '#999999';
     l('getSegmentColor:End');
     return result;
   } catch (err) {
@@ -57,7 +57,3 @@ function getSegmentColor(l) {
     return '#999999';
   }
 }
-
-
-
-

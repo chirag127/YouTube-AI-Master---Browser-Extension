@@ -52,10 +52,6 @@ class VideoCache {
         vk = keys(a).filter(k => k.startsWith('video_'));
       await sl(vk, null);
     }
-    }
+  }
 }
 export const videoCache = new VideoCache();
-
-
-
-

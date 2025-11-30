@@ -1,4 +1,4 @@
-import { l, e } from '../utils/shortcuts/log.js';
+import { l } from '../utils/shortcuts/log.js';
 import { en as enc } from '../utils/shortcuts/global.js';
 import { sf as safeFetch } from '../utils/shortcuts/network.js';
 
@@ -11,7 +11,3 @@ export class DatamuseAPI {
     return data || [];
   }
 }
-
-
-
-

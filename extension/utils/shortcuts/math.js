@@ -37,7 +37,3 @@ export const ath = Math.atanh;
 export const mf = flr;
 
 export const mc = Math.ceil;
-
-
-
-

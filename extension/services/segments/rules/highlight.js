@@ -1,4 +1,3 @@
-import { l } from '../../../utils/shortcuts/log.js';
 export const type = 'highlight';
 export const description = 'Most important part of video ';
 
@@ -21,7 +20,3 @@ export const validate = segments => {
 };
 
 export const isSingleTimestamp = true;
-
-
-
-

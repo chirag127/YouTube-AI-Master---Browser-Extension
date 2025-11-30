@@ -12,7 +12,3 @@ export async function getApiKey() {
     return null;
   }
 }
-
-
-
-

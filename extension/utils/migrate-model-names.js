@@ -15,7 +15,3 @@ export async function migrateModelNames() {
     return false;
   }
 }
-
-
-
-

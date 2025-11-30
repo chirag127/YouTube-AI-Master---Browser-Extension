@@ -17,7 +17,3 @@ export class NewsDataAPI {
     return data?.results || [];
   }
 }
-
-
-
-

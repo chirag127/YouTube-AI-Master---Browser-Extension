@@ -39,7 +39,3 @@ export async function waitForPageReady() {
     throw err;
   }
 }
-
-
-
-

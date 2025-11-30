@@ -13,7 +13,3 @@ export async function handleGetLyrics(req, rsp) {
     l('GetLyrics:Done');
   }
 }
-
-
-
-

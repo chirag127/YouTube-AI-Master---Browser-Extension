@@ -54,7 +54,3 @@ export async function loadSettings() {
     return state.settings;
   }
 }
-
-
-
-

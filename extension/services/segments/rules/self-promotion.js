@@ -1,4 +1,3 @@
-import { l } from '../../../utils/shortcuts/log.js';
 export const type = 'selfpromo';
 export const description = 'Promoting own merchandise or monetized platforms';
 
@@ -7,7 +6,3 @@ export const detect = text => {
   const result = keywords.some(k => text.toLowerCase().includes(k));
   return result;
 };
-
-
-
-

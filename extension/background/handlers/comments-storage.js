@@ -11,7 +11,3 @@ export const handleSaveComments = async (req, rsp) => {
   }
   rsp({ success: true });
 };
-
-
-
-

@@ -28,7 +28,3 @@ export function fillContentGaps(c, o) {
     return [];
   }
 }
-
-
-
-

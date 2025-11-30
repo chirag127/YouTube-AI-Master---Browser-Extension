@@ -218,4 +218,3 @@ const w = window,
   }
   new YTE();
 })();
-

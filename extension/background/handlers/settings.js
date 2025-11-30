@@ -23,7 +23,3 @@ export async function handleGetSettings(rsp) {
     l('GetSettings:Done');
   }
 }
-
-
-
-

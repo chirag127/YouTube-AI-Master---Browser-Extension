@@ -16,7 +16,3 @@ export async function handleGetMetadata(req, rsp) {
     l('GetMetadata:Done');
   }
 }
-
-
-
-

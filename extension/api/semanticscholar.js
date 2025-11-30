@@ -15,7 +15,3 @@ export class SemanticScholarAPI {
     return data?.data?.[0] || null;
   }
 }
-
-
-
-

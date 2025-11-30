@@ -29,7 +29,3 @@ export const summary = (transcript, options) => {
     ${transcript}
     `;
 };
-
-
-
-

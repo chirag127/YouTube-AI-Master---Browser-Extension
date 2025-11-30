@@ -37,7 +37,3 @@ export function makeTimestampsClickable(c) {
     e('Err:makeTimestampsClickable', err);
   }
 }
-
-
-
-

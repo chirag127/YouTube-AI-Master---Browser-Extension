@@ -39,7 +39,3 @@ export class TabLoader {
     await pa(ok(this.tabs).map(id => this.load(id)));
   }
 }
-
-
-
-

@@ -97,7 +97,3 @@ function checkCurrentPage() {
     e('Err:checkCurrentPage', err);
   }
 }
-
-
-
-

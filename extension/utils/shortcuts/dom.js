@@ -43,6 +43,7 @@ export const $ = qs;
 export const $$ = qsa;
 export const ae = on;
 export const re = off;
+export const tc = gt;
 
 export const ael = on;
 export const rel = off;

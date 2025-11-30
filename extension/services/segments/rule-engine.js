@@ -6,7 +6,6 @@ import * as preview from './rules/preview.js';
 import * as selfPromo from './rules/self-promotion.js';
 import * as unpaidPromo from './rules/unpaid-promotion.js';
 import * as sponsor from './rules/sponsor.js';
-import { l } from '../../utils/shortcuts/log.js';
 
 const rules = [filler, highlight, interaction, intro, preview, selfPromo, unpaidPromo, sponsor];
 
@@ -34,7 +33,3 @@ export function annotateTranscript(transcriptSegments, metadata) {
     .join('\n');
   return result;
 }
-
-
-
-

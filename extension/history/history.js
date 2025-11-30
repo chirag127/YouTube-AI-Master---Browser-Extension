@@ -182,7 +182,3 @@ function fmtViews(v) {
       ? `${(n / 1000).toFixed(1)}K`
       : n.toString();
 }
-
-
-
-

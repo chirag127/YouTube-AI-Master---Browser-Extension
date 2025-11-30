@@ -174,7 +174,3 @@ export const scrollToTop = (i = false) => getScrollManager().scrollToTop(i);
 export const scrollToTopInstant = () => getScrollManager().scrollToTopInstant();
 export const saveScrollPosition = () => getScrollManager().savePosition();
 export const restoreScrollPosition = () => getScrollManager().restorePosition();
-
-
-
-

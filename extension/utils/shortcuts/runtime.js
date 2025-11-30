@@ -13,7 +13,3 @@ export const rrl = () => r.reload();
 export const getUrl = url;
 export const gu = url;
 export const ro = oop;
-
-
-
-

@@ -48,7 +48,3 @@ function formatTimestamp(s) {
     return '0:00';
   }
 }
-
-
-
-

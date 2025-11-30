@@ -14,7 +14,3 @@ export const detect = text => {
   ];
   return keywords.some(k => text.toLowerCase().includes(k));
 };
-
-
-
-

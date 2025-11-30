@@ -1,6 +1,6 @@
 import { annotateTranscript } from './rule-engine.js';
 import { isa } from '../../utils/shortcuts/array.js';
-import { l, e } from '../../utils/shortcuts/log.js';
+import { e } from '../../utils/shortcuts/log.js';
 
 export async function classifyTranscript(context, g) {
   const { transcript, metadata } = context;
@@ -31,7 +31,3 @@ export async function classifyTranscript(context, g) {
     return { segments: [], fullVideoLabel: null };
   }
 }
-
-
-
-

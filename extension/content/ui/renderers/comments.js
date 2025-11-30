@@ -9,7 +9,7 @@ const { sg } = await import(gu('utils/shortcuts/storage.js'));
 const { to } = await import(gu('utils/shortcuts/global.js'));
 const { l, e } = await import(gu('utils/shortcuts/log.js'));
 const { mp, jn, slc } = await import(gu('utils/shortcuts/array.js'));
-const { ce, txt, ap, ih, dc: doc } = await import(gu('utils/shortcuts/dom.js'));
+const { ce, ap, ih, dc: doc, txt } = await import(gu('utils/shortcuts/dom.js'));
 export async function renderComments(c) {
   l('renderComments:Start');
   try {
@@ -109,7 +109,7 @@ function showScrollNotification() {
   try {
     const n = ce('div');
     n.id = 'yt-ai-scroll-notification';
-    tc(n, '⬆️ Scrolled to top');
+    txt(n, '⬆️ Scrolled to top');
     n.style.cssText =
       "position:fixed;top:80px;right:20px;background:#3ea6ff;color:white;padding:12px 20px;border-radius:8px;font-family:'Roboto',Arial,sans-serif;font-size:14px;font-weight:500;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:slideIn 0.3s ease-out;";
     ap(doc.body, n);

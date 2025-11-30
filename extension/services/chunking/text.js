@@ -1,5 +1,4 @@
 import { trm as tr, sb as sub, li as lio } from '../../utils/shortcuts/string.js';
-import { l } from '../../utils/shortcuts/log.js';
 
 export function chunkText(t, s = 20000, o = 500) {
   if (!t) {
@@ -25,7 +24,3 @@ export function chunkText(t, s = 20000, o = 500) {
   }
   return c;
 }
-
-
-
-

@@ -43,7 +43,3 @@ export class ScrollSettings {
     if (el) el.checked = v;
   }
 }
-
-
-
-

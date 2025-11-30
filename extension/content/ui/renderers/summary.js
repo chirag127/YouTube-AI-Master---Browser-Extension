@@ -50,7 +50,3 @@ export async function renderSummary(c, d) {
     e('Err:renderSummary', err);
   }
 }
-
-
-
-

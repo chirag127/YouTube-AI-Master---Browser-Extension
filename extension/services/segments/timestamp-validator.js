@@ -1,7 +1,6 @@
 import { flr as mfl } from '../../utils/shortcuts/math.js';
 import { pI as pS } from '../../utils/shortcuts/global.js';
 import { isa } from '../../utils/shortcuts/array.js';
-import { l } from '../../utils/shortcuts/log.js';
 
 export const validateSegments = s => {
   if (!isa(s)) {
@@ -47,7 +46,3 @@ export const createClickableTimestamp = (t, y, c) => {
   };
   return result;
 };
-
-
-
-
