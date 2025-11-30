@@ -195,6 +195,10 @@
   cursor: pointer;
   transition: all 0.3s var(--transition-smooth);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
 }
 
 .yt-ai-tab:hover {
