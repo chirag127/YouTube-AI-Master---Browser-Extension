@@ -146,6 +146,10 @@ export async function injectWidget() {
     widgetContainer.innerHTML = createWidgetHTML(cfg);
     sc.insertBefore(widgetContainer, sc.firstChild);
     lastKnownContainer = sc;
+
+    // Apply default collapsed state if configured
+    await applyDefaultWidgetState();
+
     applyWidgetConfig();
     setupWidgetLogic(widgetContainer);
     setupObservers(sc);
@@ -158,15 +162,36 @@ export async function injectWidget() {
 async function loadWidgetConfig() {
   try {
     const r = await sg('config');
-    return (
-      r.config?.widget || {
-        height: 500,
-        minHeight: 200,
-        maxHeight: 1200,
-        resizable: true,
-        tabs: { summary: true, segments: true, chat: true, comments: true },
-      }
-    );
+    const defaults = {
+      height: 500,
+      minHeight: 200,
+      maxHeight: 1200,
+      resizable: true,
+      tabs: { summary: true, segments: true, chat: true, comments: true },
+      defaultCollapsed: false,
+      rememberState: true,
+      segmentFilters: {
+        sponsor: true,
+        selfpromo: true,
+        interaction: true,
+        intro: true,
+        outro: true,
+        preview: true,
+        filler: true,
+        highlight: true,
+        exclusive: true,
+      },
+    };
+
+    if (!r.config?.widget) return defaults;
+
+    // Merge with defaults to ensure all properties exist
+    return {
+      ...defaults,
+      ...r.config.widget,
+      tabs: { ...defaults.tabs, ...r.config.widget.tabs },
+      segmentFilters: { ...defaults.segmentFilters, ...r.config.widget.segmentFilters },
+    };
   } catch (err) {
     e('Err:loadWidgetConfig', err);
     return {
@@ -175,6 +200,19 @@ async function loadWidgetConfig() {
       maxHeight: 1200,
       resizable: true,
       tabs: { summary: true, segments: true, chat: true, comments: true },
+      defaultCollapsed: false,
+      rememberState: true,
+      segmentFilters: {
+        sponsor: true,
+        selfpromo: true,
+        interaction: true,
+        intro: true,
+        outro: true,
+        preview: true,
+        filler: true,
+        highlight: true,
+        exclusive: true,
+      },
     };
   }
 }
@@ -248,10 +286,12 @@ function setupWidgetLogic(c) {
           c.classList.remove('yt-ai-collapsed');
           cb.textContent = '❌';
           cb.title = 'Collapse';
+          saveWidgetState(false);
         } else {
           c.classList.add('yt-ai-collapsed');
           cb.textContent = '⬇️';
           cb.title = 'Expand';
+          saveWidgetState(true);
         }
       });
     }
@@ -260,6 +300,56 @@ function setupWidgetLogic(c) {
     attachEventListeners(c);
   } catch (err) {
     e('Err:setupWidgetLogic', err);
+  }
+}
+
+async function applyDefaultWidgetState() {
+  try {
+    if (!widgetContainer || !widgetConfig) return;
+
+    const cb = $('#yt-ai-close-btn', widgetContainer);
+    if (!cb) return;
+
+    // Check if we should remember state
+    if (widgetConfig.rememberState) {
+      const savedState = await getSavedWidgetState();
+      if (savedState !== null) {
+        // Apply saved state
+        if (savedState) {
+          widgetContainer.classList.add('yt-ai-collapsed');
+          cb.textContent = '⬇️';
+          cb.title = 'Expand';
+        }
+        return;
+      }
+    }
+
+    // Apply default collapsed state if no saved state
+    if (widgetConfig.defaultCollapsed) {
+      widgetContainer.classList.add('yt-ai-collapsed');
+      cb.textContent = '⬇️';
+      cb.title = 'Expand';
+    }
+  } catch (err) {
+    e('Err:applyDefaultWidgetState', err);
+  }
+}
+
+async function saveWidgetState(isCollapsed) {
+  try {
+    if (!widgetConfig?.rememberState) return;
+    await ss({ widgetCollapsedState: isCollapsed });
+  } catch (err) {
+    e('Err:saveWidgetState', err);
+  }
+}
+
+async function getSavedWidgetState() {
+  try {
+    const r = await sg('widgetCollapsedState');
+    return r.widgetCollapsedState ?? null;
+  } catch {
+    return null;
   }
 }
 

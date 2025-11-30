@@ -25,6 +25,20 @@ export class WidgetSettings {
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
       const tm = id('widget-tab-comments');
+      const dc = id('widget-default-collapsed');
+      const rs = id('widget-remember-state');
+
+      // Segment type filters
+      const ss = id('widget-show-sponsor');
+      const sp = id('widget-show-selfpromo');
+      const si = id('widget-show-interaction');
+      const sin = id('widget-show-intro');
+      const so = id('widget-show-outro');
+      const spr = id('widget-show-preview');
+      const sf = id('widget-show-filler');
+      const sh = id('widget-show-highlight');
+      const se = id('widget-show-exclusive');
+
       if (h) h.value = cfg.height || 500;
       if (mh) mh.value = cfg.minHeight || 200;
       if (xh) xh.value = cfg.maxHeight || 1200;
@@ -33,6 +47,20 @@ export class WidgetSettings {
       if (tg) tg.checked = cfg.tabs?.segments !== false;
       if (tc) tc.checked = cfg.tabs?.chat !== false;
       if (tm) tm.checked = cfg.tabs?.comments !== false;
+      if (dc) dc.checked = cfg.defaultCollapsed === true;
+      if (rs) rs.checked = cfg.rememberState !== false;
+
+      // Load segment filters (default to true)
+      const filters = cfg.segmentFilters || {};
+      if (ss) ss.checked = filters.sponsor !== false;
+      if (sp) sp.checked = filters.selfpromo !== false;
+      if (si) si.checked = filters.interaction !== false;
+      if (sin) sin.checked = filters.intro !== false;
+      if (so) so.checked = filters.outro !== false;
+      if (spr) spr.checked = filters.preview !== false;
+      if (sf) sf.checked = filters.filler !== false;
+      if (sh) sh.checked = filters.highlight !== false;
+      if (se) se.checked = filters.exclusive !== false;
     } catch (err) {
       e('[WidgetSettings] Load error:', err);
     }
@@ -47,7 +75,13 @@ export class WidgetSettings {
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
       const tm = id('widget-tab-comments');
+      const dc = id('widget-default-collapsed');
+      const rs = id('widget-remember-state');
       const rb = id('widget-reset');
+
+      // Segment filters
+      const filters = ['sponsor', 'selfpromo', 'interaction', 'intro', 'outro', 'preview', 'filler', 'highlight', 'exclusive'];
+
       if (h) on(h, 'change', () => this.save());
       if (mh) on(mh, 'change', () => this.save());
       if (xh) on(xh, 'change', () => this.save());
@@ -56,6 +90,15 @@ export class WidgetSettings {
       if (tg) on(tg, 'change', () => this.save());
       if (tc) on(tc, 'change', () => this.save());
       if (tm) on(tm, 'change', () => this.save());
+      if (dc) on(dc, 'change', () => this.save());
+      if (rs) on(rs, 'change', () => this.save());
+
+      // Attach listeners for all segment filters
+      filters.forEach(f => {
+        const el = id(`widget-show-${f}`);
+        if (el) on(el, 'change', () => this.save());
+      });
+
       if (rb) on(rb, 'click', () => this.reset());
     } catch (err) {
       e('[WidgetSettings] Attach listeners error:', err);
@@ -71,6 +114,9 @@ export class WidgetSettings {
       const tg = id('widget-tab-segments');
       const tc = id('widget-tab-chat');
       const tm = id('widget-tab-comments');
+      const dc = id('widget-default-collapsed');
+      const rs = id('widget-remember-state');
+
       this.sm.set('widget.height', parseInt(h?.value || 500));
       this.sm.set('widget.minHeight', parseInt(mh?.value || 200));
       this.sm.set('widget.maxHeight', parseInt(xh?.value || 1200));
@@ -79,6 +125,23 @@ export class WidgetSettings {
       this.sm.set('widget.tabs.segments', tg?.checked !== false);
       this.sm.set('widget.tabs.chat', tc?.checked !== false);
       this.sm.set('widget.tabs.comments', tm?.checked !== false);
+      this.sm.set('widget.defaultCollapsed', dc?.checked === true);
+      this.sm.set('widget.rememberState', rs?.checked !== false);
+
+      // Save segment filters
+      const filters = {
+        sponsor: id('widget-show-sponsor')?.checked !== false,
+        selfpromo: id('widget-show-selfpromo')?.checked !== false,
+        interaction: id('widget-show-interaction')?.checked !== false,
+        intro: id('widget-show-intro')?.checked !== false,
+        outro: id('widget-show-outro')?.checked !== false,
+        preview: id('widget-show-preview')?.checked !== false,
+        filler: id('widget-show-filler')?.checked !== false,
+        highlight: id('widget-show-highlight')?.checked !== false,
+        exclusive: id('widget-show-exclusive')?.checked !== false,
+      };
+      this.sm.set('widget.segmentFilters', filters);
+
       await this.sm.save();
       this.nm.show('Widget settings saved', 'success');
     } catch (err) {
@@ -94,6 +157,19 @@ export class WidgetSettings {
         maxHeight: 1200,
         resizable: true,
         tabs: { summary: true, segments: true, chat: true, comments: true },
+        defaultCollapsed: false,
+        rememberState: true,
+        segmentFilters: {
+          sponsor: true,
+          selfpromo: true,
+          interaction: true,
+          intro: true,
+          outro: true,
+          preview: true,
+          filler: true,
+          highlight: true,
+          exclusive: true,
+        },
       });
       await this.sm.save();
       this.loadSettings();

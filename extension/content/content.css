@@ -128,7 +128,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px;
-  padding-bottom: 24px;
+  padding-bottom: 48px; /* Increased to ensure last segment is fully scrollable */
   min-height: 200px;
   height: 500px;
   font-size: 14px;
@@ -558,6 +558,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-bottom: 16px; /* Extra padding to ensure last item is fully visible */
 }
 
 .yt-ai-segment-legend {

@@ -76,6 +76,10 @@ Load `extension/` folder in Chrome as unpacked extension.
   - `segments-ui.test.js` - Tests UI module bulk operations (setAll) and individual updates
   - `autoskip-integration.test.js` - Integration tests for segment action filtering
   - `content-protection.test.js` - Ensures Content segments are NEVER skipped, validates disabled-by-default behavior
+  - `sponsorblock-integration.test.js` - SponsorBlock API integration, label mapping (13 categories)
+  - `api-detector.test.js` - API availability detection tests (SponsorBlock, DeArrow, Gemini, TMDB, NewsData, GoogleFactCheck)
+  - `segment-label-mapping.test.js` - Label-to-category mapping for all 13 segment types
+  - `api-performance.test.js` - API metrics tracking, auto-detection logic
 
 ### Storage Keys (Compressed)
 
@@ -151,6 +155,37 @@ extension/
 ├── sidepanel/     # Analysis panel
 └── manifest.json
 ```
+
+## API Auto-Detection
+
+The extension automatically detects API availability:
+
+**No API Keys Required**:
+- SponsorBlock: Always available (public API)
+- DeArrow: Always available (public API)
+
+**API Key Required**:
+- Gemini API: Set in Options → AI Configuration
+- TMDB API: Set in Options → External APIs
+- NewsData API: Set in Options → External APIs
+- GoogleFactCheck API: Set in Options → External APIs
+
+**Availability Checks**:
+- Performed on startup and when settings change
+- 3-5 second timeouts prevent blocking
+- Graceful degradation if APIs unavailable
+
+**Performance Monitoring**:
+- Tracks success rate and average duration per API
+- Auto-detects underperforming APIs (< 50% success or > 5s avg)
+- Metrics reset on extension reload
+
+## Performance Optimization
+
+- **Rate Limiting**: Gemini API limited to 15 requests/minute
+- **Retry Logic**: HTTP client retries failed requests (2x with backoff)
+- **Timeout Handling**: All API requests have 3-30s timeouts
+- **Caching**: Not yet implemented (TODO)
 
 ### Shortcuts Usage
 

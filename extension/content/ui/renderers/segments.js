@@ -8,7 +8,53 @@ const { seekVideo } = await import(gu('content/utils/dom.js'));
 const { formatTime } = await import(gu('content/utils/time.js'));
 const { qs, ae, qsa: $ } = await import(gu('utils/shortcuts/dom.js'));
 const { CM: colors, LM } = await import(gu('utils/shortcuts/segments.js'));
-export function renderSegments(c, data) {
+const { sg } = await import(gu('utils/shortcuts/storage.js'));
+
+// Mapping of segment categories to filter names
+const SEGMENT_FILTER_MAP = {
+  Sponsor: 'sponsor',
+  SelfPromotion: 'selfpromo',
+  InteractionReminderSubscribe: 'interaction',
+  InteractionReminder: 'interaction',
+  HookGreetings: 'intro',
+  IntermissionIntroAnimation: 'intro',
+  EndcardsCredits: 'outro',
+  PreviewRecap: 'preview',
+  TangentsJokes: 'filler',
+  Highlight: 'highlight',
+  ExclusiveAccess: 'exclusive',
+};
+
+async function getSegmentFilters() {
+  try {
+    const r = await sg('config');
+    return r.config?.widget?.segmentFilters || {
+      sponsor: true,
+      selfpromo: true,
+      interaction: true,
+      intro: true,
+      outro: true,
+      preview: true,
+      filler: true,
+      highlight: true,
+      exclusive: true,
+    };
+  } catch {
+    return {
+      sponsor: true,
+      selfpromo: true,
+      interaction: true,
+      intro: true,
+      outro: true,
+      preview: true,
+      filler: true,
+      highlight: true,
+      exclusive: true,
+    };
+  }
+}
+
+export async function renderSegments(c, data) {
   try {
     const s = isa(data) ? data : data?.segments || [];
     const fl = !isa(data) ? data?.fullVideoLabel : null;
@@ -29,7 +75,25 @@ export function renderSegments(c, data) {
       showPlaceholder(c, 'No segments detected.');
       return;
     }
-    const h = s
+
+    // Get user's segment filter preferences
+    const filters = await getSegmentFilters();
+
+    // Filter segments based on user preferences
+    const filteredSegments = s.filter(x => {
+      const filterKey = SEGMENT_FILTER_MAP[x.label];
+      // If no mapping exists, show the segment (default to true)
+      if (!filterKey) return true;
+      // Check if this segment type is enabled
+      return filters[filterKey] !== false;
+    });
+
+    if (!filteredSegments.length) {
+      showPlaceholder(c, 'No segments match your filter settings.');
+      return;
+    }
+
+    const h = filteredSegments
       .map(x => {
         const cl = colors[x.label] || '#999';
         const ts = x.timestamps || [

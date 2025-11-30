@@ -16,22 +16,37 @@ export class ContextManager {
   constructor(s) {
     this.s = s || {};
     this.apis = {
-      tmdb: new TmdbAPI(this.s.tmdbApiKey),
+      tmdb: new TmdbAPI(this.s.tmdb?.key),
       musicbrainz: new MusicBrainzAPI(),
-      igdb: new IgdbAPI(this.s.twitchClientId, this.s.twitchAccessToken),
+      igdb: new IgdbAPI(this.s.igdb?.clientId, this.s.igdb?.accessToken),
       openlibrary: new OpenLibraryAPI(),
-      newsdata: new NewsDataAPI(this.s.newsDataApiKey),
+      newsdata: new NewsDataAPI(this.s.newsData?.key),
       semanticscholar: new SemanticScholarAPI(),
-      factcheck: new GoogleFactCheckAPI(this.s.googleFactCheckApiKey),
+      factcheck: new GoogleFactCheckAPI(this.s.googleFactCheck?.key),
       wikidata: new WikidataAPI(),
       datamuse: new DatamuseAPI(),
       openmeteo: new OpenMeteoAPI(),
+    };
+    this.enabled = {
+      tmdb: this.s.tmdb?.enabled ?? true,
+      musicbrainz: this.s.musicBrainz?.enabled ?? true,
+      igdb: this.s.igdb?.enabled ?? true,
+      openlibrary: this.s.openLibrary?.enabled ?? true,
+      newsdata: this.s.newsData?.enabled ?? true,
+      semanticscholar: this.s.semanticScholar?.enabled ?? true,
+      factcheck: this.s.googleFactCheck?.enabled ?? true,
+      wikidata: this.s.wikidata?.enabled ?? true,
+      datamuse: this.s.datamuse?.enabled ?? true,
+      openmeteo: this.s.openMeteo?.enabled ?? true,
     };
   }
   async fetchContext(m) {
     const tasks = [],
       ctx = {};
-    const add = (n, p) => tasks.push(p.then(res => ({ n, res })).catch(err => ({ n, err })));
+    const add = (n, p) => {
+      if (!this.enabled[n.split('_')[0]]) return;
+      tasks.push(p.then(res => ({ n, res })).catch(err => ({ n, err })));
+    };
     const t = m.title || '',
       c = m.category || '',
       a = m.author || '';
