@@ -1,125 +1,120 @@
 import { buildContextString } from './utils.js';
-
-export const segments = context => {
+import { analyzeTranscript, buildPatternHints } from '../../utils/patterns/index.js';
+import { sg } from '../../utils/shortcuts/storage.js';
+export const segments = async context => {
+  const cfg = await sg('config');
+  const pCfg = cfg.config?.prompts?.segments || {};
+  const role =
+    pCfg.roleDescription ||
+    'Elite Video Segmentation Specialist with 15+ years analyzing YouTube content structure and SponsorBlock taxonomy';
+  const timingTarget = pCfg.timingAccuracyTarget || 2;
+  const sponsorRange = pCfg.sponsorDurationRange || [30, 90];
+  const introRange = pCfg.introDurationRange || [5, 15];
+  const outroRange = pCfg.outroDurationRange || [10, 30];
+  const minShort = pCfg.minSegmentsShort || 3;
+  const minLong = pCfg.minSegmentsLong || 8;
+  const threshold = pCfg.videoLengthThreshold || 600;
+  const hintsEnabled = pCfg.enablePatternHints !== false;
   const transcript =
     context.transcript && context.transcript.length > 0
       ? typeof context.transcript === 'string'
         ? context.transcript
         : JSON.stringify(context.transcript)
       : '[]';
+  const videoDuration = context.metadata?.lengthSeconds || 0;
+  const minSegs = videoDuration > threshold ? minLong : minShort;
+  const patternMatches = hintsEnabled ? analyzeTranscript(transcript) : {};
+  const hints = hintsEnabled ? buildPatternHints(patternMatches) : '';
+  return `Role: ${role}
+Task: Generate PRECISE video segments with WORD-LEVEL timing predictions. Return ONLY valid JSON.
 
-  return `
-    Task: Segment transcript with HIGH GRANULARITY. Return ONLY a valid JSON object with NO additional text, markdown, or explanations.
+${buildContextString(context)}
 
-    ${buildContextString(context)}
+${
+  hintsEnabled
+    ? `PATTERN DETECTION HINTS (Pre-Analyzed via Regex):
+${hints || 'No patterns detected - analyze transcript semantically'}
 
-    TIMING PREDICTION PROTOCOL (CRITICAL):
-    - **TRANSCRIPT TIMING LIMITATION**: The provided transcript contains sentence-level or multi-sentence timing blocks, NOT word-level timing.
-    - **YOUR RESPONSIBILITY**: You MUST intelligently predict word-level timing within each transcript block to create accurate segment boundaries.
-    - **PREDICTION STRATEGY**:
-      * Analyze the text content within each timestamp block
-      * Estimate word count and speaking rate
-      * Calculate approximate word positions within the time range
-      * Identify topic/category transitions that may occur MID-BLOCK (not just at block boundaries)
-      * Create segment boundaries at the ESTIMATED word-level timing, even if it falls within a transcript block
-    - **EXAMPLE**: If transcript shows [10.0s-20.0s: "Today's video is sponsored by NordVPN. Now let's talk about the main topic..."]
-      * You should predict: Sponsor segment ends ~13-14s (after "NordVPN"), Content begins ~14-15s
-      * DO NOT wait until 20.0s to change segments just because that's the transcript block boundary
-    - **ACCURACY GOAL**: Segment boundaries should be accurate to within ±1-2 seconds of the actual topic/category change
+`
+    : ''
+}CRITICAL TIMING PREDICTION PROTOCOL:
+- Transcript provides SENTENCE-LEVEL timing blocks, NOT word-level
+- YOU MUST predict word-level boundaries by:
+  * Estimating speaking rate (words/second) within each block
+  * Detecting transition phrases mid-block (e.g., "But first", "Now back to")
+  * Calculating proportional time allocation for multi-topic blocks
+  * Using typical segment durations as calibration (Sponsor: ${sponsorRange[0]}-${sponsorRange[1]}s, Intro: ${introRange[0]}-${introRange[1]}s, Outro: ${outroRange[0]}-${outroRange[1]}s)
+- Segment boundaries MUST align with natural speech pauses (sentence endings)
+- Accuracy target: ±${timingTarget} seconds of actual topic change
 
-    CRITICAL INSTRUCTIONS:
-    1. SEGMENTATION STRATEGY:
-       - **Identify SPECIAL categories first** (Sponsor, Self Promotion, Intro, etc.).
-       - **Segment "Content" by TOPIC**. Do NOT create one huge "Content" segment.
-       - **MANDATORY**: If the video is > 2 minutes, you MUST return at least 3-5 segments minimum.
-       - **MANDATORY**: For videos > 10 minutes, you MUST return at least 8-12 segments.
-       - **REQUIRED**: Break down content into logical topic changes, scene changes, or subject matter shifts.
-       - **TOPIC CONTINUITY**: MERGE adjacent segments of the same category ONLY if they cover the SAME specific topic. Do NOT fragment continuous topics into multiple segments.
-    2. **DESCRIPTION QUALITY**:
-       - Descriptions MUST be concise summaries (1-2 sentences max)
-       - **FORBIDDEN**: Do NOT include raw transcript text or direct quotes
-       - **REQUIRED**: Summarize the topic/content in your own words
-       - Focus on WHAT is being discussed, not HOW it's being said
-    3. **JSON FORMAT**: Use EXACT SponsorBlock API category names (sponsor, selfpromo, interaction, intro, outro, preview, hook, filler, music_offtopic, poi_highlight, exclusive_access, chapter, content) for the "l" field.
-    4. **OUTPUT FORMAT**: Return ONLY the JSON object. NO markdown code blocks, NO explanations, NO additional text.
-    5. FULL VIDEO LABEL RULE:
-       - Calculate the total duration of the video based on the transcript.
-       - If a single category occupies MORE THAN 50% of the video's total duration:
-         - Set "fullVideoLabel" to that category's EXACT API name (e.g., "sponsor", "exclusive_access")
-         - **DO NOT create segments for that specific category** (the fullVideoLabel covers it)
-         - **ONLY create segments for OTHER categories** (e.g., if full video is sponsor, still mark intro or selfpromo)
-       - If NO category exceeds 50%, set "fullVideoLabel" to null
-       - Many videos are completely sponsored - these should use fullVideoLabel: "sponsor"
-    6. SPONSORBLOCK REFERENCE (STRICT ADHERENCE):
-       - **Community Segments (SponsorBlock) are VERIFIED GROUND TRUTH** - they have been confirmed by multiple users
-       - IF Community Segments are provided:
-         * Use them as PRIMARY REFERENCE for timing and categories
-         * You MUST prioritize them over your own analysis
-         * Use their EXACT start/end times and category codes
-         * You may refine descriptions or adjust boundaries by ±1-2s if transcript provides additional context
-       - IF NOT provided: Analyze transcript independently to identify all categories
-       - Include Chapter titles from video description if available
+SPONSORBLOCK CATEGORY DEFINITIONS (November 2025 Official Guidelines):
+- sponsor: Paid promotion of external product/service. Transitions: "sponsored by", "thanks to", "brought to you by", "use code". If >50% of video, use fullVideoLabel.
+- selfpromo: Creator's own products (merch, courses, Patreon), unpaid shout-outs. Keywords: "my course", "my merch", "link in description", "join my".
+- interaction: Explicit reminders to like/subscribe/follow. Keywords: "like and subscribe", "hit the bell", "leave a comment", "smash that like".
+- intro: Opening animations, channel branding, livestream pauses. Keywords: "hey guys", "welcome back", "what's up". Duration: ${introRange[0]}-${introRange[1]}s typical.
+- outro: Endcards/credits near video end. Keywords: "that's it for today", "thanks for watching", "see you next time". Duration: ${outroRange[0]}-${outroRange[1]}s typical.
+- preview: Clips showing future content where info repeats later. Keywords: "coming up", "later in video", "stick around". Do NOT mark unique recaps.
+- hook: Narrated trailers, greetings before intro. Keywords: "in this video", "today we're", "watch what happens". Duration: 5-20s typical.
+- filler: Tangential content not required for understanding (B-roll, time-lapses, fake sponsors, slow-mo replays). Keywords: "by the way", "off topic", "fun fact".
+- music_offtopic: (Music videos only) Non-music sections. Only complete silence or off-topic content.
+- poi_highlight: Point of Interest - specific highlight moment (start = end time).
+- exclusive_access: (Full Video Label Only) Showcasing product/location with free/subsidized access.
+- chapter: Chapter markers for navigation.
+- content: Primary video content. NEVER skipped. Default for educational/entertainment material.
 
-    SPONSORBLOCK API CATEGORIES (USE EXACT LOWERCASE NAMES):
-    - **sponsor**: Paid promotion of product/service not directly related to creator. If entire video is sponsored, use fullVideoLabel.
-    - **selfpromo**: Creator's own products, merchandise, monetized platforms, charity drives, unpaid shout-outs.
-    - **interaction**: Explicit reminders to like, subscribe, follow, or interact. If about something specific, use selfpromo.
-    - **intro**: Intro animations, still frames, clips seen in other videos. Includes livestream pauses, copyright disclaimers.
-    - **outro**: Endcards/credits near video end. Can include interaction or selfpromo.
-    - **preview**: Clips showing what's coming up where information is repeated later. Do NOT include unique recaps.
-    - **hook**: Narrated trailers, greetings, goodbyes. Do NOT include conclusions with new information.
-    - **filler**: Tangential scenes not required for understanding. Includes time-lapses, B-roll, fake sponsors, slow-motion replays.
-    - **music_offtopic**: (Music videos only) Non-music sections not in official release. Only complete silence or off-topic.
-    - **poi_highlight**: (Point of Interest) Specific highlight moment where start = end time.
-    - **exclusive_access**: (Full Video Label Only) Showcasing product/service/location with free/subsidized access.
-    - **chapter**: Chapter markers for navigation.
-    - **content**: Primary video content not fitting other categories.
+SEGMENTATION STRATEGY (MANDATORY):
+1. Identify SPECIAL categories first (sponsor, selfpromo, interaction, intro, outro, preview, hook, filler)
+2. Segment "content" by TOPIC - create ${minSegs}+ segments minimum for this video (${videoDuration}s)
+3. MERGE adjacent segments of same category ONLY if same specific topic
+4. NEVER create one giant "content" segment - break down by topic changes, scene changes, subject shifts
 
-    CATEGORY DETECTION KEYWORDS:
-    - **sponsor**: "sponsored by", "thanks to [brand]", "partnered with", "brought to you by"
-    - **selfpromo**: "my course", "my merch", "check out my", "link in description", "my patreon"
-    - **interaction**: "like and subscribe", "hit the bell", "leave a comment", "smash that like"
-    - **intro**: Opening animations, channel branding, "hey guys", "welcome back"
-    - **outro**: "that's it for today", "see you next time", end screens, credits
-    - **hook**: "in today's video", "coming up", opening teasers before intro
+DESCRIPTION QUALITY RULES:
+- Concise summaries (1-2 sentences max)
+- FORBIDDEN: Raw transcript quotes or direct text
+- REQUIRED: Summarize topic/content in your own words
+- Focus on WHAT is discussed, not HOW
 
-    ADVANCED TIMING PREDICTION TECHNIQUES:
-    1. **Speaking Rate Analysis**:
-       - Count words in transcript blocks and divide by time range to estimate actual speaking rate
+COMMUNITY SEGMENTS PRIORITY:
+- IF Community Segments (SponsorBlock) provided: Use as PRIMARY REFERENCE (verified ground truth)
+- Use their EXACT start/end times and category codes
+- May refine descriptions or adjust ±1-2s if transcript adds context
+- IF NOT provided: Analyze transcript independently
 
-    2. **Transition Detection Signals**:
-       - Phrases like "Now let's...", "Moving on to...", "But first...", "Speaking of..." indicate topic changes
-       - Sponsor transitions: "This video is sponsored by...", "Thanks to [brand] for...", "Now back to..."
-       - Self-promotion: "Check out my...", "Link in description...", "My course/merch..."
-       - Interaction reminders: "Don't forget to like...", "Subscribe for...", "Hit the bell..."
+FULL VIDEO LABEL RULE:
+- Calculate total video duration from transcript
+- IF single category >50% duration: Set fullVideoLabel to that category, DO NOT create segments for it
+- IF NO category >50%: Set fullVideoLabel to null
+- Many videos are fully sponsored - use fullVideoLabel: "sponsor"
 
-    3. **Context Clues for Timing**:
-       - If a transcript block contains multiple topics, estimate proportional time allocation
-       - Sponsor mentions are typically 30-90 seconds (use this to calibrate your predictions)
-       - Intros are typically 5-15 seconds, Outros/Endcards 10-30 seconds
-       - Use these typical durations to validate your timing predictions
+TRANSITION DETECTION SIGNALS:
+- Sponsor: "This video is sponsored", "Thanks to [brand]", "Now back to", "But first"
+- Selfpromo: "Check out my", "Link in description", "My course/merch"
+- Interaction: "Don't forget to like", "Subscribe for", "Hit the bell"
+- Topic changes: "Now let's", "Moving on to", "Speaking of", "Next up"
 
-    4. **Boundary Refinement**:
-       - Segment boundaries should align with natural speech pauses (typically at sentence endings)
-       - Avoid cutting mid-sentence unless absolutely necessary
-       - If uncertain between two possible boundaries, choose the one that creates more balanced segment lengths
+TIMING CALIBRATION:
+- Sponsor mentions: ${sponsorRange[0]}-${sponsorRange[1]}s typical
+- Intros: ${introRange[0]}-${introRange[1]}s typical
+- Outros/Endcards: ${outroRange[0]}-${outroRange[1]}s typical
+- Interaction reminders: 5-10s typical
+- Use these to validate predictions
 
-    JSON Format (CRITICAL - Use EXACT SponsorBlock API category names):
+JSON FORMAT (EXACT SponsorBlock API category names):
+{
+  "segments": [
     {
-        "segments": [
-            {
-            "s": number (start sec),
-            "e": number (end sec, use ${context.metadata?.lengthSeconds || -1} if unknown),
-            "l": "sponsor" | "selfpromo" | "interaction" | "intro" | "outro" | "preview" | "hook" | "filler" | "music_offtopic" | "poi_highlight" | "exclusive_access" | "chapter" | "content",
-            "t": "Title",
-            "d": "Description"
-        }],
-        "fullVideoLabel": "sponsor" | "selfpromo" | "exclusive_access" | null
+      "s": number,
+      "e": number,
+      "l": "sponsor"|"selfpromo"|"interaction"|"intro"|"outro"|"preview"|"hook"|"filler"|"music_offtopic"|"poi_highlight"|"exclusive_access"|"chapter"|"content",
+      "t": "Title",
+      "d": "Description"
     }
+  ],
+  "fullVideoLabel": "sponsor"|"selfpromo"|"exclusive_access"|null
+}
 
-    VALID CATEGORY VALUES (copy exactly): sponsor, selfpromo, interaction, intro, outro, preview, hook, filler, music_offtopic, poi_highlight, exclusive_access, chapter, content
+VALID CATEGORIES: sponsor, selfpromo, interaction, intro, outro, preview, hook, filler, music_offtopic, poi_highlight, exclusive_access, chapter, content
 
-    Transcript:
-    ${transcript}
-    `;
+Transcript:
+${transcript}`;
 };

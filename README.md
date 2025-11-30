@@ -269,6 +269,32 @@ const color = lgc('S'); // '#00d26a' - label code to color
 
 MIT - See LICENSE file
 
+## Prompt Engineering Architecture
+
+### Hybrid Pattern-Recognition Protocol
+
+- **Token Optimization**: Regex pre-processing for pattern detection (sponsor, selfpromo, interaction, intro, outro, preview, hook, filler)
+- **AI Reasoning**: Complex semantic analysis, timing prediction, topic segmentation
+- **Pattern Files**: `extension/utils/patterns/` - atomic detection modules per category
+- **Hint Generation**: Pre-analyzed patterns injected as context to AI prompts
+
+### Configurable Prompts
+
+All prompts user-editable via Options → Prompt Engineering:
+
+- **Segments**: Role description, timing accuracy (±seconds), pattern hints toggle, duration ranges, min segments
+- **Comprehensive**: Role description, keyword bolding, resources section, takeaways, max counts
+- **Comments**: Role description, spam filtering, sentiment labeling, engagement thresholds, max themes/questions
+
+### Best Practices (November 2025)
+
+- **Few-Shot**: Examples embedded in prompt structure
+- **Chain-of-Thought**: Step-by-step reasoning protocols
+- **Persona-Based**: Expert role definitions (15-20+ years experience)
+- **SponsorBlock Guidelines**: Official November 2025 category definitions
+- **Summary Structure**: Opening → Arguments → Evidence → Conclusions → Takeaways
+- **FAQ Structure**: Technical depth → Practical how-to → Comparisons → Troubleshooting → Advanced
+
 ## Credits
 
 Built with Gemini AI, SponsorBlock, DeArrow, and other open-source projects.

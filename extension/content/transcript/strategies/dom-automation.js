@@ -1,4 +1,3 @@
-
 import { $, $$ } from '../../../utils/shortcuts/dom.js';
 import { e } from '../../../utils/shortcuts/log.js';
 import { getCfg } from '../../../utils/config.js';

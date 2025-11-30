@@ -1,0 +1,140 @@
+<div class="section" id="prompts-section">
+  <h2>Prompt Engineering</h2>
+  <p class="section-description">
+    Configure AI prompt behavior, pattern detection, and output formatting
+  </p>
+
+  <div class="subsection">
+    <h3>Segments Prompt</h3>
+    <label
+      >Role Description<input
+        type="text"
+        id="prompts-segments-role"
+        placeholder="Elite Video Segmentation Specialist..."
+    /></label>
+    <label
+      >Timing Accuracy Target (±seconds)<input
+        type="number"
+        id="prompts-segments-timing"
+        min="1"
+        max="10"
+        value="2"
+    /></label>
+    <label
+      ><input type="checkbox" id="prompts-segments-hints" />Enable Pattern Hints (Regex
+      Pre-Analysis)</label
+    >
+    <label
+      >Sponsor Duration Range (seconds)<input
+        type="text"
+        id="prompts-segments-sponsor-range"
+        placeholder="30,90"
+    /></label>
+    <label
+      >Intro Duration Range (seconds)<input
+        type="text"
+        id="prompts-segments-intro-range"
+        placeholder="5,15"
+    /></label>
+    <label
+      >Outro Duration Range (seconds)<input
+        type="text"
+        id="prompts-segments-outro-range"
+        placeholder="10,30"
+    /></label>
+    <label
+      >Min Segments (Short Videos)<input
+        type="number"
+        id="prompts-segments-min-short"
+        min="1"
+        max="10"
+        value="3"
+    /></label>
+    <label
+      >Min Segments (Long Videos)<input
+        type="number"
+        id="prompts-segments-min-long"
+        min="5"
+        max="20"
+        value="8"
+    /></label>
+    <label
+      >Long Video Threshold (seconds)<input
+        type="number"
+        id="prompts-segments-threshold"
+        min="300"
+        max="1800"
+        value="600"
+    /></label>
+  </div>
+
+  <div class="subsection">
+    <h3>Comprehensive Analysis Prompt</h3>
+    <label
+      >Role Description<input
+        type="text"
+        id="prompts-comprehensive-role"
+        placeholder="Elite AI Video Analyst..."
+    /></label>
+    <label><input type="checkbox" id="prompts-comprehensive-bold" />Enable Keyword Bolding</label>
+    <label
+      ><input type="checkbox" id="prompts-comprehensive-resources" />Include Resources
+      Section</label
+    >
+    <label
+      ><input type="checkbox" id="prompts-comprehensive-takeaways" />Include Actionable
+      Takeaways</label
+    >
+    <label
+      >Max Resources Mentioned<input
+        type="number"
+        id="prompts-comprehensive-max-resources"
+        min="5"
+        max="20"
+        value="10"
+    /></label>
+    <label
+      >Max Takeaways<input
+        type="number"
+        id="prompts-comprehensive-max-takeaways"
+        min="3"
+        max="10"
+        value="5"
+    /></label>
+  </div>
+
+  <div class="subsection">
+    <h3>Comments Analysis Prompt</h3>
+    <label
+      >Role Description<input
+        type="text"
+        id="prompts-comments-role"
+        placeholder="Elite Community Sentiment Analyst..."
+    /></label>
+    <label><input type="checkbox" id="prompts-comments-spam" />Enable Spam Filtering (Regex)</label>
+    <label
+      ><input type="checkbox" id="prompts-comments-sentiment" />Enable Sentiment Labeling
+      (Regex)</label
+    >
+    <label
+      >Min Likes for High Engagement<input
+        type="number"
+        id="prompts-comments-likes"
+        min="1"
+        max="100"
+        value="10"
+    /></label>
+    <label
+      >Max Themes<input type="number" id="prompts-comments-themes" min="3" max="15" value="7"
+    /></label>
+    <label
+      >Max Questions<input type="number" id="prompts-comments-questions" min="3" max="10" value="5"
+    /></label>
+    <label
+      ><input type="checkbox" id="prompts-comments-opportunities" />Include Creator
+      Opportunities</label
+    >
+  </div>
+
+  <button class="save-btn" id="save-prompts">Save Prompt Settings</button>
+</div>

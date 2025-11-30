@@ -1,95 +1,81 @@
-import { id, on } from '../../utils/shortcuts/dom.js';
-import { e } from '../../utils/shortcuts/log.js';
-import { prompts as defaultPrompts } from '../../api/prompts/index.js';
-
-export class PromptsSettings {
-  constructor(sm, nm) {
-    this.sm = sm;
-    this.nm = nm;
-  }
-
-  init() {
-    try {
-      this.loadSettings();
-      this.attachListeners();
-    } catch (err) {
-      e('[PromptsSettings] Init error:', err);
-    }
-  }
-
-  loadSettings() {
-    try {
-      const savedPrompts = this.sm.get('prompts') || {};
-
-      this.setValue('prompt-summary', savedPrompts.summary || defaultPrompts.comprehensive);
-      this.setValue('prompt-chat', savedPrompts.chat || defaultPrompts.comments); // Assuming chat uses comments or similar base
-      this.setValue('prompt-segments', savedPrompts.segments || defaultPrompts.segments);
-      this.setValue('prompt-comments', savedPrompts.comments || defaultPrompts.comments);
-    } catch (err) {
-      e('[PromptsSettings] Load error:', err);
-    }
-  }
-
-  attachListeners() {
-    try {
-      const textareas = ['prompt-summary', 'prompt-chat', 'prompt-segments', 'prompt-comments'];
-
-      textareas.forEach(inputId => {
-        const el = id(inputId);
-        if (el) on(el, 'change', () => this.save());
-      });
-
-      // Reset buttons
-      on(id('reset-prompt-summary'), 'click', () =>
-        this.reset('summary', defaultPrompts.comprehensive)
-      );
-      on(id('reset-prompt-chat'), 'click', () => this.reset('chat', defaultPrompts.comments));
-      on(id('reset-prompt-segments'), 'click', () =>
-        this.reset('segments', defaultPrompts.segments)
-      );
-      on(id('reset-prompt-comments'), 'click', () =>
-        this.reset('comments', defaultPrompts.comments)
-      );
-    } catch (err) {
-      e('[PromptsSettings] Attach listeners error:', err);
-    }
-  }
-
-  async save() {
-    try {
-      const prompts = {
-        summary: this.getValue('prompt-summary'),
-        chat: this.getValue('prompt-chat'),
-        segments: this.getValue('prompt-segments'),
-        comments: this.getValue('prompt-comments'),
-      };
-
-      this.sm.set('prompts', prompts);
-      await this.sm.save();
-      this.nm.show('Prompt settings saved', 'success');
-    } catch (err) {
-      e('[PromptsSettings] Save error:', err);
-      this.nm.show('Failed to save prompt settings', 'error');
-    }
-  }
-
-  async reset(key, defaultValue) {
-    try {
-      this.setValue(`prompt-${key}`, defaultValue);
-      await this.save();
-      this.nm.show(`Reset ${key} prompt to default`, 'success');
-    } catch (err) {
-      e('[PromptsSettings] Reset error:', err);
-    }
-  }
-
-  setValue(elementId, value) {
-    const el = id(elementId);
-    if (el) el.value = value || '';
-  }
-
-  getValue(elementId) {
-    const el = id(elementId);
-    return el ? el.value : '';
-  }
-}
+import { SettingsManager } from './settings-manager.js';
+import { NotificationManager } from './notification-manager.js';
+const sm = new SettingsManager();
+const nm = new NotificationManager();
+export const initPromptsSection = async () => {
+  await sm.load();
+  const cfg = sm.get('prompts') || {};
+  const el = id => document.getElementById(id);
+  el('prompts-segments-role').value = cfg.segments?.roleDescription || '';
+  el('prompts-segments-timing').value = cfg.segments?.timingAccuracyTarget || 2;
+  el('prompts-segments-hints').checked = cfg.segments?.enablePatternHints !== false;
+  el('prompts-segments-sponsor-range').value =
+    cfg.segments?.sponsorDurationRange?.join(',') || '30,90';
+  el('prompts-segments-intro-range').value = cfg.segments?.introDurationRange?.join(',') || '5,15';
+  el('prompts-segments-outro-range').value = cfg.segments?.outroDurationRange?.join(',') || '10,30';
+  el('prompts-segments-min-short').value = cfg.segments?.minSegmentsShort || 3;
+  el('prompts-segments-min-long').value = cfg.segments?.minSegmentsLong || 8;
+  el('prompts-segments-threshold').value = cfg.segments?.videoLengthThreshold || 600;
+  el('prompts-comprehensive-role').value = cfg.comprehensive?.roleDescription || '';
+  el('prompts-comprehensive-bold').checked = cfg.comprehensive?.keywordBoldingEnabled !== false;
+  el('prompts-comprehensive-resources').checked =
+    cfg.comprehensive?.includeResourcesSection !== false;
+  el('prompts-comprehensive-takeaways').checked =
+    cfg.comprehensive?.includeActionableTakeaways !== false;
+  el('prompts-comprehensive-max-resources').value = cfg.comprehensive?.maxResourcesMentioned || 10;
+  el('prompts-comprehensive-max-takeaways').value = cfg.comprehensive?.maxTakeaways || 5;
+  el('prompts-comments-role').value = cfg.comments?.roleDescription || '';
+  el('prompts-comments-spam').checked = cfg.comments?.enableSpamFiltering !== false;
+  el('prompts-comments-sentiment').checked = cfg.comments?.enableSentimentLabeling !== false;
+  el('prompts-comments-likes').value = cfg.comments?.minLikesForHighEngagement || 10;
+  el('prompts-comments-themes').value = cfg.comments?.maxThemes || 7;
+  el('prompts-comments-questions').value = cfg.comments?.maxQuestions || 5;
+  el('prompts-comments-opportunities').checked =
+    cfg.comments?.includeCreatorOpportunities !== false;
+  el('save-prompts').addEventListener('click', savePrompts);
+};
+const savePrompts = async () => {
+  const el = id => document.getElementById(id);
+  const sponsorRange = el('prompts-segments-sponsor-range').value.split(',').map(Number);
+  const introRange = el('prompts-segments-intro-range').value.split(',').map(Number);
+  const outroRange = el('prompts-segments-outro-range').value.split(',').map(Number);
+  sm.set('prompts.segments.roleDescription', el('prompts-segments-role').value);
+  sm.set('prompts.segments.timingAccuracyTarget', Number(el('prompts-segments-timing').value));
+  sm.set('prompts.segments.enablePatternHints', el('prompts-segments-hints').checked);
+  sm.set('prompts.segments.sponsorDurationRange', sponsorRange);
+  sm.set('prompts.segments.introDurationRange', introRange);
+  sm.set('prompts.segments.outroDurationRange', outroRange);
+  sm.set('prompts.segments.minSegmentsShort', Number(el('prompts-segments-min-short').value));
+  sm.set('prompts.segments.minSegmentsLong', Number(el('prompts-segments-min-long').value));
+  sm.set('prompts.segments.videoLengthThreshold', Number(el('prompts-segments-threshold').value));
+  sm.set('prompts.comprehensive.roleDescription', el('prompts-comprehensive-role').value);
+  sm.set('prompts.comprehensive.keywordBoldingEnabled', el('prompts-comprehensive-bold').checked);
+  sm.set(
+    'prompts.comprehensive.includeResourcesSection',
+    el('prompts-comprehensive-resources').checked
+  );
+  sm.set(
+    'prompts.comprehensive.includeActionableTakeaways',
+    el('prompts-comprehensive-takeaways').checked
+  );
+  sm.set(
+    'prompts.comprehensive.maxResourcesMentioned',
+    Number(el('prompts-comprehensive-max-resources').value)
+  );
+  sm.set(
+    'prompts.comprehensive.maxTakeaways',
+    Number(el('prompts-comprehensive-max-takeaways').value)
+  );
+  sm.set('prompts.comments.roleDescription', el('prompts-comments-role').value);
+  sm.set('prompts.comments.enableSpamFiltering', el('prompts-comments-spam').checked);
+  sm.set('prompts.comments.enableSentimentLabeling', el('prompts-comments-sentiment').checked);
+  sm.set('prompts.comments.minLikesForHighEngagement', Number(el('prompts-comments-likes').value));
+  sm.set('prompts.comments.maxThemes', Number(el('prompts-comments-themes').value));
+  sm.set('prompts.comments.maxQuestions', Number(el('prompts-comments-questions').value));
+  sm.set(
+    'prompts.comments.includeCreatorOpportunities',
+    el('prompts-comments-opportunities').checked
+  );
+  await sm.save();
+  nm.show('Prompt settings saved successfully', 'success');
+};

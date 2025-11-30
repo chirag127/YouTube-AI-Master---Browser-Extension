@@ -188,6 +188,39 @@ export class SettingsManager {
         topP: 0.95,
         topK: 40,
       },
+      prompts: {
+        segments: {
+          roleDescription:
+            'Elite Video Segmentation Specialist with 15+ years analyzing YouTube content structure and SponsorBlock taxonomy',
+          timingAccuracyTarget: 2,
+          enablePatternHints: true,
+          sponsorDurationRange: [30, 90],
+          introDurationRange: [5, 15],
+          outroDurationRange: [10, 30],
+          minSegmentsShort: 3,
+          minSegmentsLong: 8,
+          videoLengthThreshold: 600,
+        },
+        comprehensive: {
+          roleDescription:
+            'Elite AI Video Analyst - Senior Content Strategist with 20+ years analyzing educational, entertainment, and technical content',
+          keywordBoldingEnabled: true,
+          includeResourcesSection: true,
+          includeActionableTakeaways: true,
+          maxResourcesMentioned: 10,
+          maxTakeaways: 5,
+        },
+        comments: {
+          roleDescription:
+            'Elite Community Sentiment Analyst with expertise in YouTube audience psychology and engagement patterns',
+          enableSpamFiltering: true,
+          enableSentimentLabeling: true,
+          minLikesForHighEngagement: 10,
+          maxThemes: 7,
+          maxQuestions: 5,
+          includeCreatorOpportunities: true,
+        },
+      },
       automation: {
         autoAnalyze: true,
         autoSummarize: true,
