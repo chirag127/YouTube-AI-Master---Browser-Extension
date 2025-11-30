@@ -1,4 +1,3 @@
-import '../tests/setup.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -26,7 +25,10 @@ function parseImports(content) {
   const importRegex = /import\s+{([^}]+)}\s+from\s+['"]([^'"]+)['"]/g;
   let match;
   while ((match = importRegex.exec(content)) !== null) {
-    const items = match[1].split(',').map(item => item.trim().split(' as ')[0].trim());
+    const items = match[1]
+      .split(',')
+      .map(item => item.trim().split(' as ')[0].trim())
+      .filter(item => item);
     const fromPath = match[2];
     imports.push({ items, fromPath, line: content.substring(0, match.index).split('\n').length });
   }
@@ -36,7 +38,7 @@ function parseImports(content) {
 function parseExports(content) {
   const exports = new Set();
   const exportRegex =
-    /export\s+(?:const|let|var|function|class|default)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
+    /export\s+(?:async\s+)?(?:const|let|var|function|class|default)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
   let match;
   while ((match = exportRegex.exec(content)) !== null) {
     exports.add(match[1]);

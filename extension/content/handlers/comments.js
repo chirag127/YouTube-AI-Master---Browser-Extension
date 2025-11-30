@@ -1,6 +1,6 @@
 import { gu } from '../../utils/shortcuts/runtime.js';
 
-const { e } = await import(gu('utils/shortcuts/log.js'));
+const { e, w } = await import(gu('utils/shortcuts/log.js'));
 const { js, to } = await import(gu('utils/shortcuts/global.js'));
 const { ae, qsa: $$ } = await import(gu('utils/shortcuts/dom.js'));
 const { sg, slg: lg } = await import(gu('utils/shortcuts/storage.js'));
@@ -57,6 +57,17 @@ class CommentsExtractor {
     const cfg = await this.getConfig();
     if (!cfg.comments?.enabled) {
       return [];
+    }
+    try {
+      const initialData = await this.getInitialDataFromMainWorld();
+      if (initialData) {
+        const initialComments = this.extractCommentsFromInitialData(initialData);
+        if (initialComments.length > 0) {
+          return initialComments;
+        }
+      }
+    } catch (err) {
+      e('Err:extracting initial comments', err);
     }
     if (cfg.cache?.enabled && cfg.cache?.comments) {
       try {
@@ -143,6 +154,38 @@ class CommentsExtractor {
       return null;
     }
   }
+  extractCommentsFromInitialData(data) {
+    try {
+      const contents = data?.contents?.twoColumnWatchNextResults?.results?.results?.contents;
+      if (!contents) return [];
+      const commentsSection = contents.find(
+        c => c.itemSectionRenderer?.contents?.[0]?.commentsEntryPointHeaderRenderer
+      );
+      if (!commentsSection) return [];
+      const commentThreads = contents.filter(c => c.commentThreadRenderer);
+      const comments = [];
+      for (const thread of commentThreads) {
+        const c = thread.commentThreadRenderer?.comment?.commentRenderer;
+        if (c) {
+          comments.push({
+            id: c.commentId,
+            author: c.authorText?.simpleText || 'Unknown',
+            text:
+              jn(
+                mp(c.contentText?.runs || [], r => r.text),
+                ''
+              ) || '',
+            likes: c.voteCount?.simpleText || '0',
+            publishedTime: c.publishedTimeText?.runs?.[0]?.text || '',
+          });
+        }
+      }
+      return comments;
+    } catch (err) {
+      e('Err:extractCommentsFromInitialData', err);
+      return [];
+    }
+  }
   async fetchCommentsFromDOM() {
     const maxRetries = 3;
     const baseDelay = 2000;
@@ -151,19 +194,34 @@ class CommentsExtractor {
       await new Promise(r => to(r, delay));
       try {
         const c = [];
-        const el = $$('ytd-comment-thread-renderer');
+        const selectors = ['ytd-comment-thread-renderer', 'ytd-comment-renderer'];
+        let el = [];
+        for (const sel of selectors) {
+          el = $$(sel);
+          if (el.length > 0) break;
+        }
         if (el.length === 0) {
           continue;
         }
+        const getText = (elm, sels) => {
+          for (const sel of sels) {
+            const e = elm.querySelector(sel);
+            if (e && e.textContent?.trim()) return e.textContent.trim();
+          }
+          return '';
+        };
         for (let i = 0; i < el.length; i++) {
           if (c.length >= 20) break;
           const elm = el[i];
           try {
-            const a = elm.querySelector('#author-text')?.textContent?.trim();
-            const t = elm.querySelector('#content-text')?.textContent?.trim();
-            const lk = elm.querySelector('#vote-count-middle')?.textContent?.trim() || '0';
+            const a = getText(elm, ['#author-text', '#author-text yt-formatted-string', '[author]']);
+            const t = getText(elm, ['#content-text', '#content-text yt-formatted-string', '[content]']);
+            const lk = getText(elm, ['#vote-count-middle', '#vote-count-left', '#vote-count']) || '0';
+            const pt = getText(elm, ['#published-time-text', '#published-time']);
             if (a && t) {
-              c.push({ author: a, text: t, likes: lk });
+              c.push({ id: elm.id || `dom_${i}`, author: a, text: t, likes: lk, publishedTime: pt });
+            } else {
+              e(`Failed to extract comment ${i + 1}: missing author or text`);
             }
           } catch (x) {
             e(`[CE] Err ${i + 1}:`, x);
@@ -171,6 +229,8 @@ class CommentsExtractor {
         }
         if (c.length > 0) {
           return c;
+        } else {
+          w('No comments available in DOM');
         }
       } catch (x) {
         e(`[CE] Attempt ${attempt} failed:`, x);
@@ -197,7 +257,10 @@ class CommentsExtractor {
       const i =
         d.onResponseReceivedEndpoints?.[1]?.reloadContinuationItemsCommand?.continuationItems ||
         d.onResponseReceivedEndpoints?.[0]?.appendContinuationItemsAction?.continuationItems ||
-        d.frameworkUpdates?.entityBatchUpdate?.mutations;
+        d.onResponseReceivedEndpoints?.[0]?.reloadContinuationItemsCommand?.continuationItems ||
+        d.continuationContents?.itemSectionContinuation?.contents ||
+        d.frameworkUpdates?.entityBatchUpdate?.mutations ||
+        d.contents?.twoColumnWatchNextResults?.results?.results?.contents;
       const c = [];
       let nt = null;
       if (i) {
