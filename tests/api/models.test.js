@@ -4,8 +4,10 @@ vi.mock('../../extension/utils/shortcuts/log.js', () => ({
   w: vi.fn(),
 }));
 
+const mockJf = vi.fn();
+
 vi.mock('../../extension/utils/shortcuts/network.js', () => ({
-  jf: vi.fn(),
+  jf: mockJf,
 }));
 
 vi.mock('../../extension/utils/shortcuts/array.js', () => ({
@@ -42,7 +44,7 @@ describe('ModelManager', () => {
         ],
       };
 
-      jf.mockResolvedValue(mockData);
+      mockJf.mockResolvedValue(mockData);
 
       const result = await manager.fetch();
 
@@ -60,7 +62,7 @@ describe('ModelManager', () => {
     });
 
     it('should handle failure', async () => {
-      jf.mockRejectedValue(new Error('error'));
+      mockJf.mockRejectedValue(new Error('error'));
 
       await manager.fetch();
 

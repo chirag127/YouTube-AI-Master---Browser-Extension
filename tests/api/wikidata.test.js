@@ -4,12 +4,15 @@ vi.mock('../../extension/utils/shortcuts/global.js', () => ({
   en: vi.fn(str => encodeURIComponent(str)),
 }));
 
+const mockSf = vi.fn();
+const mockSg = vi.fn();
+
 vi.mock('../../extension/utils/shortcuts/network.js', () => ({
-  sf: vi.fn(),
+  sf: mockSf,
 }));
 
 vi.mock('../../extension/utils/shortcuts/storage.js', () => ({
-  sg: vi.fn(),
+  sg: mockSg,
 }));
 
 describe('Wikidata API', () => {
@@ -21,9 +24,9 @@ describe('Wikidata API', () => {
     it('should return entity on success', async () => {
       const mockData = { search: [{ id: 'Q1' }] };
 
-      sf.mockResolvedValue(mockData);
+      mockSf.mockResolvedValue(mockData);
 
-      sg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
+      mockSg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
 
       const result = await searchWikidata('query');
 
@@ -34,7 +37,7 @@ describe('Wikidata API', () => {
     });
 
     it('should return null when disabled', async () => {
-      sg.mockResolvedValue({ integrations: { wikidata: { enabled: false } } });
+      mockSg.mockResolvedValue({ integrations: { wikidata: { enabled: false } } });
 
       const result = await searchWikidata('query');
 
@@ -42,9 +45,9 @@ describe('Wikidata API', () => {
     });
 
     it('should return null on no search results', async () => {
-      sf.mockResolvedValue({ search: [] });
+      mockSf.mockResolvedValue({ search: [] });
 
-      sg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
+      mockSg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
 
       const result = await searchWikidata('query');
 
@@ -63,9 +66,9 @@ describe('Wikidata API', () => {
       it('should call searchWikidata', async () => {
         const mockData = { id: 'Q1' };
 
-        sf.mockResolvedValue({ search: [mockData] });
+        mockSf.mockResolvedValue({ search: [mockData] });
 
-        sg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
+        mockSg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
 
         const result = await api.searchEntity('query');
 
@@ -77,7 +80,7 @@ describe('Wikidata API', () => {
       it('should return entity details', async () => {
         const mockData = { entities: { Q1: { label: 'Entity' } } };
 
-        sf.mockResolvedValue(mockData);
+        mockSf.mockResolvedValue(mockData);
 
         const result = await api.getEntityDetails('Q1');
 
@@ -94,7 +97,7 @@ describe('Wikidata API', () => {
       });
 
       it('should return null on no entities', async () => {
-        sf.mockResolvedValue({ entities: {} });
+        mockSf.mockResolvedValue({ entities: {} });
 
         const result = await api.getEntityDetails('Q1');
 

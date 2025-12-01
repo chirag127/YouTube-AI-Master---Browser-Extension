@@ -1,15 +1,14 @@
-import { sg, ss } from './shortcuts/storage.js';
 import { url } from './shortcuts/runtime.js';
 import { tbc as tc } from './shortcuts/tabs.js';
 import { w } from './shortcuts/log.js';
 
 export class OnboardingChecker {
   static async isCompleted() {
-    const r = await sg('obDone');
+    const r = await chrome.storage.sync.get('obDone');
     return r.obDone === true;
   }
   static async hasApiKey() {
-    const r = await sg('apiKey');
+    const r = await chrome.storage.sync.get('apiKey');
     return !!(r.apiKey && r.apiKey.trim());
   }
   static async shouldShowOnboarding() {
@@ -30,6 +29,6 @@ export class OnboardingChecker {
     return true;
   }
   static async markCompleted() {
-    await ss('obDone', true);
+    await chrome.storage.sync.set({ obDone: true });
   }
 }

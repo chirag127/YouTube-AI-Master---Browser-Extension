@@ -1,8 +1,6 @@
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
 
-import { jp, js } from '../utils/shortcuts/core.js';
-
 const s = new StorageService(),
   vl = document.getElementById('video-list'),
   si = document.getElementById('search-input'),
@@ -122,7 +120,7 @@ async function handleExport() {
       const f = await s.getTranscript(i.videoId);
       if (f) all.push(f);
     }
-    const b = new Blob([js(all, null, 2)], { type: 'application/json' }),
+    const b = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' }),
       u = URL.createObjectURL(b),
       a = document.createElement('a');
     a.href = u;
@@ -139,7 +137,7 @@ async function handleImport(e) {
   if (!f) return;
   try {
     const t = await f.text(),
-      d = jp(t);
+      d = JSON.parse(t);
     if (!Array.isArray(d)) throw new Error('Invalid format: expected an array');
     let c = 0;
     for (const i of d) {

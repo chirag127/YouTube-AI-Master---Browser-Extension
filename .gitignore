@@ -12,3 +12,4 @@ lint_output.txt
 MIGRATION.md
 test-results.json
 tests/coverage/
+eslint-output.json

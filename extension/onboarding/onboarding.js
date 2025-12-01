@@ -1,5 +1,3 @@
-import { nw as nt, js } from '../utils/shortcuts/core.js';
-
 class OnboardingFlow {
   constructor() {
     this.currentStep = 0;
@@ -40,7 +38,7 @@ class OnboardingFlow {
       automation: { autoAnalyze: true },
       segments: { enabled: true },
       ui: { outputLanguage: 'en' },
-      _meta: { onboardingCompleted: false, version: '1.0.0', lastUpdated: nt() },
+      _meta: { onboardingCompleted: false, version: '1.0.0', lastUpdated: Date.now() },
     };
     return defaults;
   }
@@ -108,7 +106,7 @@ class OnboardingFlow {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: js({ contents: [{ parts: [{ text: 'Hello' }] }] }),
+          body: JSON.stringify({ contents: [{ parts: [{ text: 'Hello' }] }] }),
         }
       );
       if (!r.ok) {

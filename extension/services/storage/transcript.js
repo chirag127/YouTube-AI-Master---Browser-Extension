@@ -1,6 +1,6 @@
 export async function saveTranscript(v, m, t, s) {
   if (!v) throw new Error('Video ID required');
-  const d = { videoId: v, metadata: m, transcript: t, summary: s, timestamp: nt() };
+  const d = { videoId: v, metadata: m, transcript: t, summary: s, timestamp: Date.now() };
   await chrome.storage.local.set({ [`video_${v}`]: d });
   return d;
 }

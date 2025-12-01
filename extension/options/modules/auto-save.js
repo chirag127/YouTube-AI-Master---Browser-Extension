@@ -1,4 +1,3 @@
-import { oe } from '../../utils/shortcuts/core.js';
 export class AutoSave {
   constructor(sm, d = 500, nm = null) {
     this.s = sm;
@@ -46,7 +45,7 @@ export class AutoSave {
     el?.addEventListener('input', h);
   }
   attachToAll(m) {
-    oe(m).forEach(([id, c]) => {
+    Object.entries(m).forEach(([id, c]) => {
       const el = document.querySelector(c.selector || `#${id}`);
       if (el) {
         this.attachToInput(el, c.path, c.transform);

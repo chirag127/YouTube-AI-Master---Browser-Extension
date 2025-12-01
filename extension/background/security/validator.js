@@ -1,5 +1,3 @@
-import { js } from '../../utils/shortcuts/core.js';
-
 const ALLOWED = new Set([
   'TEST',
   'GET_SETTINGS',
@@ -51,7 +49,7 @@ export const validateTranscript = t => {
   if (!Array.isArray(t)) {
     return false;
   }
-  if (js(t).length > MAX_TS) {
+  if (JSON.stringify(t).length > MAX_TS) {
     return false;
   }
   const result = t.every(

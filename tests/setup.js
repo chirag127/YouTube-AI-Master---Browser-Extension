@@ -144,6 +144,8 @@ vi.mock('../../../extension/utils/shortcuts/math.js', () => ({
 
 vi.mock('../../../extension/utils/shortcuts/network.js', () => ({
   ft: vi.fn(),
+  jf: vi.fn(),
+  tf: vi.fn(),
 }));
 
 vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
@@ -151,6 +153,8 @@ vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   ssg: vi.fn(),
   sls: vi.fn(),
   sss: vi.fn(),
+  sg: vi.fn(),
+  ss: vi.fn(),
 }));
 
 vi.mock('../../../extension/utils/shortcuts/tabs.js', () => ({

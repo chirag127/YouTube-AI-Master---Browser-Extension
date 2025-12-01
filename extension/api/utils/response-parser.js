@@ -1,7 +1,3 @@
-import { jp } from '../../utils/shortcuts/core.js';
-
-import { mp } from '../../utils/shortcuts/core.js';
-
 export const extractSection = (t, sn) => {
   const r = new RegExp(`## ${sn}\\s*([\\s\\S]*?)(?=##|$)`, 'i');
   const m = t.match(r);
@@ -32,7 +28,7 @@ export const parseSegmentsJSON = r => {
     return null;
   }
   const jsStr = jm[0];
-  const p = jp(jsStr);
+  const p = JSON.parse(jsStr);
   if (!p.segments || !Array.isArray(p.segments)) {
     console.error('error:parseSegmentsJSON inv struct:', p);
     return null;
@@ -61,7 +57,7 @@ export const expandLabel = sc => {
 };
 
 export const transformSegments = (parsed, expandLabelFn) => {
-  return mp(parsed.segments, s => ({
+  return parsed.segments.map(s => ({
     start: s.s,
     end: s.e,
     label: s.l,

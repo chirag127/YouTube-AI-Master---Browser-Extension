@@ -1,5 +1,3 @@
-import { now as nt, keys as ok, jp, js } from '../../utils/shortcuts/core.js';
-
 export const SEGMENT_CATEGORIES = [
   { id: 'sponsor', label: 'Sponsor', color: '#00d400' },
   { id: 'selfpromo', label: 'Self Promotion/Unpaid Promotion', color: '#ffff00' },
@@ -25,7 +23,7 @@ export class SettingsManager {
   async load() {
     try {
       const r = await chrome.storage.sync.get('config');
-      if (r.config && ok(r.config).length > 0) this.settings = this.mergeWithDefaults(r.config);
+      if (r.config && Object.keys(r.config).length > 0) this.settings = this.mergeWithDefaults(r.config);
       else {
         this.settings = this.getDefaults();
       }
@@ -39,7 +37,7 @@ export class SettingsManager {
   async save() {
     try {
       this.settings._meta = this.settings._meta || {};
-      this.settings._meta.lastUpdated = nt();
+      this.settings._meta.lastUpdated = Date.now();
       await chrome.storage.sync.set({ config: this.settings });
       this.notify();
       return true;
@@ -50,7 +48,7 @@ export class SettingsManager {
   }
   mergeWithDefaults(loadedSettings) {
     const d = this.getDefaults(),
-      m = jp(js(d));
+      m = JSON.parse(JSON.stringify(d));
     const dm = (t, s) => {
       for (const k in s) {
         if (s[k] && typeof s[k] === 'object' && !Array.isArray(s[k])) {
@@ -302,15 +300,15 @@ export class SettingsManager {
         showOnError: true,
         showProgress: true,
       },
-      _meta: { version: '1.0.0', lastUpdated: nt(), onboardingCompleted: false },
+      _meta: { version: '1.0.0', lastUpdated: Date.now(), onboardingCompleted: false },
     };
   }
   export() {
-    return js(this.settings, null, 2);
+    return JSON.stringify(this.settings, null, 2);
   }
   async import(j) {
     try {
-      const i = jp(j);
+      const i = JSON.parse(j);
       this.settings = i;
       await this.save();
       return true;

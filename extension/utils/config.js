@@ -1,5 +1,3 @@
-import { sg, ss } from './shortcuts/storage.js';
-import { nw, jp, js } from './shortcuts/core.js';
 import { isa } from './shortcuts/array.js';
 export const DC = {
   ca: { en: 1, ttl: 864e5, tr: 1, co: 1, md: 1 },
@@ -48,14 +46,14 @@ export class ConfigManager {
     this.l = [];
   }
   async load() {
-    const s = await sg('cfg');
+    const s = await chrome.storage.sync.get('cfg');
     if (s.cfg) this.c = this.mg(DC, s.cfg);
     return this.c;
   }
   async save() {
-    this.c._m.lu = nw();
-    await ss('cfg', this.c);
-    this.nt();
+    this.c._m.lu = Date.now();
+    await chrome.storage.sync.set({ cfg: this.c });
+    this.notify();
   }
   get(p) {
     if (!p) return this.c;
@@ -81,7 +79,7 @@ export class ConfigManager {
   sub(cb) {
     this.l.push(cb);
   }
-  nt() {
+  notify() {
     this.l.forEach(cb => cb(this.c));
   }
   mg(d, s) {
@@ -93,11 +91,11 @@ export class ConfigManager {
     return r;
   }
   exp() {
-    return js(this.c);
+    return JSON.stringify(this.c);
   }
   async imp(j) {
     try {
-      const i = jp(j);
+      const i = JSON.parse(j);
       this.c = this.mg(DC, i);
       await this.save();
       return 1;

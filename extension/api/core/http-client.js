@@ -1,5 +1,3 @@
-import { np } from '../../utils/shortcuts/async.js';
-
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 const RETRYABLE_ERRORS = new Set(['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND']);
 
@@ -99,6 +97,6 @@ export class HttpClient {
   }
 
   _sleep(ms) {
-    return np(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

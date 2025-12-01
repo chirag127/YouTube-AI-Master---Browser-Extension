@@ -1,6 +1,4 @@
 import { getCfg } from '../../../utils/config.js';
-import { stt as to } from '../../../utils/shortcuts/time.js';
-import { now as nw } from '../../../utils/shortcuts/core.js';
 
 function $(selector) {
   return document.querySelector(selector);
@@ -97,8 +95,8 @@ const openPanel = async () => {
 
 const waitSeg = async (t = 5000) => {
   try {
-    const s = nw();
-    while (nw() - s < t) {
+    const s = Date.now();
+    while (Date.now() - s < t) {
       const el = $('ytd-transcript-segment-renderer');
       if (el) {
         return;
@@ -151,7 +149,7 @@ const parseTs = s => {
 
 const wait = ms => {
   try {
-    return new Promise(r => to(r, ms));
+    return new Promise(r => setTimeout(r, ms));
   } catch (err) {
     console.error('Err:wait', err);
     return Promise.resolve();

@@ -10,7 +10,7 @@ function $(selector) {
   const extId = document.currentScript?.src.split('://')[1]?.split('/')[0];
   const baseUrl = extId ? `chrome-extension://${extId}/` : '../';
 
-  const { jp, to: st } = await import(baseUrl + 'utils/shortcuts/core.js');
+  const { to: st } = await import(baseUrl + 'utils/shortcuts/core.js');
 
   const uc = s => s.toUpperCase();
   class YTE {
@@ -121,7 +121,7 @@ function $(selector) {
             for (const s of document.querySelectorAll('script')) {
               const m = (s.textContent || '').match(/ytInitialPlayerResponse\s*=\s*({.+?});/s);
               if (m) {
-                pr = jp(m[1]);
+                pr = JSON.parse(m[1]);
                 break;
               }
             }
@@ -131,7 +131,7 @@ function $(selector) {
         }
         if (!pr && w.ytplayer?.config?.args?.player_response) {
           try {
-            pr = jp(w.ytplayer.config.args.player_response);
+            pr = JSON.parse(w.ytplayer.config.args.player_response);
           } catch (err) {
             console.error('Err:gid:ytplayer', err);
           }

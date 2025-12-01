@@ -1,5 +1,3 @@
-import { jp, js } from '../../utils/shortcuts/core.js';
-
 export class AdvancedSettings {
   constructor(s, a) {
     this.s = s;
@@ -22,7 +20,7 @@ export class AdvancedSettings {
     };
     if (els.ex)
       els.ex?.addEventListener('click', () => {
-        const d = js(this.s.get(), null, 2);
+        const d = JSON.stringify(this.s.get(), null, 2);
         const b = new Blob([d], { type: 'application/json' });
         const u = URL.createObjectURL(b);
         const a = document.createElement('a');
@@ -38,8 +36,8 @@ export class AdvancedSettings {
         const r = new FileReader();
         r.onload = async ev => {
           try {
-            const i = jp(ev.target.result);
-            if (await this.s.import(js(i))) {
+            const i = JSON.parse(ev.target.result);
+            if (await this.s.import(JSON.stringify(i))) {
               this.a.notifications?.success('Settings imported');
               setTimeout(() => window.location.reload(), 1000);
             } else throw new Error('Import failed');

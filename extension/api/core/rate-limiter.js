@@ -1,6 +1,3 @@
-import { nw } from '../../utils/shortcuts/core.js';
-import { np } from '../../utils/shortcuts/async.js';
-
 export class RateLimiter {
   constructor(config = {}) {
     this.maxRequests = config.maxRequests ?? 15;
@@ -11,7 +8,7 @@ export class RateLimiter {
 
   async acquire() {
     console.log(`[RateLimiter] Request queued, current queue: ${this.queue.length}`);
-    return np(resolve => {
+    return new Promise(resolve => {
       this.queue.push(resolve);
       this._processQueue();
     });
@@ -20,7 +17,7 @@ export class RateLimiter {
   _processQueue() {
     if (this.queue.length === 0) return;
 
-    const now = nw();
+    const now = Date.now();
 
     this.timestamps = this.timestamps.filter(ts => now - ts < this.windowMs);
 
@@ -45,7 +42,7 @@ export class RateLimiter {
   }
 
   getStats() {
-    const now = nw();
+    const now = Date.now();
     const activeRequests = this.timestamps.filter(ts => now - ts < this.windowMs).length;
 
     return {

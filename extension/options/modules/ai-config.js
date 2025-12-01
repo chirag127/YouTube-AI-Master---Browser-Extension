@@ -1,7 +1,5 @@
 import { ModelManager } from '../../api/gemini.js';
 
-import { isS, jp, js, sw } from '../../utils/shortcuts/core.js';
-
 export class AIConfig {
   constructor(s, a) {
     this.s = s;
@@ -74,7 +72,7 @@ export class AIConfig {
       if (els.ms)
         els.ms?.addEventListener('change', e => {
           let m = e.target.value;
-          if (sw(m, 'models/')) m = m.replace('models/', '');
+          if (m.startsWith('models/')) m = m.replace('models/', '');
           this.a.save('ai.model', m);
         });
       if (els.rm) els.rm?.addEventListener('click', () => this.loadModels(els.ms));
@@ -99,7 +97,7 @@ export class AIConfig {
         return;
       }
       m.forEach(x => {
-        const n = isS(x) ? x.replace('models/', '') : x.name.replace('models/', '') || x;
+        const n = typeof x === 'string' ? x.replace('models/', '') : x.name.replace('models/', '') || x;
         const o = document.createElement('option');
         o.value = n;
         o.textContent = n;
@@ -107,7 +105,7 @@ export class AIConfig {
       });
       const c = this.s.get().ai || {};
       let s = c.model;
-      if (s && sw(s, 'models/')) {
+      if (s && s.startsWith('models/')) {
         s = s.replace('models/', '');
         await this.a.save('ai.model', s);
       }
@@ -135,7 +133,7 @@ export class AIConfig {
     try {
       if (!c.GAK) throw new Error('API Key missing');
       let m = ms.value || c.model || 'gemini-2.0-flash-exp';
-      if (sw(m, 'models/')) m = m.replace('models/', '');
+      if (m.startsWith('models/')) m = m.replace('models/', '');
       if (
         !m.includes('-latest') &&
         !m.match(/-\d{3}$/) &&
@@ -149,11 +147,11 @@ export class AIConfig {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: js({ contents: [{ parts: [{ text: 'Ping' }] }] }),
+          body: JSON.stringify({ contents: [{ parts: [{ text: 'Ping' }] }] }),
         }
       );
       if (!r.ok) {
-        const err = jp(await r.text());
+        const err = JSON.parse(await r.text());
         throw new Error(err.error?.message || r.statusText);
       }
       st.textContent = '✓ Connection Successful!';

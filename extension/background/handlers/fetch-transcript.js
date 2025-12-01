@@ -1,5 +1,3 @@
-import { jp } from '../../utils/shortcuts/core.js';
-
 function dec(t) {
   const e = {
     '&amp;': '&',
@@ -30,7 +28,7 @@ async function fYT(vid, lNg = 'en') {
       if (f === 'json3') {
         const t = await fetch(u);
         if (!t) continue;
-        const d = jp(t);
+        const d = JSON.parse(t);
         if (d.events) {
           const s = d.events
             .filter(e => e.segs)
@@ -46,7 +44,7 @@ async function fYT(vid, lNg = 'en') {
         const s = pXML(x);
         if (s.length) return { success: true, data: s };
       }
-    } catch (e) {} // eslint-disable-line no-empty
+    } catch (e) { } // eslint-disable-line no-empty
   }
   return { success: false, error: 'YouTube Direct API failed' };
 }
@@ -60,7 +58,7 @@ export async function handleFetchTranscript(req, rsp) {
         rsp(r);
         return;
       }
-    } catch (e) {} // eslint-disable-line no-empty
+    } catch (e) { } // eslint-disable-line no-empty
   }
   rsp({ success: false, error: 'All transcript fetch methods failed' });
 }

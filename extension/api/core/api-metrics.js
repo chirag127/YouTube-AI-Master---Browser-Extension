@@ -1,5 +1,3 @@
-import { now as nt } from '../../utils/shortcuts/core.js';
-
 const metrics = new Map();
 
 export class APIMetrics {
@@ -19,12 +17,12 @@ export class APIMetrics {
     m.totalCalls++;
     m.totalDuration += duration;
     m.avgDuration = m.totalDuration / m.totalCalls;
-    m.lastCall = nt();
+    m.lastCall = Date.now();
     if (success) {
       m.successCalls++;
     } else {
       m.failedCalls++;
-      if (error) m.errors.push({ time: nt(), error: error.message || String(error) });
+      if (error) m.errors.push({ time: Date.now(), error: error.message || String(error) });
       if (m.errors.length > 10) m.errors.shift();
     }
   }

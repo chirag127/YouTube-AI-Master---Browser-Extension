@@ -8,9 +8,12 @@ vi.mock('../../extension/utils/shortcuts/global.js', () => ({
   en: vi.fn(str => encodeURIComponent(str)),
 }));
 
+const mockJf = vi.fn();
+const mockTf = vi.fn();
+
 vi.mock('../../extension/utils/shortcuts/network.js', () => ({
-  tf: vi.fn(),
-  jf: vi.fn(),
+  tf: mockTf,
+  jf: mockJf,
 }));
 
 vi.mock('../../extension/utils/shortcuts/string.js', () => ({
@@ -89,7 +92,7 @@ describe('GeniusLyricsAPI', () => {
         },
       };
 
-      jf.mockResolvedValue(data);
+      mockJf.mockResolvedValue(data);
 
       const result = await api.search('title', 'artist');
 
@@ -97,7 +100,7 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no sections', async () => {
-      jf.mockResolvedValue({ response: { sections: [] } });
+      mockJf.mockResolvedValue({ response: { sections: [] } });
 
       const result = await api.search('title', 'artist');
 
@@ -105,7 +108,7 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no hits', async () => {
-      jf.mockResolvedValue({
+      mockJf.mockResolvedValue({
         response: {
           sections: [{ type: 'song', hits: [] }],
         },
@@ -121,7 +124,7 @@ describe('GeniusLyricsAPI', () => {
     it('should extract lyrics from HTML', async () => {
       const html = '<div data-lyrics-container="true">line1<br>line2</div>';
 
-      tf.mockResolvedValue(html);
+      mockTf.mockResolvedValue(html);
 
       const result = await api.fetchLyrics('url');
 
@@ -129,7 +132,7 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no HTML', async () => {
-      tf.mockResolvedValue(null);
+      mockTf.mockResolvedValue(null);
 
       const result = await api.fetchLyrics('url');
 
@@ -137,7 +140,7 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no lyrics match', async () => {
-      tf.mockResolvedValue('<div>no lyrics</div>');
+      mockTf.mockResolvedValue('<div>no lyrics</div>');
 
       const result = await api.fetchLyrics('url');
 

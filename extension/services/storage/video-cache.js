@@ -1,7 +1,7 @@
 export async function saveVideoData(v, d) {
   const k = `video_${v}`,
     e = await getVideoData(v),
-    m = { videoId: v, timestamp: nt(), lastAccessed: nt(), ...e, ...d };
+    m = { videoId: v, timestamp: Date.now(), lastAccessed: Date.now(), ...e, ...d };
   await chrome.storage.local.set({ [k]: m });
   return m;
 }
@@ -9,7 +9,7 @@ export async function getVideoData(v) {
   const r = await chrome.storage.local.get(`video_${v}`),
     d = r[`video_${v}`];
   if (d) {
-    d.lastAccessed = nt();
+    d.lastAccessed = Date.now();
     await chrome.storage.local.set({ [`video_${v}`]: d });
   }
   return d || null;
@@ -56,7 +56,7 @@ export async function saveCommentsCache(v, c, cs) {
 export async function saveChatMessage(v, r, m) {
   const d = await getVideoData(v),
     h = d?.chatHistory || [];
-  h.push({ role: r, message: m, timestamp: nt() });
+  h.push({ role: r, message: m, timestamp: Date.now() });
   return saveVideoData(v, { chatHistory: h });
 }
 export async function saveMetadataCache(v, m) {
