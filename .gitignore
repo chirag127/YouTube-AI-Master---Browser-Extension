@@ -1,15 +1,39 @@
-node_modules/
-.DS_Store
-*.log
-.env
-.vscode/
-dist/
-build/
-*.zip
-package-lock.json
-lint_output.txt
+# Dependencies
+/node_modules
+/tests/node_modules
 
-MIGRATION.md
-test-results.json
-tests/coverage/
-eslint-output.json
+# Build and Distribution Artifacts (Vite/WXT)
+/dist
+/build
+/out
+/.wxt/
+/web-ext-artifacts
+/extension-packages
+
+# Configuration Caches
+.eslintcache
+.prettiercache
+biome.jsonc.cache
+
+# Logging and Diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing and Coverage Reports
+/coverage
+/.nyc_output
+/test_results
+
+# Environment Variables and Secrets
+.env
+.env.*
+*.pem
+*.key
+
+# OS and Editor Specific Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
