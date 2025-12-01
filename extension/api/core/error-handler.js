@@ -52,6 +52,14 @@ export class ErrorHandler {
       };
     }
 
+    if (error.message?.includes('ERR_CERT_AUTHORITY_INVALID') || error.message?.includes('certificate') || error.message?.includes('SSL')) {
+      return {
+        type: 'CERTIFICATE_ERROR',
+        userMessage: 'Security certificate error. Some external resources may be blocked.',
+        retryable: false,
+      };
+    }
+
     return {
       type: 'UNKNOWN_ERROR',
       userMessage: `An error occurred: ${error.message}`,

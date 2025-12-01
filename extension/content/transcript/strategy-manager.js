@@ -1,6 +1,6 @@
 const gu = p => chrome.runtime.getURL(p);
 
-const { getCfg } = await import(gu('utils/config.js'));
+const { getConfigurationManager } = await import(gu('utils/config.js'));
 const domAutomation = await import(gu('content/transcript/strategies/dom-automation.js'));
 const genius = await import(gu('content/transcript/strategies/genius.js'));
 const speechToText = await import(gu('content/transcript/strategies/speech-to-text.js'));
@@ -13,7 +13,7 @@ const defaultOrder = ['dom-automation', 'genius', 'speech-to-text'];
 
 export const extractTranscript = async (vid, lang = 'en') => {
   try {
-    const cfg = await getCfg().load();
+    const cfg = await getConfigurationManager().loadConfiguration();
     const order = cfg.tr?.so || defaultOrder;
     const strategies = order.map(key => strategyMap[key]).filter(Boolean);
     let err = null;

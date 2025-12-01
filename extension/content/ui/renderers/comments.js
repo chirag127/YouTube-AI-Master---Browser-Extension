@@ -31,7 +31,7 @@ export async function renderComments(c) {
     // Scroll to comments and wait for them to load
     await forceLoadComments();
     showLoading(c, 'Waiting for comments...');
-    await setTimeout(() => {}, 1200); // Increased wait time for lazy-load
+    await setTimeout(() => { }, 1200); // Increased wait time for lazy-load
 
     try {
       // Extract comments with retry logic - stay scrolled down during this process
@@ -39,7 +39,7 @@ export async function renderComments(c) {
 
       // Scroll back AFTER extraction completes
       if (cfg.scroll?.scrollBackAfterComments !== false) {
-        await setTimeout(() => {}, 300); // Brief delay before scroll-back
+        await setTimeout(() => { }, 300); // Brief delay before scroll-back
         scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
       }
 
@@ -91,7 +91,7 @@ export async function renderComments(c) {
     } catch (x) {
       // Scroll back even on error after full retry attempts
       if (cfg.scroll?.scrollBackAfterComments !== false) {
-        await setTimeout(() => {}, 300);
+        await setTimeout(() => { }, 300);
         scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
       }
       c.innerHTML = `<div class="yt-ai-error-msg">Failed: ${x.message}</div>`;
@@ -122,7 +122,7 @@ async function forceLoadComments() {
       const maxAttempts = 20; // 20 * 500ms = 10 seconds
 
       while (attempts < maxAttempts) {
-        await setTimeout(() => {}, 500);
+        await setTimeout(() => { }, 500);
 
         // Check if comments have loaded
         const comments = document.querySelectorAll(
@@ -130,7 +130,7 @@ async function forceLoadComments() {
         );
         if (comments && comments.length > 0) {
           // Comments appeared! Give a tiny bit more time for text to render
-          await setTimeout(() => {}, 500);
+          await setTimeout(() => { }, 500);
           return;
         }
 
@@ -146,7 +146,7 @@ async function forceLoadComments() {
         // If we are at the bottom, maybe scroll up a bit to trigger lazy load
         if (attempts % 5 === 0) {
           window.scrollBy(0, -50);
-          await setTimeout(() => {}, 100);
+          await setTimeout(() => { }, 100);
           window.scrollBy(0, 50);
         }
 
@@ -157,7 +157,7 @@ async function forceLoadComments() {
 
     // Fallback if no comments section found (e.g. mobile/other layout)
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
-    await setTimeout(() => {}, 2000);
+    await setTimeout(() => { }, 2000);
   } catch (err) {
     console.error('Err:forceLoadComments', err);
   }
@@ -165,31 +165,43 @@ async function forceLoadComments() {
 
 function scrollBackToTop(pos = 0, sn = true) {
   try {
-    window.scrollTo({ top: pos, behavior: 'smooth' });
-    document.documentElement.scrollTop = pos;
-    document.body.scrollTop = pos;
-    void document.body.offsetHeight;
-    if (typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(() => {
-        if (Math.abs(window.scrollY - pos) > 10) {
-          window.scrollTo(pos, pos);
-          document.documentElement.scrollTop = pos;
-          document.body.scrollTop = pos;
-        }
-      });
-    } else {
-      setTimeout(() => {
-        if (Math.abs(window.scrollY - pos) > 10) {
-          window.scrollTo(pos, pos);
-          document.documentElement.scrollTop = pos;
-          document.body.scrollTop = pos;
-        }
-      }, 16);
+    // Use a more efficient approach with requestAnimationFrame
+    const startTime = performance.now();
+    const duration = 300; // 300ms animation duration
+    const startPos = window.scrollY;
+    const distance = pos - startPos;
+
+    if (Math.abs(distance) < 10) {
+      // Already at target position, no need to animate
+      if (sn) showScrollNotification();
+      return;
     }
-    if (sn) showScrollNotification();
+
+    const animateScroll = (timestamp) => {
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = easeOutCubic(progress);
+
+      window.scrollTo(0, startPos + distance * easeProgress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      } else {
+        // Ensure final position is exact
+        window.scrollTo(0, pos);
+        if (sn) showScrollNotification();
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
   } catch (err) {
     console.error('Err:scrollBackToTop', err);
   }
+}
+
+// Easing function for smoother animation
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 function showScrollNotification() {

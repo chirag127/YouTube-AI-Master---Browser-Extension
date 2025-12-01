@@ -1,4 +1,4 @@
-import { getCfg } from '../../../utils/config.js';
+import { getConfigurationManager } from '../../../utils/config.js';
 
 function $(selector) {
   return document.querySelector(selector);
@@ -13,7 +13,7 @@ export const priority = 10;
 
 export const extract = async () => {
   try {
-    const cfg = await getCfg().load();
+    const cfg = await getConfigurationManager().loadConfiguration();
     const autoScroll = cfg.tr?.as ?? true;
     const initialScroll = window.scrollY;
 
