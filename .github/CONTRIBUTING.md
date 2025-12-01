@@ -1,77 +1,143 @@
-# Contributing to YouTube AI Navigator Browser Extension
+# Contributing to YouTube-AI-Navigator-Browser-Extension
 
-Thank you for considering contributing to the YouTube AI Navigator Browser Extension! We aim to foster a collaborative environment for building a top-tier, privacy-first browser extension. All contributions are welcome, from bug reports and feature requests to code submissions.
+We are thrilled you're considering contributing to the YouTube-AI-Navigator-Browser-Extension project! Your contributions help us build an apex-grade, privacy-first browser extension for real-time, AI-powered YouTube analysis. This document outlines the guidelines and best practices for contributing.
 
-## Code of Conduct
+## 🌟 Code of Conduct
 
-This project adheres to the Contributor Covenant Code of Conduct. Please review the [CODE_OF_CONDUCT.md](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/blob/main/CODE_OF_CONDUCT.md) file for details on expected behavior.
+Please note that this project is released with a [Code of Conduct](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/blob/main/CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms.
 
-## How to Contribute
+## 💡 How Can I Contribute?
 
-We welcome contributions through the following channels:
+There are many ways to contribute to this project, not just by writing code:
 
-1.  **Reporting Bugs:** If you find a bug, please open an issue on GitHub. Provide a clear title, a detailed description of the bug, steps to reproduce it, and any relevant environment information (browser, OS, extension version).
-2.  **Suggesting Features:** Have an idea for a new feature or an improvement? Please open an issue to discuss it before implementing.
-3.  **Submitting Pull Requests:** For code contributions, please follow these steps:
+### 🐛 Reporting Bugs
 
-    *   **Fork the Repository:** Create your own fork of the `chirag127/YouTube-AI-Navigator-Browser-Extension` repository.
-    *   **Clone Your Fork:** Clone your forked repository to your local machine.
-        bash
-        git clone https://github.com/YOUR_USERNAME/YouTube-AI-Navigator-Browser-Extension.git
-        cd YouTube-AI-Navigator-Browser-Extension
-        
-    *   **Create a New Branch:** Create a descriptive branch for your changes.
-        bash
-        git checkout -b feat/your-new-feature
-        # or
-        git checkout -b fix/your-bug-fix
-        
-    *   **Make Your Changes:** Implement your feature or bug fix. Ensure your code adheres to the project's standards (see below).
-    *   **Test Your Changes:** Run the provided test suite to ensure your changes haven't introduced regressions.
-    *   **Commit Your Changes:** Use [Conventional Commits](https://www.conventionalcommits.org/) for your commit messages.
-        bash
-        git add .
-        git commit -m "feat: Add AI-powered tooltip for video analysis"
-        # or
-        git commit -m "fix: Resolve issue with SponsorBlock integration"
-        
-    *   **Push to Your Fork:** Push your branch to your fork on GitHub.
-        bash
-        git push origin feat/your-new-feature
-        
-    *   **Open a Pull Request:** Go to the original repository and open a new pull request from your fork's branch to the `main` branch.
+*   Before submitting a new bug report, please check existing issues to see if the bug has already been reported.
+*   If not, open a new issue using our [bug report template](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=%5BBug%5D+).
+*   Provide a clear and concise description of the bug.
+*   Include steps to reproduce, expected behavior, and actual behavior.
+*   Specify your environment (browser version, OS, extension version).
 
-## Development Environment Setup
+### ✨ Suggesting Enhancements
 
-To set up the development environment, please refer to the `README.md` file in the root of this repository for detailed instructions.
+*   We welcome ideas for new features or improvements to existing ones.
+*   Before submitting, check existing issues to avoid duplicates.
+*   Open a new issue using the appropriate template.
+*   Clearly describe the enhancement and its potential benefits.
 
-## Code Standards & Architecture
+### 📝 Improving Documentation
 
-This project adheres to the Apex Technical Authority standards, emphasizing Zero-Defect, High-Velocity, and Future-Proof development.
+*   Documentation is crucial. If you find errors, omissions, or areas for improvement in our `README.md`, `AGENTS.md`, or other `.md` files, please open a pull request.
 
-*   **Language:** TypeScript (Strict)
-*   **Bundler:** Vite 7
-*   **Extension Framework:** WXT
-*   **Linter/Formatter:** Biome
-*   **Testing:** Vitest (Unit), Playwright (E2E)
-*   **Architecture:** Feature-Sliced Design (FSD), SOLID principles, DRY, KISS.
-*   **AI Integration:** Strict adherence to the AI Orchestration & Gemini Protocol as defined in `AGENTS.md`.
-*   **Code Hygiene:** Self-documenting code, semantic naming, no unnecessary comments, strict `src/` directory for production code, all tests and scripts in `tests/`.
+### 💻 Your First Code Contribution
 
-**Refer to the `AGENTS.md` file for detailed AI and development directives.**
+*   Start by looking for issues labeled `good first issue` or `help wanted`. These are typically simpler tasks that are good for new contributors.
+*   Feel free to ask questions on the issue if you need clarification.
 
-## Pull Request Guidelines
+## 🚀 Setting Up Your Development Environment
 
-*   **Keep PRs focused:** Each PR should address a single issue or feature.
-*   **Descriptive Title:** Use Conventional Commits format.
-*   **Clear Description:** Explain what the PR does, why it's necessary, and any potential impact.
-*   **Link to Issue:** Reference the relevant GitHub issue if applicable.
-*   **Self-Review:** Before submitting, review your own code and tests.
+To get started with local development:
 
-## Reporting Security Vulnerabilities
+1.  **Prerequisites:**
+    *   [Node.js](https://nodejs.org/) (LTS version recommended)
+    *   [pnpm](https://pnpm.io/installation) (our preferred package manager)
+    *   A modern web browser (Chrome, Firefox, Edge, etc.)
 
-We take security very seriously. If you discover a security vulnerability, please report it responsibly by following the guidelines in the [SECURITY.md](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/blob/main/SECURITY.md) file.
+2.  **Clone the repository:**
+    bash
+    git clone https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension.git
+    cd YouTube-AI-Navigator-Browser-Extension
+    
 
-## Questions?
+3.  **Install dependencies:**
+    bash
+    pnpm install
+    
 
-If you have any questions or need clarification, please don't hesitate to open an issue.
+4.  **Start development server:**
+    This command will build the extension and watch for changes, automatically reloading the extension in your browser after modifications.
+    bash
+    pnpm dev
+    
+    Follow the instructions provided by WXT to load the unpacked extension in your browser.
+
+## 🏗️ Project Architecture & Technologies
+
+This project adheres to a **Feature-Sliced Design (FSD)** architecture, promoting modularity, reusability, and maintainability.
+
+**Key Technologies:**
+
+*   **TypeScript 6.x (Strict Mode):** For robust, type-safe code.
+*   **WXT Framework:** Powers our browser extension development, offering excellent developer experience and build performance.
+*   **Vite 7 (via WXT):** For lightning-fast development builds and optimized production bundles.
+*   **TailwindCSS v4 (JIT Mode):** For utility-first styling (if applicable, or general CSS practices).
+*   **Biome:** Our chosen linter and formatter for superior performance and code consistency.
+*   **Vitest:** For fast unit and integration testing.
+*   **Playwright:** For robust end-to-end (E2E) testing of browser interactions.
+
+## ✍️ Coding Guidelines
+
+To ensure code quality and consistency:
+
+*   **TypeScript First:** Write all new code in TypeScript, leveraging its type system extensively.
+*   **Feature-Sliced Design:** Organize your code according to FSD principles (e.g., `src/features`, `src/entities`, `src/shared`).
+*   **Biome:** All code must pass Biome linting and formatting checks. Your PR will fail CI if these checks do not pass.
+    bash
+    pnpm run lint # Checks for linting errors
+    pnpm run format # Auto-formats code
+    pnpm run check # Runs lint, format, and type checks
+    
+*   **SOLID, DRY, YAGNI:** Adhere to fundamental software engineering principles.
+*   **Clear & Concise Code:** Write readable code with meaningful variable names and comments where necessary.
+*   **Security Minded:** Always consider potential security implications, especially when handling user data or external APIs.
+
+## ✅ Testing
+
+Comprehensive testing is a cornerstone of this project.
+
+*   **Unit/Integration Tests (Vitest):**
+    bash
+    pnpm test:unit
+    
+    Write tests for new features and bug fixes to ensure correctness and prevent regressions. Aim for high code coverage.
+*   **End-to-End Tests (Playwright):**
+    bash
+    pnpm test:e2e
+    
+    For critical user flows and browser interactions, contribute to our Playwright test suite.
+
+## 🔄 Pull Request Process
+
+1.  **Fork** the repository and **create your branch** from `main`.
+    bash
+    git checkout main
+    git pull origin main
+    git checkout -b feature/your-feature-name
+    
+2.  **Implement your changes**, following the coding guidelines.
+3.  **Run tests and linting** to ensure everything passes locally:
+    bash
+    pnpm run check
+    pnpm test:unit
+    pnpm test:e2e # If applicable
+    
+4.  **Commit your changes** using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standards (e.g., `feat: add new AI summary feature`, `fix: correct transcript parsing error`). This helps us generate release notes.
+5.  **Push your branch** to your fork.
+6.  **Open a Pull Request** against the `main` branch of `chirag127/YouTube-AI-Navigator-Browser-Extension`.
+7.  **Provide a clear title and description** for your PR.
+    *   Reference any related issues (e.g., `Closes #123`).
+    *   Describe the problem your PR solves and how it solves it.
+    *   Include screenshots or GIFs for UI changes.
+    *   Explain any design choices or trade-offs.
+8.  **Address review comments** promptly. Be open to feedback and iteration.
+9.  **Squash commits** if your PR has many small, iterative commits, to keep the history clean before merging.
+
+## 🛡️ Security Vulnerabilities
+
+If you discover a security vulnerability, please refer to our [Security Policy](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/blob/main/SECURITY.md) for instructions on how to report it responsibly.
+
+## ⚖️ License
+
+By contributing to YouTube-AI-Navigator-Browser-Extension, you agree that your contributions will be licensed under its [CC BY-NC 4.0 License](https://github.com/chirag127/YouTube-AI-Navigator-Browser-Extension/blob/main/LICENSE).
+
+Thank you for helping to improve YouTube-AI-Navigator-Browser-Extension!
