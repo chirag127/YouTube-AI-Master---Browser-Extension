@@ -6,10 +6,8 @@ export class DatamuseAPI {
       const response = await fetch(`${BASE_URL}/words?ml=${encodeURIComponent(word)}&max=5`);
       const data = await response.json();
       return data || [];
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) =>
-        e('[Datamuse] getRelatedWords fail:', x.message)
-      );
+    } catch (error) {
+      console.error('[Datamuse] getRelatedWords fail:', error.message);
       return [];
     }
   }

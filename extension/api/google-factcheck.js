@@ -13,10 +13,8 @@ export class GoogleFactCheckAPI {
       );
       const data = await response.json();
       return data?.claims || [];
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) =>
-        e('[GoogleFactCheck] searchClaims fail:', x.message)
-      );
+    } catch (error) {
+      console.error('[GoogleFactCheck] searchClaims fail:', error.message);
       return [];
     }
   }

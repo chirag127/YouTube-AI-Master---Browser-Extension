@@ -13,10 +13,8 @@ export class NewsDataAPI {
       );
       const data = await response.json();
       return data?.results || [];
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) =>
-        e('[NewsData] searchNews fail:', x.message)
-      );
+    } catch (error) {
+      console.error('[NewsData] searchNews fail:', error.message);
       return [];
     }
   }

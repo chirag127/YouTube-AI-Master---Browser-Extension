@@ -8,10 +8,8 @@ export class SemanticScholarAPI {
       );
       const data = await response.json();
       return data?.data?.[0] || null;
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) =>
-        e('[SemanticScholar] searchPaper fail:', x.message)
-      );
+    } catch (error) {
+      console.error('[SemanticScholar] searchPaper fail:', error.message);
       return null;
     }
   }

@@ -1,111 +1,192 @@
-import { isa } from './shortcuts/array.js';
-export const DC = {
-  ca: { en: 1, ttl: 864e5, tr: 1, co: 1, md: 1 },
-  sc: { as: 1, sb: 1, sn: 1, sm: 1 },
-  tr: {
-    ac: 1,
-    ad: 1e3,
-    ao: 1,
-    lg: 'en',
-    mt: 'auto',
-    ts: 1,
-    so: ['dom-automation', 'genius', 'speech-to-text'],
-    as: 1,
+/**
+ * Configuration management for the YouTube AI Navigator extension
+ * Handles default configuration, loading, saving, and manipulation of settings
+ */
+
+export const DEFAULT_CONFIG = {
+  comments: { enabled: true, timeToLive: 86400000, translate: true, collapse: true, metadata: true },
+  sponsors: { autoSkip: true, skipButton: true, showNotice: true, showMarker: true },
+  transcript: {
+    autoCopy: true,
+    autoDownload: 1000,
+    autoOpen: true,
+    language: 'en',
+    method: 'auto',
+    timestamps: true,
+    source: ['dom-automation', 'genius', 'speech-to-text'],
+    autoSync: true,
   },
-  co: { en: 1, lm: 20, ir: 3, sb: 'top', as: 1 },
-  md: { ti: 1, au: 1, vw: 1, du: 1, ds: 1, tg: 1, ud: 1 },
-  ui: { th: 'dark', theme: 'liquid-glass', wp: 'secondary', ae: 1, st: 1, cm: 0 },
-  ai: { k: '', m: 'gemini-2.5-flash-lite-preview-09-2025', cp: '', ol: 'en', t: 0.7, mt: 8192 },
-  au: { aa: 1, al: 1, at: 50, ln: 1, ll: 1 },
-  sg: {
-    en: 1,
-    ct: {
-      sp: { a: 'skip', s: 2 },
-      sf: { a: 'skip', s: 2 },
-      in: { a: 'skip', s: 2 },
-      ou: { a: 'skip', s: 2 },
-      it: { a: 'skip', s: 2 },
-      mo: { a: 'skip', s: 2 },
-      pv: { a: 'skip', s: 2 },
-      fl: { a: 'skip', s: 2 },
-      ph: { a: 'skip', s: 2 },
-      ea: { a: 'skip', s: 2 },
+  comments: { enabled: true, limit: 20, interval: 3, sortBy: 'top', autoSync: true },
+  metadata: { title: true, author: true, views: true, duration: true, description: true, tags: true, uploadDate: true },
+  userInterface: { theme: 'dark', widgetTheme: 'liquid-glass', widgetPosition: 'secondary', animationsEnabled: true, smoothTransitions: true, compactMode: false },
+  artificialIntelligence: { apiKey: '', model: 'gemini-2.5-flash-lite-preview-09-2025', customPrompt: '', outputLanguage: 'en', temperature: 0.7, maxTokens: 8192 },
+  autoUsage: { autoApprove: true, autoLike: true, autoThrottle: 50, lazyLoading: true, lowLatency: true },
+  segments: {
+    enabled: true,
+    categories: {
+      sponsors: { action: 'skip', strength: 2 },
+      selfPromo: { action: 'skip', strength: 2 },
+      introduction: { action: 'skip', strength: 2 },
+      outro: { action: 'skip', strength: 2 },
+      interaction: { action: 'skip', strength: 2 },
+      music: { action: 'skip', strength: 2 },
+      preview: { action: 'skip', strength: 2 },
+      filler: { action: 'skip', strength: 2 },
+      pause: { action: 'skip', strength: 2 },
+      esimatedAds: { action: 'skip', strength: 2 },
     },
-    as: 1,
-    sn: 1,
-    st: 0.5,
-    md: 1,
+    autoSync: true,
+    showNumbers: true,
+    strength: 0.5,
+    showMetadata: true,
   },
-  ex: { tm: '', nd: '', gf: '', tc: '', ta: '' },
-  ad: { db: 1, sh: 1, mh: 100, et: 1 },
-  _m: { v: '1.0.0', lu: Date.now(), ob: 0 },
+  external: { tmdb: '', newsdata: '', googleFactcheck: '', tvMaze: '', tvdb: '' },
+  advanced: { debug: true, showHints: true, maxHistory: 100, enableTracking: true },
+  metadata: { version: '1.0.0', lastUpdated: Date.now(), onboardingCompleted: 0 },
 };
-export class ConfigManager {
+
+/**
+ * Configuration Manager class for handling all configuration operations
+ */
+export class ConfigurationManager {
   constructor() {
-    this.c = { ...DC };
-    this.l = [];
+    this.currentConfiguration = { ...DEFAULT_CONFIG };
+    this.listeners = [];
   }
-  async load() {
-    const s = await chrome.storage.sync.get('cfg');
-    if (s.cfg) this.c = this.mg(DC, s.cfg);
-    return this.c;
-  }
-  async save() {
-    this.c._m.lu = Date.now();
-    await chrome.storage.sync.set({ cfg: this.c });
-    this.notify();
-  }
-  get(p) {
-    if (!p) return this.c;
-    return p.split('.').reduce((o, k) => o?.[k], this.c);
-  }
-  set(p, v) {
-    const k = p.split('.'),
-      l = k.pop(),
-      t = k.reduce((o, x) => {
-        if (!o[x]) o[x] = {};
-        return o[x];
-      }, this.c);
-    t[l] = v;
-  }
-  async update(p, v) {
-    this.set(p, v);
-    await this.save();
-  }
-  async reset() {
-    this.c = { ...DC };
-    await this.save();
-  }
-  sub(cb) {
-    this.l.push(cb);
-  }
-  notify() {
-    this.l.forEach(cb => cb(this.c));
-  }
-  mg(d, s) {
-    const r = { ...d };
-    for (const k in s) {
-      if (typeof s[k] === 'object' && !isa(s[k])) r[k] = this.mg(d[k] || {}, s[k]);
-      else r[k] = s[k];
+
+  /**
+   * Loads configuration from Chrome storage and merges with defaults
+   * @returns {Object} The loaded configuration
+   */
+  async loadConfiguration() {
+    const storedConfiguration = await chrome.storage.sync.get('configuration');
+    if (storedConfiguration.configuration) {
+      this.currentConfiguration = this.mergeConfigurations(DEFAULT_CONFIG, storedConfiguration.configuration);
     }
-    return r;
+    return this.currentConfiguration;
   }
-  exp() {
-    return JSON.stringify(this.c);
+
+  /**
+   * Saves current configuration to Chrome storage
+   */
+  async saveConfiguration() {
+    this.currentConfiguration.metadata.lastUpdated = Date.now();
+    await chrome.storage.sync.set({ configuration: this.currentConfiguration });
+    this.notifyListeners();
   }
-  async imp(j) {
+
+  /**
+   * Gets a configuration value by path (supports dot notation)
+   * @param {string} configurationPath - Dot-separated path to the configuration value
+   * @returns {*} The configuration value or undefined if not found
+   */
+  getConfigurationValue(configurationPath) {
+    if (!configurationPath) return this.currentConfiguration;
+    return configurationPath.split('.').reduce((configurationObject, configurationKey) => configurationObject?.[configurationKey], this.currentConfiguration);
+  }
+
+  /**
+   * Sets a configuration value by path (supports dot notation)
+   * @param {string} configurationPath - Dot-separated path to the configuration value
+   * @param {*} configurationValue - Value to set
+   */
+  setConfigurationValue(configurationPath, configurationValue) {
+    const configurationKeys = configurationPath.split('.');
+    const lastKey = configurationKeys.pop();
+    const targetObject = configurationKeys.reduce((configurationObject, configurationKey) => {
+      if (!configurationObject[configurationKey]) {
+        configurationObject[configurationKey] = {};
+      }
+      return configurationObject[configurationKey];
+    }, this.currentConfiguration);
+    targetObject[lastKey] = configurationValue;
+  }
+
+  /**
+   * Updates a configuration value and saves immediately
+   * @param {string} configurationPath - Dot-separated path to the configuration value
+   * @param {*} configurationValue - Value to set
+   */
+  async updateConfigurationValue(configurationPath, configurationValue) {
+    this.setConfigurationValue(configurationPath, configurationValue);
+    await this.saveConfiguration();
+  }
+
+  /**
+   * Resets configuration to defaults
+   */
+  async resetToDefaults() {
+    this.currentConfiguration = { ...DEFAULT_CONFIG };
+    await this.saveConfiguration();
+  }
+
+  /**
+   * Subscribes a listener to configuration changes
+   * @param {Function} callback - Function to call when configuration changes
+   */
+  subscribeToChanges(callback) {
+    this.listeners.push(callback);
+  }
+
+  /**
+   * Notifies all listeners of configuration changes
+   */
+  notifyListeners() {
+    this.listeners.forEach(callback => callback(this.currentConfiguration));
+  }
+
+  /**
+   * Merges two configuration objects recursively
+   * @param {Object} defaultConfiguration - Default configuration template
+   * @param {Object} storedConfiguration - Stored configuration to merge
+   * @returns {Object} Merged configuration
+   */
+  mergeConfigurations(defaultConfiguration, storedConfiguration) {
+    const mergedResult = { ...defaultConfiguration };
+    for (const configurationKey in storedConfiguration) {
+      if (typeof storedConfiguration[configurationKey] === 'object' && !Array.isArray(storedConfiguration[configurationKey])) {
+        mergedResult[configurationKey] = this.mergeConfigurations(defaultConfiguration[configurationKey] || {}, storedConfiguration[configurationKey]);
+      } else {
+        mergedResult[configurationKey] = storedConfiguration[configurationKey];
+      }
+    }
+    return mergedResult;
+  }
+
+  /**
+   * Exports current configuration as JSON string
+   * @returns {string} JSON representation of configuration
+   */
+  exportConfiguration() {
+    return JSON.stringify(this.currentConfiguration);
+  }
+
+  /**
+   * Imports configuration from JSON string
+   * @param {string} jsonConfiguration - JSON string containing configuration
+   * @returns {number} 1 if successful, 0 if failed
+   */
+  async importConfiguration(jsonConfiguration) {
     try {
-      const i = JSON.parse(j);
-      this.c = this.mg(DC, i);
-      await this.save();
+      const parsedConfiguration = JSON.parse(jsonConfiguration);
+      this.currentConfiguration = this.mergeConfigurations(DEFAULT_CONFIG, parsedConfiguration);
+      await this.saveConfiguration();
       return 1;
-    } catch (e) {
+    } catch (error) {
+      console.error('Failed to import configuration:', error);
       return 0;
     }
   }
 }
-let inst = null;
-export const getCfg = () => {
-  if (!inst) inst = new ConfigManager();
-  return inst;
+
+/**
+ * Singleton instance of ConfigurationManager
+ */
+let configurationManagerInstance = null;
+
+export const getConfigurationManager = () => {
+  if (!configurationManagerInstance) {
+    configurationManagerInstance = new ConfigurationManager();
+  }
+  return configurationManagerInstance;
 };

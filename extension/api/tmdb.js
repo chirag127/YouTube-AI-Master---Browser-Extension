@@ -13,8 +13,8 @@ export class TmdbAPI {
       );
       const data = await response.json();
       return data?.results?.[0] || null;
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) => e('[TMDB] searchMovie fail:', x.message));
+    } catch (error) {
+      console.error('[TMDB] searchMovie fail:', error.message);
       return null;
     }
   }
@@ -27,8 +27,8 @@ export class TmdbAPI {
       );
       const data = await response.json();
       return data?.results?.[0] || null;
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) => e('[TMDB] searchTV fail:', x.message));
+    } catch (error) {
+      console.error('[TMDB] searchTV fail:', error.message);
       return null;
     }
   }
@@ -40,8 +40,8 @@ export class TmdbAPI {
         `${BASE_URL}/${type}/${id}?api_key=${this.apiKey}&append_to_response=credits,similar`
       );
       return await response.json();
-    } catch (x) {
-      import('../utils/shortcuts/log.js').then(({ e }) => e('[TMDB] getDetails fail:', x.message));
+    } catch (error) {
+      console.error('[TMDB] getDetails fail:', error.message);
       return null;
     }
   }

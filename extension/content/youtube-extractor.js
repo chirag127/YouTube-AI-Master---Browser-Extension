@@ -10,7 +10,7 @@ function $(selector) {
   const extId = document.currentScript?.src.split('://')[1]?.split('/')[0];
   const baseUrl = extId ? `chrome-extension://${extId}/` : '../';
 
-  const { to: st } = await import(baseUrl + 'utils/shortcuts/core.js');
+  const setTimeoutWithCleanup = (callback, delay) => setTimeout(callback, delay);
 
   const uc = s => s.toUpperCase();
   class YTE {
@@ -89,7 +89,7 @@ function $(selector) {
         }
         const d = await r.json();
         this.emit('transcript', d);
-        st(() => this.iu.delete(u), 1e4);
+        setTimeoutWithCleanup(() => this.iu.delete(u), 10000);
       } catch (err) {
         console.error('Err:htu', err);
         this.iu.delete(u);
