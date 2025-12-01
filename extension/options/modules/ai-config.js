@@ -31,7 +31,7 @@ export class AIConfig {
       if (els.ak)
         els.ak?.addEventListener('change', async e => {
           const k = e.target.value.trim();
-          await sls('GAK', k);
+          await chrome.storage.local.set({ GAK: k });
           await this.a.save('ai.GAK', k);
           this.mm = new ModelManager(k, 'https://generativelanguage.googleapis.com/v1beta');
           if (k) await this.loadModels(els.ms);
@@ -98,7 +98,7 @@ export class AIConfig {
         sel.innerHTML = '<option value="" disabled>No models found</option>';
         return;
       }
-      afe(m, x => {
+      m.forEach(x => {
         const n = isS(x) ? x.replace('models/', '') : x.name.replace('models/', '') || x;
         const o = document.createElement('option');
         o.value = n;

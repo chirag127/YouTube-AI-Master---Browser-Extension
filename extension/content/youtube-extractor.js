@@ -1,5 +1,10 @@
 const w = window,
   d = document;
+
+function $(selector) {
+  return document.querySelector(selector);
+}
+
 (async () => {
   if (window.top !== window) return;
   const extId = document.currentScript?.src.split('://')[1]?.split('/')[0];
@@ -149,50 +154,49 @@ const w = window,
         console.error('Err:on', err);
       }
     }
-  }
-  emit(ev, d) {
-    try {
-      this.ls.get(ev)?.forEach(c => c(d));
-      w.postMessage({ type: `YT_${uc(ev)}`, payload: d }, '*');
-    } catch (err) {
-      console.error('Err:e', err);
+    emit(ev, d) {
+      try {
+        this.ls.get(ev)?.forEach(c => c(d));
+        w.postMessage({ type: `YT_${uc(ev)}`, payload: d }, '*');
+      } catch (err) {
+        console.error('Err:e', err);
+      }
+    }
+    em() {
+      try {
+        const pr = w.ytInitialPlayerResponse;
+        if (!pr) return null;
+        const d = pr.videoDetails,
+          m = pr.microformat?.playerMicroformatRenderer;
+        return {
+          title: d?.title,
+          videoId: d?.videoId,
+          author: d?.author,
+          viewCount: d?.viewCount,
+          lengthSeconds: d?.lengthSeconds,
+          description: d?.shortDescription,
+          isLive: d?.isLiveContent,
+          keywords: d?.keywords || [],
+          channelId: d?.channelId,
+          uploadDate: m?.uploadDate || '',
+        };
+      } catch (err) {
+        console.error('Err:em', err);
+        return null;
+      }
+    }
+    esm() {
+      try {
+        const as = $('ytd-reel-video-renderer[is-active]');
+        if (!as) return null;
+        const t = as.querySelector('.ytd-reel-player-header-renderer-title')?.textContent;
+        const c = as.querySelector('.ytd-channel-name')?.textContent;
+        return { title: t?.trim(), channel: c?.trim() };
+      } catch (err) {
+        console.error('Err:esm', err);
+        return null;
+      }
     }
   }
-  em() {
-    try {
-      const pr = w.ytInitialPlayerResponse;
-      if (!pr) return null;
-      const d = pr.videoDetails,
-        m = pr.microformat?.playerMicroformatRenderer;
-      return {
-        title: d?.title,
-        videoId: d?.videoId,
-        author: d?.author,
-        viewCount: d?.viewCount,
-        lengthSeconds: d?.lengthSeconds,
-        description: d?.shortDescription,
-        isLive: d?.isLiveContent,
-        keywords: d?.keywords || [],
-        channelId: d?.channelId,
-        uploadDate: m?.uploadDate || '',
-      };
-    } catch (err) {
-      console.error('Err:em', err);
-      return null;
-    }
-  }
-  esm() {
-    try {
-      const as = $('ytd-reel-video-renderer[is-active]');
-      if (!as) return null;
-      const t = as.querySelector('.ytd-reel-player-header-renderer-title')?.textContent;
-      const c = as.querySelector('.ytd-channel-name')?.textContent;
-      return { title: t?.trim(), channel: c?.trim() };
-    } catch (err) {
-      console.error('Err:esm', err);
-      return null;
-    }
-  }
-}
   new YTE();
-}) ();
+})();

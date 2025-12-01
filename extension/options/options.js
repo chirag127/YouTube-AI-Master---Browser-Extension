@@ -20,8 +20,6 @@ import { WidgetSettings } from './modules/widget-settings.js';
 import { IntegrationsSettings } from './modules/integrations.js';
 import { PromptsSettings } from './modules/prompts.js';
 
-import { vl as vs } from '../utils/shortcuts/core.js';
-
 document?.addEventListener('DOMContentLoaded', async () => {
   const settingsManager = new SettingsManager();
   const notificationManager = new NotificationManager();
@@ -40,7 +38,7 @@ document?.addEventListener('DOMContentLoaded', async () => {
   }
   startSetupBtn &&
     startSetupBtn?.addEventListener('click', () => {
-      tc({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
+      chrome.tabs.create({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
     });
   dismissBannerBtn &&
     dismissBannerBtn?.addEventListener('click', () => {
@@ -65,7 +63,7 @@ document?.addEventListener('DOMContentLoaded', async () => {
     integrations: new IntegrationsSettings(settingsManager, notificationManager),
     prompts: new PromptsSettings(settingsManager, autoSave),
   };
-  const initPromises = vs(modules).map(async m => {
+  const initPromises = Object.values(modules).map(async m => {
     try {
       await m.init();
     } catch (x) {

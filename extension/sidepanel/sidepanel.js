@@ -9,11 +9,15 @@ const ss = new StorageService(),
 let gs = null,
   scs = null,
   ctx = '';
+function $$(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
+
 const ab = document.getElementById('analyze-btn'),
   stEl = document.getElementById('status'),
   aw = document.getElementById('auth-warning'),
-  tbs = $('.tab-btn'),
-  tcs = $('.tab-content'),
+  tbs = $$('.tab-btn'),
+  tcs = $$('.tab-content'),
   sc = document.getElementById('summary-content'),
   ic = document.getElementById('insights-content'),
   ci = document.getElementById('chat-input'),
@@ -21,7 +25,7 @@ const ab = document.getElementById('analyze-btn'),
   ch = document.getElementById('chat-history');
 
 document?.addEventListener('DOMContentLoaded', async () => {
-  const { GAK } = await sl.get('GAK');
+  const { GAK } = await chrome.storage.local.get('GAK');
   if (!GAK) {
     aw.style.display = 'block';
     ab.disabled = true;
@@ -107,7 +111,7 @@ async function analyzeVideo(rc = 0) {
     setStatus('loading', 'Fetching video info...');
     ab.disabled = true;
     showLoadingState();
-    const [tab] = await ct.query({ active: true, currentWindow: true });
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.url.includes('youtube.com/watch'))
       throw new Error('Please open a YouTube video page.');
     const u = new URLSearchParams(new URL(tab.url).search),
@@ -143,13 +147,13 @@ async function analyzeVideo(rc = 0) {
     setStatus('loading', 'Classifying segments...');
     try {
       const cls = await scs.classifyTranscript({ transcript: ts, metadata: md });
-      ct.sendMessage(tab.id, { action: 'SHOW_SEGMENTS', segments: cls.segments }).catch(x =>
+      chrome.tabs.sendMessage(tab.id, { action: 'SHOW_SEGMENTS', segments: cls.segments }).catch(x =>
         console.warn('Failed to send segments:', x)
       );
     } catch (x) {
       console.warn('Segment classification failed:', x);
     }
-    const cfg = await sl.get([
+    const cfg = await chrome.storage.local.get([
       'summaryLength',
       'targetLanguage',
       'maxInsights',
@@ -170,7 +174,7 @@ async function analyzeVideo(rc = 0) {
     );
     await renderMd(an.summary, sc);
     setStatus('loading', 'Analyzing comments...');
-    const cr = await ct.sendMessage(tab.id, { action: 'GET_COMMENTS' }).catch(x => {
+    const cr = await chrome.tabs.sendMessage(tab.id, { action: 'GET_COMMENTS' }).catch(x => {
       console.error('Failed to get comments:', x);
       return { comments: [] };
     });
@@ -209,7 +213,7 @@ async function analyzeVideo(rc = 0) {
 async function smr(tid, m, mr = 3) {
   for (let i = 0; i < mr; i++) {
     try {
-      return await ct.sendMessage(tid, m);
+      return await chrome.tabs.sendMessage(tid, m);
     } catch (x) {
       if (i === mr - 1) throw x;
       await new Promise(r => setTimeout(r, 500 * (i + 1)));
@@ -241,8 +245,8 @@ async function renderMd(t, el) {
 
 async function seekVideo(s) {
   try {
-    const [t] = await ct.query({ active: true, currentWindow: true });
-    if (t?.id) await ct.sendMessage(t.id, { action: 'SEEK_TO', timestamp: s });
+    const [t] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (t?.id) await chrome.tabs.sendMessage(t.id, { action: 'SEEK_TO', timestamp: s });
   } catch (x) {
     void x;
   }

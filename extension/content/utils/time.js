@@ -1,5 +1,3 @@
-const gu = p => chrome.runtime.getURL(p);
-
 export function formatTime(s) {
   try {
     const h = Math.floor(s / 3600),

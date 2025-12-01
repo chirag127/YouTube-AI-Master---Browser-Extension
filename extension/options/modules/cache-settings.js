@@ -27,7 +27,7 @@ export class CacheSettings {
     if (cc)
       cc?.addEventListener('click', async () => {
         if (confirm('Clear all cached data? This cannot be undone.')) {
-          await lcl();
+          await chrome.storage.local.clear();
           this.a.notifications?.success('Cache cleared');
         }
       });

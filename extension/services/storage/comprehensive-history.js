@@ -1,4 +1,4 @@
-import { nw as nt, jp, js, lc } from '../../utils/shortcuts/core.js';
+import { nw as nt, jp, js } from '../../utils/shortcuts/core.js';
 
 export class ComprehensiveHistory {
   constructor() {
@@ -30,7 +30,7 @@ export class ComprehensiveHistory {
     const h = await this.getAll(),
       f = h.filter(x => x.videoId !== v);
     [...new Set(f)];
-    const t = slc(f, 0, this.m);
+    const t = f.slice(0, this.m);
     await chrome.storage.local.set({ [this.k]: t });
 
     return n;
@@ -53,12 +53,12 @@ export class ComprehensiveHistory {
   }
   async search(q) {
     const h = await this.getAll(),
-      lq = lc(q);
+      lq = q.toLowerCase();
     return h.filter(
       e =>
-        (e.metadata?.title && inc(lc(e.metadata.title), lq)) ||
-        (e.metadata?.author && inc(lc(e.metadata.author), lq)) ||
-        inc(e.videoId, lq)
+        (e.metadata?.title && e.metadata.title.toLowerCase().includes(lq)) ||
+        (e.metadata?.author && e.metadata.author.toLowerCase().includes(lq)) ||
+        e.videoId.includes(lq)
     );
   }
   async getStats() {

@@ -2,6 +2,14 @@ import { getCfg } from '../../../utils/config.js';
 import { stt as to } from '../../../utils/shortcuts/time.js';
 import { now as nw } from '../../../utils/shortcuts/core.js';
 
+function $(selector) {
+  return document.querySelector(selector);
+}
+
+function $$(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
+
 export const name = 'DOM Automation';
 export const priority = 10;
 

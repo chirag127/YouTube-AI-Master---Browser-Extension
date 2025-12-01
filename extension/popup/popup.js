@@ -14,7 +14,7 @@ const a = (document).querySelector('#api-status'),
 export function showMsg(t, y = 'info') {
   m.textContent = t;
   m.className = `show ${y}`;
-  setTimeout(() => (m)?.classList.remove('show'), 3000);
+  setTimeout(() => m?.classList.remove('show'), 3000);
 }
 export async function checkApi() {
   try {
@@ -38,7 +38,7 @@ export async function checkApi() {
 }
 export async function checkPage() {
   try {
-    const [t] = await chrome.tabs.query({ active: true);
+    const [t] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (t && t.url && t.url.includes('youtube.com/watch')) {
       p.innerHTML = '<span>✅ YouTube Video</span>';
       p.className = 'value success';
@@ -56,7 +56,7 @@ export async function checkPage() {
 }
 b.onclick = async () => {
   try {
-    const [t] = await chrome.tabs.query({ active: true);
+    const [t] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!t) return;
     await chrome.tabs.sendMessage(t.id, { action: 'ANALYZE_VIDEO' });
     showMsg('Analysis started!', 'success');

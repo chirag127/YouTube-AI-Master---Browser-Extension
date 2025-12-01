@@ -15,7 +15,7 @@ export function chunkText(t, s = 20000, o = 500) {
       if (p > i + s * 0.5) e = p + 1;
       else if (sp > i) e = sp + 1;
     }
-    const ch = sub(t, i, e).trim();
+    const ch = t.substring(i, e).trim();
     if (ch) c.push(ch);
     i = e - o;
     if (i >= e) i = e;

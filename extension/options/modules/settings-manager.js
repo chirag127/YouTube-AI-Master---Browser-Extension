@@ -40,11 +40,7 @@ export class SettingsManager {
     try {
       this.settings._meta = this.settings._meta || {};
       this.settings._meta.lastUpdated = nt();
-      await chrome.storage.sync.set(
-        typeof { config: this.settings } === 'string'
-          ? { [{ config: this.settings }]: undefined }
-          : { config: this.settings }
-      );
+      await chrome.storage.sync.set({ config: this.settings });
       this.notify();
       return true;
     } catch (x) {

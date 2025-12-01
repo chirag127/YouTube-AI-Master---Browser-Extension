@@ -1,6 +1,3 @@
-import { pa } from '../../utils/shortcuts/async.js';
-import { ok } from '../../utils/shortcuts/core.js';
-
 export class SectionLoader {
   constructor() {
     this.sections = {
@@ -28,7 +25,7 @@ export class SectionLoader {
     if (!p) return false;
     try {
       const h = await fetch(chrome.runtime.getURL(`options/${p}`)).then(r => r.text());
-      const c = $('.content-area');
+      const c = document.querySelector('.content-area');
       c.insertAdjacentHTML('beforeend', h);
       this.loaded.add(id);
       return true;
@@ -38,6 +35,6 @@ export class SectionLoader {
     }
   }
   async loadAll() {
-    await pa(ok(this.sections).map(id => this.load(id)));
+    await Promise.all(Object.keys(this.sections).map(id => this.load(id)));
   }
 }

@@ -89,7 +89,7 @@ export class ContextManager {
     r.forEach(res => {
       if (res.status === 'fulfilled') {
         const { n, res: d } = res.value;
-        if (d && (aia(d) ? d.length > 0 : true)) {
+        if (d && (Array.isArray(d) ? d.length > 0 : true)) {
           ctx[n] = d;
         }
       } else {

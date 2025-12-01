@@ -1,7 +1,9 @@
-const gu = p => chrome.runtime.getURL(p);
-
 function $(selector) {
   return document.querySelector(selector);
+}
+
+function $$(selector) {
+  return Array.from(document.querySelectorAll(selector));
 }
 
 export class ScrollManager {

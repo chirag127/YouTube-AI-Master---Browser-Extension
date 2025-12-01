@@ -4,7 +4,7 @@ import { videoCache } from './video-cache.js';
 
 export class StorageService {
   constructor() {
-    this.storage = sl;
+    this.storage = chrome.storage.local;
   }
   async saveTranscript(v, m, t, s) {
     const d = await saveTranscript(v, m, t, s);

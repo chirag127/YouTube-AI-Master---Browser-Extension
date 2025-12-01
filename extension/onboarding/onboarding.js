@@ -29,9 +29,7 @@ class OnboardingFlow {
           return o[key];
         }, this.settings);
       t[last] = v;
-      await chrome.storage.sync.set(
-        typeof 'config' === 'string' ? { ['config']: this.settings } : 'config'
-      );
+      await chrome.storage.sync.set({ config: this.settings });
     } catch (err) {
       console.error('Err:SaveSettings', err);
     }
@@ -63,7 +61,7 @@ class OnboardingFlow {
     if (aki) aki?.addEventListener('input', this.onApiKeyInput.bind(this));
     if (oak)
       oak?.addEventListener('click', () =>
-        chrome.tabs({ url: 'https://aistudio.google.com/app/apikey' })
+        chrome.tabs.create({ url: 'https://aistudio.google.com/app/apikey' })
       );
     if (ol)
       ol?.addEventListener('change', e => this.saveSettings('ui.outputLanguage', e.target.value));
@@ -75,8 +73,8 @@ class OnboardingFlow {
       es?.addEventListener('change', e => this.saveSettings('segments.enabled', e.target.checked));
     if (os)
       os?.addEventListener('click', () => {
-        rt.openOptionsPage();
-        chrome.windows.close();
+        chrome.runtime.openOptionsPage();
+        window.close();
       });
     if (fb) fb?.addEventListener('click', () => this.completeOnboarding());
   }
@@ -124,7 +122,7 @@ class OnboardingFlow {
         throw new Error(em);
       }
       await this.saveSettings('ai.GAK', k);
-      await sls('GAK', k);
+      await chrome.storage.local.set({ GAK: k });
       s.className = 'status-message success';
       s.textContent = '✓ Connection successful! API key saved.';
       setTimeout(() => this.nextStep(), 1500);
@@ -150,8 +148,8 @@ class OnboardingFlow {
     }
   }
   updateUI() {
-    const s = [...$$('.step')],
-      d = [...$$('.step-dot')],
+    const s = Array.from(document.querySelectorAll('.step')),
+      d = Array.from(document.querySelectorAll('.step-dot')),
       pf = document.getElementById('progressFill'),
       bb = document.getElementById('backBtn'),
       nb = document.getElementById('nextBtn');
@@ -184,7 +182,7 @@ class OnboardingFlow {
   async completeOnboarding() {
     try {
       await this.saveSettings('_meta.onboardingCompleted', true);
-      chrome.windows.close();
+      window.close();
     } catch (err) {
       console.error('Err:CompleteOnboarding', err);
     }

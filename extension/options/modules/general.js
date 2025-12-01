@@ -42,7 +42,7 @@ export class GeneralSettings {
     if (ch)
       ch?.addEventListener('click', async () => {
         if (confirm('Clear all history? This cannot be undone.')) {
-          await slr('comprehensive_history');
+          await chrome.storage.local.remove('comprehensive_history');
           this.a.notifications?.success('History cleared');
         }
       });
@@ -101,7 +101,7 @@ export class GeneralSettings {
       e.stopPropagation();
       if (this.dragSrc !== el) {
         const list = document.querySelector('#strategyList');
-        const items = [...$$('.sortable-item', list)];
+        const items = Array.from(list.querySelectorAll('.sortable-item'));
         const srcIdx = items.indexOf(this.dragSrc);
         const tgtIdx = items.indexOf(el);
         if (srcIdx < tgtIdx) el.after(this.dragSrc);
@@ -112,7 +112,7 @@ export class GeneralSettings {
   }
   async saveOrder() {
     const list = document.querySelector('#strategyList');
-    const order = [...$$('.sortable-item', list)].map(el => el.dataset.key);
+    const order = Array.from(list.querySelectorAll('.sortable-item')).map(el => el.dataset.key);
     await this.s.update('transcript.strategyOrder', order);
   }
 }

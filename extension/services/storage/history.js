@@ -1,4 +1,4 @@
-import { nw as nt, lc } from '../../utils/shortcuts/core.js';
+import { nw as nt } from '../../utils/shortcuts/core.js';
 
 export async function getHistory() {
   const r = await chrome.storage.local.get('history_index');
@@ -17,6 +17,6 @@ export async function deleteFromHistory(v) {
 export async function searchHistory(q) {
   if (!q) return getHistory();
   const i = await getHistory(),
-    l = lc(q);
-  return i.filter(x => (x.title && inc(lc(x.title), l)) || (x.author && inc(lc(x.author), l)));
+    l = q.toLowerCase();
+  return i.filter(x => (x.title && x.title.toLowerCase().includes(l)) || (x.author && x.author.toLowerCase().includes(l)));
 }

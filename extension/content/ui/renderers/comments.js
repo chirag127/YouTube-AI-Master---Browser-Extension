@@ -3,14 +3,6 @@ const { showLoading, showPlaceholder } = await import(chrome.runtime.getURL('con
 const { getComments } = await import(chrome.runtime.getURL('content/handlers/comments.js'));
 const { parseMarkdown } = await import(chrome.runtime.getURL('lib/marked-loader.js'));
 
-function $(selector, context = document) {
-  return context.querySelector(selector);
-}
-
-function $$(selector, context = document) {
-  return Array.from(context.querySelectorAll(selector));
-}
-
 async function sendRuntimeMessage(message) {
   return await chrome.runtime.sendMessage(message);
 }

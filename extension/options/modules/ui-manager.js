@@ -7,11 +7,7 @@ export class UIManager {
       const r = await fetch(`sections/${id}.html`);
       return await r.text();
     } catch (x) {
-      (() => {
-        const e = document.createElement(`Failed to load section ${id}:`);
-        e.className = x;
-        return e;
-      })();
+      console.error(`Failed to load section ${id}:`, x);
       return `<div class="error">Failed to load section: ${id}</div>`;
     }
   }
@@ -23,13 +19,13 @@ export class UIManager {
     setTimeout(() => el.classList.remove('show'), 3000);
   }
   setupSections(cb) {
-    const sections = $$('.nav-item');
+    const sections = Array.from(document.querySelectorAll('.nav-item'));
     sections.forEach(t => {
       t?.addEventListener('click', () => {
         const tgt = t.dataset.section;
         sections.forEach(x => x.classList.remove('active'));
         t.classList.add('active');
-        $$('.section-content').forEach(c => c.classList.remove('active'));
+        Array.from(document.querySelectorAll('.section-content')).forEach(c => c.classList.remove('active'));
         const s = document.getElementById(tgt);
         if (s) s.classList.add('active');
         if (cb) cb(tgt);

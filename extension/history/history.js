@@ -35,12 +35,15 @@ async function loadHistory() {
   renderList(hd);
 }
 async function handleSearch(e) {
-  const q = lwc(e.target.value);
+  const q = e.target.value.toLowerCase();
   if (!q) {
     renderList(hd);
     return;
   }
-  const f = hd.filter(x => inc(lwc(x.title || ''), q) || inc(lwc(x.author || ''), q));
+  const f = hd.filter(x =>
+    (x.title || '').toLowerCase().includes(q) ||
+    (x.author || '').toLowerCase().includes(q)
+  );
   renderList(f);
 }
 function renderList(items) {
@@ -75,7 +78,7 @@ function renderList(items) {
 }
 async function viewVideo(v) {
   cid = v;
-  $('.video-item').forEach(x => {
+  Array.from(document.querySelectorAll('.video-item')).forEach(x => {
     x.classList.remove('active');
     if (x.querySelector(`[data-id="${v}"]`)) x.classList.add('active');
   });
@@ -111,7 +114,7 @@ async function deleteVideo(v) {
   if (si.value) handleSearch({ target: si });
 }
 function openVideo() {
-  if (cid) chrome.tabs({ url: `https://www.youtube.com/watch?v=${cid}` });
+  if (cid) chrome.tabs.create({ url: `https://www.youtube.com/watch?v=${cid}` });
 }
 async function handleExport() {
   try {

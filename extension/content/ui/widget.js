@@ -7,10 +7,6 @@ function $(selector, context = document) {
   return context.querySelector(selector);
 }
 
-function $$(selector, context = document) {
-  return Array.from(context.querySelectorAll(selector));
-}
-
 function log(...args) {
   console.log('[Widget]', ...args);
 }
