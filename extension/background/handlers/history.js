@@ -1,4 +1,3 @@
-
 import { nw as now } from '../../utils/shortcuts/core.js';
 
 export async function handleSaveToHistory(req, rsp) {

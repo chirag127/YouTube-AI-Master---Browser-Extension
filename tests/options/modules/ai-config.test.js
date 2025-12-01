@@ -16,8 +16,6 @@ vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   sls: vi.fn(),
 }));
 
-
-
 describe('AIConfig', () => {
   let settingsManager;
   let autoSave;

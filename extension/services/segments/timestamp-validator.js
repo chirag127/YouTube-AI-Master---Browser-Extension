@@ -1,7 +1,3 @@
-
-
-
-
 export const validateSegments = s => {
   if (!Array.isArray(s)) {
     return [];

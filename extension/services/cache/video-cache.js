@@ -1,4 +1,3 @@
-
 import { nw as nt, ok as keys } from '../../utils/shortcuts/core.js';
 
 const V = 1,

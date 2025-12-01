@@ -6,8 +6,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   id: vi.fn(),
 }));
 
-
-
 describe('NotificationsSettings', () => {
   let settingsManager;
   let autoSave;

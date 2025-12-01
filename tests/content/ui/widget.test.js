@@ -65,8 +65,6 @@ vi.mock('../../../../extension/utils/shortcuts.js', () => ({
 
 import { findSecondaryColumn } from '../../../../extension/content/utils/dom.js';
 
-
-
 describe('widget', () => {
   let mockSecondaryColumn;
 

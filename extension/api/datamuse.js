@@ -1,6 +1,3 @@
-
-
-
 const BASE_URL = 'https://api.datamuse.com';
 
 export class DatamuseAPI {

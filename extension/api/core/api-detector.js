@@ -1,5 +1,3 @@
-
-
 export class APIDetector {
   static async checkSponsorBlock() {
     try {

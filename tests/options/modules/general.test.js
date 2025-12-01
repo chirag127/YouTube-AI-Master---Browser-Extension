@@ -16,8 +16,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   rc: vi.fn(),
 }));
 
-
-
 describe('GeneralSettings', () => {
   let settingsManager;
   let autoSave;

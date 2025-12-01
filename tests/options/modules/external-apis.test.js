@@ -6,8 +6,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   on: vi.fn(),
 }));
 
-
-
 describe('ExternalAPIs', () => {
   let settingsManager;
   let autoSave;

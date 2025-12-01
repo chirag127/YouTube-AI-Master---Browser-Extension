@@ -7,8 +7,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   id: vi.fn(),
 }));
 
-
-
 describe('UIAppearance', () => {
   let settingsManager;
   let autoSave;

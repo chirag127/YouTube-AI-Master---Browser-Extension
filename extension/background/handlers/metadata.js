@@ -1,4 +1,3 @@
-
 export async function handleGetMetadata(req, rsp) {
   try {
     const { videoId } = req;

@@ -1,4 +1,3 @@
-
 import { analyzeSentiment, detectSpam, isQuestion } from '../../utils/patterns/comments.js';
 
 export const comments = async commentList => {

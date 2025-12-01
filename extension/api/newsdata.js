@@ -1,6 +1,3 @@
-
-
-
 const BASE_URL = 'https://newsdata.io/api/1';
 
 export class NewsDataAPI {

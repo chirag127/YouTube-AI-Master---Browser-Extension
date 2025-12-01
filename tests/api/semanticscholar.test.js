@@ -35,7 +35,6 @@ describe('SemanticScholarAPI', () => {
     });
 
     it('should return null on no data', async () => {
-
       sf.mockResolvedValue({ data: [] });
 
       const result = await api.searchPaper('query');
@@ -44,7 +43,6 @@ describe('SemanticScholarAPI', () => {
     });
 
     it('should return null on failure', async () => {
-
       sf.mockRejectedValue(new Error('error'));
 
       const result = await api.searchPaper('query');

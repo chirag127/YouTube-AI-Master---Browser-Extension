@@ -1,6 +1,4 @@
-
 import { nw as nt, lc } from '../../utils/shortcuts/core.js';
-
 
 export async function getHistory() {
   const r = await chrome.storage.local.get('history_index');

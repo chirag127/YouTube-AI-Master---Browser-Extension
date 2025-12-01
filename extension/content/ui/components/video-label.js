@@ -1,6 +1,3 @@
-
-
-
 const CATEGORY_COLORS = {
   sponsor: { bg: '#00d400', text: '#000000', label: 'Sponsor' },
   selfpromo: { bg: '#ffff00', text: '#000000', label: 'Self-promo' },
@@ -16,11 +13,11 @@ const CATEGORY_COLORS = {
 export function injectVideoLabel(segments) {
   try {
     // Find the title element
-    const titleElem = (document).querySelector('h1.ytd-watch-metadata');
+    const titleElem = document.querySelector('h1.ytd-watch-metadata');
     if (!titleElem) return;
 
     // Check if we already injected
-    let parent = (document).querySelector('#yt-ai-category-pill-parent');
+    let parent = document.querySelector('#yt-ai-category-pill-parent');
     if (parent) parent.remove(); // Re-inject to update
 
     if (!segments || !segments.length) return;

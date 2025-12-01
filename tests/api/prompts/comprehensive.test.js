@@ -8,7 +8,6 @@ vi.mock('../../../extension/utils/shortcuts/storage.js', () => ({
   sg: vi.fn(),
 }));
 
-
 import { buildContextString } from '../../../extension/api/prompts/utils.js';
 
 describe('comprehensive prompt', () => {

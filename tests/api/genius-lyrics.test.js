@@ -97,7 +97,6 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no sections', async () => {
-
       jf.mockResolvedValue({ response: { sections: [] } });
 
       const result = await api.search('title', 'artist');
@@ -106,7 +105,6 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no hits', async () => {
-
       jf.mockResolvedValue({
         response: {
           sections: [{ type: 'song', hits: [] }],
@@ -131,7 +129,6 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no HTML', async () => {
-
       tf.mockResolvedValue(null);
 
       const result = await api.fetchLyrics('url');
@@ -140,7 +137,6 @@ describe('GeniusLyricsAPI', () => {
     });
 
     it('should return null on no lyrics match', async () => {
-
       tf.mockResolvedValue('<div>no lyrics</div>');
 
       const result = await api.fetchLyrics('url');

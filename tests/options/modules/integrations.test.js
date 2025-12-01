@@ -8,8 +8,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   ce: vi.fn(),
 }));
 
-
-
 describe('IntegrationsSettings', () => {
   let settingsManager;
   let notificationManager;

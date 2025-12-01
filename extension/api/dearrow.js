@@ -1,8 +1,3 @@
-
-
-
-
-
 const DAB = 'https://sponsor.ajay.app';
 const DTB = 'https://dearrow-thumb.ajay.app';
 
@@ -34,8 +29,6 @@ export async function fetchBranding(vid, opt = {}) {
     return null;
   }
 }
-
-
 
 export async function getBranding(videoId) {
   const cfg = await chrome.storage.sync.get('integrations');

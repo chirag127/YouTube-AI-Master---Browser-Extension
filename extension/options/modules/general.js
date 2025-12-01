@@ -1,6 +1,3 @@
-
-
-
 export class GeneralSettings {
   constructor(s, a) {
     this.s = s;
@@ -41,9 +38,9 @@ export class GeneralSettings {
       theme: { path: 'ui.theme' },
       saveHistory: { path: 'advanced.saveHistory' },
     });
-    const ch = (document).querySelector('#clearHistory');
+    const ch = document.querySelector('#clearHistory');
     if (ch)
-      (ch)?.addEventListener('click', async () => {
+      ch?.addEventListener('click', async () => {
         if (confirm('Clear all history? This cannot be undone.')) {
           await slr('comprehensive_history');
           this.a.notifications?.success('History cleared');
@@ -51,15 +48,15 @@ export class GeneralSettings {
       });
   }
   set(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
   renderStrategies(order) {
-    const list = (document).querySelector('#strategyList');
+    const list = document.querySelector('#strategyList');
     if (!list) return;
     list.innerHTML = '';
     const names = {
@@ -79,31 +76,31 @@ export class GeneralSettings {
     });
   }
   addDnD(el) {
-    (el)?.addEventListener('dragstart', e => {
+    el?.addEventListener('dragstart', e => {
       this.dragSrc = el;
-      (el)?.classList.add('dragging');
+      el?.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
     });
-    (el)?.addEventListener('dragend', () => {
+    el?.addEventListener('dragend', () => {
       this.dragSrc = null;
-      (el)?.classList.remove('dragging');
+      el?.classList.remove('dragging');
       this.saveOrder();
     });
-    (el)?.addEventListener('dragover', e => {
+    el?.addEventListener('dragover', e => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
       return false;
     });
-    (el)?.addEventListener('dragenter', () => {
-      if (this.dragSrc !== el) (el)?.classList.add('over');
+    el?.addEventListener('dragenter', () => {
+      if (this.dragSrc !== el) el?.classList.add('over');
     });
-    (el)?.addEventListener('dragleave', () => {
-      (el)?.classList.remove('over');
+    el?.addEventListener('dragleave', () => {
+      el?.classList.remove('over');
     });
-    (el)?.addEventListener('drop', e => {
+    el?.addEventListener('drop', e => {
       e.stopPropagation();
       if (this.dragSrc !== el) {
-        const list = (document).querySelector('#strategyList');
+        const list = document.querySelector('#strategyList');
         const items = [...$$('.sortable-item', list)];
         const srcIdx = items.indexOf(this.dragSrc);
         const tgtIdx = items.indexOf(el);
@@ -114,7 +111,7 @@ export class GeneralSettings {
     });
   }
   async saveOrder() {
-    const list = (document).querySelector('#strategyList');
+    const list = document.querySelector('#strategyList');
     const order = [...$$('.sortable-item', list)].map(el => el.dataset.key);
     await this.s.update('transcript.strategyOrder', order);
   }

@@ -1,5 +1,3 @@
-
-
 describe('Segment Label Mapping Tests', () => {
   describe('Label Key Mapping (getLabelKey)', () => {
     it('should map all 13 SponsorBlock categories', () => {

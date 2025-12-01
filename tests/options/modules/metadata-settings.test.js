@@ -5,8 +5,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
 }));
 
-
-
 describe('MetadataSettings', () => {
   let settingsManager;
   let autoSave;

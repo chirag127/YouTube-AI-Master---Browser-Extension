@@ -33,8 +33,6 @@ import { GeminiClient } from '../../../extension/api/gemini-client.js';
 
 import { jp } from '../../../extension/utils/shortcuts/core.js';
 
-
-
 import { handleTranscribeAudio } from '../../../extension/background/handlers/transcribe-audio.js';
 
 describe('handleTranscribeAudio', () => {

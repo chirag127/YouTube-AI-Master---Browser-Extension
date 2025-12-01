@@ -1,5 +1,3 @@
-
-
 export class NotificationsSettings {
   constructor(s, a) {
     this.s = s;
@@ -19,7 +17,10 @@ export class NotificationsSettings {
     this.a.attachToAll({
       'section-notificationsEnabled': { path: 'notifications.enabled' },
       'section-notificationPosition': { path: 'notifications.position' },
-      'section-notificationDuration': { path: 'notifications.duration', transform: v => parseInt(v) },
+      'section-notificationDuration': {
+        path: 'notifications.duration',
+        transform: v => parseInt(v),
+      },
       'section-notificationSound': { path: 'notifications.sound' },
       notifyOnSave: { path: 'notifications.showOnSave' },
       notifyOnError: { path: 'notifications.showOnError' },
@@ -29,11 +30,11 @@ export class NotificationsSettings {
     });
   }
   set(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

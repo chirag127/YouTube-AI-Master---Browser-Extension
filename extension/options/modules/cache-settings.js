@@ -1,5 +1,3 @@
-
-
 export class CacheSettings {
   constructor(s, a) {
     this.s = s;
@@ -25,19 +23,19 @@ export class CacheSettings {
       cacheSegments: { path: 'cache.segments' },
       cacheSummaries: { path: 'cache.summaries' },
     });
-    const cc = (document).querySelector('#clearCache');
+    const cc = document.querySelector('#clearCache');
     if (cc)
-      (cc)?.addEventListener('click', async () => {
+      cc?.addEventListener('click', async () => {
         if (confirm('Clear all cached data? This cannot be undone.')) {
           await lcl();
           this.a.notifications?.success('Cache cleared');
         }
       });
-    const vs = (document).querySelector('#viewCacheStats');
+    const vs = document.querySelector('#viewCacheStats');
     if (vs)
-      (vs)?.addEventListener('click', async () => {
+      vs?.addEventListener('click', async () => {
         const s = await chrome.storage.local.getBytesInUse();
-        const d = (document).querySelector('#cacheStats');
+        const d = document.querySelector('#cacheStats');
         if (d) {
           d.className = 'status-indicator success';
           d.textContent = `Cache: ${(s / 1024 / 1024).toFixed(2)} MB`;
@@ -45,11 +43,11 @@ export class CacheSettings {
       });
   }
   set(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

@@ -1,6 +1,3 @@
-
-
-
 import { oe } from '../../utils/shortcuts/core.js';
 export class AutoSave {
   constructor(sm, d = 500, nm = null) {
@@ -45,12 +42,12 @@ export class AutoSave {
         console.error('[AutoSave] Error in event handler:', x);
       }
     };
-    (el)?.addEventListener('change', h);
-    (el)?.addEventListener('input', h);
+    el?.addEventListener('change', h);
+    el?.addEventListener('input', h);
   }
   attachToAll(m) {
     oe(m).forEach(([id, c]) => {
-      const el = (document).querySelector(c.selector || `#${id}`);
+      const el = document.querySelector(c.selector || `#${id}`);
       if (el) {
         this.attachToInput(el, c.path, c.transform);
       } else {

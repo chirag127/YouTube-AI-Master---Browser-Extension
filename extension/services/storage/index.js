@@ -2,7 +2,6 @@ import { saveTranscript, getTranscript, deleteTranscript } from './transcript.js
 import { getHistory, updateHistory, deleteFromHistory, searchHistory } from './history.js';
 import { videoCache } from './video-cache.js';
 
-
 export class StorageService {
   constructor() {
     this.storage = sl;

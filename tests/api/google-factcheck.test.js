@@ -41,7 +41,6 @@ describe('GoogleFactCheckAPI', () => {
     });
 
     it('should return empty array on failure', async () => {
-
       sf.mockRejectedValue(new Error('error'));
 
       const result = await api.searchClaims('query');
@@ -58,7 +57,6 @@ describe('GoogleFactCheckAPI', () => {
     });
 
     it('should return empty array when safeFetch returns null', async () => {
-
       sf.mockResolvedValue(null);
 
       const result = await api.searchClaims('query');

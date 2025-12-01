@@ -9,8 +9,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   on: vi.fn(),
 }));
 
-
-
 describe('WidgetSettings', () => {
   let settingsManager;
   let notificationManager;

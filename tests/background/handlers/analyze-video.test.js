@@ -54,7 +54,6 @@ import { getApiKey } from '../../../extension/background/utils/api-key.js';
 import { geniusLyricsAPI } from '../../../extension/api/genius-lyrics.js';
 import { sponsorBlockAPI } from '../../../extension/api/sponsorblock.js';
 
-
 describe('handleAnalyzeVideo', () => {
   let mockCallback;
   let mockGemini;

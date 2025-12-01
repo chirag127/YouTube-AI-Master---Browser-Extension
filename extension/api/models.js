@@ -1,8 +1,3 @@
-
-
-
-
-
 export class ModelManager {
   constructor(apiKey, baseUrl) {
     this.apiKey = apiKey;
@@ -14,7 +9,9 @@ export class ModelManager {
     try {
       const data = await (await fetch(`${this.baseUrl}/models?key=${this.apiKey}`)).json();
       if (data?.models)
-        this.models = data.models.filter(m => m.supportedGenerationMethods?.includes('generateContent')).map(m => m.name.replace('models/', ''));
+        this.models = data.models
+          .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
+          .map(m => m.name.replace('models/', ''));
     } catch (e) {
       console.warn('Mod fetch fail:', e);
       this.models = [];

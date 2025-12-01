@@ -1,13 +1,7 @@
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
 
-
 import { jp, js } from '../utils/shortcuts/core.js';
-
-
-
-
-
 
 const s = new StorageService(),
   vl = document.getElementById('video-list'),
@@ -24,17 +18,17 @@ const s = new StorageService(),
 let cid = null,
   hd = [];
 
-(document)?.addEventListener('DOMContentLoaded', init);
+document?.addEventListener('DOMContentLoaded', init);
 async function init() {
   await loadHistory();
   setupEvents();
 }
 function setupEvents() {
-  (si)?.addEventListener('input', handleSearch);
-  (eb)?.addEventListener('click', handleExport);
-  (ib)?.addEventListener('click', () => ifile.click());
-  (ifile)?.addEventListener('change', handleImport);
-  (ov)?.addEventListener('click', openVideo);
+  si?.addEventListener('input', handleSearch);
+  eb?.addEventListener('click', handleExport);
+  ib?.addEventListener('click', () => ifile.click());
+  ifile?.addEventListener('change', handleImport);
+  ov?.addEventListener('click', openVideo);
 }
 async function loadHistory() {
   hd = await s.getHistory();
@@ -67,15 +61,15 @@ function renderList(items) {
       day: 'numeric',
     });
     li.innerHTML = `<div class="video-title">${esc(i.title || 'Untitled Video')}</div><div class="video-meta"><span>👤 ${esc(i.author || 'Unknown')}</span><span>📅 ${d}</span></div><div class="video-actions"><button class="btn btn-secondary view-btn" data-id="${i.videoId}">View</button><button class="btn btn-danger delete-btn" data-id="${i.videoId}">Delete</button></div>`;
-    (li.querySelector('.view-btn'))?.addEventListener('click', e => {
+    li.querySelector('.view-btn')?.addEventListener('click', e => {
       e.stopPropagation();
       viewVideo(i.videoId);
     });
-    (li.querySelector('.delete-btn'))?.addEventListener('click', e => {
+    li.querySelector('.delete-btn')?.addEventListener('click', e => {
       e.stopPropagation();
       deleteVideo(i.videoId);
     });
-    (li)?.addEventListener('click', () => viewVideo(i.videoId));
+    li?.addEventListener('click', () => viewVideo(i.videoId));
     vl.appendChild(li);
   }
 }

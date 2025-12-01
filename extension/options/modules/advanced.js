@@ -1,6 +1,4 @@
-
 import { jp, js } from '../../utils/shortcuts/core.js';
-
 
 export class AdvancedSettings {
   constructor(s, a) {
@@ -17,13 +15,13 @@ export class AdvancedSettings {
       maxHistory: { path: 'advanced.maxHistory', transform: v => parseInt(v) },
     });
     const els = {
-      ex: (document).querySelector('#exportSettings'),
-      im: (document).querySelector('#importSettings'),
-      if: (document).querySelector('#importFile'),
-      rd: (document).querySelector('#resetDefaults'),
+      ex: document.querySelector('#exportSettings'),
+      im: document.querySelector('#importSettings'),
+      if: document.querySelector('#importFile'),
+      rd: document.querySelector('#resetDefaults'),
     };
     if (els.ex)
-      (els.ex)?.addEventListener('click', () => {
+      els.ex?.addEventListener('click', () => {
         const d = js(this.s.get(), null, 2);
         const b = new Blob([d], { type: 'application/json' });
         const u = URL.createObjectURL(b);
@@ -32,9 +30,9 @@ export class AdvancedSettings {
         a.download = 'youtube-ai-master-settings.json';
         a.click();
       });
-    if (els.im) (els.im)?.addEventListener('click', () => els.if?.click());
+    if (els.im) els.im?.addEventListener('click', () => els.if?.click());
     if (els.if)
-      (els.if)?.addEventListener('change', e => {
+      els.if?.addEventListener('change', e => {
         const f = e.target.files[0];
         if (!f) return;
         const r = new FileReader();
@@ -53,7 +51,7 @@ export class AdvancedSettings {
         r.readAsText(f);
       });
     if (els.rd)
-      (els.rd)?.addEventListener('click', async () => {
+      els.rd?.addEventListener('click', async () => {
         if (confirm('Reset all settings to default? This cannot be undone.')) {
           await this.s.reset();
           this.a.notifications?.success('Settings reset');
@@ -62,7 +60,7 @@ export class AdvancedSettings {
       });
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

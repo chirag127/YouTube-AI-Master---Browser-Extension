@@ -25,7 +25,6 @@ describe('SponsorBlock Integration Tests', () => {
 
   describe('Label Mapping', () => {
     it('should import LABEL_MAPPING from segments.js shortcuts', async () => {
-
       expect(LABEL_MAPPING).toBeDefined();
       expect(LABEL_MAPPING.sponsor).toBe('Sponsor');
       expect(LABEL_MAPPING.content).toBe('Content');

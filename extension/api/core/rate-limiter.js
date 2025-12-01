@@ -1,7 +1,5 @@
-
 import { nw } from '../../utils/shortcuts/core.js';
 import { np } from '../../utils/shortcuts/async.js';
-
 
 export class RateLimiter {
   constructor(config = {}) {
@@ -38,7 +36,9 @@ export class RateLimiter {
     } else {
       const oldestTimestamp = this.timestamps[0];
       const waitTime = this.windowMs - (now - oldestTimestamp) + 100;
-      console.warn(`[RateLimiter] Rate limit reached, waiting ${waitTime}ms, queue: ${this.queue.length}`);
+      console.warn(
+        `[RateLimiter] Rate limit reached, waiting ${waitTime}ms, queue: ${this.queue.length}`
+      );
 
       setTimeout(() => this._processQueue(), waitTime);
     }

@@ -1,10 +1,4 @@
-
-
 import { nw as nt, js } from '../utils/shortcuts/core.js';
-
-
-
-
 
 class OnboardingFlow {
   constructor() {
@@ -35,7 +29,9 @@ class OnboardingFlow {
           return o[key];
         }, this.settings);
       t[last] = v;
-      await chrome.storage.sync.set(typeof 'config' === 'string' ? { ['config']: this.settings } : 'config');
+      await chrome.storage.sync.set(
+        typeof 'config' === 'string' ? { ['config']: this.settings } : 'config'
+      );
     } catch (err) {
       console.error('Err:SaveSettings', err);
     }
@@ -51,8 +47,8 @@ class OnboardingFlow {
     return defaults;
   }
   setupEventListeners() {
-    (document.getElementById('nextBtn'))?.addEventListener('click', () => this.nextStep());
-    (document.getElementById('backBtn'))?.addEventListener('click', () => this.prevStep());
+    document.getElementById('nextBtn')?.addEventListener('click', () => this.nextStep());
+    document.getElementById('backBtn')?.addEventListener('click', () => this.prevStep());
     const tak = document.getElementById('toggleApiKeyBtn'),
       tst = document.getElementById('testApiKeyBtn'),
       aki = document.getElementById('apiKeyInput'),
@@ -62,19 +58,27 @@ class OnboardingFlow {
       es = document.getElementById('enableSegments'),
       os = document.getElementById('openSettingsBtn'),
       fb = document.getElementById('finishBtn');
-    if (tak) (tak)?.addEventListener('click', this.toggleApiKeyVisibility.bind(this));
-    if (tst) (tst)?.addEventListener('click', this.testApiKey.bind(this));
-    if (aki) (aki)?.addEventListener('input', this.onApiKeyInput.bind(this));
-    if (oak) (oak)?.addEventListener('click', () => chrome.tabs({ url: 'https://aistudio.google.com/app/apikey' }));
-    if (ol) (ol)?.addEventListener('change', e => this.saveSettings('ui.outputLanguage', e.target.value));
-    if (aa) (aa)?.addEventListener('change', e => this.saveSettings('automation.autoAnalyze', e.target.checked));
-    if (es) (es)?.addEventListener('change', e => this.saveSettings('segments.enabled', e.target.checked));
+    if (tak) tak?.addEventListener('click', this.toggleApiKeyVisibility.bind(this));
+    if (tst) tst?.addEventListener('click', this.testApiKey.bind(this));
+    if (aki) aki?.addEventListener('input', this.onApiKeyInput.bind(this));
+    if (oak)
+      oak?.addEventListener('click', () =>
+        chrome.tabs({ url: 'https://aistudio.google.com/app/apikey' })
+      );
+    if (ol)
+      ol?.addEventListener('change', e => this.saveSettings('ui.outputLanguage', e.target.value));
+    if (aa)
+      aa?.addEventListener('change', e =>
+        this.saveSettings('automation.autoAnalyze', e.target.checked)
+      );
+    if (es)
+      es?.addEventListener('change', e => this.saveSettings('segments.enabled', e.target.checked));
     if (os)
-      (os)?.addEventListener('click', () => {
+      os?.addEventListener('click', () => {
         rt.openOptionsPage();
         chrome.windows.close();
       });
-    if (fb) (fb)?.addEventListener('click', () => this.completeOnboarding());
+    if (fb) fb?.addEventListener('click', () => this.completeOnboarding());
   }
   toggleApiKeyVisibility() {
     const i = document.getElementById('apiKeyInput');
@@ -172,7 +176,8 @@ class OnboardingFlow {
       if (this.settings.ai?.GAK) i.value = this.settings.ai.GAK;
     } else if (this.currentStep === 2) {
       document.getElementById('outputLanguage').value = this.settings.ui?.outputLanguage || 'en';
-      document.getElementById('autoAnalyze').checked = this.settings.automation?.autoAnalyze || false;
+      document.getElementById('autoAnalyze').checked =
+        this.settings.automation?.autoAnalyze || false;
       document.getElementById('enableSegments').checked = this.settings.segments?.enabled !== false;
     }
   }
@@ -185,4 +190,4 @@ class OnboardingFlow {
     }
   }
 }
-(document)?.addEventListener('DOMContentLoaded', () => new OnboardingFlow());
+document?.addEventListener('DOMContentLoaded', () => new OnboardingFlow());

@@ -1,7 +1,4 @@
-
-
 import { now as nt, keys as ok, jp, js } from '../../utils/shortcuts/core.js';
-
 
 export const SEGMENT_CATEGORIES = [
   { id: 'sponsor', label: 'Sponsor', color: '#00d400' },
@@ -43,7 +40,11 @@ export class SettingsManager {
     try {
       this.settings._meta = this.settings._meta || {};
       this.settings._meta.lastUpdated = nt();
-      await chrome.storage.sync.set(typeof { config: this.settings } === 'string' ? { [{ config: this.settings }]: undefined } : { config: this.settings });
+      await chrome.storage.sync.set(
+        typeof { config: this.settings } === 'string'
+          ? { [{ config: this.settings }]: undefined }
+          : { config: this.settings }
+      );
       this.notify();
       return true;
     } catch (x) {

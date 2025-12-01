@@ -1,7 +1,3 @@
-
-
-
-
 export class UIManager {
   constructor() {
     this.elements = {};
@@ -11,7 +7,11 @@ export class UIManager {
       const r = await fetch(`sections/${id}.html`);
       return await r.text();
     } catch (x) {
-      (()=>{const e=document.createElement(`Failed to load section ${id}:`);e.className=x;return e;})();
+      (() => {
+        const e = document.createElement(`Failed to load section ${id}:`);
+        e.className = x;
+        return e;
+      })();
       return `<div class="error">Failed to load section: ${id}</div>`;
     }
   }
@@ -25,7 +25,7 @@ export class UIManager {
   setupSections(cb) {
     const sections = $$('.nav-item');
     sections.forEach(t => {
-      (t)?.addEventListener('click', () => {
+      t?.addEventListener('click', () => {
         const tgt = t.dataset.section;
         sections.forEach(x => x.classList.remove('active'));
         t.classList.add('active');

@@ -1,5 +1,3 @@
-
-
 export class CommentsSettings {
   constructor(s, a) {
     this.s = s;
@@ -31,11 +29,11 @@ export class CommentsSettings {
     });
   }
   set(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

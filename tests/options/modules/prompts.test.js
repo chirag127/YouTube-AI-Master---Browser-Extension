@@ -5,8 +5,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   id: vi.fn(),
 }));
 
-
-
 describe('PromptsSettings', () => {
   let settingsManager;
   let autoSave;

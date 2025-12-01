@@ -1,9 +1,3 @@
-
-
-
-
-
-
 export class GeniusLyricsAPI {
   constructor() {
     this.baseUrl = 'https://genius.com';
@@ -53,17 +47,24 @@ export class GeniusLyricsAPI {
     }
     const lyricsMatch = html.match(/<div[^>]*data-lyrics-container="true"[^>]*>(.*?)<\/div>/gs);
     if (lyricsMatch) {
-      return lyricsMatch.map(div => {
-            let text = div.replace(/<br\s*\/?>/gi, '\n');
-            text = text.replace(/<[^>]*>/g, '');
-            return this.decodeHtml(text);
-          }).join('\n\n').trim();
+      return lyricsMatch
+        .map(div => {
+          let text = div.replace(/<br\s*\/?>/gi, '\n');
+          text = text.replace(/<[^>]*>/g, '');
+          return this.decodeHtml(text);
+        })
+        .join('\n\n')
+        .trim();
     }
     return null;
   }
 
   cleanTitle(title) {
-    return title.replace(/[([](?:official|video|audio|lyric|lyrics|hq|hd|4k|mv|music video)[)\]]/gi, '').replace(/ft\.|feat\.|featuring/gi, '').replace(/[([].*?[)\]]/g, '').trim();
+    return title
+      .replace(/[([](?:official|video|audio|lyric|lyrics|hq|hd|4k|mv|music video)[)\]]/gi, '')
+      .replace(/ft\.|feat\.|featuring/gi, '')
+      .replace(/[([].*?[)\]]/g, '')
+      .trim();
   }
 
   decodeHtml(html) {

@@ -1,6 +1,5 @@
 import { videoCache as vc } from '../cache/video-cache.js';
 
-
 class VideoDataService {
   constructor() {
     this.p = new Map();
@@ -8,7 +7,11 @@ class VideoDataService {
   async getMetadata(id, o = {}) {
     const result = await this._f(id, 'metadata', async () => {
       const r = await chrome.runtime.sendMessage({
-        action: 'GET_VIDEO_DATA', videoId: id, dataType: 'metadata', options: o, });
+        action: 'GET_VIDEO_DATA',
+        videoId: id,
+        dataType: 'metadata',
+        options: o,
+      });
       if (!r.success) throw new Error(r.error);
       return r.data;
     });
@@ -17,7 +20,11 @@ class VideoDataService {
   async getTranscript(id, lg = 'en') {
     const result = await this._f(id, 'transcript', async () => {
       const r = await chrome.runtime.sendMessage({
-        action: 'GET_VIDEO_DATA', videoId: id, dataType: 'transcript', options: { lang: lg }, });
+        action: 'GET_VIDEO_DATA',
+        videoId: id,
+        dataType: 'transcript',
+        options: { lang: lg },
+      });
       if (!r.success) throw new Error(r.error);
       return r.data;
     });
@@ -26,7 +33,11 @@ class VideoDataService {
   async getComments(id, lm = 20) {
     const result = await this._f(id, 'comments', async () => {
       const r = await chrome.runtime.sendMessage({
-        action: 'GET_VIDEO_DATA', videoId: id, dataType: 'comments', options: { limit: lm }, });
+        action: 'GET_VIDEO_DATA',
+        videoId: id,
+        dataType: 'comments',
+        options: { limit: lm },
+      });
       if (!r.success) throw new Error(r.error);
       return r.data;
     });

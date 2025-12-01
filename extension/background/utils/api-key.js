@@ -1,6 +1,3 @@
-
-
-
 export async function getApiKey() {
   try {
     const result = await slg('GAK');

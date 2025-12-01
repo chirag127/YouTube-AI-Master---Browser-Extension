@@ -1,7 +1,3 @@
-
-
-
-
 const BASE_URL = 'https://openlibrary.org';
 
 export class OpenLibraryAPI {

@@ -1,6 +1,3 @@
-
-
-
 export function extractVideoId(u) {
   const ps = [/[?&]v=([^&]+)/, /\/embed\/([^/?]+)/, /\/v\/([^/?]+)/, /youtu\.be\/([^/?]+)/];
   for (const p of ps) {

@@ -4,13 +4,6 @@ import { SegmentClassificationService } from '../services/segments/index.js';
 import { StorageService } from '../services/storage/index.js';
 import { parseMarkdown } from '../lib/marked-loader.js';
 
-
-
-
-
-
-
-
 const ss = new StorageService(),
   cs = new ChunkingService();
 let gs = null,
@@ -27,7 +20,7 @@ const ab = document.getElementById('analyze-btn'),
   csb = document.getElementById('chat-send-btn'),
   ch = document.getElementById('chat-history');
 
-(document)?.addEventListener('DOMContentLoaded', async () => {
+document?.addEventListener('DOMContentLoaded', async () => {
   const { GAK } = await sl.get('GAK');
   if (!GAK) {
     aw.style.display = 'block';
@@ -42,21 +35,21 @@ const ab = document.getElementById('analyze-btn'),
     void x;
   }
   for (const b of tbs) {
-    (b)?.addEventListener('click', () => {
+    b?.addEventListener('click', () => {
       for (const x of tbs) x.classList.remove('active');
       for (const x of tcs) x.classList.remove('active');
       b.classList.add('active');
       document.getElementById(`${b.getAttribute('data-tab')}-tab`).classList.add('active');
     });
   }
-  (csb)?.addEventListener('click', handleChat);
-  (ci)?.addEventListener('keypress', e => {
+  csb?.addEventListener('click', handleChat);
+  ci?.addEventListener('keypress', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleChat();
     }
   });
-  (document)?.addEventListener('click', e => {
+  document?.addEventListener('click', e => {
     if (e.target.classList.contains('timestamp-btn')) {
       const t = e.target.getAttribute('data-time');
       if (t) {
@@ -106,7 +99,7 @@ async function updateMsg(id, t) {
   }
 }
 
-(ab)?.addEventListener('click', () => analyzeVideo());
+ab?.addEventListener('click', () => analyzeVideo());
 
 async function analyzeVideo(rc = 0) {
   const mr = 2;

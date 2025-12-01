@@ -11,7 +11,6 @@ import { OpenMeteoAPI } from '../api/openmeteo.js';
 
 import { ps } from '../utils/shortcuts/async.js';
 
-
 export class ContextManager {
   constructor(s) {
     this.s = s || {};

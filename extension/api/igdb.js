@@ -1,6 +1,3 @@
-
-
-
 const BASE_URL = 'https://api.igdb.com/v4';
 
 export class IgdbAPI {

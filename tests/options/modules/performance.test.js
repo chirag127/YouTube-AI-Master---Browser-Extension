@@ -5,8 +5,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
 }));
 
-
-
 describe('PerformanceSettings', () => {
   let settingsManager;
   let autoSave;

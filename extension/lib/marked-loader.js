@@ -1,5 +1,3 @@
-
-
 export async function parseMarkdown(m) {
   if (!m) return '';
 
@@ -13,10 +11,14 @@ export async function parseMarkdown(m) {
   h = h.replace(/_(.+?)_/g, '<em>$1</em>');
   h = h.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
   h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-  h = h.replace(/\[([^\]]+)\]\(([^)]+)\, undefined)/g,
+  h = h.replace(
+    /\[([^\]]+)\]\(([^)]+)\, undefined)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
-  h = h.replace(/\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g, '<button class="timestamp-btn" data-time="$1">$1</button>');
+  h = h.replace(
+    /\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g,
+    '<button class="timestamp-btn" data-time="$1">$1</button>'
+  );
   h = h.replace(/^\* (.+)$/gim, '<li>$1</li>');
   h = h.replace(/^- (.+)$/gim, '<li>$1</li>');
   h = h.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');

@@ -34,7 +34,6 @@ describe('Wikidata API', () => {
     });
 
     it('should return null when disabled', async () => {
-
       sg.mockResolvedValue({ integrations: { wikidata: { enabled: false } } });
 
       const result = await searchWikidata('query');
@@ -43,7 +42,6 @@ describe('Wikidata API', () => {
     });
 
     it('should return null on no search results', async () => {
-
       sf.mockResolvedValue({ search: [] });
 
       sg.mockResolvedValue({ integrations: { wikidata: { enabled: true } } });
@@ -96,7 +94,6 @@ describe('Wikidata API', () => {
       });
 
       it('should return null on no entities', async () => {
-
         sf.mockResolvedValue({ entities: {} });
 
         const result = await api.getEntityDetails('Q1');

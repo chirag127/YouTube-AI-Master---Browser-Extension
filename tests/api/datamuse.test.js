@@ -22,7 +22,6 @@ describe('DatamuseAPI', () => {
 
   describe('getRelatedWords', () => {
     it('should return related words on success', async () => {
-
       sf.mockResolvedValue([{ word: 'test' }]);
 
       const result = await api.getRelatedWords('test');
@@ -32,7 +31,6 @@ describe('DatamuseAPI', () => {
     });
 
     it('should return empty array on network failure', async () => {
-
       sf.mockRejectedValue(new Error('Network error'));
 
       const result = await api.getRelatedWords('test');
@@ -41,7 +39,6 @@ describe('DatamuseAPI', () => {
     });
 
     it('should return empty array when safeFetch returns null', async () => {
-
       sf.mockResolvedValue(null);
 
       const result = await api.getRelatedWords('test');
@@ -50,8 +47,6 @@ describe('DatamuseAPI', () => {
     });
 
     it('should encode the word parameter', async () => {
-
-
       sf.mockResolvedValue([]);
 
       await api.getRelatedWords('test word');

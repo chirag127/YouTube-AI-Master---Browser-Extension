@@ -1,6 +1,3 @@
-
-
-
 export class IntegrationsSettings {
   constructor(sm, nm) {
     this.sm = sm;
@@ -82,7 +79,7 @@ export class IntegrationsSettings {
 
       inputs.forEach(inputId => {
         const el = document.getElementById(inputId);
-        if (el) (el)?.addEventListener('change', () => this.save());
+        if (el) el?.addEventListener('change', () => this.save());
       });
     } catch (err) {
       console.error('[IntegrationsSettings] Attach listeners error:', err);

@@ -38,7 +38,6 @@ describe('OpenMeteoAPI', () => {
     });
 
     it('should return null when disabled', async () => {
-
       sg.mockResolvedValue({ integrations: { openmeteo: { enabled: false } } });
 
       const result = await api.getWeather(10, 20);
@@ -80,7 +79,6 @@ describe('OpenMeteoAPI', () => {
     });
 
     it('should return null on no results', async () => {
-
       sf.mockResolvedValue({ results: [] });
 
       const result = await api.getCoordinates('city');

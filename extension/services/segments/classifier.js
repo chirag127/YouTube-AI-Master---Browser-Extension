@@ -1,7 +1,5 @@
 import { annotateTranscript } from './rule-engine.js';
 
-
-
 export async function classifyTranscript(context, g) {
   const { transcript, metadata } = context;
   if (!transcript || !transcript.length) {

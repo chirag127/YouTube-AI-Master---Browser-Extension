@@ -4,7 +4,6 @@ import { RateLimiter } from './core/rate-limiter.js';
 
 import { js } from '../utils/shortcuts/core.js';
 
-
 export class GeminiClient {
   constructor(apiKey, config = {}) {
     this.apiKey = apiKey;
@@ -24,7 +23,9 @@ export class GeminiClient {
     await this.rateLimiter.acquire();
     const url = `${this.baseUrl}/models/${model}:generateContent?key=${this.apiKey}`;
     try {
-      const contents = Array.isArray(prompt) ? [{ parts: prompt }] : [{ parts: [{ text: prompt }] }];
+      const contents = Array.isArray(prompt)
+        ? [{ parts: prompt }]
+        : [{ parts: [{ text: prompt }] }];
       const response = await this.httpClient.fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

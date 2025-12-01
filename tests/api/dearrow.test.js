@@ -116,7 +116,6 @@ describe('DeArrow API', () => {
     });
 
     it('should return null when disabled', async () => {
-
       sg.mockResolvedValue({ integrations: { dearrow: { enabled: false } } });
 
       const result = await getBranding('testVid');

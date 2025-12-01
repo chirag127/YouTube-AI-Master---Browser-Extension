@@ -1,5 +1,3 @@
-
-
 export function fillContentGaps(c, o) {
   if (!o || !o.length) {
     console.error('[Gaps] No transcript provided to fillContentGaps');

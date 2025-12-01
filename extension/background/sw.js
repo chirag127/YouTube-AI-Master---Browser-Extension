@@ -1,6 +1,3 @@
-
-
-
 import { ael } from '../utils/shortcuts.js';
 import { verifySender as vs } from './security/sender-check.js';
 import { validateMessage as vm, sanitizeRequest as sr } from './security/validator.js';

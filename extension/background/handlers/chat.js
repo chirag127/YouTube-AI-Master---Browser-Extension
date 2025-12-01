@@ -1,7 +1,6 @@
 import { initializeServices, getServices } from '../services.js';
 import { getApiKey } from '../utils/api-key.js';
 
-
 export async function handleChatWithVideo(req, rsp) {
   const { question, context, metadata } = req;
   console.log(`[Chat] Processing question: ${question?.substring(0, 50)}...`);

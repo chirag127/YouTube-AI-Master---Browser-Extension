@@ -49,7 +49,6 @@ describe('TmdbAPI', () => {
     });
 
     it('should return null on no results', async () => {
-
       sf.mockResolvedValue({ results: [] });
 
       const result = await api.searchMovie('query');
@@ -58,7 +57,6 @@ describe('TmdbAPI', () => {
     });
 
     it('should return null on failure', async () => {
-
       sf.mockRejectedValue(new Error('error'));
 
       const result = await api.searchMovie('query');

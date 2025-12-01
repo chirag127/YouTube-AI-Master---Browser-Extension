@@ -20,11 +20,9 @@ import { WidgetSettings } from './modules/widget-settings.js';
 import { IntegrationsSettings } from './modules/integrations.js';
 import { PromptsSettings } from './modules/prompts.js';
 
-
 import { vl as vs } from '../utils/shortcuts/core.js';
 
-
-(document)?.addEventListener('DOMContentLoaded', async () => {
+document?.addEventListener('DOMContentLoaded', async () => {
   const settingsManager = new SettingsManager();
   const notificationManager = new NotificationManager();
   const autoSave = new AutoSave(settingsManager, 300, notificationManager);
@@ -41,16 +39,32 @@ import { vl as vs } from '../utils/shortcuts/core.js';
     if (welcomeBanner) welcomeBanner.style.display = 'block';
   }
   startSetupBtn &&
-    (startSetupBtn)?.addEventListener('click', () => {
+    startSetupBtn?.addEventListener('click', () => {
       tc({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
     });
   dismissBannerBtn &&
-    (dismissBannerBtn)?.addEventListener('click', () => {
+    dismissBannerBtn?.addEventListener('click', () => {
       if (welcomeBanner) welcomeBanner.style.display = 'none';
     });
   uiManager.setupSections();
   const modules = {
-    general: new GeneralSettings(settingsManager, autoSave), uiAppearance: new UIAppearance(settingsManager, autoSave), aiConfig: new AIConfig(settingsManager, autoSave), segments: new SegmentsConfig(settingsManager, autoSave), externalApis: new ExternalAPIs(settingsManager, autoSave), advanced: new AdvancedSettings(settingsManager, autoSave), performance: new PerformanceSettings(settingsManager, autoSave), notifications: new NotificationsSettings(settingsManager, autoSave), cache: new CacheSettings(settingsManager, autoSave), transcript: new TranscriptSettings(settingsManager, autoSave), comments: new CommentsSettings(settingsManager, autoSave), metadata: new MetadataSettings(settingsManager, autoSave), scroll: new ScrollSettings(settingsManager, autoSave), widget: new WidgetSettings(settingsManager, notificationManager), integrations: new IntegrationsSettings(settingsManager, notificationManager), prompts: new PromptsSettings(settingsManager, autoSave), };
+    general: new GeneralSettings(settingsManager, autoSave),
+    uiAppearance: new UIAppearance(settingsManager, autoSave),
+    aiConfig: new AIConfig(settingsManager, autoSave),
+    segments: new SegmentsConfig(settingsManager, autoSave),
+    externalApis: new ExternalAPIs(settingsManager, autoSave),
+    advanced: new AdvancedSettings(settingsManager, autoSave),
+    performance: new PerformanceSettings(settingsManager, autoSave),
+    notifications: new NotificationsSettings(settingsManager, autoSave),
+    cache: new CacheSettings(settingsManager, autoSave),
+    transcript: new TranscriptSettings(settingsManager, autoSave),
+    comments: new CommentsSettings(settingsManager, autoSave),
+    metadata: new MetadataSettings(settingsManager, autoSave),
+    scroll: new ScrollSettings(settingsManager, autoSave),
+    widget: new WidgetSettings(settingsManager, notificationManager),
+    integrations: new IntegrationsSettings(settingsManager, notificationManager),
+    prompts: new PromptsSettings(settingsManager, autoSave),
+  };
   const initPromises = vs(modules).map(async m => {
     try {
       await m.init();

@@ -1,7 +1,4 @@
-
-
 import { jp } from '../../utils/shortcuts/core.js';
-
 
 function dec(t) {
   const e = {
@@ -20,7 +17,8 @@ function pXML(x) {
   let m;
   while ((m = r.exec(x)) !== null) {
     const t = dec(m[3]);
-    if (t.trim()) s.push({ start: parseFloat(m[1]), duration: m[2] ? parseFloat(m[2]) : 0, text: t });
+    if (t.trim())
+      s.push({ start: parseFloat(m[1]), duration: m[2] ? parseFloat(m[2]) : 0, text: t });
   }
   return s;
 }
@@ -34,7 +32,9 @@ async function fYT(vid, lNg = 'en') {
         if (!t) continue;
         const d = jp(t);
         if (d.events) {
-          const s = d.events.filter(e => e.segs).map(e => ({
+          const s = d.events
+            .filter(e => e.segs)
+            .map(e => ({
               start: e.tStartMs / 1000,
               duration: (e.dDurationMs || 0) / 1000,
               text: e.segs.map(s => s.utf8).join(''),

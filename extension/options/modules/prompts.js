@@ -1,4 +1,3 @@
-
 import { ael } from '../../utils/shortcuts.js';
 export class PromptsSettings {
   constructor(sm, as) {
@@ -82,7 +81,9 @@ export class PromptsSettings {
       'prompts-comments-themes',
       'prompts-comments-questions',
       'prompts-comments-opportunities',
-    ].forEach(id => ael(document.getElementById(id), 'change', () => this.as.trigger(() => this.save())));
+    ].forEach(id =>
+      ael(document.getElementById(id), 'change', () => this.as.trigger(() => this.save()))
+    );
 
     const saveBtn = document.getElementById('save-prompts');
     if (saveBtn) {

@@ -1,8 +1,4 @@
-
-
 import { js } from '../../utils/shortcuts/core.js';
-
-
 
 import { mp } from '../../utils/shortcuts/core.js';
 
@@ -11,7 +7,7 @@ class CommentsExtractor {
     try {
       this.comments = [];
       this.hasIntercepted = false;
-      (window)?.addEventListener('message', ev => {
+      window?.addEventListener('message', ev => {
         if (ev.source !== window) return;
         if (ev.data.type === 'YT_COMMENTS') this.handleInterceptedComments(ev.data.payload);
       });
@@ -131,7 +127,7 @@ class CommentsExtractor {
             r(ev.data.payload);
           }
         };
-        (window)?.addEventListener('message', lis);
+        window?.addEventListener('message', lis);
         window.postMessage({ type: 'YT_GET_DATA' }, '*');
         setTimeout(() => {
           window.removeEventListener('message', lis);

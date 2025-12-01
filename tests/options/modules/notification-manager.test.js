@@ -38,7 +38,6 @@ import { NotificationManager } from '../../../extension/options/modules/notifica
 
 import { raf } from '../../../extension/utils/shortcuts/async.js';
 
-
 describe('NotificationManager', () => {
   let manager;
   let mockTo, mockRaf, mockCe, mockAp;

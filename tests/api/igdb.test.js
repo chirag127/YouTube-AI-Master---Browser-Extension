@@ -43,7 +43,6 @@ describe('IgdbAPI', () => {
     });
 
     it('should return null on no results', async () => {
-
       fetch.mockResolvedValue([]);
 
       const result = await api.searchGame('query');
@@ -60,7 +59,6 @@ describe('IgdbAPI', () => {
     });
 
     it('should return null on failure', async () => {
-
       fetch.mockRejectedValue(new Error('error'));
 
       const result = await api.searchGame('query');

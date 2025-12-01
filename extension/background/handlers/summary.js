@@ -1,7 +1,6 @@
 import { initializeServices, getServices } from '../services.js';
 import { getApiKey } from '../utils/api-key.js';
 
-
 export async function handleGenerateSummary(req, rsp) {
   const { transcript, settings, metadata } = req;
   const k = settings?.apiKey || (await getApiKey());

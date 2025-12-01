@@ -9,7 +9,6 @@ import {
   transformSegments,
 } from './utils/response-parser.js';
 
-
 export { ModelManager };
 
 export class GeminiService {

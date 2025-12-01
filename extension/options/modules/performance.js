@@ -1,5 +1,3 @@
-
-
 export class PerformanceSettings {
   constructor(s, a) {
     this.s = s;
@@ -48,11 +46,11 @@ export class PerformanceSettings {
     });
   }
   set(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.value = v;
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

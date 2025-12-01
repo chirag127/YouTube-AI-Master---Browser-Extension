@@ -118,7 +118,6 @@ describe('HttpClient', () => {
 
   describe('_sleep', () => {
     it('should sleep for specified ms', async () => {
-
       const { np } = await import('../../../extension/utils/shortcuts/async.js');
       to.mockImplementation((fn, ms) => setTimeout(fn, ms));
       np.mockImplementation(fn => {

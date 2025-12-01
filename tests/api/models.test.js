@@ -60,7 +60,6 @@ describe('ModelManager', () => {
     });
 
     it('should handle failure', async () => {
-
       jf.mockRejectedValue(new Error('error'));
 
       await manager.fetch();

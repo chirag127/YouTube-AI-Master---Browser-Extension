@@ -1,6 +1,5 @@
 import { getHistory } from '../../services/storage/comprehensive-history.js';
 
-
 import { nw } from '../../utils/shortcuts/core.js';
 import { handleGetVideoInfo } from './video-info.js';
 import { handleFetchTranscript as handleGetTranscript } from './fetch-transcript.js';

@@ -33,7 +33,6 @@ vi.mock('../extension/utils/shortcuts/dom.js', () => ({
 
 const { setupAutoSkip, handleAutoSkip } = await import('../extension/content/segments/autoskip.js');
 
-
 describe('Content Protection', () => {
   let videoMock;
 

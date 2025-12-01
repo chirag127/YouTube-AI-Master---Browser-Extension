@@ -1,5 +1,3 @@
-
-
 import { nw as nt, jp, js, lc } from '../../utils/shortcuts/core.js';
 
 export class ComprehensiveHistory {
@@ -56,10 +54,12 @@ export class ComprehensiveHistory {
   async search(q) {
     const h = await this.getAll(),
       lq = lc(q);
-    return h.filter(e =>
+    return h.filter(
+      e =>
         (e.metadata?.title && inc(lc(e.metadata.title), lq)) ||
         (e.metadata?.author && inc(lc(e.metadata.author), lq)) ||
-        inc(e.videoId, lq));
+        inc(e.videoId, lq)
+    );
   }
   async getStats() {
     const h = await this.getAll();

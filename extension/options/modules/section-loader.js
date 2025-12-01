@@ -1,9 +1,5 @@
-
-
-
 import { pa } from '../../utils/shortcuts/async.js';
 import { ok } from '../../utils/shortcuts/core.js';
-
 
 export class SectionLoader {
   constructor() {

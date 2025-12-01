@@ -1,6 +1,3 @@
-
-
-
 const BASE_URL = 'https://factchecktools.googleapis.com/v1alpha1';
 
 export class GoogleFactCheckAPI {

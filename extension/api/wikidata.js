@@ -1,7 +1,3 @@
-
-
-
-
 const BASE_URL = 'https://www.wikidata.org/w/api.php';
 
 export async function searchWikidata(query) {

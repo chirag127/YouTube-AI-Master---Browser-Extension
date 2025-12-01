@@ -1,5 +1,3 @@
-
-
 export const verifySender = s => {
   if (!s || !s.id) {
     return false;

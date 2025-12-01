@@ -66,9 +66,6 @@ import {
 } from '../../../../extension/content/ui/components/loading.js';
 import { getComments } from '../../../../extension/content/handlers/comments.js';
 
-
-
-
 describe('renderComments', () => {
   let container;
 

@@ -1,5 +1,3 @@
-
-
 export class ErrorHandler {
   static classify(error) {
     console.log(`[ErrorHandler] Classifying error: ${error.message}`);
@@ -67,7 +65,9 @@ export class ErrorHandler {
     userError.type = classified.type;
     userError.retryable = classified.retryable;
     userError.originalError = error;
-    console.log(`[ErrorHandler] Created user error: ${classified.type}, retryable: ${classified.retryable}`);
+    console.log(
+      `[ErrorHandler] Created user error: ${classified.type}, retryable: ${classified.retryable}`
+    );
     return userError;
   }
 }

@@ -36,7 +36,6 @@ describe('MusicBrainzAPI', () => {
     });
 
     it('should return null when disabled', async () => {
-
       sg.mockResolvedValue({ integrations: { musicbrainz: { enabled: false } } });
 
       const result = await api.searchArtist('query');
@@ -88,7 +87,6 @@ describe('MusicBrainzAPI', () => {
     });
 
     it('should return null on no releases', async () => {
-
       sf.mockResolvedValue({ releases: [] });
 
       const result = await api.searchRelease('query');

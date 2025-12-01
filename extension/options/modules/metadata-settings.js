@@ -1,4 +1,3 @@
-
 export class MetadataSettings {
   constructor(s, a) {
     this.s = s;
@@ -32,7 +31,7 @@ export class MetadataSettings {
     });
   }
   chk(id, v) {
-    const el = (document).querySelector(`#${id}`);
+    const el = document.querySelector(`#${id}`);
     if (el) el.checked = v;
   }
 }

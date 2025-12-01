@@ -9,7 +9,6 @@ vi.mock('../../../extension/utils/patterns/index.js', () => ({
   buildPatternHints: vi.fn(),
 }));
 
-
 import { analyzeTranscript, buildPatternHints } from '../../../extension/utils/patterns/index.js';
 
 describe('chat prompt', () => {

@@ -1,8 +1,3 @@
-
-
-
-
-
 const BASE_URL = 'https://musicbrainz.org/ws/2';
 const UA = 'YouTubeAINavigator/1.0.0 ( contact@example.com )';
 

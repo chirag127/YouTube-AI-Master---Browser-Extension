@@ -68,7 +68,6 @@ describe('AutoSkip Segment Action Filtering', () => {
 
   describe('Configuration Loading', () => {
     it('should properly load segment configuration from storage', async () => {
-
       const result = await chrome.storage.sync.get('config');
       expect(result.config.segments.enabled).toBe(true);
       expect(result.config.segments.categories.content.action).toBe('ignore');
@@ -95,19 +94,16 @@ describe('AutoSkip Segment Action Filtering', () => {
 
   describe('Default Actions', () => {
     it('should default content to ignore', async () => {
-
       const result = await chrome.storage.sync.get('config');
       expect(result.config.segments.categories.content.action).toBe('ignore');
     });
 
     it('should default highlight to ignore', async () => {
-
       const result = await chrome.storage.sync.get('config');
       expect(result.config.segments.categories.poi_highlight.action).toBe('ignore');
     });
 
     it('should default exclusive_access to ignore', async () => {
-
       const result = await chrome.storage.sync.get('config');
       expect(result.config.segments.categories.exclusive_access.action).toBe('ignore');
     });

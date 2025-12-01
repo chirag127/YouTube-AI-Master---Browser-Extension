@@ -1,6 +1,3 @@
-
-
-
 export class WidgetSettings {
   constructor(sm, nm) {
     this.sm = sm;
@@ -149,53 +146,53 @@ export class WidgetSettings {
         'exclusive',
       ];
 
-      if (h) (h)?.addEventListener('change', () => this.save());
-      if (mh) (mh)?.addEventListener('change', () => this.save());
-      if (xh) (xh)?.addEventListener('change', () => this.save());
-      if (w) (w)?.addEventListener('change', () => this.save());
-      if (mw) (mw)?.addEventListener('change', () => this.save());
-      if (xw) (xw)?.addEventListener('change', () => this.save());
-      if (r) (r)?.addEventListener('change', () => this.save());
-      if (rw) (rw)?.addEventListener('change', () => this.save());
-      if (pos) (pos)?.addEventListener('change', () => this.save());
-      if (op) (op)?.addEventListener('change', () => this.save());
-      if (bl) (bl)?.addEventListener('change', () => this.save());
-      if (sc) (sc)?.addEventListener('change', () => this.save());
-      if (dh) (dh)?.addEventListener('change', () => this.save());
-      if (vm) (vm)?.addEventListener('change', () => this.save());
-      if (ts) (ts)?.addEventListener('change', () => this.save());
-      if (tg) (tg)?.addEventListener('change', () => this.save());
-      if (tc) (tc)?.addEventListener('change', () => this.save());
-      if (tm) (tm)?.addEventListener('change', () => this.save());
-      if (dc) (dc)?.addEventListener('change', () => this.save());
-      if (rs) (rs)?.addEventListener('change', () => this.save());
+      if (h) h?.addEventListener('change', () => this.save());
+      if (mh) mh?.addEventListener('change', () => this.save());
+      if (xh) xh?.addEventListener('change', () => this.save());
+      if (w) w?.addEventListener('change', () => this.save());
+      if (mw) mw?.addEventListener('change', () => this.save());
+      if (xw) xw?.addEventListener('change', () => this.save());
+      if (r) r?.addEventListener('change', () => this.save());
+      if (rw) rw?.addEventListener('change', () => this.save());
+      if (pos) pos?.addEventListener('change', () => this.save());
+      if (op) op?.addEventListener('change', () => this.save());
+      if (bl) bl?.addEventListener('change', () => this.save());
+      if (sc) sc?.addEventListener('change', () => this.save());
+      if (dh) dh?.addEventListener('change', () => this.save());
+      if (vm) vm?.addEventListener('change', () => this.save());
+      if (ts) ts?.addEventListener('change', () => this.save());
+      if (tg) tg?.addEventListener('change', () => this.save());
+      if (tc) tc?.addEventListener('change', () => this.save());
+      if (tm) tm?.addEventListener('change', () => this.save());
+      if (dc) dc?.addEventListener('change', () => this.save());
+      if (rs) rs?.addEventListener('change', () => this.save());
       if (wop) {
-        (wop)?.addEventListener('input', e => {
+        wop?.addEventListener('input', e => {
           if (wopv) wopv.textContent = `${e.target.value}%`;
         });
-        (wop)?.addEventListener('change', () => this.save());
+        wop?.addEventListener('change', () => this.save());
       }
       if (wbr) {
-        (wbr)?.addEventListener('input', e => {
+        wbr?.addEventListener('input', e => {
           if (wbrv) wbrv.textContent = `${e.target.value}px`;
         });
-        (wbr)?.addEventListener('change', () => this.save());
+        wbr?.addEventListener('change', () => this.save());
       }
       if (wac) {
-        (wac)?.addEventListener('input', e => {
+        wac?.addEventListener('input', e => {
           if (wacv) wacv.textContent = e.target.value;
         });
-        (wac)?.addEventListener('change', () => this.save());
+        wac?.addEventListener('change', () => this.save());
       }
-      if (whc) (whc)?.addEventListener('change', () => this.save());
+      if (whc) whc?.addEventListener('change', () => this.save());
 
       // Attach listeners for all segment filters
       filters.forEach(f => {
         const el = document.getElementById(`widget-show-${f}`);
-        if (el) (el)?.addEventListener('change', () => this.save());
+        if (el) el?.addEventListener('change', () => this.save());
       });
 
-      if (rb) (rb)?.addEventListener('click', () => this.reset());
+      if (rb) rb?.addEventListener('click', () => this.reset());
     } catch (err) {
       console.error('[WidgetSettings] Attach listeners error:', err);
     }

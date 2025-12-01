@@ -36,7 +36,6 @@ describe('OpenLibraryAPI', () => {
     });
 
     it('should return null when disabled', async () => {
-
       sg.mockResolvedValue({ integrations: { openlibrary: { enabled: false } } });
 
       const result = await api.searchBook('query');

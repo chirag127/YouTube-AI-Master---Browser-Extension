@@ -40,7 +40,6 @@ import { renderSegments } from '../../../../extension/content/ui/renderers/segme
 import { renderChat } from '../../../../extension/content/ui/renderers/chat.js';
 import { renderComments } from '../../../../extension/content/ui/renderers/comments.js';
 
-
 describe('tabs', () => {
   let mockContainer;
   let mockTabs;

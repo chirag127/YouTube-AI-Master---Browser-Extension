@@ -1,7 +1,4 @@
-
-
 import { np } from '../../utils/shortcuts/async.js';
-
 
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 const RETRYABLE_ERRORS = new Set(['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND']);
@@ -41,12 +38,16 @@ export class HttpClient {
 
         if (!RETRYABLE_STATUS.has(response.status)) {
           const error = await this._createError(response);
-          console.error(`[HttpClient:Fail] Non-retryable status ${response.status}: ${response.statusText}`);
+          console.error(
+            `[HttpClient:Fail] Non-retryable status ${response.status}: ${response.statusText}`
+          );
           throw error;
         }
 
         lastError = await this._createError(response);
-        console.warn(`[HttpClient:Retry] Attempt ${attempt + 1} failed with status ${response.status}, will retry`);
+        console.warn(
+          `[HttpClient:Retry] Attempt ${attempt + 1} failed with status ${response.status}, will retry`
+        );
       } catch (error) {
         if (error.name === 'AbortError') {
           lastError = new Error(`Request timeout after ${this.timeout}ms`);
@@ -54,9 +55,14 @@ export class HttpClient {
           console.error(`[HttpClient:Fail] Timeout on attempt ${attempt + 1}`);
         } else if (RETRYABLE_ERRORS.has(error.code)) {
           lastError = error;
-          console.warn(`[HttpClient:Retry] Network error ${error.code} on attempt ${attempt + 1}, will retry`);
+          console.warn(
+            `[HttpClient:Retry] Network error ${error.code} on attempt ${attempt + 1}, will retry`
+          );
         } else {
-          console.error(`[HttpClient:Fail] Non-retryable error on attempt ${attempt + 1}:`, error.message);
+          console.error(
+            `[HttpClient:Fail] Non-retryable error on attempt ${attempt + 1}:`,
+            error.message
+          );
           throw error;
         }
       }
@@ -70,7 +76,10 @@ export class HttpClient {
     }
 
     const totalTime = Date.now() - startTime;
-    console.error(`[HttpClient:Fail] All ${this.maxRetries + 1} attempts failed after ${totalTime}ms:`, lastError.message);
+    console.error(
+      `[HttpClient:Fail] All ${this.maxRetries + 1} attempts failed after ${totalTime}ms:`,
+      lastError.message
+    );
     throw lastError;
   }
 

@@ -1,5 +1,3 @@
-
-
 export async function handleGetSettings(rsp) {
   try {
     const s = await chrome.storage.sync.get('config');

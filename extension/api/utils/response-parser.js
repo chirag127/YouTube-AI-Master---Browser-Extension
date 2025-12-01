@@ -1,8 +1,6 @@
-
 import { jp } from '../../utils/shortcuts/core.js';
 
 import { mp } from '../../utils/shortcuts/core.js';
-
 
 export const extractSection = (t, sn) => {
   const r = new RegExp(`## ${sn}\\s*([\\s\\S]*?)(?=##|$)`, 'i');

@@ -1,7 +1,5 @@
 import { js } from '../../utils/shortcuts/core.js';
 
-
-
 const ALLOWED = new Set([
   'TEST',
   'GET_SETTINGS',

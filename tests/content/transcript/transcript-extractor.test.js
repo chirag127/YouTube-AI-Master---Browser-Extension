@@ -30,7 +30,6 @@ vi.mock('../extension/utils/shortcuts/runtime.js', () => ({
   },
 }));
 
-
 import { getCfg } from '../extension/utils/config.js';
 
 describe('Transcript Extractor (DOM Automation)', () => {

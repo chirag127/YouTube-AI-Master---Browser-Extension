@@ -7,8 +7,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   on: vi.fn(),
 }));
 
-
-
 describe('SegmentsConfig', () => {
   let settingsManager;
   let autoSave;

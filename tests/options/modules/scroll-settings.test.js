@@ -5,8 +5,6 @@ vi.mock('../../../extension/utils/shortcuts/dom.js', () => ({
   qs: vi.fn(),
 }));
 
-
-
 describe('ScrollSettings', () => {
   let settingsManager;
   let autoSave;
