@@ -37,10 +37,18 @@ export async function renderComments(c) {
       // Extract comments with retry logic - stay scrolled down during this process
       const cm = await getComments(retries);
 
-      // Scroll back AFTER extraction completes
+      // Scroll back AFTER extraction completes - improved logic
       if (cfg.scroll?.scrollBackAfterComments !== false) {
-        await setTimeout(() => { }, 300); // Brief delay before scroll-back
-        scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
+        await setTimeout(() => { }, 500); // Increased delay for better reliability
+
+        // Use the scroll manager's restorePosition method for better reliability
+        const { restoreScrollPosition } = await import(chrome.runtime.getURL('content/utils/scroll-manager.js'));
+        restoreScrollPosition();
+
+        // Fallback to manual scroll if restorePosition fails
+        if (Math.abs(window.scrollY - origPos) > 50) {
+          scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
+        }
       }
 
       if (!cm.length) {
@@ -91,8 +99,14 @@ export async function renderComments(c) {
     } catch (x) {
       // Scroll back even on error after full retry attempts
       if (cfg.scroll?.scrollBackAfterComments !== false) {
-        await setTimeout(() => { }, 300);
-        scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
+        await setTimeout(() => { }, 500);
+        const { restoreScrollPosition } = await import(chrome.runtime.getURL('content/utils/scroll-manager.js'));
+        restoreScrollPosition();
+
+        // Fallback to manual scroll if restorePosition fails
+        if (Math.abs(window.scrollY - origPos) > 50) {
+          scrollBackToTop(origPos, cfg.scroll?.showScrollNotification ?? true);
+        }
       }
       c.innerHTML = `<div class="yt-ai-error-msg">Failed: ${x.message}</div>`;
       console.error('Err:renderComments', x);
@@ -145,9 +159,15 @@ async function forceLoadComments() {
 
         // If we are at the bottom, maybe scroll up a bit to trigger lazy load
         if (attempts % 5 === 0) {
-          window.scrollBy(0, -50);
-          await setTimeout(() => { }, 100);
-          window.scrollBy(0, 50);
+          const currentScroll = window.scrollY;
+          window.scrollBy(0, -100); // Scroll up more to trigger lazy load
+          await setTimeout(() => { }, 200); // Increased wait time
+          window.scrollBy(0, 100); // Scroll back down
+
+          // Ensure we're back at the bottom for next attempt
+          if (Math.abs(window.scrollY - currentScroll) > 20) {
+            window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+          }
         }
 
         attempts++;

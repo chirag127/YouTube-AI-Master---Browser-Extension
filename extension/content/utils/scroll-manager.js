@@ -57,8 +57,16 @@ export class ScrollManager {
         window.scrollBy(0, 200);
         await this.waitForScroll(600);
       } else {
-        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+        // Improved scroll to bottom logic
+        const scrollHeight = document.documentElement.scrollHeight;
+        window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
         await this.waitForScroll(1500);
+
+        // Additional check to ensure we're at the bottom
+        if (Math.abs(window.scrollY + window.innerHeight - scrollHeight) > 100) {
+          window.scrollTo({ top: scrollHeight, behavior: 'instant' });
+          await this.waitForScroll(500);
+        }
       }
       const loaded = await this.waitForCommentsToLoad();
       this.isScrolling = false;
