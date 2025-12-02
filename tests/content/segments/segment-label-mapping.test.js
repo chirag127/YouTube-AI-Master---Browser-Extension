@@ -1,3 +1,5 @@
+import { getLabelKey, getLabelName, getLabelColor, LABEL_MAPPING, COLOR_MAPPING } from '../../../extension/content/segments/label-mapping.js';
+
 describe('Segment Label Mapping Tests', () => {
   describe('Label Key Mapping (getLabelKey)', () => {
     it('should map all 13 SponsorBlock categories', () => {

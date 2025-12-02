@@ -1,38 +1,11 @@
 const { showPlaceholder } = await import(chrome.runtime.getURL('content/ui/components/loading.js'));
 const { seekVideo } = await import(chrome.runtime.getURL('content/utils/dom.js'));
 const { formatTime } = await import(chrome.runtime.getURL('content/utils/time.js'));
+const { getLabelName, getLabelColor } = await import(chrome.runtime.getURL('content/segments/label-mapping.js'));
 
 function $$(selector, context = document) {
   return Array.from(context.querySelectorAll(selector));
 }
-
-const COLOR_MAPPING = {
-  Sponsor: '#00d400',
-  SelfPromotion: '#ffff00',
-  InteractionReminderSubscribe: '#cc00ff',
-  InteractionReminder: '#cc00ff',
-  HookGreetings: '#00ffff',
-  IntermissionIntroAnimation: '#00ffff',
-  EndcardsCredits: '#0202ed',
-  PreviewRecap: '#008fd6',
-  TangentsJokes: '#ff9900',
-  Highlight: '#ff1684',
-  ExclusiveAccess: '#008a5c',
-};
-
-const LABEL_MAPPING = {
-  Sponsor: '💰 Sponsor',
-  SelfPromotion: '📢 Self Promotion',
-  InteractionReminderSubscribe: '🔔 Interaction Reminder',
-  InteractionReminder: '🔔 Interaction Reminder',
-  HookGreetings: '👋 Intro/Hook',
-  IntermissionIntroAnimation: '🎬 Intermission',
-  EndcardsCredits: '🎬 Outro/Credits',
-  PreviewRecap: '🔄 Preview/Recap',
-  TangentsJokes: '💬 Filler/Tangent',
-  Highlight: '⭐ Highlight',
-  ExclusiveAccess: '🔒 Exclusive Access',
-};
 
 // Mapping of segment categories to filter names
 const SEGMENT_FILTER_MAP = {
@@ -89,9 +62,11 @@ export async function renderSegments(c, data) {
     // Handle Full Video Label
     if (b) {
       if (fl) {
-        b.textContent = LABEL_MAPPING[fl] || fl;
+        const fullVideoDisplayName = getLabelName(fl);
+        const fullVideoColor = getLabelColor(fl);
+        b.textContent = fullVideoDisplayName;
         b.style.display = 'inline-block';
-        b.style.backgroundColor = COLOR_MAPPING[fl] || 'var(--glass-highlight)';
+        b.style.backgroundColor = fullVideoColor;
         b.style.color = '#fff';
         b.style.marginLeft = '8px';
         b.style.fontSize = '0.75em';
@@ -127,7 +102,10 @@ export async function renderSegments(c, data) {
     // Generate HTML with Liquid Glass structure
     const h = filteredSegments
       .map((x, i) => {
-        const cl = COLOR_MAPPING[x.label] || 'var(--glass-border)';
+        // Get the category key from the segment (could be in x.category or x.label)
+        const categoryKey = x.category || x.label;
+        const displayName = getLabelName(categoryKey);
+        const cl = getLabelColor(categoryKey);
         const ts = x.timestamps || [
           { type: 'start', time: x.start },
           { type: 'end', time: x.end },
@@ -147,7 +125,7 @@ export async function renderSegments(c, data) {
         return `
           <div class="yt-ai-segment-item" style="border-left: 3px solid ${cl}; animation-delay: ${delay}s">
             <div class="yt-ai-segment-header">
-              <div class="yt-ai-segment-label" style="background: ${cl}22; border: 1px solid ${cl}44; color: ${cl}">${LABEL_MAPPING[x.label] || x.label}</div>
+              <div class="yt-ai-segment-label" style="background: ${cl}22; border: 1px solid ${cl}44; color: ${cl}">${displayName}</div>
               <div class="yt-ai-segment-time">${th}</div>
             </div>
             ${x.title ? `<div class="yt-ai-segment-title">${x.title}</div>` : ''}
