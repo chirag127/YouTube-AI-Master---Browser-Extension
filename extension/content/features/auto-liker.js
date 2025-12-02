@@ -62,22 +62,36 @@ export class AutoLiker {
   }
   async attemptLike(vid) {
     try {
-      if (this.likedVideos.has(vid)) return;
+      console.log(`AL: Starting attemptLike for video ${vid}`);
+      if (this.likedVideos.has(vid)) {
+        console.log(`AL: Video ${vid} already liked, skipping`);
+        return;
+      }
       const live = this.isLiveStream();
+      console.log(`AL: Is live stream: ${live}`);
       if (live && !state.settings.autoLikeLive) {
+        console.log(`AL: Live stream but autoLikeLive disabled, skipping`);
         this.likedVideos.add(vid);
         return;
       }
       if (!state.settings.likeIfNotSubscribed) {
+        console.log(`AL: Checking subscription status`);
         const sub = await this.checkSubscriptionStatus();
+        console.log(`AL: Is subscribed: ${sub}`);
         if (!sub) {
+          console.log(`AL: Not subscribed and likeIfNotSubscribed=false, skipping`);
           this.likedVideos.add(vid);
           return;
         }
       }
+      console.log(`AL: Attempting to click like button`);
       const s = await this.clickLikeButton();
+      console.log(`AL: clickLikeButton result: ${s}`);
       if (s) {
+        console.log(`AL: Successfully liked video ${vid}`);
         this.likedVideos.add(vid);
+      } else {
+        console.log(`AL: Failed to like video ${vid}`);
       }
     } catch (err) {
       console.error('Err:attemptLike', err);
@@ -133,6 +147,7 @@ export class AutoLiker {
   }
   async clickLikeButton() {
     try {
+      console.log('AL: Starting clickLikeButton - searching for like button');
       // Enhanced selector list for modern YouTube UI
       const s = [
         'like-button-view-model button',
@@ -153,34 +168,52 @@ export class AutoLiker {
         for (const b of btns) {
           if (b.closest('#top-level-buttons-computed') || b.closest('#actions') || b.closest('ytd-menu-renderer')) {
             lb = b;
+            console.log(`AL: Found like button with selector: ${sel}`);
             break;
           }
         }
         if (lb) break;
       }
       if (!lb) {
-        console.warn('AL: Like button not found, trying alternative approach');
+        console.warn('AL: Like button not found with primary selectors, trying alternative approach');
         // Try alternative approach - find any button with like-related attributes
         const altBtns = document.querySelectorAll('button[aria-label*="like"], button[aria-label*="Like"], button[aria-label*="thumbs"]');
         for (const b of altBtns) {
           if (b.offsetParent !== null) { // Only visible buttons
             lb = b;
+            console.log(`AL: Found like button with alternative selector, aria-label: ${b.getAttribute('aria-label')}`);
             break;
           }
         }
         if (!lb) {
+          console.error('AL: No like button found at all');
           return false;
         }
       }
+      console.log(`AL: Like button found:`, lb);
       const lkd =
         lb.getAttribute('aria-pressed') === 'true' ||
         lb.classList.contains('style-default-active') ||
         lb.classList.contains('yt-spec-button-shape-next--filled') ||
         lb.classList.contains('yt-spec-button-shape-next--tonal');
+      console.log(`AL: Is already liked: ${lkd}, aria-pressed: ${lb.getAttribute('aria-pressed')}`);
       if (lkd) {
+        console.log('AL: Video already liked, skipping');
         this.likedVideos.add(state.currentVideoId || new URLSearchParams(location.search).get('v'));
         return true;
       }
+
+      // Check if button is visible and enabled
+      const isVisible = lb.offsetParent !== null;
+      const isDisabled = lb.hasAttribute('disabled') || lb.getAttribute('aria-disabled') === 'true';
+      console.log(`AL: Button visible: ${isVisible}, disabled: ${isDisabled}`);
+
+      if (!isVisible || isDisabled) {
+        console.error('AL: Like button is not visible or is disabled');
+        return false;
+      }
+
+      console.log('AL: Clicking like button');
       // Simulate click with proper event
       const clickEvent = new MouseEvent('click', {
         view: window,
@@ -190,7 +223,15 @@ export class AutoLiker {
       lb.dispatchEvent(clickEvent);
       // Also try direct click as fallback
       lb.click();
-      return true;
+
+      // Wait a bit and check if the like was successful
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const stillLkd = lb.getAttribute('aria-pressed') === 'true' ||
+        lb.classList.contains('style-default-active') ||
+        lb.classList.contains('yt-spec-button-shape-next--filled') ||
+        lb.classList.contains('yt-spec-button-shape-next--tonal');
+      console.log(`AL: Like button clicked successfully, now liked: ${stillLkd}`);
+      return stillLkd;
     } catch (err) {
       console.error('Err:clickLikeButton', err);
       return false;
